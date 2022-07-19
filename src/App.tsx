@@ -11,13 +11,12 @@ import Fund from './pages/Fund';
 
 
 
-
 function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <ResponsiveAppBar />
       </header>
-      <ResponsiveAppBar />
       <Routes>
         <Route path='/' element={<Main />}/>
         <Route path='/overview' element={<OverView />}/>
