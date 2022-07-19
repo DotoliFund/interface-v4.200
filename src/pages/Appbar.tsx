@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import NetworkSelector from '../components/Header/NetworkSelector';
+import Web3Status from '../components/Web3Status';
 
 
 const pages = ['Products', 'Pricing', 'Blog'];
@@ -126,12 +127,12 @@ const ResponsiveAppBar = () => {
           ))}
         </Box>
 
-        <Box sx={{ flexGrow: 0, mx: 3 }}>
+        <Box sx={{ flexGrow: 0, mx: 1.5 }}>
           <NetworkSelector />
         </Box>
 
-        <Box sx={{ flexGrow: 0, mx: 3 }}>
-          test
+        <Box sx={{ flexGrow: 0, mx: 1.5 }}>
+          <Web3Status />
         </Box>
 
         <Box sx={{ flexGrow: 0, mx: 2 }}>
