@@ -5,7 +5,7 @@ import user from 'state/user/reducer'
 export const store = configureStore({
   reducer: {
   	deposit,
-  	user
+  	user,
   },
 })
 export default store

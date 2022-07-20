@@ -13,9 +13,9 @@ import Typography from '@mui/material/Typography';
 
 
 export default function Web3Status() {
-  // const { account, connector, chainId, ENSName } = useWeb3React()
-  // const connectionType = getConnection(connector).type
-  // const chainAllowed = chainId && isChainAllowed(connector, chainId)
+  //const { account, connector, chainId, ENSName } = useWeb3React()
+  //const chainAllowed =  isChainAllowed(connector)
+  //const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
   const [open, setOpen] = React.useState(false)
 
@@ -30,58 +30,50 @@ export default function Web3Status() {
   return (
     <>
       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
-        Select Wallet
+        <Typography>Connect Wallet</Typography>
       </Fab>
       <WalletDialog 
         open={open}
         onClose={handleClose}
       />
     </>
-  )
+  )  
 
   // if (!chainId) {
   //   return null
   // } else if (!chainAllowed) {
   //   return (
   //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>Wrong Network</Trans>
+  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+  //         <Typography>Wrong Network</Typography>
   //       </Fab>
   //       <WalletDialog 
   //         open={open}
+  //         onClose={handleClose}
   //       />
   //     </>
   //   )
-  // } else if (error) {
+  // }  else if (account) {
   //   return (
   //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>Error</Trans>
+  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+  //         <Typography>{ENSName || shortenAddress(account)}</Typography>
   //       </Fab>
   //       <WalletDialog 
   //         open={open}
-  //       />
-  //     </>
-  //   )
-  // } else if (account) {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>{ENSName || shortenAddress(account)}</Trans>
-  //       </Fab>
-  //       <WalletDialog 
-  //         open={open}
+  //         onClose={handleClose}
   //       />
   //     </>
   //   )
   // } else {
   //   return (
   //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>Connect Wallet</Trans>
+  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+  //         <Typography>Connect Wallet</Typography>
   //       </Fab>
   //       <WalletDialog 
   //         open={open}
+  //         onClose={handleClose}
   //       />
   //     </>
   //   )
