@@ -6,7 +6,7 @@ import { SupportedChainId } from 'constants/chains'
 import { RPC_URLS } from '../constants/networks'
 
 export enum ConnectionType {
-  INJECTED = 'INJECTED'
+  INJECTED = 'INJECTED',
 }
 
 export interface Connection {

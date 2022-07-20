@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import deposit from 'state/deposit/reducer'
+import user from 'state/user/reducer'
 
 export const store = configureStore({
   reducer: {
-  	deposit
+  	deposit,
+  	user
   },
 })
 export default store

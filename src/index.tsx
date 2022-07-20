@@ -9,6 +9,7 @@ import { HashRouter } from 'react-router-dom'
 import { green, purple } from '@mui/material/colors';
 import { Provider } from 'react-redux'
 import store from 'state'
+import Web3Provider from './components/Web3Provider'
 
 
 const theme = createTheme({
@@ -31,9 +32,11 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <HashRouter>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
+        <Web3Provider>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </Web3Provider>
       </HashRouter>
     </Provider>
   </React.StrictMode>

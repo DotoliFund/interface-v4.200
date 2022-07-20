@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 
 
 
-
 export default function Web3Status() {
   // const { account, connector, chainId, ENSName } = useWeb3React()
   // const connectionType = getConnection(connector).type
