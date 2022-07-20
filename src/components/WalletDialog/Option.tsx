@@ -1,6 +1,8 @@
 import React from 'react'
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
+import { CustomButton } from '../../components/Button'
+
 
 export default function Option({
   link = null,
@@ -27,10 +29,10 @@ export default function Option({
 }) {
   const content = (
     <>
-      <Button variant="contained">
+      <CustomButton component="span" onClick={onClick} disabled={isActive}>
         {header}
         <img src={icon} alt={'Icon'} />
-      </Button>
+      </CustomButton>
     </>
   )
   if (link) {

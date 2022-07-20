@@ -67,11 +67,6 @@ export default function AccountDetails({
 
 
 
-
-
-
-
-
   return (
     <>
       <DialogTitle>Account</DialogTitle>    

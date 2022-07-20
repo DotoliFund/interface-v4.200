@@ -68,6 +68,7 @@ export default function Web3Status() {
       <WalletDialog 
         open={open}
         onClose={handleClose}
+        ENSName={ENSName ?? undefined}
       />    
     </>
   )

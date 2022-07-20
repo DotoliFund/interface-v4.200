@@ -31,10 +31,12 @@ const tokens = ['ETH', 'WBTC', 'DAI', 'USDC'];
 
 export default function WalletDialog({
   open,
-  onClose
+  onClose,
+  ENSName,
 } : { 
   open: boolean;
   onClose: () => void;
+  ENSName?: string | undefined
 }) {
 
   const dispatch = useAppDispatch()
@@ -55,11 +57,11 @@ export default function WalletDialog({
   }, [setWalletView])
 
 
-  // useEffect(() => {
-  //   if (open) {
-  //     setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
-  //   }
-  // }, [open, setWalletView, account])
+  useEffect(() => {
+    if (open) {
+      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
+    }
+  }, [open, setWalletView, account])
 
 
   const tryActivation = useCallback(
@@ -113,7 +115,9 @@ export default function WalletDialog({
         //   ENSName={ENSName}
         //   openOptions={openOptions}
         // />
-        <AccountDetails />
+        <AccountDetails 
+          ENSName={ENSName}
+        />
       )
     }
 
