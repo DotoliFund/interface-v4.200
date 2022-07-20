@@ -55,11 +55,11 @@ export default function WalletDialog({
   }, [setWalletView])
 
 
-  useEffect(() => {
-    if (open) {
-      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
-    }
-  }, [open, setWalletView, account])
+  // useEffect(() => {
+  //   if (open) {
+  //     setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
+  //   }
+  // }, [open, setWalletView, account])
 
 
   const tryActivation = useCallback(

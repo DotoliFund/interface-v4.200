@@ -17,6 +17,9 @@ import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
+import PersonIcon from '@mui/icons-material/Person';
+import { blue } from '@mui/material/colors';
+import Avatar from '@mui/material/Avatar';
 
 
 // function renderTransactions(transactions: string[]) {
@@ -37,7 +40,11 @@ interface AccountDetailsProps {
   openOptions: () => void
 }
 
-export default function AccountDetails() {
+export default function AccountDetails({
+  ENSName
+} : { 
+  ENSName?: string
+}) {
   const { chainId, account, connector } = useWeb3React()
   const connectionType = getConnection(connector).type
 
@@ -71,14 +78,16 @@ export default function AccountDetails() {
       <Box
         sx={{
           display: 'flex',
-          '& > :not(style)': {
-            m: 1,
-            width: 128,
-            height: 128,
-          },
+          width: 300,
+          height: 100,
         }}
       >
-        <Paper variant="outlined" />
+        <Paper variant="outlined">
+          <Avatar sx={{ bgcolor: blue[100], color: blue[600], width: 24, height: 24 }}>
+            <PersonIcon />
+          </Avatar>
+          <p>{ENSName ? ENSName : account && shortenAddress(account)}</p>
+        </Paper>
       </Box>
       <Divider />
       <Typography>test 123</Typography>
