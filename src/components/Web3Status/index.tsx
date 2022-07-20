@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 
 export default function Web3Status() {
   const { account, connector, chainId, ENSName } = useWeb3React()
-  const chainAllowed =  isChainAllowed(connector)
+  const chainAllowed =  isChainAllowed(connector, chainId)
   const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
   const [open, setOpen] = React.useState(false)
