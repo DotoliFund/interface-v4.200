@@ -18,6 +18,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
 import { isMobile } from 'utils/userAgent'
 import Typography from '@mui/material/Typography';
+import AccountDetails from '../AccountDetails'
 
 
 const WALLET_VIEWS = {
@@ -53,11 +54,12 @@ export default function WalletDialog({
     setWalletView(WALLET_VIEWS.OPTIONS)
   }, [setWalletView])
 
-  // useEffect(() => {
-  //   if (walletModalOpen) {
-  //     setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
-  //   }
-  // }, [walletModalOpen, setWalletView, account])
+
+  useEffect(() => {
+    if (open) {
+      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
+    }
+  }, [open, setWalletView, account])
 
 
   const tryActivation = useCallback(
@@ -102,9 +104,22 @@ export default function WalletDialog({
   }
 
   function getModalContent() {
+    if (walletView === WALLET_VIEWS.ACCOUNT) {
+      return (
+        // <AccountDetails
+        //   toggleWalletModal={toggleWalletModal}
+        //   pendingTransactions={pendingTransactions}
+        //   confirmedTransactions={confirmedTransactions}
+        //   ENSName={ENSName}
+        //   openOptions={openOptions}
+        // />
+        <AccountDetails />
+      )
+    }
+
     return (
       <>
-        <Typography>Connect a wallet</Typography>
+        <DialogTitle>Select a wallet</DialogTitle>
         {walletView !== WALLET_VIEWS.PENDING && <>{getOptions()}</>}
       </>
     )
@@ -132,7 +147,6 @@ export default function WalletDialog({
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Select a token</DialogTitle>
       {getModalContent()}
     </Dialog>
   );
