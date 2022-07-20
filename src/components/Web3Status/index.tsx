@@ -28,118 +28,47 @@ export default function Web3Status() {
   };
 
 
-  if (!chainId) {
-    return (
-      <>
-        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
-          <Typography>No ChainId</Typography>
-        </Fab>
-        <WalletDialog 
-          open={open}
-          onClose={handleClose}
-        />
-      </>
-    )
-  } else if (!chainAllowed) {
-    return (
-      <>
+  function Web3StatusInner() {
+    if (!chainId) {
+      return (
+      <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+        <Typography>No ChainId</Typography>
+      </Fab>
+      )
+    } else if (!chainAllowed) {
+      return (
         <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
           <Typography>Wrong Network</Typography>
         </Fab>
-        <WalletDialog 
-          open={open}
-          onClose={handleClose}
-        />
-      </>
-    )
-  } else if (error) {
-    return (
-      <>
+      )
+    } else if (error) {
+      return (
         <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
           <Trans>Error</Trans>
         </Fab>
-        <WalletDialog 
-          open={open}
-          onClose={handleClose}
-        />
-      </>
-    )
-  } else if (account) {
-    return (
-      <>
+      )
+    } else if (account) {
+      return (
         <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
           <Typography>{ENSName || shortenAddress(account)}</Typography>
         </Fab>
-        <WalletDialog 
-          open={open}
-          onClose={handleClose}
-        />
-      </>
-    )
-  } else {
-    return (
-      <>
+      )
+    } else {
+      return (
         <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
           <Typography>Connect Wallet</Typography>
         </Fab>
-        <WalletDialog 
-          open={open}
-          onClose={handleClose}
-        />
-      </>
-    )
+      )
+    }
   }
 
-
-  // if (!chainId) {
-  //   return null
-  // } else if (!chainAllowed) {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>Wrong Network</Trans>
-  //       </Fab>
-  //       <WalletDialog 
-  //         ENSName={ENSName ?? undefined}
-  //         open={open}
-  //       />
-  //     </>
-  //   )
-  // } else if (error) {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>Error</Trans>
-  //       </Fab>
-  //       <WalletDialog 
-  //         ENSName={ENSName ?? undefined}
-  //         open={open}
-  //       />
-  //     </>
-  //   )
-  // } else if (account) {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>{ENSName || shortenAddress(account)}</Trans>
-  //       </Fab>
-  //       <WalletDialog 
-  //         ENSName={ENSName ?? undefined}
-  //         open={open}
-  //       />
-  //     </>
-  //   )
-  // } else {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { toggleWalletModal }>
-  //         <Trans>Connect Wallet</Trans>
-  //       </Fab>
-  //       <WalletDialog 
-  //         ENSName={ENSName ?? undefined}
-  //         open={open}
-  //       />
-  //     </>
-  //   )
-  // }
+  return (
+    <>
+      <Web3StatusInner />
+      <WalletDialog 
+        open={open}
+        onClose={handleClose}
+      />    
+    </>
+  )
 }
