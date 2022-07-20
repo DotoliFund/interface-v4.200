@@ -11,6 +11,9 @@ import { Provider } from 'react-redux'
 import store from 'state'
 import Web3Provider from './components/Web3Provider'
 
+if (!!window.ethereum) {
+  window.ethereum.autoRefreshOnNetworkChange = false
+}
 
 const theme = createTheme({
   palette: {
