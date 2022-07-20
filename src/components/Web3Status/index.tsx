@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 export default function Web3Status() {
   const { account, connector, chainId, ENSName } = useWeb3React()
   const chainAllowed =  isChainAllowed(connector)
-  //const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
+  const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
   const [open, setOpen] = React.useState(false)
 
@@ -52,7 +52,19 @@ export default function Web3Status() {
         />
       </>
     )
-  }  else if (account) {
+  } else if (error) {
+    return (
+      <>
+        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+          <Trans>Error</Trans>
+        </Fab>
+        <WalletDialog 
+          open={open}
+          onClose={handleClose}
+        />
+      </>
+    )
+  } else if (account) {
     return (
       <>
         <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
