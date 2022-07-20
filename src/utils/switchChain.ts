@@ -33,7 +33,6 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
 }
 
 export function isChainAllowed(connector: Connector) {
-  console.log(connector)
   switch (connector) {
     case injectedConnection.connector:
     default:

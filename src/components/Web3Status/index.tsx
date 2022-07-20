@@ -13,8 +13,8 @@ import Typography from '@mui/material/Typography';
 
 
 export default function Web3Status() {
-  //const { account, connector, chainId, ENSName } = useWeb3React()
-  //const chainAllowed =  isChainAllowed(connector)
+  const { account, connector, chainId, ENSName } = useWeb3React()
+  const chainAllowed =  isChainAllowed(connector)
   //const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
   const [open, setOpen] = React.useState(false)
@@ -27,57 +27,56 @@ export default function Web3Status() {
     setOpen(false)
   };
 
-  return (
-    <>
-      <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
-        <Typography>Connect Wallet</Typography>
-      </Fab>
-      <WalletDialog 
-        open={open}
-        onClose={handleClose}
-      />
-    </>
-  )  
 
-  // if (!chainId) {
-  //   return null
-  // } else if (!chainAllowed) {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
-  //         <Typography>Wrong Network</Typography>
-  //       </Fab>
-  //       <WalletDialog 
-  //         open={open}
-  //         onClose={handleClose}
-  //       />
-  //     </>
-  //   )
-  // }  else if (account) {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
-  //         <Typography>{ENSName || shortenAddress(account)}</Typography>
-  //       </Fab>
-  //       <WalletDialog 
-  //         open={open}
-  //         onClose={handleClose}
-  //       />
-  //     </>
-  //   )
-  // } else {
-  //   return (
-  //     <>
-  //       <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
-  //         <Typography>Connect Wallet</Typography>
-  //       </Fab>
-  //       <WalletDialog 
-  //         open={open}
-  //         onClose={handleClose}
-  //       />
-  //     </>
-  //   )
-  // }
+  if (!chainId) {
+    return (
+      <>
+        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+          <Typography>No ChainId</Typography>
+        </Fab>
+        <WalletDialog 
+          open={open}
+          onClose={handleClose}
+        />
+      </>
+    )
+  } else if (!chainAllowed) {
+    return (
+      <>
+        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+          <Typography>Wrong Network</Typography>
+        </Fab>
+        <WalletDialog 
+          open={open}
+          onClose={handleClose}
+        />
+      </>
+    )
+  }  else if (account) {
+    return (
+      <>
+        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+          <Typography>{ENSName || shortenAddress(account)}</Typography>
+        </Fab>
+        <WalletDialog 
+          open={open}
+          onClose={handleClose}
+        />
+      </>
+    )
+  } else {
+    return (
+      <>
+        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick = { handleClickOpen }>
+          <Typography>Connect Wallet</Typography>
+        </Fab>
+        <WalletDialog 
+          open={open}
+          onClose={handleClose}
+        />
+      </>
+    )
+  }
 
 
   // if (!chainId) {
