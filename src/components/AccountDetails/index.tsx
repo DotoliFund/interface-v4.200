@@ -35,18 +35,14 @@ import Chip from '@mui/material/Chip';
 //   )
 // }
 
-interface AccountDetailsProps {
-  toggleWalletModal: () => void
-  pendingTransactions: string[]
-  confirmedTransactions: string[]
-  ENSName?: string
-  openOptions: () => void
-}
+
 
 export default function AccountDetails({
-  ENSName
+  ENSName,
+  openOptions,
 } : { 
-  ENSName?: string
+  ENSName?: string,
+  openOptions: () => void
 }) {
   const { chainId, account, connector } = useWeb3React()
   const connectionType = getConnection(connector).type
@@ -56,13 +52,13 @@ export default function AccountDetails({
   const isMetaMask = getIsMetaMask()
   const isInjectedMobileBrowser = isMetaMask && isMobile
 
-  // function formatConnectorName() {
-  //   return (
-  //     <WalletName>
-  //       <Trans>Connected with</Trans> {getConnectionName(connectionType, isMetaMask)}
-  //     </WalletName>
-  //   )
-  // }
+  function formatConnectorName() {
+    return (
+      <>
+      <Typography sx={{ m: 0.5, fontSize: 13 }}>Connected with {getConnectionName(connectionType, isMetaMask)}</Typography>
+      </>
+    )
+  }
 
   // const clearAllTransactionsCallback = useCallback(() => {
   //   if (chainId) dispatch(clearAllTransactions({ chainId }))
@@ -82,13 +78,31 @@ export default function AccountDetails({
           <Grid container spacing={1}>
             <Grid container item spacing={1} sx={{ mt: 0.5, mx: 0.5 }}>
               <Grid item xs={6}>
-                <Typography sx={{ m: 0.5, fontSize: 13 }}>Connected with Metamask</Typography>
+                {formatConnectorName()}
               </Grid>
               <Grid item xs={3}>
-                <Chip sx={{ height: 23, fontSize: 13 }} label="Disconnect" variant="outlined" onClick={()=>alert()} />
+                <Chip sx={{ height: 23, fontSize: 13 }} 
+                  label="Disconnect" 
+                  variant="outlined" 
+                  onClick={() => {
+                    if (connector.deactivate) {
+                      connector.deactivate()
+                    } else {
+                      connector.resetState()
+                    }
+                    dispatch(updateSelectedWallet({ wallet: undefined }))
+                    openOptions()
+                  }} 
+                />
               </Grid>
               <Grid item xs={3}>
-                <Chip sx={{ height: 23, fontSize: 13 }} label="Change" variant="outlined" onClick={()=>alert()} />
+                <Chip sx={{ height: 23, fontSize: 13 }} 
+                  label="Change" 
+                  variant="outlined" 
+                  onClick={() => {
+                    openOptions()
+                  }}
+                />
               </Grid>
             </Grid>
             <Grid container item spacing={2} sx={{ ml: 0.1 }}>

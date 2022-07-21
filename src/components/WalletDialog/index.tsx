@@ -140,6 +140,7 @@ export default function WalletDialog({
           <DialogTitle>Account</DialogTitle>
           <AccountDetails 
             ENSName={ENSName}
+            openOptions={openOptions}
           />
         </>
       ) : walletView === WALLET_VIEWS.PENDING && pendingConnector ? (
