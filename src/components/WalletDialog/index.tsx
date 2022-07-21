@@ -58,6 +58,12 @@ export default function WalletDialog({
     }
   }, [pendingConnector, walletView])
 
+  useEffect(() => {
+    if (open) {
+      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
+    }
+  }, [open, setWalletView, account])
+
   const handleClose = () => {
     onClose();
   };
@@ -70,12 +76,6 @@ export default function WalletDialog({
     setWalletView(WALLET_VIEWS.OPTIONS)
   }, [setWalletView])
 
-
-  useEffect(() => {
-    if (open) {
-      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
-    }
-  }, [open, setWalletView, account])
 
 
   const tryActivation = useCallback(
@@ -90,13 +90,9 @@ export default function WalletDialog({
         await connector.activate()
         
         dispatch(updateSelectedWallet({ wallet: connectionType }))
-      } catch (error) {
+      } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`)
-        if (error instanceof Error) {
-          dispatch(updateConnectionError({ connectionType, error: error.message }))
-        } else {
-          dispatch(updateConnectionError({ connectionType, error: undefined }))
-        }
+        dispatch(updateConnectionError({ connectionType, error: error.message }))
       }
     },
     [dispatch]
