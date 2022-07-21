@@ -70,8 +70,7 @@ export default function AccountDetails({
 
 
   return (
-    <>
-      <DialogTitle>Account</DialogTitle>    
+    <>  
       <Box
         sx={{
           display: 'flex',
