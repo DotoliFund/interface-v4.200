@@ -8,7 +8,7 @@ import Dialog from '@mui/material/Dialog';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import { blue } from '@mui/material/colors';
-import { useAppDispatch } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
@@ -19,6 +19,9 @@ import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './Injecte
 import { isMobile } from 'utils/userAgent'
 import Typography from '@mui/material/Typography';
 import AccountDetails from '../AccountDetails'
+import { updateConnectionError } from 'state/connection/reducer'
+import { updateSelectedWallet } from 'state/user/reducer'
+import PendingView from './PendingView'
 
 
 const WALLET_VIEWS = {
@@ -43,6 +46,23 @@ export default function WalletDialog({
   const { account } = useWeb3React()
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
+  const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
+  const pendingError = useAppSelector((state) =>
+    pendingConnector ? state.connection.errorByConnectionType[getConnection(pendingConnector).type] : undefined
+  )
+
+  useEffect(() => {
+    if (pendingConnector && walletView !== WALLET_VIEWS.PENDING) {
+      updateConnectionError({ connectionType: getConnection(pendingConnector).type, error: undefined })
+      setPendingConnector(undefined)
+    }
+  }, [pendingConnector, walletView])
+
+  useEffect(() => {
+    if (open) {
+      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
+    }
+  }, [open, setWalletView, account])
 
   const handleClose = () => {
     onClose();
@@ -57,22 +77,22 @@ export default function WalletDialog({
   }, [setWalletView])
 
 
-  useEffect(() => {
-    if (open) {
-      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
-    }
-  }, [open, setWalletView, account])
-
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
       const connectionType = getConnection(connector).type
 
       try {
+        setPendingConnector(connector)
+        setWalletView(WALLET_VIEWS.PENDING)
+        dispatch(updateConnectionError({ connectionType, error: undefined }))
+
         await connector.activate()
-        //dispatch(updateSelectedWallet({ wallet: connectionType }))
-      } catch (error) {
+        
+        dispatch(updateSelectedWallet({ wallet: connectionType }))
+      } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`)
+        dispatch(updateConnectionError({ connectionType, error: error.message }))
       }
     },
     [dispatch]
@@ -105,62 +125,39 @@ export default function WalletDialog({
     )
   }
 
-  function getModalContent() {
-    if (walletView === WALLET_VIEWS.ACCOUNT) {
-      return (
-        // <AccountDetails
-        //   toggleWalletModal={toggleWalletModal}
-        //   pendingTransactions={pendingTransactions}
-        //   confirmedTransactions={confirmedTransactions}
-        //   ENSName={ENSName}
-        //   openOptions={openOptions}
-        // />
-        <AccountDetails 
-          ENSName={ENSName}
-        />
-      )
-    }
-
-    return (
-      <>
-        <DialogTitle>Select a wallet</DialogTitle>
-        {walletView !== WALLET_VIEWS.PENDING && <>{getOptions()}</>}
-      </>
-    )
-  }
-
 
   // return (
   //   <Dialog onClose={handleClose} open={open}>
-  //     <DialogTitle>Select a token</DialogTitle>
-  //     <List sx={{ pt: 0 }}>
-  //       {tokens.map((token) => (
-  //         <ListItem button onClick={() => handleListItemClick(token)} key={token}>
-  //           <ListItemAvatar>
-  //             <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-  //               <PersonIcon />
-  //             </Avatar>
-  //           </ListItemAvatar>
-  //           <ListItemText primary={token} />
-  //         </ListItem>
-  //       ))}
-  //     </List>
+  //     {getModalContent()}
   //   </Dialog>
   // );
 
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      {getModalContent()}
+      {walletView === WALLET_VIEWS.ACCOUNT ? (
+        <>
+          <DialogTitle>Account</DialogTitle>
+          <AccountDetails 
+            ENSName={ENSName}
+          />
+        </>
+      ) : walletView === WALLET_VIEWS.PENDING && pendingConnector ? (
+        <>
+          <PendingView
+            openOptions={openOptions}
+            connector={pendingConnector}
+            error={!!pendingError}
+            tryActivation={tryActivation}
+          />
+        </>
+      ) : (
+        <>
+          <DialogTitle>Select a wallet</DialogTitle>
+          {getOptions()}
+        </>
+      )}
     </Dialog>
   );
 
-
-
-
-  // return (
-  //   <Modal isOpen={walletModalOpen} onDismiss={toggleWalletModal} minHeight={false} maxHeight={90}>
-  //     <>{getModalContent()}</>
-  //   </Modal>
-  // )
 }

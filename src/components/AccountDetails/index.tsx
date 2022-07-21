@@ -20,6 +20,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import PersonIcon from '@mui/icons-material/Person';
 import { blue } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
+import * as React from 'react';
+import Chip from '@mui/material/Chip';
 
 
 // function renderTransactions(transactions: string[]) {
@@ -66,26 +69,54 @@ export default function AccountDetails({
   // }, [dispatch, chainId])
 
 
-
   return (
-    <>
-      <DialogTitle>Account</DialogTitle>    
+    <>  
       <Box
         sx={{
           display: 'flex',
-          width: 300,
-          height: 100,
+          width: 450,
+          height: 140,
         }}
       >
-        <Paper variant="outlined">
-          <Avatar sx={{ bgcolor: blue[100], color: blue[600], width: 24, height: 24 }}>
-            <PersonIcon />
-          </Avatar>
-          <p>{ENSName ? ENSName : account && shortenAddress(account)}</p>
-        </Paper>
+        <Paper variant="outlined" sx={{ mx: 2, mb: 2 }}>
+          <Grid container spacing={1}>
+            <Grid container item spacing={1} sx={{ mt: 0.5, mx: 0.5 }}>
+              <Grid item xs={6}>
+                <Typography sx={{ m: 0.5, fontSize: 13 }}>Connected with Metamask</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Chip sx={{ height: 23, fontSize: 13 }} label="Disconnect" variant="outlined" onClick={()=>alert()} />
+              </Grid>
+              <Grid item xs={3}>
+                <Chip sx={{ height: 23, fontSize: 13 }} label="Change" variant="outlined" onClick={()=>alert()} />
+              </Grid>
+            </Grid>
+            <Grid container item spacing={2} sx={{ ml: 0.1 }}>
+              <Grid item xs={6}>
+                <Typography sx={{ fontSize: 20 }}>0x3464kj5k4k5jk</Typography>
+              </Grid>
+            </Grid>
+            <Grid container item spacing={1} sx={{ mb: 0.5, mx: 0.5 }}>
+              <Grid item xs={6}>
+                <Typography sx={{ m: 0.5, fontSize: 13 }}>Copy Address</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography sx={{ m: 0.5, fontSize: 13 }}>View on Explorer</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Paper>     
       </Box>
       <Divider />
-      <Typography>test 123</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          width: 450,
+          height: 50,
+        }}
+      >
+        <Typography>test 123</Typography>
+      </Box>
     </>
   )
 
