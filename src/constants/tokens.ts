@@ -18,6 +18,14 @@ export const USDC_ROPSTEN = new Token(
   'USDC',
   'USD//C'
 )
+//not real address, just for test
+export const USDC_HARDHAT_LOCAL_NODE = new Token(
+  SupportedChainId.HARDHAT_LOCAL_NODE,
+  '0x1111111111111111111111111111111111111111',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_RINKEBY = new Token(
   SupportedChainId.RINKEBY,
   '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
@@ -122,6 +130,7 @@ export const USDC: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.RINKEBY]: USDC_RINKEBY,
   [SupportedChainId.KOVAN]: USDC_KOVAN,
   [SupportedChainId.ROPSTEN]: USDC_ROPSTEN,
+  [SupportedChainId.HARDHAT_LOCAL_NODE]: USDC_HARDHAT_LOCAL_NODE,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,

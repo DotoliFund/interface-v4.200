@@ -16,6 +16,8 @@ export enum SupportedChainId {
 
   POLYGON = 137,
   POLYGON_MUMBAI = 80001,
+
+  HARDHAT_LOCAL_NODE = 31337,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
