@@ -8,7 +8,7 @@ export default function Option({
   link = null,
   clickable = true,
   size,
-  onClick = null,
+  onClick,
   color,
   header,
   subheader,
@@ -29,7 +29,7 @@ export default function Option({
 }) {
   const content = (
     <>
-      <CustomButton component="span" onClick={onClick} disabled={isActive}>
+      <CustomButton onClick={()=>onClick} disabled={isActive}>
         {header}
         <img src={icon} alt={'Icon'} />
       </CustomButton>

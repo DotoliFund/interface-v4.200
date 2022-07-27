@@ -71,7 +71,7 @@ export default function CreateFund() {
             onCurrencySelect={handleCurrencySelect}
             currency={currency}
           />
-          <CustomButton component="span" onClick={() => alert('click!')}>Button</CustomButton>
+          <CustomButton onClick={() => alert('click!')}>Button</CustomButton>
             
         </Box>
       </Grid>   
