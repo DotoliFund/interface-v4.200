@@ -19,7 +19,7 @@ export default function Option({
   link?: string | null
   clickable?: boolean
   size?: number | null
-  onClick?: null | (() => void)
+  onClick?: (() => void) | React.MouseEventHandler<HTMLButtonElement>
   color: string
   header: React.ReactNode
   subheader?: React.ReactNode
@@ -29,7 +29,7 @@ export default function Option({
 }) {
   const content = (
     <>
-      <CustomButton onClick={()=>onClick} disabled={isActive}>
+      <CustomButton onClick={onClick} disabled={isActive}>
         {header}
         <img src={icon} alt={'Icon'} />
       </CustomButton>
