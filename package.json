@@ -10,7 +10,6 @@
     "@ethersproject/providers": "^5.6.8",
     "@lingui/macro": "^3.14.0",
     "@lingui/react": "^3.14.0",
-    "@metamask/detect-provider": "^1.2.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.2",
     "@mui/styled-engine-sc": "^5.8.0",
