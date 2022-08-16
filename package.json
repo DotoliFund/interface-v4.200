@@ -49,7 +49,10 @@
     "typechain": "^5.0.0",
     "typescript": "^4.7.4",
     "ua-parser-js": "^1.0.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "cids": "^1.0.0",
+    "multicodec": "^3.0.1",
+    "multihashes": "^4.0.2"
   },
   "scripts": {
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
