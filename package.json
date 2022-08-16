@@ -56,8 +56,8 @@
   },
   "scripts": {
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
-    "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
-    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3",
+    "contracts:compile:fund": "typechain --target ethers-v5 --out-dir src/types/fund \"../myContract/artifacts/contracts/**/*[!dbg].json\"",
+    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3 && yarn contracts:compile:fund",
     "prepare": "yarn contracts:compile",
     "start": "react-scripts start",
     "build": "react-scripts build",
