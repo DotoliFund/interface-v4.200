@@ -1,7 +1,6 @@
 import { Connector } from '@web3-react/types'
 import { getConnection } from 'connection/utils'
 import { useEffect } from 'react'
-import { BACKFILLABLE_WALLETS } from 'state/connection/constants'
 import { useAppSelector } from 'state/hooks'
 
 async function connect(connector: Connector) {
@@ -17,18 +16,11 @@ async function connect(connector: Connector) {
 }
 
 export default function useEagerlyConnect() {
-  const selectedWalletBackfilled = useAppSelector((state) => state.user.selectedWalletBackfilled)
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
 
   useEffect(() => {
-
     if (selectedWallet) {
       connect(getConnection(selectedWallet).connector)
-    } else if (!selectedWalletBackfilled) {
-      BACKFILLABLE_WALLETS.map(getConnection)
-        .map((connection) => connection.connector)
-        .forEach(connect)
-    }
-    // The dependency list is empty so this is only run once on mount
+    } // The dependency list is empty so this is only run once on mount
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 }

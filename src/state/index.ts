@@ -5,13 +5,17 @@ import user from 'state/user/reducer'
 import connection from 'state/connection/reducer'
 import transactions from 'state/transactions/reducer'
 import { updateVersion } from './global/actions'
+import lists from './lists/reducer'
+import multicall from 'lib/state/multicall'
 
 export const store = configureStore({
   reducer: {
   	deposit,
   	user,
   	connection,
-  	transactions
+  	transactions,
+	lists,
+	multicall: multicall.reducer
   },
 })
 

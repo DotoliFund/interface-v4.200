@@ -6,6 +6,23 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import { CustomButton } from '../../components/Button'
 import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
+
+
+import { useWeb3React } from '@web3-react/core'
+//import { useXXXFactoryContract } from 'hooks/useContract'
+//import { useCurrency } from 'hooks/Tokens'
+import { useParams } from 'react-router-dom'
+import useTransactionDeadline from 'hooks/useTransactionDeadline'
+//import { XXXFactory } from 'interface/XXXFactory'
+// import { FACTORY_ADDRESS } from 'interface/constants'
+// import { calculateGasMargin } from 'utils/calculateGasMargin'
+// import { TransactionResponse } from '@ethersproject/providers'
+// import { useTransactionAdder } from 'state/transactions/hooks'
+// import { TransactionType } from 'state/transactions/types'
+// import { sendEvent } from 'components/analytics'
+import { useState } from 'react'
+
+
 import {
   useDefaultsFromURLSearch,
   useDepositActionHandlers,
@@ -20,9 +37,8 @@ import {
 
 
 export default function CreateFund() {
-
   const { currency, typedValue, sender, fundAccount } = useDepositState()
-
+  const { account, chainId, provider } = useWeb3React()
   const { onCurrencySelection, onUserInput, onChangeSender } = useDepositActionHandlers()
 
   const handleCurrencySelect = useCallback(
@@ -39,7 +55,81 @@ export default function CreateFund() {
     [onUserInput]
   )
 
+  //TODO the graph
+  function isExistingFund(account: string): boolean {
+    return false
+  }
 
+  // modal and loading
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
+  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
+  
+  // txn values
+  const deadline = useTransactionDeadline() // custom from users settings
+  const [txHash, setTxHash] = useState<string>('')
+
+  async function onCreate() {
+    if (!chainId || !provider || !account) return
+
+    if (isExistingFund(account)) return
+
+    // if (!factory || !baseCurrency) {
+    //   return
+    // }
+
+    // if (tokenId && account && deadline) {
+    //   const useNative = baseCurrency.isNative ? baseCurrency : undefined
+    //   const { calldata, value } = XXXFactory.createFundParameters({
+    //     token: tokenId,
+    //     amount: typedValue,
+    //     manager: account,
+    //     deadline: deadline,
+    //   });
+
+    //   let txn: { to: string; data: string; value: string } = {
+    //     to: FACTORY_ADDRESS[chainId],
+    //     data: calldata,
+    //     value,
+    //   }
+    //   // setAttemptingTxn(true)
+
+    //   provider
+    //     .getSigner()
+    //     .estimateGas(txn)
+    //     .then((estimate) => {
+    //       const newTxn = {
+    //         ...txn,
+    //         gasLimit: calculateGasMargin(estimate),
+    //       }
+
+    //       return provider
+    //         .getSigner()
+    //         .sendTransaction(newTxn)
+    //         .then((response: TransactionResponse) => {
+    //           //setAttemptingTxn(false)
+    //           addTransaction(response, {
+    //             type: TransactionType.CREATE_FUND,
+    //           })
+    //           setTxHash(response.hash)
+    //           sendEvent({
+    //             category: 'Fund',
+    //             action: 'Create',
+    //             label: ['test11111', 'test22222'].join('/'),
+    //           })
+    //         })
+    //     })
+    //     .catch((error) => {
+    //       console.error('Failed to send transaction', error)
+    //       setAttemptingTxn(false)
+    //       // we only care if the error is something _other_ than the user rejected the tx
+    //       if (error?.code !== 4001) {
+    //         console.error(error)
+    //       }
+    //     })
+    // } else {
+    //   return
+    // }
+  }
 
   return (
     <Grid

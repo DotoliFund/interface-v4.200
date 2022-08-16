@@ -78,5 +78,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@uniswap/token-lists": "^1.0.0-beta.30",
+    "cids": "^1.1.9",
+    "multicodec": "^3.2.1",
+    "multihashes": "^4.0.3"
   }
 }
