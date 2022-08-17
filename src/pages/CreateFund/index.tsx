@@ -21,16 +21,12 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { TransactionType } from 'state/transactions/types'
 import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
-import {
-  useDefaultsFromURLSearch,
-  useDepositActionHandlers,
-  useDepositState,
-} from 'state/deposit/hooks'
+import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
+
 
 export default function CreateFund() {
-  const { currency, typedValue, sender, fundAccount } = useDepositState()
   const { account, chainId, provider } = useWeb3React()
-  const { onCurrencySelection, onUserInput, onChangeSender } = useDepositActionHandlers()
+  const { onCurrencySelection, onUserInput, onChangeSender } = useCreateActionHandlers()
   const factory = useXXXFactoryContract()
   const addTransaction = useTransactionAdder()
   const {
@@ -66,27 +62,21 @@ export default function CreateFund() {
   const deadline = useTransactionDeadline() // custom from users settings
   const [txHash, setTxHash] = useState<string>('')
 
+  // create state
+  const { inputCurrencyId, typedValue, sender } = useCreateState()
+  const { currency, currencyBalance, parsedAmount, inputError } = useDerivedCreateInfo()
+
   async function onCreate() {
     if (!chainId || !provider || !account) return
     if (isExistingFund(account)) return
     // if (!factory || !baseCurrency) {
     //   return
     // }
-    if (!factory) {
-      return
-    }
     //if (currency && account && deadline) {
-    if (currency && account) {
-      console.log(2)
+    if (factory && currency && account) {
       //const useNative = baseCurrency.isNative ? baseCurrency : undefined
-      console.log({
-        token: currency,
-        amount: typedValue,
-        manager: account,
-        //deadline: deadline,
-      })
       const { calldata, value } = XXXFactory.createFundParameters({
-        token: currency,
+        token: inputCurrencyId,
         amount: typedValue,
         manager: account,
         //deadline: deadline,
@@ -165,7 +155,7 @@ export default function CreateFund() {
             value={typedValue}
             onUserInput={handleTypeInput}
             onCurrencySelect={handleCurrencySelect}
-            currency={currency}
+            currency={inputCurrencyId}
           />
           <CustomButton onClick={() => onCreate()}>Button</CustomButton>
             
