@@ -1,13 +1,12 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { computeFundAddress } from './utils/computeFundAddress'
-import { BigNumber } from '@ethersproject/bignumber'
 
 /**
  * Represents a fund
  */
 export class Fund {
   public readonly token: string
-  public readonly amount: string
+  public readonly amount: CurrencyAmount<Currency>
   public readonly manager: string
   //public readonly deadline: BigNumber
 
@@ -31,7 +30,7 @@ export class Fund {
    */
   public constructor(
     _token: string,
-    _amount: string,
+    _amount: CurrencyAmount<Currency>,
     _manager: string,
     //_deadline: BigNumber
   ) {

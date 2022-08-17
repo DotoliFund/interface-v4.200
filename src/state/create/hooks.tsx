@@ -134,15 +134,12 @@ export function useDerivedCreateInfo(): {
     return inputError
   }, [account, currency, currencyBalance, parsedAmount, to])
 
-  return useMemo(
-    () => ({
-      currency,
-      currencyBalance,
-      parsedAmount,
-      inputError
-    }),
-    [currency, currencyBalance, inputError, parsedAmount]
-  )
+  return {
+    currency,
+    currencyBalance,
+    parsedAmount,
+    inputError
+  }
 }
 
 function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {

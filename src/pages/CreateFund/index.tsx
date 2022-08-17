@@ -68,7 +68,7 @@ export default function CreateFund() {
 
   async function onCreate() {
     if (!chainId || !provider || !account) return
-    if (isExistingFund(account)) return
+    if (isExistingFund(account) || !parsedAmount) return
     // if (!factory || !baseCurrency) {
     //   return
     // }
@@ -77,7 +77,7 @@ export default function CreateFund() {
       //const useNative = baseCurrency.isNative ? baseCurrency : undefined
       const { calldata, value } = XXXFactory.createFundParameters({
         token: inputCurrencyId,
-        amount: typedValue,
+        amount: parsedAmount,
         manager: account,
         //deadline: deadline,
       });
