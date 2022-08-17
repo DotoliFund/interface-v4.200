@@ -4,30 +4,28 @@ import { replaceCreateState, selectCurrency, typeInput, setSender } from './acti
 import { queryParametersToCreateState } from './hooks'
 
 export interface CreateState {
+  readonly inputCurrencyId: string;
   readonly typedValue: string;
-  readonly currency: string;
   // the typed recipient address or ENS name, or null if swap should go to sender
   readonly sender: string | null;
 }
 
-
 const initialState: CreateState = queryParametersToCreateState(parsedQueryString());
-
 
 export default createReducer<CreateState>(initialState, (builder) =>
   builder
     .addCase(
       replaceCreateState,
-      (state, { payload: { typedValue, currency, sender } }) => {
+      (state, { payload: { typedValue, inputCurrencyId, sender } }) => {
         return {
           typedValue,
-          currency,
+          inputCurrencyId,
           sender
         };
       }
     )
-    .addCase(selectCurrency, (state, { payload: { currency } }) => {
-      state.currency = currency
+    .addCase(selectCurrency, (state, { payload: { inputCurrencyId } }) => {
+      state.inputCurrencyId = inputCurrencyId
     })
     .addCase(typeInput, (state, { payload: { typedValue } }) => {
       state.typedValue = typedValue
