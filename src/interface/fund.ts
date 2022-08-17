@@ -9,7 +9,7 @@ export class Fund {
   public readonly token: string
   public readonly amount: string
   public readonly manager: string
-  public readonly deadline: BigNumber
+  //public readonly deadline: BigNumber
 
   public static getFundAddress(
     factoryAddress: string,
@@ -33,11 +33,11 @@ export class Fund {
     _token: string,
     _amount: string,
     _manager: string,
-    _deadline: BigNumber
+    //_deadline: BigNumber
   ) {
     this.token = _token
     this.amount = _amount
     this.manager = _manager
-    this.deadline = _deadline
+    //this.deadline = _deadline
   }
 }

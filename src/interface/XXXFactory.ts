@@ -69,7 +69,7 @@ import {
       const _amount = JSBI.BigInt(fund.amount)
       invariant(JSBI.greaterThan(_amount, ZERO), 'ZERO_LIQUIDITY')
       const calldatas: string[] = []
-      const deadline = toHex(JSBI.BigInt(fund.deadline))
+      //const deadline = toHex(JSBI.BigInt(fund.deadline))
       const manager: string = validateAndParseAddress(fund.manager)
 
       calldatas.push(
@@ -78,7 +78,7 @@ import {
             token: fund.token,
             amount: toHex(_amount),
             manager: manager,
-            deadline: deadline
+            //deadline: deadline
           }
         ])
       )

@@ -37,7 +37,7 @@ export default function CreateFund() {
     currencyIdA,
     tokenId,
   } = useParams<{ currencyIdA?: string; tokenId?: string }>()
-  const baseCurrency = useCurrency(currencyIdA)
+  //const baseCurrency = useCurrency(currencyIdA)
 
   const handleCurrencySelect = useCallback(
     (currency : string) => {
@@ -68,29 +68,37 @@ export default function CreateFund() {
 
   async function onCreate() {
     if (!chainId || !provider || !account) return
-
     if (isExistingFund(account)) return
-
-    if (!factory || !baseCurrency) {
+    // if (!factory || !baseCurrency) {
+    //   return
+    // }
+    if (!factory) {
       return
     }
-
-    if (tokenId && account && deadline) {
+    //if (currency && account && deadline) {
+    if (currency && account) {
+      console.log(2)
       //const useNative = baseCurrency.isNative ? baseCurrency : undefined
-      const { calldata, value } = XXXFactory.createFundParameters({
-        token: tokenId,
+      console.log({
+        token: currency,
         amount: typedValue,
         manager: account,
-        deadline: deadline,
+        //deadline: deadline,
+      })
+      const { calldata, value } = XXXFactory.createFundParameters({
+        token: currency,
+        amount: typedValue,
+        manager: account,
+        //deadline: deadline,
       });
-
+      console.log(3)
       let txn: { to: string; data: string; value: string } = {
         to: FACTORY_ADDRESS[chainId],
         data: calldata,
         value,
       }
       // setAttemptingTxn(true)
-
+      console.log(4)
       provider
         .getSigner()
         .estimateGas(txn)
@@ -109,16 +117,16 @@ export default function CreateFund() {
                 type: TransactionType.CREATE_FUND,
               })
               setTxHash(response.hash)
-              sendEvent({
-                category: 'Fund',
-                action: 'Create',
-                label: ['test11111', 'test22222'].join('/'),
-              })
+              // sendEvent({
+              //   category: 'Fund',
+              //   action: 'Create',
+              //   label: ['test11111', 'test22222'].join('/'),
+              // })
             })
         })
         .catch((error) => {
           console.error('Failed to send transaction', error)
-          setAttemptingTxn(false)
+          //setAttemptingTxn(false)
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error)
@@ -159,7 +167,7 @@ export default function CreateFund() {
             onCurrencySelect={handleCurrencySelect}
             currency={currency}
           />
-          <CustomButton onClick={() => alert('click!')}>Button</CustomButton>
+          <CustomButton onClick={() => onCreate()}>Button</CustomButton>
             
         </Box>
       </Grid>   
