@@ -9,37 +9,35 @@ import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
 
 
 import { useWeb3React } from '@web3-react/core'
-//import { useXXXFactoryContract } from 'hooks/useContract'
-//import { useCurrency } from 'hooks/Tokens'
+import { useXXXFactoryContract } from 'hooks/useContract'
+import { useCurrency } from 'hooks/Tokens'
 import { useParams } from 'react-router-dom'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
-//import { XXXFactory } from 'interface/XXXFactory'
-// import { FACTORY_ADDRESS } from 'interface/constants'
-// import { calculateGasMargin } from 'utils/calculateGasMargin'
-// import { TransactionResponse } from '@ethersproject/providers'
-// import { useTransactionAdder } from 'state/transactions/hooks'
-// import { TransactionType } from 'state/transactions/types'
-// import { sendEvent } from 'components/analytics'
+import { XXXFactory } from 'interface/XXXFactory'
+import { FACTORY_ADDRESS } from 'interface/constants'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { TransactionResponse } from '@ethersproject/providers'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import { TransactionType } from 'state/transactions/types'
+import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
-
-
 import {
   useDefaultsFromURLSearch,
   useDepositActionHandlers,
   useDepositState,
 } from 'state/deposit/hooks'
 
-// const handleTokenSelect = useCallback(
-//   (outputCurrency) => onCurrencySelection(Field.OUTPUT, outputCurrency),
-//   [onCurrencySelection]
-// )
-
-
-
 export default function CreateFund() {
   const { currency, typedValue, sender, fundAccount } = useDepositState()
   const { account, chainId, provider } = useWeb3React()
   const { onCurrencySelection, onUserInput, onChangeSender } = useDepositActionHandlers()
+  const factory = useXXXFactoryContract()
+  const addTransaction = useTransactionAdder()
+  const {
+    currencyIdA,
+    tokenId,
+  } = useParams<{ currencyIdA?: string; tokenId?: string }>()
+  const baseCurrency = useCurrency(currencyIdA)
 
   const handleCurrencySelect = useCallback(
     (currency : string) => {
@@ -73,62 +71,62 @@ export default function CreateFund() {
 
     if (isExistingFund(account)) return
 
-    // if (!factory || !baseCurrency) {
-    //   return
-    // }
+    if (!factory || !baseCurrency) {
+      return
+    }
 
-    // if (tokenId && account && deadline) {
-    //   const useNative = baseCurrency.isNative ? baseCurrency : undefined
-    //   const { calldata, value } = XXXFactory.createFundParameters({
-    //     token: tokenId,
-    //     amount: typedValue,
-    //     manager: account,
-    //     deadline: deadline,
-    //   });
+    if (tokenId && account && deadline) {
+      //const useNative = baseCurrency.isNative ? baseCurrency : undefined
+      const { calldata, value } = XXXFactory.createFundParameters({
+        token: tokenId,
+        amount: typedValue,
+        manager: account,
+        deadline: deadline,
+      });
 
-    //   let txn: { to: string; data: string; value: string } = {
-    //     to: FACTORY_ADDRESS[chainId],
-    //     data: calldata,
-    //     value,
-    //   }
-    //   // setAttemptingTxn(true)
+      let txn: { to: string; data: string; value: string } = {
+        to: FACTORY_ADDRESS[chainId],
+        data: calldata,
+        value,
+      }
+      // setAttemptingTxn(true)
 
-    //   provider
-    //     .getSigner()
-    //     .estimateGas(txn)
-    //     .then((estimate) => {
-    //       const newTxn = {
-    //         ...txn,
-    //         gasLimit: calculateGasMargin(estimate),
-    //       }
+      provider
+        .getSigner()
+        .estimateGas(txn)
+        .then((estimate) => {
+          const newTxn = {
+            ...txn,
+            gasLimit: calculateGasMargin(estimate),
+          }
 
-    //       return provider
-    //         .getSigner()
-    //         .sendTransaction(newTxn)
-    //         .then((response: TransactionResponse) => {
-    //           //setAttemptingTxn(false)
-    //           addTransaction(response, {
-    //             type: TransactionType.CREATE_FUND,
-    //           })
-    //           setTxHash(response.hash)
-    //           sendEvent({
-    //             category: 'Fund',
-    //             action: 'Create',
-    //             label: ['test11111', 'test22222'].join('/'),
-    //           })
-    //         })
-    //     })
-    //     .catch((error) => {
-    //       console.error('Failed to send transaction', error)
-    //       setAttemptingTxn(false)
-    //       // we only care if the error is something _other_ than the user rejected the tx
-    //       if (error?.code !== 4001) {
-    //         console.error(error)
-    //       }
-    //     })
-    // } else {
-    //   return
-    // }
+          return provider
+            .getSigner()
+            .sendTransaction(newTxn)
+            .then((response: TransactionResponse) => {
+              //setAttemptingTxn(false)
+              addTransaction(response, {
+                type: TransactionType.CREATE_FUND,
+              })
+              setTxHash(response.hash)
+              sendEvent({
+                category: 'Fund',
+                action: 'Create',
+                label: ['test11111', 'test22222'].join('/'),
+              })
+            })
+        })
+        .catch((error) => {
+          console.error('Failed to send transaction', error)
+          setAttemptingTxn(false)
+          // we only care if the error is something _other_ than the user rejected the tx
+          if (error?.code !== 4001) {
+            console.error(error)
+          }
+        })
+    } else {
+      return
+    }
   }
 
   return (

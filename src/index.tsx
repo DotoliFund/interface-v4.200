@@ -10,6 +10,7 @@ import { green, purple } from '@mui/material/colors';
 import { Provider } from 'react-redux'
 import store from 'state'
 import Web3Provider from './components/Web3Provider'
+import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -36,9 +37,11 @@ root.render(
     <Provider store={store}>
       <HashRouter>
         <Web3Provider>
-          <ThemeProvider theme={theme}>
-            <App />
-          </ThemeProvider>
+          <BlockNumberProvider>
+            <ThemeProvider theme={theme}>
+              <App />
+            </ThemeProvider>
+          </BlockNumberProvider>
         </Web3Provider>
       </HashRouter>
     </Provider>

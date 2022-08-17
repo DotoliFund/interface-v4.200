@@ -18,6 +18,8 @@ import ERC721_ABI from 'abis/erc721.json'
 import ERC1155_ABI from 'abis/erc1155.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
+import XXXFactoryJson from 'abis/XXXFactory.json'
+import { XXXFactory } from 'types/fund'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
@@ -27,6 +29,7 @@ import {
   TICK_LENS_ADDRESSES,
   V2_ROUTER_ADDRESS,
   V3_MIGRATOR_ADDRESSES,
+  XXXFACTORY_ADDRESSES,
 } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
@@ -43,6 +46,7 @@ const { abi: TickLensABI } = TickLensJson
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 const { abi: NFTPositionManagerABI } = NonfungiblePositionManagerJson
 const { abi: V2MigratorABI } = V3MigratorJson
+const { abi: XXXFactoryABI } = XXXFactoryJson
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
@@ -140,4 +144,12 @@ export function useTickLens(): TickLens | null {
   const { chainId } = useWeb3React()
   const address = chainId ? TICK_LENS_ADDRESSES[chainId] : undefined
   return useContract(address, TickLensABI) as TickLens | null
+}
+
+export function useXXXFactoryContract(withSignerIfPossible?: boolean): XXXFactory | null {
+  return useContract<XXXFactory>(
+    XXXFACTORY_ADDRESSES,
+    XXXFactoryABI,
+    withSignerIfPossible
+  )
 }

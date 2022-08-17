@@ -74,6 +74,8 @@ export const SWAP_ROUTER_ADDRESSES: AddressMap = {
   ]),
 }
 
+export const XXXFACTORY_ADDRESSES = process.env.FACTORY_ADDRESS; 
+
 /**
  * The oldest V0 governance address
  */

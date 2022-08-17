@@ -33,6 +33,7 @@ export enum TransactionType {
   SUBMIT_PROPOSAL,
   QUEUE,
   EXECUTE,
+  CREATE_FUND,
 }
 
 export interface BaseTransactionInfo {
@@ -156,6 +157,10 @@ export interface SubmitProposalTransactionInfo {
   type: TransactionType.SUBMIT_PROPOSAL
 }
 
+export interface CreateFundTransactionInfo {
+  type: TransactionType.CREATE_FUND
+}
+
 export type TransactionInfo =
   | ApproveTransactionInfo
   | ExactOutputSwapTransactionInfo
@@ -174,7 +179,8 @@ export type TransactionInfo =
   | CollectFeesTransactionInfo
   | RemoveLiquidityV3TransactionInfo
   | SubmitProposalTransactionInfo
-
+  | CreateFundTransactionInfo
+  
 export interface TransactionDetails {
   hash: string
   receipt?: SerializableTransactionReceipt

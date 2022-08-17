@@ -50,12 +50,14 @@
     "typescript": "^4.7.4",
     "ua-parser-js": "^1.0.2",
     "web-vitals": "^2.1.4",
-    "cids": "^1.0.0",
-    "multicodec": "^3.0.1",
-    "multihashes": "^4.0.2"
+    "cids": "^1.1.9",
+    "multicodec": "^3.2.1",
+    "multihashes": "^4.0.3",
+    "react-ga4": "^1.4.1"
   },
   "scripts": {
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
+    "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile:fund": "typechain --target ethers-v5 --out-dir src/types/fund \"../myContract/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3 && yarn contracts:compile:fund",
     "prepare": "yarn contracts:compile",
