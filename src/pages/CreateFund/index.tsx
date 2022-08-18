@@ -81,14 +81,12 @@ export default function CreateFund() {
         manager: account,
         //deadline: deadline,
       });
-      console.log(3)
       let txn: { to: string; data: string; value: string } = {
-        to: FACTORY_ADDRESS[chainId],
+        to: FACTORY_ADDRESS,
         data: calldata,
         value,
       }
       // setAttemptingTxn(true)
-      console.log(4)
       provider
         .getSigner()
         .estimateGas(txn)
@@ -97,7 +95,6 @@ export default function CreateFund() {
             ...txn,
             gasLimit: calculateGasMargin(estimate),
           }
-
           return provider
             .getSigner()
             .sendTransaction(newTxn)

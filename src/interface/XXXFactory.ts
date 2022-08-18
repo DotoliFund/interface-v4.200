@@ -72,26 +72,39 @@ import {
       //const deadline = toHex(JSBI.BigInt(fund.deadline))
       const manager: string = validateAndParseAddress(fund.manager)
 
-      console.log(_amount)
-      console.log(_amount.quotient)
-      console.log(toHex(_amount.quotient))
-      console.log(_amount.toExact())
-      console.log(_amount.toFixed())
-      console.log(_amount.toSignificant(6))
+      // console.log(_amount)
+      // console.log(_amount.quotient)
+      // console.log(toHex(_amount.quotient))
+      // console.log(_amount.toExact())
+      // console.log(_amount.toFixed())
+      // console.log(_amount.toSignificant(6))
 
-
+      console.log(1)
       calldatas.push(
-          XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-          {
-            manager: manager,
-            //token: fund.token,
-            token: '0x64f0131a028293d160A172B29f10D8a457406a84',
-            amount: '0x64f0131a028293d160A172B29f10D8a457406a84'
-            //amount: toHex(_amount.quotient),
-            //deadline: deadline
-          }
+        XXXFactory.INTERFACE.encodeFunctionData('createFund', [
+        
+          manager,
+          //token: fund.token,
+          '0x64f0131a028293d160A172B29f10D8a457406a84',
+          1000
+          //amount: toHex(_amount.quotient),
+          //deadline: deadline
+        
         ])
       )
+      console.log(2)
+      // calldatas.push(
+      //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
+      //     {
+      //       manager: manager,
+      //       //token: fund.token,
+      //       token: '0x64f0131a028293d160A172B29f10D8a457406a84',
+      //       amount: 1
+      //       //amount: toHex(_amount.quotient),
+      //       //deadline: deadline
+      //     }
+      //   ])
+      // )
   
       let value: string = toHex(0)
 
