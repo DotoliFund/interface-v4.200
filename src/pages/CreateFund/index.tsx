@@ -6,15 +6,13 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import { CustomButton } from '../../components/Button'
 import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
-
-
+import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useWeb3React } from '@web3-react/core'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useCurrency } from 'hooks/Tokens'
 import { useParams } from 'react-router-dom'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { XXXFactory } from 'interface/XXXFactory'
-import { FACTORY_ADDRESS } from 'interface/constants'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -22,13 +20,15 @@ import { TransactionType } from 'state/transactions/types'
 import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
 import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
-
+import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
+//import { useToggleWalletModal } from 'state/application/hooks'
 
 export default function CreateFund() {
   const { account, chainId, provider } = useWeb3React()
   const { onCurrencySelection, onUserInput, onChangeSender } = useCreateActionHandlers()
   const factory = useXXXFactoryContract()
   const addTransaction = useTransactionAdder()
+  //const toggleWalletModal = useToggleWalletModal()
   const {
     currencyIdA,
     tokenId,
@@ -66,6 +66,12 @@ export default function CreateFund() {
   const { inputCurrencyId, typedValue, sender } = useCreateState()
   const { currency, currencyBalance, parsedAmount, inputError } = useDerivedCreateInfo()
 
+  // check whether the user has approved the router on the tokens
+  const [approval, approveCallback] = useApproveCallback(parsedAmount, XXXFUND_ADDRESSES)
+  // we need an existence check on parsed amounts for single-asset deposits
+  const showApproval =
+    approval !== ApprovalState.APPROVED && !!parsedAmount
+
   async function onCreate() {
     if (!chainId || !provider || !account) return
     if (isExistingFund(account) || !parsedAmount) return
@@ -82,7 +88,7 @@ export default function CreateFund() {
         //deadline: deadline,
       });
       let txn: { to: string; data: string; value: string } = {
-        to: FACTORY_ADDRESS,
+        to: XXXFACTORY_ADDRESSES,
         data: calldata,
         value,
       }
@@ -123,6 +129,7 @@ export default function CreateFund() {
       return
     }
   }
+
 
   return (
     <Grid
