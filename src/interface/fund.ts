@@ -1,15 +1,12 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { computeFundAddress } from './utils/computeFundAddress'
-import { BigNumber } from '@ethersproject/bignumber'
 
 /**
  * Represents a fund
  */
 export class Fund {
-  public readonly token: string
-  public readonly amount: string
   public readonly manager: string
-  public readonly deadline: BigNumber
+  //public readonly deadline: BigNumber
 
   public static getFundAddress(
     factoryAddress: string,
@@ -27,17 +24,15 @@ export class Fund {
    * Construct a fund
    * @param token One of the tokens in the fund
    * @param amount Amount of token
-   * @param fundAddress fund's address
+   * @param manager fund's address
    */
   public constructor(
     _token: string,
-    _amount: string,
+    _amount: CurrencyAmount<Currency>,
     _manager: string,
-    _deadline: BigNumber
+    //_deadline: BigNumber
   ) {
-    this.token = _token
-    this.amount = _amount
     this.manager = _manager
-    this.deadline = _deadline
+    //this.deadline = _deadline
   }
 }

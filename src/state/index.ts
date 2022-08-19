@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 import deposit from 'state/deposit/reducer'
+import create from 'state/create/reducer'
 import user from 'state/user/reducer'
 import connection from 'state/connection/reducer'
 import transactions from 'state/transactions/reducer'
@@ -11,6 +12,7 @@ import multicall from 'lib/state/multicall'
 export const store = configureStore({
   reducer: {
   	deposit,
+	create,
   	user,
   	connection,
   	transactions,
