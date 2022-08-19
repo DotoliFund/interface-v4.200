@@ -5,8 +5,6 @@ import { computeFundAddress } from './utils/computeFundAddress'
  * Represents a fund
  */
 export class Fund {
-  public readonly token: string
-  public readonly amount: CurrencyAmount<Currency>
   public readonly manager: string
   //public readonly deadline: BigNumber
 
@@ -26,7 +24,7 @@ export class Fund {
    * Construct a fund
    * @param token One of the tokens in the fund
    * @param amount Amount of token
-   * @param fundAddress fund's address
+   * @param manager fund's address
    */
   public constructor(
     _token: string,
@@ -34,8 +32,6 @@ export class Fund {
     _manager: string,
     //_deadline: BigNumber
   ) {
-    this.token = _token
-    this.amount = _amount
     this.manager = _manager
     //this.deadline = _deadline
   }

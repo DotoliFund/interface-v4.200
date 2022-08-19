@@ -21,6 +21,7 @@ import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
 import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
 import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
+import { Fund } from 'interface/fund'
 //import { useToggleWalletModal } from 'state/application/hooks'
 
 export default function CreateFund() {
@@ -66,11 +67,30 @@ export default function CreateFund() {
   const { inputCurrencyId, typedValue, sender } = useCreateState()
   const { currency, currencyBalance, parsedAmount, inputError } = useDerivedCreateInfo()
 
+  //const fundAddress = Fund.getFundAddress(XXXFACTORY_ADDRESSES, account)
   // check whether the user has approved the router on the tokens
-  const [approval, approveCallback] = useApproveCallback(parsedAmount, XXXFUND_ADDRESSES)
-  // we need an existence check on parsed amounts for single-asset deposits
-  const showApproval =
-    approval !== ApprovalState.APPROVED && !!parsedAmount
+  // const [approval, approveCallback] = useApproveCallback(parsedAmount, XXXFUND_ADDRESSES)
+  // // we need an existence check on parsed amounts for single-asset deposits
+  // const showApproval =
+  //   approval !== ApprovalState.APPROVED && !!parsedAmount
+
+  // {(approval === ApprovalState.NOT_APPROVED ||
+  //   approval === ApprovalState.PENDING) &&
+  //   showApproval ? (
+  //     <CustomButton 
+  //       onClick={() => approveCallback()} 
+  //       disabled={approval === ApprovalState.PENDING}
+  //     >
+  //       {approval === ApprovalState.PENDING ? (
+  //         <Typography>Approving {inputCurrencyId}</Typography>
+  //       ) : (
+  //         <Typography>Approve {inputCurrencyId}</Typography>
+  //       )}
+  //     </CustomButton>
+  //   ) : (
+  //     <CustomButton onClick={() => onCreate()}>Create</CustomButton>
+  //   )
+  // }
 
   async function onCreate() {
     if (!chainId || !provider || !account) return
@@ -82,8 +102,6 @@ export default function CreateFund() {
     if (factory && currency && account) {
       //const useNative = baseCurrency.isNative ? baseCurrency : undefined
       const { calldata, value } = XXXFactory.createFundParameters({
-        token: inputCurrencyId,
-        amount: parsedAmount,
         manager: account,
         //deadline: deadline,
       });
@@ -105,6 +123,7 @@ export default function CreateFund() {
             .getSigner()
             .sendTransaction(newTxn)
             .then((response: TransactionResponse) => {
+              console.log(response)
               //setAttemptingTxn(false)
               addTransaction(response, {
                 type: TransactionType.CREATE_FUND,
@@ -161,23 +180,7 @@ export default function CreateFund() {
             onCurrencySelect={handleCurrencySelect}
             currency={inputCurrencyId}
           />
-          {(approval === ApprovalState.NOT_APPROVED ||
-            approval === ApprovalState.PENDING) &&
-            showApproval ? (
-              <CustomButton 
-                onClick={() => approveCallback()} 
-                disabled={approval === ApprovalState.PENDING}
-              >
-                {approval === ApprovalState.PENDING ? (
-                  <Typography>Approving {inputCurrencyId}</Typography>
-                ) : (
-                  <Typography>Approve {inputCurrencyId}</Typography>
-                )}
-              </CustomButton>
-            ) : (
-              <CustomButton onClick={() => onCreate()}>Add</CustomButton>
-            )
-          }
+          <CustomButton onClick={() => onCreate()}>Create</CustomButton>
         </Box>
       </Grid>   
     </Grid> 

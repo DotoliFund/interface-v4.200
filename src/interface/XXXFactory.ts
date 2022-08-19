@@ -66,8 +66,6 @@ import {
     private constructor() {}
   
     public static createFundParameters(fund: Fund): MethodParameters {
-      const _amount = fund.amount
-      invariant(_amount?.greaterThan(ZERO), 'ZERO_LIQUIDITY')
       const calldatas: string[] = []
       //const deadline = toHex(JSBI.BigInt(fund.deadline))
       const manager: string = validateAndParseAddress(fund.manager)
@@ -82,14 +80,8 @@ import {
       console.log(1)
       calldatas.push(
         XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-        
           manager,
-          //token: fund.token,
-          '0x64f0131a028293d160A172B29f10D8a457406a84',
-          1000
-          //amount: toHex(_amount.quotient),
           //deadline: deadline
-        
         ])
       )
       console.log(2)
