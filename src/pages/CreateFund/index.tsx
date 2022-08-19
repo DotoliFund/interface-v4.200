@@ -161,8 +161,23 @@ export default function CreateFund() {
             onCurrencySelect={handleCurrencySelect}
             currency={inputCurrencyId}
           />
-          <CustomButton onClick={() => onCreate()}>Button</CustomButton>
-            
+          {(approval === ApprovalState.NOT_APPROVED ||
+            approval === ApprovalState.PENDING) &&
+            showApproval ? (
+              <CustomButton 
+                onClick={() => approveCallback()} 
+                disabled={approval === ApprovalState.PENDING}
+              >
+                {approval === ApprovalState.PENDING ? (
+                  <Typography>Approving {inputCurrencyId}</Typography>
+                ) : (
+                  <Typography>Approve {inputCurrencyId}</Typography>
+                )}
+              </CustomButton>
+            ) : (
+              <CustomButton onClick={() => onCreate()}>Add</CustomButton>
+            )
+          }
         </Box>
       </Grid>   
     </Grid> 
