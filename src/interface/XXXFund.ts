@@ -12,9 +12,10 @@ import {
   import { ONE, ZERO } from './internalConstants'
   import { MethodParameters, toHex } from './utils/calldata'
   import { Interface } from '@ethersproject/abi'
-  import IXXXFactory from 'abis/XXXFactory.json'
+  import IXXXFund from 'abis/XXXFund.json'
   import { Multicall } from './multicall'
-  
+import { BigNumber } from 'ethers'
+
   const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
   
   export interface MintSpecificOptions {
@@ -56,18 +57,22 @@ import {
   
   export type AddLiquidityOptions = MintOptions | IncreaseOptions
   
-  export abstract class XXXFactory {
-    public static INTERFACE: Interface = new Interface(IXXXFactory.abi)
+  export abstract class XXXFund {
+    public static INTERFACE: Interface = new Interface(IXXXFund.abi)
   
     /**
      * Cannot be constructed.
      */
     private constructor() {}
   
-    public static createFundParameters(account: string): MethodParameters {
+    public static depositParameters(
+        account: string,
+        token: string,
+        amount: CurrencyAmount<Currency>
+    ): MethodParameters {
       const calldatas: string[] = []
       //const deadline = toHex(JSBI.BigInt(fund.deadline))
-      const manager: string = validateAndParseAddress(account)
+      const investor: string = validateAndParseAddress(account)
 
       // console.log(_amount)
       // console.log(_amount.quotient)
@@ -76,9 +81,13 @@ import {
       // console.log(_amount.toFixed())
       // console.log(_amount.toSignificant(6))
 
+      console.log('investor : ' + investor)
+      console.log('amount.quotient : ' + toHex(amount.quotient))
       calldatas.push(
-        XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-          manager,
+        XXXFund.INTERFACE.encodeFunctionData('deposit', [
+          investor,
+          '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+          toHex(amount.quotient)
           //deadline: deadline
         ])
       )
@@ -87,7 +96,7 @@ import {
       //     {
       //       manager: manager,
       //       //token: fund.token,
-      //       token: '0x49A4799652998d8Fe8a1AA14d7E9Ab7C461d40c4',
+      //       token: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
       //       amount: 1
       //       //amount: toHex(_amount.quotient),
       //       //deadline: deadline

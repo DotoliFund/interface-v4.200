@@ -75,8 +75,8 @@ export const SWAP_ROUTER_ADDRESSES: AddressMap = {
 }
 
 //rinkeby testnet
-export const XXXFACTORY_ADDRESSES = '0x2d5b9D259297E083D641b7F7F72eCcbed295CB2B'; 
-export const XXXFUND_ADDRESSES = '0x08E7E4eB8dEA99e344d18849EbCb035C71DE5047'; 
+export const XXXFACTORY_ADDRESSES = '0x2bf5e0B642B8Cfca725Cd35B6578d45aa024A1c5'; 
+export const XXXFUND_ADDRESSES = '0xdC352Fe9009427A817d1ca8c4f6d584a4F62274e'; 
 
 /**
  * The oldest V0 governance address

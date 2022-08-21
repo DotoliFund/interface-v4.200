@@ -4,26 +4,31 @@ import Typography from '@mui/material/Typography'
 import { styled, Container  } from '@mui/system'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
-import { CustomButton } from '../../components/Button'
-import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
-import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
+import { CustomButton } from 'components/Button'
+import CurrencyInputPanel from 'components/createFund/CurrencyInputPanel'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useWeb3React } from '@web3-react/core'
-import { useXXXFactoryContract } from 'hooks/useContract'
+import { useContract, useXXXFactoryContract } from 'hooks/useContract'
 import { useCurrency } from 'hooks/Tokens'
 import { useParams } from 'react-router-dom'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
-import { XXXFactory } from 'interface/XXXFactory'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
+import { computeFundAddress } from 'interface/utils/computeFundAddress'
 import { TransactionType } from 'state/transactions/types'
 import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
 import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
 import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
+import { XXXFund } from 'interface/XXXFund'
 //import { useToggleWalletModal } from 'state/application/hooks'
+import { useTokenContract } from 'hooks/useContract'
+import { MaxUint256 } from '@ethersproject/constants'
+import { parse } from 'node:path/win32'
 
-export default function CreateFund() {
+
+export default function FundDeposit() {
   const { account, chainId, provider } = useWeb3React()
   const { onCurrencySelection, onUserInput, onChangeSender } = useCreateActionHandlers()
   const factory = useXXXFactoryContract()
@@ -66,46 +71,86 @@ export default function CreateFund() {
   const { inputCurrencyId, typedValue, sender } = useCreateState()
   const { currency, currencyBalance, parsedAmount, inputError } = useDerivedCreateInfo()
 
-  //const fundAddress = Fund.getFundAddress(XXXFACTORY_ADDRESSES, account)
+  const new_fund_address = '0x8B41609019ED1c305c9522CD7374CB66B9F78110'
+
+
   // check whether the user has approved the router on the tokens
-  // const [approval, approveCallback] = useApproveCallback(parsedAmount, XXXFUND_ADDRESSES)
-  // // we need an existence check on parsed amounts for single-asset deposits
-  // const showApproval =
-  //   approval !== ApprovalState.APPROVED && !!parsedAmount
+  const [approval, approveCallback] = useApproveCallback(parsedAmount, new_fund_address)
+  // we need an existence check on parsed amounts for single-asset deposits
+  const showApproval =
+    approval !== ApprovalState.APPROVED && !!parsedAmount
 
-  // {(approval === ApprovalState.NOT_APPROVED ||
-  //   approval === ApprovalState.PENDING) &&
-  //   showApproval ? (
-  //     <CustomButton 
-  //       onClick={() => approveCallback()} 
-  //       disabled={approval === ApprovalState.PENDING}
-  //     >
-  //       {approval === ApprovalState.PENDING ? (
-  //         <Typography>Approving {inputCurrencyId}</Typography>
-  //       ) : (
-  //         <Typography>Approve {inputCurrencyId}</Typography>
-  //       )}
-  //     </CustomButton>
-  //   ) : (
-  //     <CustomButton onClick={() => onCreate()}>Create</CustomButton>
-  //   )
-  // }
+  const tokenContract = useTokenContract('0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f')
 
-  async function onCreate() {
+  async function onDeposit() {
     if (!chainId || !provider || !account) return
     if (isExistingFund(account) || !parsedAmount) return
+    console.log(0)
+
+    if (!tokenContract) return
+    let useExact = false
+    const estimatedGas = await tokenContract.estimateGas.approve(new_fund_address, MaxUint256).catch(() => {
+      // general fallback for tokens which restrict approval amounts
+      useExact = true
+      return tokenContract.estimateGas.approve(new_fund_address, parsedAmount.quotient.toString())
+    })
+
+    // await tokenContract.approve(new_fund_address, parsedAmount.quotient.toString(), {
+    //   gasLimit: calculateGasMargin(estimatedGas),
+    // })
+    // .then((response) => {
+    //   const eventProperties = {
+    //     chain_id: chainId,
+    //     token_symbol: 'XXX',
+    //     token_address: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+    //   }
+    //   //sendAnalyticsEvent(EventName.APPROVE_TOKEN_TXN_SUBMITTED, eventProperties)
+    //   return {
+    //     response,
+    //     tokenAddress: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+    //     spenderAddress: new_fund_address,
+    //   }
+    // })
+    // .catch((error: Error) => {
+    //   throw error
+    // })
+
+    // tokenContract.transferFrom(account, new_fund_address, parsedAmount.quotient.toString(), {
+    //     gasLimit: calculateGasMargin(estimatedGas),
+    //   })
+    //   .then((response) => {
+    //     const eventProperties = {
+    //       chain_id: chainId,
+    //       token_symbol: 'XXX',
+    //       token_address: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+    //     }
+    //     //sendAnalyticsEvent(EventName.APPROVE_TOKEN_TXN_SUBMITTED, eventProperties)
+    //     console.log(response)
+    //   })
+    //   .catch((error: Error) => {
+    //     throw error
+    //   }
+    // )
+
+
+
+    console.log(1)
     // if (!factory || !baseCurrency) {
     //   return
     // }
     //if (currency && account && deadline) {
+
     if (factory && currency && account) {
+      console.log(3)
       //const useNative = baseCurrency.isNative ? baseCurrency : undefined
-      const { calldata, value } = XXXFactory.createFundParameters(
-        account
+      const { calldata, value } = XXXFund.depositParameters(
+        account,
+        inputCurrencyId,
+        parsedAmount
         //deadline: deadline,
       );
       let txn: { to: string; data: string; value: string } = {
-        to: XXXFACTORY_ADDRESSES,
+        to: new_fund_address,
         data: calldata,
         value,
       }
@@ -171,7 +216,7 @@ export default function CreateFund() {
           }}
         >
           <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
-            Create a fund
+            Deposit
           </Typography>
           <CurrencyInputPanel 
             value={typedValue}
@@ -179,7 +224,22 @@ export default function CreateFund() {
             onCurrencySelect={handleCurrencySelect}
             currency={inputCurrencyId}
           />
-          <CustomButton onClick={() => onCreate()}>Create</CustomButton>
+            {(approval === ApprovalState.NOT_APPROVED ||
+              approval === ApprovalState.PENDING) &&
+              showApproval ? (
+                <CustomButton 
+                onClick={() => approveCallback()} 
+                disabled={approval === ApprovalState.PENDING}
+                >
+                {approval === ApprovalState.PENDING ? (
+                    <Typography>Approving {inputCurrencyId}</Typography>
+                ) : (
+                    <Typography>Approve {inputCurrencyId}</Typography>
+                )}
+                </CustomButton>
+            ) : (
+                <CustomButton onClick={() => onDeposit()}>Deposit</CustomButton>
+            )}
         </Box>
       </Grid>   
     </Grid> 
