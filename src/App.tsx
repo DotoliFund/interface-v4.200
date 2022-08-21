@@ -8,8 +8,8 @@ import Main from 'pages/Main';
 import OverView from 'pages/OverView';
 import CreateFund from 'pages/CreateFund';
 import Fund from 'pages/Fund';
-import FundDeposit from 'pages/Fund/FundDetail';
-
+import FundDeposit from 'pages/Fund/FundDetail/deposit';
+import FundWithdraw from 'pages/Fund/FundDetail/withdraw';
 
 
 function App() {
@@ -24,6 +24,7 @@ function App() {
         <Route path='/createFund' element={<CreateFund />}/>
         <Route path='/fund' element={<Fund />}/>
         <Route path='/deposit' element={<FundDeposit />}/>
+        <Route path='/withdraw' element={<FundWithdraw />}/>
       </Routes>
     </div>
   );
