@@ -20,7 +20,7 @@ import { TransactionType } from 'state/transactions/types'
 import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
 import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
-import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
+import { NEWFUND_ADDRESS, XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES, XXXToken_ADDRESS } from 'constants/addresses'
 import { XXXFund } from 'interface/XXXFund'
 //import { useToggleWalletModal } from 'state/application/hooks'
 import { useTokenContract } from 'hooks/useContract'
@@ -28,7 +28,7 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { parse } from 'node:path/win32'
 
 
-export default function FundDetail() {
+export default function FundDeposit() {
   const { account, chainId, provider } = useWeb3React()
   const { onCurrencySelection, onUserInput, onChangeSender } = useCreateActionHandlers()
   const factory = useXXXFactoryContract()
@@ -71,8 +71,7 @@ export default function FundDetail() {
   const { inputCurrencyId, typedValue, sender } = useCreateState()
   const { currency, currencyBalance, parsedAmount, inputError } = useDerivedCreateInfo()
 
-  const new_fund_address = '0x8B41609019ED1c305c9522CD7374CB66B9F78110'
-
+  const new_fund_address = NEWFUND_ADDRESS
 
   // check whether the user has approved the router on the tokens
   const [approval, approveCallback] = useApproveCallback(parsedAmount, new_fund_address)
@@ -80,7 +79,7 @@ export default function FundDetail() {
   const showApproval =
     approval !== ApprovalState.APPROVED && !!parsedAmount
 
-  const tokenContract = useTokenContract('0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f')
+  const tokenContract = useTokenContract(XXXToken_ADDRESS)
 
   async function onDeposit() {
     if (!chainId || !provider || !account) return
@@ -95,25 +94,25 @@ export default function FundDetail() {
       return tokenContract.estimateGas.approve(new_fund_address, parsedAmount.quotient.toString())
     })
 
-    // await tokenContract.approve(new_fund_address, parsedAmount.quotient.toString(), {
-    //   gasLimit: calculateGasMargin(estimatedGas),
-    // })
-    // .then((response) => {
-    //   const eventProperties = {
-    //     chain_id: chainId,
-    //     token_symbol: 'XXX',
-    //     token_address: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
-    //   }
-    //   //sendAnalyticsEvent(EventName.APPROVE_TOKEN_TXN_SUBMITTED, eventProperties)
-    //   return {
-    //     response,
-    //     tokenAddress: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
-    //     spenderAddress: new_fund_address,
-    //   }
-    // })
-    // .catch((error: Error) => {
-    //   throw error
-    // })
+    await tokenContract.approve(new_fund_address, parsedAmount.quotient.toString(), {
+      gasLimit: calculateGasMargin(estimatedGas),
+    })
+    .then((response) => {
+      const eventProperties = {
+        chain_id: chainId,
+        token_symbol: 'XXX',
+        token_address: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+      }
+      //sendAnalyticsEvent(EventName.APPROVE_TOKEN_TXN_SUBMITTED, eventProperties)
+      return {
+        response,
+        tokenAddress: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+        spenderAddress: new_fund_address,
+      }
+    })
+    .catch((error: Error) => {
+      throw error
+    })
 
     console.log(1)
     // if (!factory || !baseCurrency) {
@@ -197,7 +196,7 @@ export default function FundDetail() {
           }}
         >
           <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
-            Fund Detail
+            Deposit
           </Typography>
           <CurrencyInputPanel 
             value={typedValue}
@@ -219,7 +218,7 @@ export default function FundDetail() {
                 )}
                 </CustomButton>
             ) : (
-                <CustomButton onClick={() => onDeposit()}>Fund Detail</CustomButton>
+                <CustomButton onClick={() => onDeposit()}>Deposit</CustomButton>
             )}
         </Box>
       </Grid>   

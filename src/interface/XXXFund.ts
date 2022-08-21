@@ -14,10 +14,12 @@ import {
   import { Interface } from '@ethersproject/abi'
   import IXXXFund from 'abis/XXXFund.json'
   import { Multicall } from './multicall'
-import { BigNumber } from 'ethers'
+  import { BigNumber } from 'ethers'
+  import { XXXToken_ADDRESS } from 'constants/addresses'
 
   const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
-  
+  const token_address = XXXToken_ADDRESS
+
   export interface MintSpecificOptions {
     /**
      * The account that should receive the minted NFT.
@@ -73,7 +75,6 @@ import { BigNumber } from 'ethers'
       const calldatas: string[] = []
       //const deadline = toHex(JSBI.BigInt(fund.deadline))
       const investor: string = validateAndParseAddress(account)
-
       // console.log(_amount)
       // console.log(_amount.quotient)
       // console.log(toHex(_amount.quotient))
@@ -86,7 +87,55 @@ import { BigNumber } from 'ethers'
       calldatas.push(
         XXXFund.INTERFACE.encodeFunctionData('deposit', [
           investor,
-          '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+          token_address,
+          toHex(amount.quotient)
+          //deadline: deadline
+        ])
+      )
+      // calldatas.push(
+      //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
+      //     {
+      //       manager: manager,
+      //       //token: fund.token,
+      //       token: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
+      //       amount: 1
+      //       //amount: toHex(_amount.quotient),
+      //       //deadline: deadline
+      //     }
+      //   ])
+      // )
+  
+      let value: string = toHex(0)
+
+      return {
+        calldata: Multicall.encodeMulticall(calldatas),
+        value
+      }
+    }
+
+
+    public static withdrawParameters(
+        account: string,
+        token: string,
+        amount: CurrencyAmount<Currency>
+    ): MethodParameters {
+      const calldatas: string[] = []
+      //const deadline = toHex(JSBI.BigInt(fund.deadline))
+      const investor: string = validateAndParseAddress(account)
+
+      // console.log(_amount)
+      // console.log(_amount.quotient)
+      // console.log(toHex(_amount.quotient))
+      // console.log(_amount.toExact())
+      // console.log(_amount.toFixed())
+      // console.log(_amount.toSignificant(6))
+
+      console.log('investor : ' + investor)
+      console.log('amount.quotient : ' + toHex(amount.quotient))
+      calldatas.push(
+        XXXFund.INTERFACE.encodeFunctionData('withdraw', [
+          investor,
+          token_address,
           toHex(amount.quotient)
           //deadline: deadline
         ])
