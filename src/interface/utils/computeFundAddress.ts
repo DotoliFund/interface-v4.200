@@ -10,15 +10,11 @@ import { FUND_INIT_CODE_HASH } from '../constants'
  * @param initCodeHashManualOverride Override the init code hash used to compute the fund address if necessary
  * @returns The fund address
  */
-export function computeFundAddress({
-  factoryAddress,
-  manager,
-  initCodeHashManualOverride
-}: {
-  factoryAddress: string
-  manager: string
+export function computeFundAddress(
+  factoryAddress: string,
+  manager: string,
   initCodeHashManualOverride?: string
-}): string {
+): string {
   return getCreate2Address(
     factoryAddress,
     keccak256(

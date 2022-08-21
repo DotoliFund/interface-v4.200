@@ -21,7 +21,6 @@ import { sendEvent } from 'components/analytics'
 import { useState } from 'react'
 import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
 import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
-import { Fund } from 'interface/fund'
 //import { useToggleWalletModal } from 'state/application/hooks'
 
 export default function CreateFund() {
@@ -101,10 +100,10 @@ export default function CreateFund() {
     //if (currency && account && deadline) {
     if (factory && currency && account) {
       //const useNative = baseCurrency.isNative ? baseCurrency : undefined
-      const { calldata, value } = XXXFactory.createFundParameters({
-        manager: account,
+      const { calldata, value } = XXXFactory.createFundParameters(
+        account
         //deadline: deadline,
-      });
+      );
       let txn: { to: string; data: string; value: string } = {
         to: XXXFACTORY_ADDRESSES,
         data: calldata,
