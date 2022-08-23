@@ -89,6 +89,7 @@
     "@uniswap/liquidity-staker": "^1.0.2",
     "@uniswap/merkle-distributor": "^1.0.1",
     "@uniswap/router-sdk": "^1.3.0",
+    "@uniswap/smart-order-router": "^2.9.3",
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "cids": "^1.1.9",
     "multicodec": "^3.2.1",

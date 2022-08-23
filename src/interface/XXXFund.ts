@@ -9,11 +9,11 @@ import {
 } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
-import { ONE, ZERO } from './internalConstants'
+import { ONE, ZERO } from './utils/internalConstants'
 import { MethodParameters, toHex } from './utils/calldata'
 import { Interface } from '@ethersproject/abi'
 import IXXXFund from 'abis/XXXFund.json'
-import { Multicall } from './multicall'
+import { Multicall } from './utils/multicall'
 import { BigNumber } from 'ethers'
 import { XXXToken_ADDRESS } from 'constants/addresses'
 

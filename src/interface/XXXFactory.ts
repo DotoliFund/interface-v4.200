@@ -9,11 +9,11 @@ import {
   } from '@uniswap/sdk-core'
   import JSBI from 'jsbi'
   import invariant from 'tiny-invariant'
-  import { ONE, ZERO } from './internalConstants'
+  import { ONE, ZERO } from './utils/internalConstants'
   import { MethodParameters, toHex } from './utils/calldata'
   import { Interface } from '@ethersproject/abi'
   import IXXXFactory from 'abis/XXXFactory.json'
-  import { Multicall } from './multicall'
+  import { Multicall } from './utils/multicall'
   
   const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
   
