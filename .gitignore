@@ -9,6 +9,7 @@
 /src/locales/**/pseudo.po
 
 package-lock.json
+yarn.lock
 
 cypress/videos
 cypress/screenshots
