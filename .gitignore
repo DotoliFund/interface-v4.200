@@ -4,6 +4,14 @@
 /src/types/v3
 /src/abis/types
 /src/types/fund
+/src/locales/**/*.js
+/src/locales/**/en-US.po
+/src/locales/**/pseudo.po
+
+package-lock.json
+
+cypress/videos
+cypress/screenshots
 
 # dependencies
 /node_modules
