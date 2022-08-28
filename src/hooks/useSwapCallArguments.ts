@@ -7,7 +7,7 @@ import { V3_ROUTER_ADDRESS } from 'constants/addresses'
 import { useMemo } from 'react'
 import approveAmountCalldata from 'utils/approveAmountCalldata'
 
-import { useArgentWalletContract } from './useArgentWalletContract'
+//import { useArgentWalletContract } from './useArgentWalletContract'
 import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
 
@@ -40,7 +40,8 @@ export function useSwapCallArguments(
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const argentWalletContract = useArgentWalletContract()
+  //const argentWalletContract = useArgentWalletContract()
+  const argentWalletContract = undefined
 
   return useMemo(() => {
     if (!trade || !recipient || !provider || !account || !chainId || !deadline) return []
@@ -96,24 +97,24 @@ export function useSwapCallArguments(
         return []
       }
 
-      if (argentWalletContract && trade.inputAmount.currency.isToken) {
-        return [
-          {
-            address: argentWalletContract.address,
-            calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
-              [
-                approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
-                {
-                  to: swapRouterAddress,
-                  value,
-                  data: calldata,
-                },
-              ],
-            ]),
-            value: '0x0',
-          },
-        ]
-      }
+      // if (argentWalletContract && trade.inputAmount.currency.isToken) {
+      //   return [
+      //     {
+      //       address: argentWalletContract.address,
+      //       calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
+      //         [
+      //           approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
+      //           {
+      //             to: swapRouterAddress,
+      //             value,
+      //             data: calldata,
+      //           },
+      //         ],
+      //       ]),
+      //       value: '0x0',
+      //     },
+      //   ]
+      // }
       return [
         {
           address: swapRouterAddress,

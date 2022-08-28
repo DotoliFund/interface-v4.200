@@ -25,7 +25,6 @@ import { XXXFund } from 'interface/XXXFund'
 //import { useToggleWalletModal } from 'state/application/hooks'
 import { useTokenContract } from 'hooks/useContract'
 import { MaxUint256 } from '@ethersproject/constants'
-import { parse } from 'node:path/win32'
 
 
 export default function FundDeposit() {

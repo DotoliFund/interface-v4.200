@@ -1,12 +1,16 @@
+import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
-import arbitrumLogoUrl from 'assets/svg/arbitrum_logo.svg'
+import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
+import polygonCircleLogoUrl from 'assets/images/polygonCircle.png'
+import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'assets/svg/arbitrum_logo.svg'
 import celoLogo from 'assets/svg/celo_logo.svg'
 import optimismLogoUrl from 'assets/svg/optimistic_ethereum.svg'
 import polygonMaticLogo from 'assets/svg/polygon-matic-logo.svg'
 import ms from 'ms.macro'
+import { colorsDark } from 'theme/colors'
 
 import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from './chains'
-import { ARBITRUM_LIST, OPTIMISM_LIST } from './lists'
+import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
 
 export enum NetworkType {
   L1,
@@ -21,6 +25,7 @@ interface BaseChainInfo {
   readonly explorer: string
   readonly infoLink: string
   readonly logoUrl: string
+  readonly circleLogoUrl?: string
   readonly label: string
   readonly helpCenterUrl?: string
   readonly nativeCurrency: {
@@ -28,6 +33,8 @@ interface BaseChainInfo {
     symbol: string // e.g. 'gorETH',
     decimals: number // e.g. 18,
   }
+  readonly color?: string
+  readonly backgroundColor?: string
 }
 
 export interface L1ChainInfo extends BaseChainInfo {
@@ -55,6 +62,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Ethereum',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    color: colorsDark.chain_1,
   },
   [SupportedChainId.RINKEBY]: {
     networkType: NetworkType.L1,
@@ -64,6 +72,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Rinkeby',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Rinkeby Ether', symbol: 'rETH', decimals: 18 },
+    color: colorsDark.chain_4,
   },
   [SupportedChainId.ROPSTEN]: {
     networkType: NetworkType.L1,
@@ -73,6 +82,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Ropsten',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Ropsten Ether', symbol: 'ropETH', decimals: 18 },
+    color: colorsDark.chain_3,
   },
   [SupportedChainId.KOVAN]: {
     networkType: NetworkType.L1,
@@ -82,6 +92,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Kovan',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Kovan Ether', symbol: 'kovETH', decimals: 18 },
+    color: colorsDark.chain_69,
   },
   [SupportedChainId.GOERLI]: {
     networkType: NetworkType.L1,
@@ -91,6 +102,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Görli',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
+    color: colorsDark.chain_5,
   },
   [SupportedChainId.OPTIMISM]: {
     networkType: NetworkType.L2,
@@ -102,9 +114,12 @@ const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/optimism/',
     label: 'Optimism',
     logoUrl: optimismLogoUrl,
+    circleLogoUrl: optimismCircleLogoUrl,
     statusPage: 'https://optimism.io/status',
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    color: colorsDark.chain_10,
+    backgroundColor: colorsDark.chain_10_background,
   },
   [SupportedChainId.OPTIMISTIC_KOVAN]: {
     networkType: NetworkType.L2,
@@ -119,6 +134,7 @@ const CHAIN_INFO: ChainInfoMap = {
     statusPage: 'https://optimism.io/status',
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
     nativeCurrency: { name: 'Optimistic Kovan Ether', symbol: 'kovOpETH', decimals: 18 },
+    color: colorsDark.chain_69,
   },
   [SupportedChainId.ARBITRUM_ONE]: {
     networkType: NetworkType.L2,
@@ -129,9 +145,12 @@ const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/arbitrum',
     label: 'Arbitrum',
     logoUrl: arbitrumLogoUrl,
+    circleLogoUrl: arbitrumCircleLogoUrl,
     defaultListUrl: ARBITRUM_LIST,
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    color: colorsDark.chain_42,
+    backgroundColor: colorsDark.chain_42161_background,
   },
   [SupportedChainId.ARBITRUM_RINKEBY]: {
     networkType: NetworkType.L2,
@@ -145,6 +164,7 @@ const CHAIN_INFO: ChainInfoMap = {
     defaultListUrl: ARBITRUM_LIST,
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
     nativeCurrency: { name: 'Rinkeby Arbitrum Ether', symbol: 'rinkArbETH', decimals: 18 },
+    color: colorsDark.chain_421611,
   },
   [SupportedChainId.POLYGON]: {
     networkType: NetworkType.L1,
@@ -155,7 +175,10 @@ const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon',
     logoUrl: polygonMaticLogo,
+    circleLogoUrl: polygonCircleLogoUrl,
     nativeCurrency: { name: 'Polygon Matic', symbol: 'MATIC', decimals: 18 },
+    color: colorsDark.chain_137,
+    backgroundColor: colorsDark.chain_137_background,
   },
   [SupportedChainId.POLYGON_MUMBAI]: {
     networkType: NetworkType.L1,
@@ -167,7 +190,32 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Polygon Mumbai',
     logoUrl: polygonMaticLogo,
     nativeCurrency: { name: 'Polygon Mumbai Matic', symbol: 'mMATIC', decimals: 18 },
-  }
+  },
+  [SupportedChainId.CELO]: {
+    networkType: NetworkType.L1,
+    blockWaitMsBeforeWarning: ms`10m`,
+    bridge: 'https://www.portalbridge.com/#/transfer',
+    docs: 'https://docs.celo.org/',
+    explorer: 'https://celoscan.io/',
+    infoLink: 'https://info.uniswap.org/#/celo',
+    label: 'Celo',
+    logoUrl: celoLogo,
+    circleLogoUrl: celoCircleLogoUrl,
+    nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 },
+    defaultListUrl: CELO_LIST,
+  },
+  [SupportedChainId.CELO_ALFAJORES]: {
+    networkType: NetworkType.L1,
+    blockWaitMsBeforeWarning: ms`10m`,
+    bridge: 'https://www.portalbridge.com/#/transfer',
+    docs: 'https://docs.celo.org/',
+    explorer: 'https://alfajores-blockscout.celo-testnet.org/',
+    infoLink: 'https://info.uniswap.org/#/celo',
+    label: 'Celo Alfajores',
+    logoUrl: celoLogo,
+    nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 },
+    defaultListUrl: CELO_LIST,
+  },
 }
 
 export function getChainInfo(chainId: SupportedL1ChainId): L1ChainInfo

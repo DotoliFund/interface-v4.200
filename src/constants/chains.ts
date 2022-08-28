@@ -1,7 +1,7 @@
 /**
  * List of all the networks supported by the Uniswap Interface
  */
-export enum SupportedChainId {
+ export enum SupportedChainId {
   MAINNET = 1,
   ROPSTEN = 3,
   RINKEBY = 4,
@@ -17,7 +17,8 @@ export enum SupportedChainId {
   POLYGON = 137,
   POLYGON_MUMBAI = 80001,
 
-  HARDHAT_LOCAL_NODE = 31337,
+  CELO = 42220,
+  CELO_ALFAJORES = 44787,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -28,6 +29,8 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.KOVAN]: 'kovan',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
+  [SupportedChainId.CELO]: 'celo',
+  [SupportedChainId.CELO_ALFAJORES]: 'celo_alfajores',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
   [SupportedChainId.ARBITRUM_RINKEBY]: 'arbitrum_rinkeby',
   [SupportedChainId.OPTIMISM]: 'optimism',
@@ -41,13 +44,14 @@ export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(Support
   (id) => typeof id === 'number'
 ) as SupportedChainId[]
 
-export function isSupportedChain(chainId: number | undefined): chainId is SupportedChainId {
+export function isSupportedChain(chainId: number | null | undefined): chainId is SupportedChainId {
   return !!chainId && !!SupportedChainId[chainId]
 }
 
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   SupportedChainId.POLYGON,
+  SupportedChainId.CELO,
   SupportedChainId.OPTIMISM,
   SupportedChainId.ARBITRUM_ONE,
 ]
@@ -61,6 +65,18 @@ export const UNSUPPORTED_V2POOL_CHAIN_IDS = [
   SupportedChainId.ARBITRUM_ONE,
 ]
 
+export const TESTNET_CHAIN_IDS = [
+  SupportedChainId.ROPSTEN,
+  SupportedChainId.RINKEBY,
+  SupportedChainId.GOERLI,
+  SupportedChainId.KOVAN,
+  SupportedChainId.POLYGON_MUMBAI,
+  SupportedChainId.ARBITRUM_RINKEBY,
+  SupportedChainId.OPTIMISTIC_KOVAN,
+] as const
+
+export type SupportedTestnetChainId = typeof TESTNET_CHAIN_IDS[number]
+
 /**
  * All the chain IDs that are running the Ethereum protocol.
  */
@@ -72,6 +88,8 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.KOVAN,
   SupportedChainId.POLYGON,
   SupportedChainId.POLYGON_MUMBAI,
+  SupportedChainId.CELO,
+  SupportedChainId.CELO_ALFAJORES,
 ] as const
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]
