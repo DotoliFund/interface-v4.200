@@ -19,7 +19,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "alwaysStrict": true,
+    "downlevelIteration": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": true,
+    "types": ["react-spring", "jest"],
+    "useUnknownInCatchVariables": false
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*"]
