@@ -104,7 +104,7 @@ export default function CreateFund() {
         account
         //deadline: deadline,
       );
-      let txn: { to: string; data: string; value: string } = {
+      const txn: { to: string; data: string; value: string } = {
         to: XXXFACTORY_ADDRESSES,
         data: calldata,
         value,

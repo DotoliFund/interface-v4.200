@@ -25,7 +25,6 @@ import { XXXFund } from 'interface/XXXFund'
 //import { useToggleWalletModal } from 'state/application/hooks'
 import { useTokenContract } from 'hooks/useContract'
 import { MaxUint256 } from '@ethersproject/constants'
-import { parse } from 'node:path/win32'
 
 
 export default function FundWithdraw() {
@@ -130,7 +129,7 @@ export default function FundWithdraw() {
         parsedAmount
         //deadline: deadline,
       );
-      let txn: { to: string; data: string; value: string } = {
+      const txn: { to: string; data: string; value: string } = {
         to: new_fund_address,
         data: calldata,
         value,

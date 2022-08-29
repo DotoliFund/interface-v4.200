@@ -1,4 +1,5 @@
-const UNI_LIST = 'https://tokens.uniswap.org'
+export const UNI_LIST = 'https://tokens.uniswap.org'
+export const UNI_EXTENDED_LIST = 'https://gateway.pinata.cloud/ipfs/QmaQvV3pWKKaWJcHvSBuvQMrpckV3KKtGJ6p3HZjakwFtX'
 const AAVE_LIST = 'tokenlist.aave.eth'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 const CMC_ALL_LIST = 'https://api.coinmarketcap.com/data-api/v3/uniswap/all.json'
@@ -12,6 +13,7 @@ const WRAPPED_LIST = 'wrapped.tokensoft.eth'
 
 export const OPTIMISM_LIST = 'https://static.optimism.io/optimism.tokenlist.json'
 export const ARBITRUM_LIST = 'https://bridge.arbitrum.io/token-list-42161.json'
+export const CELO_LIST = 'https://celo-org.github.io/celo-token-list/celo.tokenlist.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 
@@ -19,6 +21,7 @@ export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 // lower index == higher priority for token import
 const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   UNI_LIST,
+  UNI_EXTENDED_LIST,
   COMPOUND_LIST,
   AAVE_LIST,
   CMC_ALL_LIST,
@@ -30,6 +33,7 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   ROLL_LIST,
   ARBITRUM_LIST,
   OPTIMISM_LIST,
+  CELO_LIST,
 ]
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [

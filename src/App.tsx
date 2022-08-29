@@ -10,6 +10,7 @@ import CreateFund from 'pages/CreateFund';
 import Fund from 'pages/Fund';
 import FundDeposit from 'pages/Fund/FundDetail/deposit';
 import FundWithdraw from 'pages/Fund/FundDetail/withdraw';
+import FundSwap from 'pages/Fund/FundDetail/swap';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='/fund' element={<Fund />}/>
         <Route path='/deposit' element={<FundDeposit />}/>
         <Route path='/withdraw' element={<FundWithdraw />}/>
+        <Route path='/swap' element={<FundSwap />}/>
       </Routes>
     </div>
   );

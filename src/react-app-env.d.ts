@@ -1,5 +1,8 @@
 /// <reference types="react-scripts" />
 
+declare module '@metamask/jazzicon' {
+  export default function (diameter: number, seed: number): HTMLElement
+}
 
 interface Window {
   // walletLinkExtension is injected by the Coinbase Wallet extension
