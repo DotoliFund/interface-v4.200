@@ -28,7 +28,6 @@ export function useSwapCallArguments(
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
-  signatureData: SignatureData | null | undefined,
   deadline: BigNumber | undefined,
   feeOptions: FeeOptions | undefined
 ): SwapCall[] {
@@ -51,26 +50,7 @@ export function useSwapCallArguments(
         fee: feeOptions,
         recipient,
         slippageTolerance: allowedSlippage,
-        ...(signatureData
-          ? {
-              inputTokenPermit:
-                'allowed' in signatureData
-                  ? {
-                      expiry: signatureData.deadline,
-                      nonce: signatureData.nonce,
-                      s: signatureData.s,
-                      r: signatureData.r,
-                      v: signatureData.v as any,
-                    }
-                  : {
-                      deadline: signatureData.deadline,
-                      amount: signatureData.amount,
-                      s: signatureData.s,
-                      r: signatureData.r,
-                      v: signatureData.v as any,
-                    },
-            }
-          : {}),
+        ...({}),
       }
 
       const swapRouterAddress = chainId
@@ -128,7 +108,6 @@ export function useSwapCallArguments(
     feeOptions,
     provider,
     recipient,
-    signatureData,
     trade,
   ])
 }

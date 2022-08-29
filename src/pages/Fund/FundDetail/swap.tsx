@@ -111,8 +111,7 @@ export default function FundSwap() {
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
     allowedSlippage,
-    recipient,
-    signatureData
+    recipient
   )
 
 
