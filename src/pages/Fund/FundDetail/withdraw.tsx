@@ -129,7 +129,7 @@ export default function FundWithdraw() {
         parsedAmount
         //deadline: deadline,
       );
-      let txn: { to: string; data: string; value: string } = {
+      const txn: { to: string; data: string; value: string } = {
         to: new_fund_address,
         data: calldata,
         value,

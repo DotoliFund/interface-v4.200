@@ -58,11 +58,7 @@ import {
   
   export abstract class XXXFactory {
     public static INTERFACE: Interface = new Interface(IXXXFactory.abi)
-  
-    /**
-     * Cannot be constructed.
-     */
-    private constructor() {}
+
   
     public static createFundParameters(account: string): MethodParameters {
       const calldatas: string[] = []
@@ -95,7 +91,7 @@ import {
       //   ])
       // )
   
-      let value: string = toHex(0)
+      const value: string = toHex(0)
 
       return {
         calldata: Multicall.encodeMulticall(calldatas),

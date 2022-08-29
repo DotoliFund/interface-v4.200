@@ -62,11 +62,6 @@ export type AddLiquidityOptions = MintOptions | IncreaseOptions
 export abstract class XXXFund {
   public static INTERFACE: Interface = new Interface(IXXXFund.abi)
 
-  /**
-   * Cannot be constructed.
-   */
-  private constructor() {}
-
   public static depositParameters(
       account: string,
       token: string,
@@ -105,7 +100,7 @@ export abstract class XXXFund {
     //   ])
     // )
 
-    let value: string = toHex(0)
+    const value: string = toHex(0)
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
@@ -153,7 +148,7 @@ export abstract class XXXFund {
     //   ])
     // )
 
-    let value: string = toHex(0)
+    const value: string = toHex(0)
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
@@ -200,7 +195,7 @@ export abstract class XXXFund {
     //   ])
     // )
 
-    let value: string = toHex(0)
+    const value: string = toHex(0)
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
