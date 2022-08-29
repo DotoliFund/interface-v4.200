@@ -35,7 +35,7 @@ import { InterfaceTrade } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
-import './swap.css'
+
 
 export default function FundSwap() {
   const { account, chainId, provider } = useWeb3React()

@@ -10,7 +10,8 @@ import CreateFund from 'pages/CreateFund';
 import Fund from 'pages/Fund';
 import FundDeposit from 'pages/Fund/FundDetail/deposit';
 import FundWithdraw from 'pages/Fund/FundDetail/withdraw';
-import FundSwap from 'pages/Fund/FundDetail/swap/swap';
+//import FundSwap from 'pages/Fund/FundDetail/swap/swap';
+import FundSwap from 'pages/Fund/FundDetail/swap/swap2';
 
 
 function App() {
