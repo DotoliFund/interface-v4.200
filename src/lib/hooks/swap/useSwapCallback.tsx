@@ -2,14 +2,14 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import Typography from '@mui/material/Typography';
-import { Percent } from '@uniswap/sdk-core'
 import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
-import { AnyTrade, useSwapCallArguments } from 'hooks/useSwapCallArguments'
+import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { ReactNode, useMemo } from 'react'
-
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, CurrencyAmount, Token, Percent, TradeType } from '@uniswap/sdk-core'
 import useSendSwapTransaction from './useSendSwapTransaction'
 
 export enum SwapCallbackState {
@@ -24,7 +24,7 @@ interface UseSwapCallbackReturns {
   error?: ReactNode
 }
 interface UseSwapCallbackArgs {
-  trade: AnyTrade | undefined // trade to execute, required
+  trade: Trade<Currency, Currency, TradeType> | undefined // trade to execute, required
   allowedSlippage: Percent // in bips
   recipientAddressOrName: string | null | undefined // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   signatureData: SignatureData | null | undefined

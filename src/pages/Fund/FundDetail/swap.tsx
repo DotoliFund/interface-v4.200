@@ -33,6 +33,8 @@ import {
 } from 'state/swap/hooks'
 import { InterfaceTrade } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
 
 export default function FundSwap() {
@@ -66,17 +68,10 @@ export default function FundSwap() {
     return false
   }
 
-  // modal and loading
-  const [showConfirm, setShowConfirm] = useState<boolean>(false)
-  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
-  
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
-  const [txHash, setTxHash] = useState<string>('')
-
 
   const inputCurrencyId = 'testtest'
-
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
@@ -89,17 +84,36 @@ export default function FundSwap() {
     inputError: swapInputError,
   } = useDerivedSwapInfo()
   
+  // modal and loading
+  const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
+    showConfirm: boolean
+    tradeToConfirm: Trade<Currency, Currency, TradeType> | undefined
+    attemptingTxn: boolean
+    swapErrorMessage: string | undefined
+    txHash: string | undefined
+  }>({
+    showConfirm: false,
+    tradeToConfirm: undefined,
+    attemptingTxn: false,
+    swapErrorMessage: undefined,
+    txHash: undefined,
+  })
+
+  function useApprovalOptimizedTrade(
+    trade: Trade<Currency, Currency, TradeType> | undefined
+  ) {
+    return 1
+  }
+
+  useApprovalOptimizedTrade(trade)
+
   // the callback to execute the swap
-  // const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
-  //   trade,
-  //   allowedSlippage,
-  //   recipient,
-  //   signatureData
-  // )
-
-
-
-
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+    trade,
+    allowedSlippage,
+    recipient,
+    signatureData
+  )
 
 
   const new_fund_address = NEWFUND_ADDRESS
@@ -113,56 +127,56 @@ export default function FundSwap() {
 
   const tokenContract = useTokenContract(token_address)
 
-  // const handleSwap = useCallback(() => {
-  //   if (!swapCallback) {
-  //     return
-  //   }
-  //   // if (stablecoinPriceImpact && !confirmPriceImpactWithoutFee(stablecoinPriceImpact)) {
-  //   //   return
-  //   // }
-  //   //setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
-  //   swapCallback()
-  //     .then((hash) => {
-  //       console.log(hash);
-  //       //setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
-  //       // sendEvent({
-  //       //   category: 'Swap',
-  //       //   action: 'transaction hash',
-  //       //   label: hash,
-  //       // })
-  //       // sendEvent({
-  //       //   category: 'Swap',
-  //       //   action:
-  //       //     recipient === null
-  //       //       ? 'Swap w/o Send'
-  //       //       : (recipientAddress ?? recipient) === account
-  //       //       ? 'Swap w/o Send + recipient'
-  //       //       : 'Swap w/ Send',
-  //       //   label: [TRADE_STRING, trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, 'MH'].join(
-  //       //     '/'
-  //       //   ),
-  //       // })
-  //     })
-  //     .catch((error) => {
-  //       // setSwapState({
-  //       //   attemptingTxn: false,
-  //       //   tradeToConfirm,
-  //       //   showConfirm,
-  //       //   swapErrorMessage: error.message,
-  //       //   txHash: undefined,
-  //       // })
-  //     })
-  // }, [
-  //   swapCallback,
-  //   //stablecoinPriceImpact,
-  //   //tradeToConfirm,
-  //   //showConfirm,
-  //   //recipient,
-  //   //recipientAddress,
-  //   //account,
-  //   //trade?.inputAmount?.currency?.symbol,
-  //   //trade?.outputAmount?.currency?.symbol,
-  // ])
+  const handleSwap = useCallback(() => {
+    if (!swapCallback) {
+      return
+    }
+    // if (stablecoinPriceImpact && !confirmPriceImpactWithoutFee(stablecoinPriceImpact)) {
+    //   return
+    // }
+    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    swapCallback()
+      .then((hash) => {
+        console.log(hash);
+        //setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        // sendEvent({
+        //   category: 'Swap',
+        //   action: 'transaction hash',
+        //   label: hash,
+        // })
+        // sendEvent({
+        //   category: 'Swap',
+        //   action:
+        //     recipient === null
+        //       ? 'Swap w/o Send'
+        //       : (recipientAddress ?? recipient) === account
+        //       ? 'Swap w/o Send + recipient'
+        //       : 'Swap w/ Send',
+        //   label: [TRADE_STRING, trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, 'MH'].join(
+        //     '/'
+        //   ),
+        // })
+      })
+      .catch((error) => {
+        // setSwapState({
+        //   attemptingTxn: false,
+        //   tradeToConfirm,
+        //   showConfirm,
+        //   swapErrorMessage: error.message,
+        //   txHash: undefined,
+        // })
+      })
+  }, [
+    swapCallback,
+    //stablecoinPriceImpact,
+    //tradeToConfirm,
+    //showConfirm,
+    //recipient,
+    //recipientAddress,
+    //account,
+    //trade?.inputAmount?.currency?.symbol,
+    //trade?.outputAmount?.currency?.symbol,
+  ])
 
   return (
     <Grid
@@ -194,6 +208,7 @@ export default function FundSwap() {
             onCurrencySelect={handleCurrencySelect}
             currency={inputCurrencyId}
           />
+          <CustomButton onClick={() => handleSwap()}>Deposit</CustomButton>
         </Box>
       </Grid>   
     </Grid> 
