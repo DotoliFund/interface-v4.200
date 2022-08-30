@@ -9,7 +9,7 @@ import CurrencyInputPanel from 'components/createFund/CurrencyInputPanel'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useWeb3React } from '@web3-react/core'
 import { useContract, useXXXFactoryContract } from 'hooks/useContract'
-import { useCurrency } from 'hooks/Tokens'
+import { useCurrency, useToken } from 'hooks/Tokens'
 import { useParams } from 'react-router-dom'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -41,7 +41,7 @@ import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-
+import { useAllTokens } from 'hooks/Tokens'
 
 export default function FundSwap() {
 
@@ -53,12 +53,18 @@ export default function FundSwap() {
   const name1 = 'Uniswap Token'
   const symbol1 = 'UNI'
   const decimals1 = 18
-  const address1 = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'
+  const address1 = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'
 
   const { account, chainId, provider } = useWeb3React()
 
+  const allTokens = useAllTokens()
+  //console.log(allTokens)
+  
   let inputCurrency = useCurrency(address0)
   let outputCurrency = useCurrency(address1)
+
+  //console.log(inputCurrency)
+  //console.log(outputCurrency)
 
   if(!inputCurrency) {
     inputCurrency = undefined
@@ -66,7 +72,7 @@ export default function FundSwap() {
   if(!outputCurrency) {
     outputCurrency = undefined
   }
-  const typedValue = '1'
+  const typedValue = '0.2'
 
   const parsedAmount = tryParseCurrencyAmount(typedValue, inputCurrency)
 
@@ -87,12 +93,12 @@ export default function FundSwap() {
   )
 
   function handleSwap() {
-
+    console.log(1);
     if(!account) {
       console.log('account is null')
       return
     }
-
+    console.log(2);
 
     if (!swapCallback) {
       return
@@ -101,8 +107,10 @@ export default function FundSwap() {
     //   return
     // }
     //setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    console.log(3);
     swapCallback()
       .then((hash) => {
+        console.log(4);
         console.log(hash);
         //setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
         // sendEvent({
