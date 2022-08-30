@@ -27,7 +27,6 @@ interface UseSwapCallbackArgs {
   trade: Trade<Currency, Currency, TradeType> | undefined // trade to execute, required
   allowedSlippage: Percent // in bips
   recipientAddressOrName: string | null | undefined // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  signatureData: SignatureData | null | undefined
   deadline: BigNumber | undefined
   feeOptions?: FeeOptions
 }
@@ -38,7 +37,6 @@ export function useSwapCallback({
   trade,
   allowedSlippage,
   recipientAddressOrName,
-  signatureData,
   deadline,
   feeOptions,
 }: UseSwapCallbackArgs): UseSwapCallbackReturns {
@@ -48,7 +46,6 @@ export function useSwapCallback({
     trade,
     allowedSlippage,
     recipientAddressOrName,
-    signatureData,
     deadline,
     feeOptions
   )

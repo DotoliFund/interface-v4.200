@@ -18,7 +18,6 @@ export function useSwapCallback(
   trade: Trade<Currency, Currency, TradeType> | undefined, // trade to execute, required
   allowedSlippage: Percent, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  signatureData: SignatureData | undefined | null
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: ReactNode | null } {
   const { account } = useWeb3React()
 
@@ -37,7 +36,6 @@ export function useSwapCallback(
     trade,
     allowedSlippage,
     recipientAddressOrName: recipient,
-    signatureData,
     deadline,
   })
 

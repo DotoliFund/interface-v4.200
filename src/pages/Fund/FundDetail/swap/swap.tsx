@@ -111,8 +111,7 @@ export default function FundSwap() {
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
     allowedSlippage,
-    recipient,
-    signatureData
+    recipient
   )
 
 
@@ -202,6 +201,12 @@ export default function FundSwap() {
           <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
             Swap
           </Typography>
+          <CurrencyInputPanel 
+            value={typedValue}
+            onUserInput={handleTypeInput}
+            onCurrencySelect={handleCurrencySelect}
+            currency={inputCurrencyId}
+          />
           <CurrencyInputPanel 
             value={typedValue}
             onUserInput={handleTypeInput}
