@@ -1,40 +1,49 @@
-import './swap.css';
-import { useState, useEffect } from 'react';
-import { ethers, BigNumber } from 'ethers';
-import { GearFill } from 'react-bootstrap-icons';
-
-import PageButton from './PageButton';
-import ConnectButton from './ConnectButton';
-import ConfigModal from './ConfigModal';
-import CurrencyField from './CurrencyField';
-
-import BeatLoader from "react-spinners/BeatLoader";
-
-import { AlphaRouter } from '@uniswap/smart-order-router'
-import { Token, CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core'
-import JSBI from 'jsbi'
-import ERC20ABI from 'abis/erc20.json'
-import { useTokenContract } from 'hooks/useContract'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import { styled, Container  } from '@mui/system'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
+import { CustomButton } from 'components/Button'
+import CurrencyInputPanel from 'components/createFund/CurrencyInputPanel'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useWeb3React } from '@web3-react/core'
-import { formatEther, parseEther } from '@ethersproject/units'
+import { useContract, useXXXFactoryContract } from 'hooks/useContract'
+import { useCurrency } from 'hooks/Tokens'
+import { useParams } from 'react-router-dom'
+import useTransactionDeadline from 'hooks/useTransactionDeadline'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { TransactionResponse } from '@ethersproject/providers'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import { computeFundAddress } from 'interface/utils/computeFundAddress'
+import { TransactionType } from 'state/transactions/types'
+import { sendEvent } from 'components/analytics'
+import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
+import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES, XXXToken_ADDRESS, NEWFUND_ADDRESS } from 'constants/addresses'
+import { XXXFund } from 'interface/XXXFund'
+//import { useToggleWalletModal } from 'state/application/hooks'
+import { useTokenContract } from 'hooks/useContract'
+import { MaxUint256 } from '@ethersproject/constants'
+import { useSwapCallback } from 'hooks/useSwapCallback'
+import {
+  useDefaultsFromURLSearch,
+  useDerivedSwapInfo,
+  useSwapActionHandlers,
+  useSwapState,
+} from 'state/swap/hooks'
+import { InterfaceTrade } from 'state/routing/types'
+import { TradeState } from 'state/routing/types'
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+import { Field } from 'state/swap/actions'
+import useWrapCallback, { WrapErrorText, WrapType } from 'hooks/useWrapCallback'
+import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
+import { useBestTrade } from 'hooks/useBestTrade'
+import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+
 
 export default function FundSwap() {
-
-  const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
-
-  const [slippageAmount, setSlippageAmount] = useState(2)
-  const [deadlineMinutes, setDeadlineMinutes] = useState(10)
-  const [showModal, setShowModal] = useState(undefined)
-
-  const [inputAmount, setInputAmount] = useState(undefined)
-  const [outputAmount, setOutputAmount] = useState(undefined)
-  const [transaction, setTransaction] = useState(undefined)
-  const [loading, setLoading] = useState(undefined)
-  const [ratio, setRatio] = useState(undefined)
-
-    
-
-  const { account, chainId, provider } = useWeb3React()
 
   const name0 = 'Wrapped Ether'
   const symbol0 = 'WETH'
@@ -46,184 +55,115 @@ export default function FundSwap() {
   const decimals1 = 18
   const address1 = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'
 
+  const { account, chainId, provider } = useWeb3React()
 
-  const wethContract = useTokenContract(address0)
-  const uniContract = useTokenContract(address1)
+  let inputCurrency = useCurrency(address0)
+  let outputCurrency = useCurrency(address1)
 
-
-//   const getSigner = async provider => {
-//     provider.send("eth_requestAccounts", []);
-//     const signer = provider.getSigner();
-//     setSigner(signer)
-//   }
-  const isConnected = () => account !== undefined
-
-
-  const getSwapPrice = (inputAmount) => {
-    setLoading(true)
-    setInputAmount(inputAmount)
-
-    const swap = getPrice(
-      inputAmount,
-      slippageAmount,
-      Math.floor(Date.now()/1000 + (deadlineMinutes * 60)),
-      account
-    ).then(data => {
-      if(!data || data[0]) {
-        console.log("data is null")
-        return
-      }
-      setTransaction(data[0])
-      setOutputAmount(data[1])
-      setRatio(data[2])
-      setLoading(false)
-    })
+  if(!inputCurrency) {
+    inputCurrency = undefined
   }
+  if(!outputCurrency) {
+    outputCurrency = undefined
+  }
+  const typedValue = '1'
 
+  const parsedAmount = tryParseCurrencyAmount(typedValue, inputCurrency)
 
-  const getPrice = async (inputAmount, slippageAmount, deadline, account) => {
-    if (!chainId || provider) return
-    const router = new AlphaRouter({ chainId: chainId, provider: provider })
+  const trade = useBestTrade(
+    TradeType.EXACT_INPUT,
+    parsedAmount,
+    outputCurrency
+  )
+  // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
+  const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)
+  const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance)
 
-    const WETH = new Token(chainId, address0, decimals0, symbol0, name0)
-    const UNI = new Token(chainId, address1, decimals1, symbol1, name1)
-  
-    const percentSlippage = new Percent(slippageAmount, 100)
-    const wei = ethers.utils.parseUnits(inputAmount.toString(), decimals0)
-    const currencyAmount = CurrencyAmount.fromRawAmount(WETH, JSBI.BigInt(wei))
-  
-    const route = await router.route(
-      currencyAmount,
-      UNI,
-      TradeType.EXACT_INPUT,
-      {
-        recipient: account,
-        slippageTolerance: percentSlippage,
-        deadline: deadline,
-      }
-    )
+  // the callback to execute the swap
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+    trade.trade,
+    allowedSlippage,
+    '0xAC8fa658D92eB97D92c145774d103f4D9578da16'
+  )
 
-    if (!route || !route.methodParameters) return
-  
-    const transaction = {
-      data: route.methodParameters.calldata,
-      to: V3_SWAP_ROUTER_ADDRESS,
-      value: BigNumber.from(route.methodParameters.value),
-      from: account,
-      gasPrice: BigNumber.from(route.gasPriceWei),
-      gasLimit: ethers.utils.hexlify(1000000)
+  function handleSwap() {
+
+    if(!account) {
+      console.log('account is null')
+      return
     }
-  
-    const quoteAmountOut = route.quote.toFixed(6)
-    const ratio = (inputAmount / quoteAmountOut).toFixed(3)
-  
-    return [
-      transaction,
-      quoteAmountOut,
-      ratio
-    ]
-  }
 
-  const runSwap = async (transaction, signer) => {
-    const approvalAmount = ethers.utils.parseUnits('10', 18).toString()
-    const contract0 = wethContract
-    if (!contract0) return
-    await contract0.connect(signer).approve(
-      V3_SWAP_ROUTER_ADDRESS,
-      approvalAmount
-    )
-  
-    signer.sendTransaction(transaction)
+
+    if (!swapCallback) {
+      return
+    }
+    // if (stablecoinPriceImpact && !confirmPriceImpactWithoutFee(stablecoinPriceImpact)) {
+    //   return
+    // }
+    //setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    swapCallback()
+      .then((hash) => {
+        console.log(hash);
+        //setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        // sendEvent({
+        //   category: 'Swap',
+        //   action: 'transaction hash',
+        //   label: hash,
+        // })
+        // sendEvent({
+        //   category: 'Swap',
+        //   action:
+        //     recipient === null
+        //       ? 'Swap w/o Send'
+        //       : (recipientAddress ?? recipient) === account
+        //       ? 'Swap w/o Send + recipient'
+        //       : 'Swap w/ Send',
+        //   label: [TRADE_STRING, trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, 'MH'].join(
+        //     '/'
+        //   ),
+        // })
+      })
+      .catch((error) => {
+        // setSwapState({
+        //   attemptingTxn: false,
+        //   tradeToConfirm,
+        //   showConfirm,
+        //   swapErrorMessage: error.message,
+        //   txHash: undefined,
+        // })
+      })
   }
 
   return (
-    <div className="App">
-      <div className="appNav">
-        <div className="my-2 buttonContainer buttonContainerTop">
-          <PageButton name={"Swap"} isBold={true} />
-          <PageButton name={"Pool"} />
-          <PageButton name={"Vote"} />
-          <PageButton name={"Charts"} />
-        </div>
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Grid item xs={3}>
+        <Box
+          sx={{
+            width: 500,
+            height: 260,
+            mt: 12,
+            px:1,
+            backgroundColor: 'success.main',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
 
-        <div className="rightNav">
-          <div className="connectButtonContainer">
-            <ConnectButton
-              provider={provider}
-              isConnected={isConnected}
-              signerAddress={signerAddress}
-              getSigner={getSigner}
-            />
-          </div>
-          <div className="my-2 buttonContainer">
-            <PageButton name={"..."} isBold={true} />
-          </div>
-        </div>
-      </div>
+          <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
+            Swap
+          </Typography>
 
-      <div className="appBody">
-        <div className="swapContainer">
-          <div className="swapHeader">
-            <span className="swapText">Swap</span>
-            <span className="gearContainer" onClick={() => setShowModal(true)}>
-              <GearFill />
-            </span>
-            {showModal && (
-              <ConfigModal
-                onClose={() => setShowModal(false)}
-                setDeadlineMinutes={setDeadlineMinutes}
-                deadlineMinutes={deadlineMinutes}
-                setSlippageAmount={setSlippageAmount}
-                slippageAmount={slippageAmount} />
-            )}
-          </div>
+          <CustomButton onClick={() => handleSwap()}>Swap</CustomButton>
+        </Box>
+      </Grid>   
+    </Grid> 
 
-          <div className="swapBody">
-            <CurrencyField
-              field="input"
-              tokenName="WETH"
-              getSwapPrice={0}
-              signer={signer}
-              balance={wethAmount} />
-            <CurrencyField
-              field="output"
-              tokenName="UNI"
-              value={outputAmount}
-              signer={signer}
-              balance={uniAmount}
-              spinner={BeatLoader}
-              loading={loading} />
-          </div>
-
-          <div className="ratioContainer">
-            {ratio && (
-              <>
-                {`1 UNI = ${ratio} WETH`}
-              </>
-            )}
-          </div>
-
-          <div className="swapButtonContainer">
-            {isConnected() ? (
-              <div
-                onClick={() => runSwap(transaction, signer)}
-                className="swapButton"
-              >
-                Swap
-              </div>
-            ) : (
-              <div
-                onClick={() => getSigner(provider)}
-                className="swapButton"
-              >
-                Connect Wallet
-              </div>
-            )}
-          </div>
-
-        </div>
-      </div>
-
-    </div>
   );
 }
