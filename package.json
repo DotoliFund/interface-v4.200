@@ -7,12 +7,37 @@
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile:fund": "typechain --target ethers-v5 --out-dir src/types/fund \"../myContract/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3 && yarn contracts:compile:fund",
-    "prepare": "yarn contracts:compile",
+    "i18n:extract": "lingui extract --locale en-US",
+    "i18n:compile": "yarn i18n:extract && lingui compile",
+    "i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
+    "prepare": "yarn contracts:compile && yarn i18n:compile",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "yarn eslint ."
+    "lint": "yarn eslint .",
+    "cypress:open": "cypress open --browser chrome --e2e",
+    "cypress:run": "cypress run --browser chrome --e2e"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/components/**/*.ts*",
+      "src/hooks/**/*.ts*",
+      "src/lib/hooks/**/*.ts*",
+      "src/lib/state/**/*.ts*",
+      "src/lib/utils/**/*.ts*",
+      "src/pages/**/*.ts*",
+      "src/state/**/*.ts*",
+      "src/utils/**/*.ts*"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 4,
+        "functions": 6,
+        "lines": 9,
+        "statements": 9
+      }
+    }
   },
   "browserslist": {
     "production": [
@@ -35,10 +60,12 @@
     "redux-localstorage-simple": "^2.5.1",
 
 
+    "@types/testing-library__cypress": "^5.0.5",
     "cypress": "^10.1.0",
     "@types/lingui__core": "^2.7.1",
     "@types/lingui__macro": "^2.7.4",
     "@types/lingui__react": "^2.8.3",
+    "@lingui/cli": "^3.9.0",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-better-styled-components": "^1.1.2",
