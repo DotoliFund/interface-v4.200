@@ -19,7 +19,6 @@ import ERC1155_ABI from 'abis/erc1155.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
 import XXXFactoryJson from 'abis/XXXFactory.json'
-import { XXXFactory } from 'types/fund'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
@@ -33,6 +32,7 @@ import {
 } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
+import { XXXFactory } from 'types/fund'
 import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall } from 'types/v3'
 import { V3Migrator } from 'types/v3/V3Migrator'
 
@@ -147,9 +147,5 @@ export function useTickLens(): TickLens | null {
 }
 
 export function useXXXFactoryContract(withSignerIfPossible?: boolean): XXXFactory | null {
-  return useContract<XXXFactory>(
-    XXXFACTORY_ADDRESSES,
-    XXXFactoryABI,
-    withSignerIfPossible
-  )
+  return useContract<XXXFactory>(XXXFACTORY_ADDRESSES, XXXFactoryABI, withSignerIfPossible)
 }

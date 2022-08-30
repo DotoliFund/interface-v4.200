@@ -1,13 +1,11 @@
-import * as React from 'react';
-import ButtonUnstyled, { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
-import { styled } from '@mui/system';
-import Stack from '@mui/material/Stack';
+import ButtonUnstyled, { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled'
+import { styled } from '@mui/system'
 
 const blue = {
   500: '#007FFF',
   600: '#0072E5',
   700: '#0059B2',
-};
+}
 
 export const CustomButton = styled(ButtonUnstyled)`
   font-family: IBM Plex Sans, sans-serif;
@@ -43,5 +41,4 @@ export const CustomButton = styled(ButtonUnstyled)`
     opacity: 0.5;
     cursor: not-allowed;
   }
-`;
-
+`

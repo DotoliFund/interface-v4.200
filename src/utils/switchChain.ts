@@ -1,7 +1,5 @@
 import { Connector } from '@web3-react/types'
-import {
-  injectedConnection,
-} from 'connection'
+import { injectedConnection } from 'connection'
 import { getChainInfo } from 'constants/chainInfo'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { RPC_URLS } from 'constants/networks'
@@ -37,7 +35,8 @@ export function isChainAllowed(connector: Connector, chainId: number | undefined
     return false
   }
   switch (connector) {
-    case injectedConnection.connector: return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
+    case injectedConnection.connector:
+      return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
   }

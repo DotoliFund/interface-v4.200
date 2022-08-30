@@ -1,31 +1,24 @@
-import { useCallback } from 'react'
+import { MaxUint256 } from '@ethersproject/constants'
+import { TransactionResponse } from '@ethersproject/providers'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { styled, Container  } from '@mui/system'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import { useWeb3React } from '@web3-react/core'
 import { CustomButton } from 'components/Button'
 import CurrencyInputPanel from 'components/createFund/CurrencyInputPanel'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { useWeb3React } from '@web3-react/core'
-import { useContract, useXXXFactoryContract } from 'hooks/useContract'
-import { useCurrency } from 'hooks/Tokens'
-import { useParams } from 'react-router-dom'
-import useTransactionDeadline from 'hooks/useTransactionDeadline'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { TransactionResponse } from '@ethersproject/providers'
-import { useTransactionAdder } from 'state/transactions/hooks'
-import { computeFundAddress } from 'interface/utils/computeFundAddress'
-import { TransactionType } from 'state/transactions/types'
-import { sendEvent } from 'components/analytics'
-import { useState } from 'react'
-import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
-import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
-import { XXXFund } from 'interface/XXXFund'
+import { useXXXFactoryContract } from 'hooks/useContract'
 //import { useToggleWalletModal } from 'state/application/hooks'
 import { useTokenContract } from 'hooks/useContract'
-import { MaxUint256 } from '@ethersproject/constants'
-
+import useTransactionDeadline from 'hooks/useTransactionDeadline'
+import { XXXFund } from 'interface/XXXFund'
+import { useCallback } from 'react'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useCreateActionHandlers, useCreateState, useDerivedCreateInfo } from 'state/create/hooks'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import { TransactionType } from 'state/transactions/types'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 
 export default function FundDetail() {
   const { account, chainId, provider } = useWeb3React()
@@ -33,14 +26,11 @@ export default function FundDetail() {
   const factory = useXXXFactoryContract()
   const addTransaction = useTransactionAdder()
   //const toggleWalletModal = useToggleWalletModal()
-  const {
-    currencyIdA,
-    tokenId,
-  } = useParams<{ currencyIdA?: string; tokenId?: string }>()
+  const { currencyIdA, tokenId } = useParams<{ currencyIdA?: string; tokenId?: string }>()
   //const baseCurrency = useCurrency(currencyIdA)
 
   const handleCurrencySelect = useCallback(
-    (currency : string) => {
+    (currency: string) => {
       onCurrencySelection(currency)
     },
     [onCurrencySelection]
@@ -61,7 +51,7 @@ export default function FundDetail() {
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
-  
+
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
   const [txHash, setTxHash] = useState<string>('')
@@ -72,12 +62,10 @@ export default function FundDetail() {
 
   const new_fund_address = '0x8B41609019ED1c305c9522CD7374CB66B9F78110'
 
-
   // check whether the user has approved the router on the tokens
   const [approval, approveCallback] = useApproveCallback(parsedAmount, new_fund_address)
   // we need an existence check on parsed amounts for single-asset deposits
-  const showApproval =
-    approval !== ApprovalState.APPROVED && !!parsedAmount
+  const showApproval = approval !== ApprovalState.APPROVED && !!parsedAmount
 
   const tokenContract = useTokenContract('0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f')
 
@@ -128,8 +116,8 @@ export default function FundDetail() {
         inputCurrencyId,
         parsedAmount
         //deadline: deadline,
-      );
-      let txn: { to: string; data: string; value: string } = {
+      )
+      const txn: { to: string; data: string; value: string } = {
         to: new_fund_address,
         data: calldata,
         value,
@@ -173,22 +161,15 @@ export default function FundDetail() {
     }
   }
 
-
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-    >
+    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={3}>
         <Box
           sx={{
             width: 500,
             height: 260,
             mt: 12,
-            px:1,
+            px: 1,
             backgroundColor: 'success.main',
             borderRadius: '18px',
             display: 'flex',
@@ -198,31 +179,25 @@ export default function FundDetail() {
           <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
             Fund Detail
           </Typography>
-          <CurrencyInputPanel 
+          <CurrencyInputPanel
             value={typedValue}
             onUserInput={handleTypeInput}
             onCurrencySelect={handleCurrencySelect}
             currency={inputCurrencyId}
           />
-            {(approval === ApprovalState.NOT_APPROVED ||
-              approval === ApprovalState.PENDING) &&
-              showApproval ? (
-                <CustomButton 
-                onClick={() => approveCallback()} 
-                disabled={approval === ApprovalState.PENDING}
-                >
-                {approval === ApprovalState.PENDING ? (
-                    <Typography>Approving {inputCurrencyId}</Typography>
-                ) : (
-                    <Typography>Approve {inputCurrencyId}</Typography>
-                )}
-                </CustomButton>
-            ) : (
-                <CustomButton onClick={() => onDeposit()}>Fund Detail</CustomButton>
-            )}
+          {(approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) && showApproval ? (
+            <CustomButton onClick={() => approveCallback()} disabled={approval === ApprovalState.PENDING}>
+              {approval === ApprovalState.PENDING ? (
+                <Typography>Approving {inputCurrencyId}</Typography>
+              ) : (
+                <Typography>Approve {inputCurrencyId}</Typography>
+              )}
+            </CustomButton>
+          ) : (
+            <CustomButton onClick={() => onDeposit()}>Fund Detail</CustomButton>
+          )}
         </Box>
-      </Grid>   
-    </Grid> 
-
-  );
+      </Grid>
+    </Grid>
+  )
 }

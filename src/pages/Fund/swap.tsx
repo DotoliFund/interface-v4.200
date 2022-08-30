@@ -1,17 +1,10 @@
-import * as React from 'react';
+import * as React from 'react'
 
-
-        // <Route path='/swap' element={<Swap />}/>
-        // <Route path='/deposit' element={<Deposit />}/>
-        // <Route path='/withdraw' element={<Withdraw />}/>
-
-
-
+// <Route path='/swap' element={<Swap />}/>
+// <Route path='/deposit' element={<Deposit />}/>
+// <Route path='/withdraw' element={<Withdraw />}/>
 
 export default function Swap() {
-
-
-
   // // the callback to execute the swap
   // const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
   //   approvalOptimizedTrade,
@@ -74,11 +67,5 @@ export default function Swap() {
   //   approvalOptimizedTrade?.outputAmount?.currency?.symbol,
   // ])
 
-
-
-  return (
-      <>
-
-      </>
-  )
+  return <></>
 }

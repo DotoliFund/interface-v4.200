@@ -1,26 +1,22 @@
-import { useCallback } from 'react'
+import { TransactionResponse } from '@ethersproject/providers'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { styled, Container  } from '@mui/system'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import { CustomButton } from '../../components/Button'
-import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
-import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
+import Typography from '@mui/material/Typography'
 import { useWeb3React } from '@web3-react/core'
+import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
 import { useXXXFactoryContract } from 'hooks/useContract'
-import { useCurrency } from 'hooks/Tokens'
-import { useParams } from 'react-router-dom'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { XXXFactory } from 'interface/XXXFactory'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { TransactionResponse } from '@ethersproject/providers'
+import { useCallback } from 'react'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useCreateActionHandlers, useCreateState, useDerivedCreateInfo } from 'state/create/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { TransactionType } from 'state/transactions/types'
-import { sendEvent } from 'components/analytics'
-import { useState } from 'react'
-import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
-import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES } from 'constants/addresses'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
+
+import { CustomButton } from '../../components/Button'
+import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
 //import { useToggleWalletModal } from 'state/application/hooks'
 
 export default function CreateFund() {
@@ -29,14 +25,11 @@ export default function CreateFund() {
   const factory = useXXXFactoryContract()
   const addTransaction = useTransactionAdder()
   //const toggleWalletModal = useToggleWalletModal()
-  const {
-    currencyIdA,
-    tokenId,
-  } = useParams<{ currencyIdA?: string; tokenId?: string }>()
+  const { currencyIdA, tokenId } = useParams<{ currencyIdA?: string; tokenId?: string }>()
   //const baseCurrency = useCurrency(currencyIdA)
 
   const handleCurrencySelect = useCallback(
-    (currency : string) => {
+    (currency: string) => {
       onCurrencySelection(currency)
     },
     [onCurrencySelection]
@@ -57,7 +50,7 @@ export default function CreateFund() {
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
-  
+
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
   const [txHash, setTxHash] = useState<string>('')
@@ -76,8 +69,8 @@ export default function CreateFund() {
   // {(approval === ApprovalState.NOT_APPROVED ||
   //   approval === ApprovalState.PENDING) &&
   //   showApproval ? (
-  //     <CustomButton 
-  //       onClick={() => approveCallback()} 
+  //     <CustomButton
+  //       onClick={() => approveCallback()}
   //       disabled={approval === ApprovalState.PENDING}
   //     >
   //       {approval === ApprovalState.PENDING ? (
@@ -103,7 +96,7 @@ export default function CreateFund() {
       const { calldata, value } = XXXFactory.createFundParameters(
         account
         //deadline: deadline,
-      );
+      )
       const txn: { to: string; data: string; value: string } = {
         to: XXXFACTORY_ADDRESSES,
         data: calldata,
@@ -148,22 +141,15 @@ export default function CreateFund() {
     }
   }
 
-
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-    >
+    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={3}>
         <Box
           sx={{
             width: 500,
             height: 260,
             mt: 12,
-            px:1,
+            px: 1,
             backgroundColor: 'success.main',
             borderRadius: '18px',
             display: 'flex',
@@ -173,7 +159,7 @@ export default function CreateFund() {
           <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
             Create a fund
           </Typography>
-          <CurrencyInputPanel 
+          <CurrencyInputPanel
             value={typedValue}
             onUserInput={handleTypeInput}
             onCurrencySelect={handleCurrencySelect}
@@ -181,8 +167,7 @@ export default function CreateFund() {
           />
           <CustomButton onClick={() => onCreate()}>Create</CustomButton>
         </Box>
-      </Grid>   
-    </Grid> 
-
-  );
+      </Grid>
+    </Grid>
+  )
 }

@@ -1,6 +1,7 @@
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { getCreate2Address } from '@ethersproject/address'
 import { keccak256 } from '@ethersproject/solidity'
+
 import { FUND_INIT_CODE_HASH } from './constants'
 
 /**
@@ -17,10 +18,7 @@ export function computeFundAddress(
 ): string {
   return getCreate2Address(
     factoryAddress,
-    keccak256(
-      ['bytes'],
-      [defaultAbiCoder.encode(['address', 'address'], [factoryAddress, manager])]
-    ),
+    keccak256(['bytes'], [defaultAbiCoder.encode(['address', 'address'], [factoryAddress, manager])]),
     initCodeHashManualOverride ?? FUND_INIT_CODE_HASH
   )
 }

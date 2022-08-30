@@ -180,7 +180,7 @@ export type TransactionInfo =
   | RemoveLiquidityV3TransactionInfo
   | SubmitProposalTransactionInfo
   | CreateFundTransactionInfo
-  
+
 export interface TransactionDetails {
   hash: string
   receipt?: SerializableTransactionReceipt

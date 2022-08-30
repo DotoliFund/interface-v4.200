@@ -1,16 +1,16 @@
 // eslint-disable-next-line no-restricted-imports
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { SwapCallbackState, useSwapCallback as useLibSwapCallBack } from 'lib/hooks/swap/useSwapCallback'
 import { ReactNode, useMemo } from 'react'
+import { currencyId } from 'utils/currencyId'
 
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { TransactionType } from '../state/transactions/types'
-import { currencyId } from 'utils/currencyId'
 import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
 import useTransactionDeadline from './useTransactionDeadline'
-import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, Percent, TradeType } from '@uniswap/sdk-core'
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade

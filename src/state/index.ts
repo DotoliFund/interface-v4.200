@@ -1,31 +1,32 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
-import deposit from 'state/deposit/reducer'
-import create from 'state/create/reducer'
-import user from 'state/user/reducer'
+import multicall from 'lib/state/multicall'
+import { load, save } from 'redux-localstorage-simple'
 import connection from 'state/connection/reducer'
+import create from 'state/create/reducer'
+import deposit from 'state/deposit/reducer'
+import swap from 'state/swap/reducer'
 import transactions from 'state/transactions/reducer'
+import user from 'state/user/reducer'
+import { isTestEnv } from 'utils/env'
+
 import { updateVersion } from './global/actions'
 import lists from './lists/reducer'
-import multicall from 'lib/state/multicall'
-import swap from 'state/swap/reducer'
 import { routingApi } from './routing/slice'
-import { load, save } from 'redux-localstorage-simple'
-import { isTestEnv } from 'utils/env'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
 export const store = configureStore({
   reducer: {
-  	deposit,
-	create,
-  	user,
-  	connection,
-  	transactions,
-	lists,
-	multicall: multicall.reducer,
-	swap,
-	[routingApi.reducerPath]: routingApi.reducer,
+    deposit,
+    create,
+    user,
+    connection,
+    transactions,
+    lists,
+    multicall: multicall.reducer,
+    swap,
+    [routingApi.reducerPath]: routingApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true })
@@ -39,8 +40,6 @@ store.dispatch(updateVersion())
 setupListeners(store.dispatch)
 
 export default store
-
-
 
 // Infer the `AppState` and `AppDispatch` types from the store itself
 export type AppState = ReturnType<typeof store.getState>

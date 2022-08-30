@@ -1,8 +1,5 @@
 import { Connector } from '@web3-react/types'
-import {
-  ConnectionType,
-  injectedConnection,
-} from 'connection'
+import { ConnectionType, injectedConnection } from 'connection'
 
 export function getIsInjected(): boolean {
   return Boolean(window.ethereum)
@@ -12,9 +9,7 @@ export function getIsMetaMask(): boolean {
   return window.ethereum?.isMetaMask ?? false
 }
 
-const CONNECTIONS = [
-  injectedConnection,
-]
+const CONNECTIONS = [injectedConnection]
 export function getConnection(c: Connector | ConnectionType) {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find((connection) => connection.connector === c)

@@ -1,8 +1,7 @@
+import Link from '@mui/material/Link'
 import React from 'react'
-import Link from '@mui/material/Link';
-import Button from '@mui/material/Button';
-import { CustomButton } from '../../components/Button'
 
+import { CustomButton } from '../../components/Button'
 
 export default function Option({
   link = null,

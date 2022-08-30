@@ -1,7 +1,7 @@
 /**
  * List of all the networks supported by the Uniswap Interface
  */
- export enum SupportedChainId {
+export enum SupportedChainId {
   MAINNET = 1,
   ROPSTEN = 3,
   RINKEBY = 4,

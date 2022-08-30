@@ -1,41 +1,22 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { styled, Container  } from '@mui/system'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, TradeType } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 import { CustomButton } from 'components/Button'
 import CurrencyInputPanel from 'components/createFund/CurrencyInputPanel'
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { useWeb3React } from '@web3-react/core'
-import { useContract, useXXXFactoryContract } from 'hooks/useContract'
-import { useCurrency } from 'hooks/Tokens'
-import { useParams } from 'react-router-dom'
-import useTransactionDeadline from 'hooks/useTransactionDeadline'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { TransactionResponse } from '@ethersproject/providers'
-import { useTransactionAdder } from 'state/transactions/hooks'
-import { computeFundAddress } from 'interface/utils/computeFundAddress'
-import { TransactionType } from 'state/transactions/types'
-import { sendEvent } from 'components/analytics'
-import { useDerivedCreateInfo, useCreateState, useCreateActionHandlers } from 'state/create/hooks'
-import { XXXFACTORY_ADDRESSES, XXXFUND_ADDRESSES, XXXToken_ADDRESS, NEWFUND_ADDRESS } from 'constants/addresses'
-import { XXXFund } from 'interface/XXXFund'
+import { NEWFUND_ADDRESS, XXXToken_ADDRESS } from 'constants/addresses'
+import { useXXXFactoryContract } from 'hooks/useContract'
 //import { useToggleWalletModal } from 'state/application/hooks'
 import { useTokenContract } from 'hooks/useContract'
-import { MaxUint256 } from '@ethersproject/constants'
 import { useSwapCallback } from 'hooks/useSwapCallback'
-import {
-  useDefaultsFromURLSearch,
-  useDerivedSwapInfo,
-  useSwapActionHandlers,
-  useSwapState,
-} from 'state/swap/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
-import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
-
+import useTransactionDeadline from 'hooks/useTransactionDeadline'
+import { useCallback, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useCreateActionHandlers } from 'state/create/hooks'
+import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
+import { useTransactionAdder } from 'state/transactions/hooks'
 
 export default function FundSwap() {
   const { account, chainId, provider } = useWeb3React()
@@ -43,14 +24,11 @@ export default function FundSwap() {
   const factory = useXXXFactoryContract()
   const addTransaction = useTransactionAdder()
   //const toggleWalletModal = useToggleWalletModal()
-  const {
-    currencyIdA,
-    tokenId,
-  } = useParams<{ currencyIdA?: string; tokenId?: string }>()
+  const { currencyIdA, tokenId } = useParams<{ currencyIdA?: string; tokenId?: string }>()
   //const baseCurrency = useCurrency(currencyIdA)
 
   const handleCurrencySelect = useCallback(
-    (currency : string) => {
+    (currency: string) => {
       onCurrencySelection(currency)
     },
     [onCurrencySelection]
@@ -83,7 +61,7 @@ export default function FundSwap() {
     currencies,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
-  
+
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
@@ -99,14 +77,14 @@ export default function FundSwap() {
     txHash: undefined,
   })
 
-  function useApprovalOptimizedTrade(
-    trade: Trade<Currency, Currency, TradeType> | undefined
-  ) {
+  function useApprovalOptimizedTrade(trade: Trade<Currency, Currency, TradeType> | undefined) {
     return 1
   }
 
   useApprovalOptimizedTrade(trade)
 
+  //TODO change value
+  const signatureData = null
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
@@ -114,7 +92,6 @@ export default function FundSwap() {
     recipient,
     signatureData
   )
-
 
   const new_fund_address = NEWFUND_ADDRESS
   const token_address = XXXToken_ADDRESS
@@ -137,7 +114,7 @@ export default function FundSwap() {
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
-        console.log(hash);
+        console.log(hash)
         //setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
         // sendEvent({
         //   category: 'Swap',
@@ -179,20 +156,14 @@ export default function FundSwap() {
   ])
 
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-    >
+    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={3}>
         <Box
           sx={{
             width: 500,
             height: 260,
             mt: 12,
-            px:1,
+            px: 1,
             backgroundColor: 'success.main',
             borderRadius: '18px',
             display: 'flex',
@@ -202,7 +173,7 @@ export default function FundSwap() {
           <Typography variant="button" display="block" gutterBottom sx={{ mt: 2 }}>
             Swap
           </Typography>
-          <CurrencyInputPanel 
+          <CurrencyInputPanel
             value={typedValue}
             onUserInput={handleTypeInput}
             onCurrencySelect={handleCurrencySelect}
@@ -210,8 +181,7 @@ export default function FundSwap() {
           />
           <CustomButton onClick={() => handleSwap()}>Deposit</CustomButton>
         </Box>
-      </Grid>   
-    </Grid> 
-
-  );
+      </Grid>
+    </Grid>
+  )
 }

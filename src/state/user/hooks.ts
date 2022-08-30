@@ -4,6 +4,8 @@ import { useWeb3React } from '@web3-react/core'
 import { L2_CHAIN_IDS } from 'constants/chains'
 import { SupportedLocale } from 'constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
+import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'constants/routing'
+import { useAllTokens } from 'hooks/Tokens'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
@@ -11,8 +13,6 @@ import { shallowEqual } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'constants/routing'
-import { useAllTokens } from 'hooks/Tokens'
 import { AppState } from '../index'
 import {
   addSerializedPair,

@@ -1,13 +1,11 @@
-import React from 'react';
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import { styled } from '@mui/material/styles'
+import React from 'react'
 
-import LineChart from '../../components/Chart/LineChart';
-import EnhancedTable from '../../components/Table';
-import DoughnutChart from '../../components/Chart/DoughnutChart';
-
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-
+import DoughnutChart from '../../components/Chart/DoughnutChart'
+import LineChart from '../../components/Chart/LineChart'
+import EnhancedTable from '../../components/Table'
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -15,12 +13,11 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-}));
-
+}))
 
 export default function OverView() {
   return (
-  	<div>
+    <div>
       <Grid container spacing={2}>
         <Grid item xs={4}>
           <LineChart />
@@ -34,5 +31,5 @@ export default function OverView() {
       </Grid>
       <EnhancedTable />
     </div>
-  );
+  )
 }

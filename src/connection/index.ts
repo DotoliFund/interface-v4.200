@@ -1,9 +1,6 @@
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Connector } from '@web3-react/types'
-import { SupportedChainId } from 'constants/chains'
-
-import { RPC_URLS } from '../constants/networks'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',

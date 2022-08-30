@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address'
-import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
+import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
 // returns the checksummed address if the address is valid, otherwise returns false

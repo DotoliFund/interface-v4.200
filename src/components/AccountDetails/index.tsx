@@ -1,29 +1,18 @@
-import { Trans } from '@lingui/macro'
+//import { clearAllTransactions } from '../../state/transactions/reducer'
+//import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
+// import Transaction from './Transaction'
+import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import { useWeb3React } from '@web3-react/core'
 import { getConnection, getConnectionName, getIsMetaMask } from 'connection/utils'
-import { Context, useCallback, useContext } from 'react'
+import * as React from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
 import { isMobile } from 'utils/userAgent'
-
-//import { clearAllTransactions } from '../../state/transactions/reducer'
-import { shortenAddress } from '../../utils'
-//import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-// import Transaction from './Transaction'
-
-
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import DialogTitle from '@mui/material/DialogTitle';
-import PersonIcon from '@mui/icons-material/Person';
-import { blue } from '@mui/material/colors';
-import Avatar from '@mui/material/Avatar';
-import Grid from '@mui/material/Grid';
-import * as React from 'react';
-import Chip from '@mui/material/Chip';
-
 
 // function renderTransactions(transactions: string[]) {
 //   return (
@@ -35,15 +24,7 @@ import Chip from '@mui/material/Chip';
 //   )
 // }
 
-
-
-export default function AccountDetails({
-  ENSName,
-  openOptions,
-} : { 
-  ENSName?: string,
-  openOptions: () => void
-}) {
+export default function AccountDetails({ ENSName, openOptions }: { ENSName?: string; openOptions: () => void }) {
   const { chainId, account, connector } = useWeb3React()
   const connectionType = getConnection(connector).type
 
@@ -55,7 +36,9 @@ export default function AccountDetails({
   function formatConnectorName() {
     return (
       <>
-      <Typography sx={{ m: 0.5, fontSize: 13 }}>Connected with {getConnectionName(connectionType, isMetaMask)}</Typography>
+        <Typography sx={{ m: 0.5, fontSize: 13 }}>
+          Connected with {getConnectionName(connectionType, isMetaMask)}
+        </Typography>
       </>
     )
   }
@@ -64,9 +47,8 @@ export default function AccountDetails({
   //   if (chainId) dispatch(clearAllTransactions({ chainId }))
   // }, [dispatch, chainId])
 
-
   return (
-    <>  
+    <>
       <Box
         sx={{
           display: 'flex',
@@ -81,9 +63,10 @@ export default function AccountDetails({
                 {formatConnectorName()}
               </Grid>
               <Grid item xs={3}>
-                <Chip sx={{ height: 23, fontSize: 13 }} 
-                  label="Disconnect" 
-                  variant="outlined" 
+                <Chip
+                  sx={{ height: 23, fontSize: 13 }}
+                  label="Disconnect"
+                  variant="outlined"
                   onClick={() => {
                     if (connector.deactivate) {
                       connector.deactivate()
@@ -92,13 +75,14 @@ export default function AccountDetails({
                     }
                     dispatch(updateSelectedWallet({ wallet: undefined }))
                     openOptions()
-                  }} 
+                  }}
                 />
               </Grid>
               <Grid item xs={3}>
-                <Chip sx={{ height: 23, fontSize: 13 }} 
-                  label="Change" 
-                  variant="outlined" 
+                <Chip
+                  sx={{ height: 23, fontSize: 13 }}
+                  label="Change"
+                  variant="outlined"
                   onClick={() => {
                     openOptions()
                   }}
@@ -119,7 +103,7 @@ export default function AccountDetails({
               </Grid>
             </Grid>
           </Grid>
-        </Paper>     
+        </Paper>
       </Box>
       <Divider />
       <Box
@@ -133,12 +117,6 @@ export default function AccountDetails({
       </Box>
     </>
   )
-
-
-
-
-
-
 
   // return (
   //   <>

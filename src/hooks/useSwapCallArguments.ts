@@ -1,12 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { FeeOptions, SwapRouter as V3SwapRouter, Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { V3_ROUTER_ADDRESS } from 'constants/addresses'
 import { useMemo } from 'react'
-import approveAmountCalldata from 'utils/approveAmountCalldata'
-import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, Percent, TradeType } from '@uniswap/sdk-core'
+
 //import { useArgentWalletContract } from './useArgentWalletContract'
 import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
@@ -43,7 +43,7 @@ export function useSwapCallArguments(
     if (!trade || !recipient || !provider || !account || !chainId || !deadline) return []
 
     if (trade instanceof V2Trade) {
-      console.log("Error : useSwapCallArguments() => trade instance is V2Trade")
+      console.log('Error : useSwapCallArguments() => trade instance is V2Trade')
       return []
     } else {
       // swap options shared by v3 and v2+v3 swap routers
@@ -86,10 +86,10 @@ export function useSwapCallArguments(
               ...sharedSwapOptions,
               deadline: deadline.toString(),
             })
-          : { value : '', calldata : undefined }
+          : { value: '', calldata: undefined }
 
       if (!value || !calldata) {
-        console.log("Error : useSwapCallArguments() => trade instance is not V3Trade")
+        console.log('Error : useSwapCallArguments() => trade instance is not V3Trade')
         return []
       }
 

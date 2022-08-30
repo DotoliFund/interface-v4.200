@@ -259,10 +259,7 @@ export function useERC20Permit(
 }
 
 export function useERC20PermitFromTrade(
-  trade:
-    | V2Trade<Currency, Currency, TradeType>
-    | V3Trade<Currency, Currency, TradeType>
-    | undefined,
+  trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   transactionDeadline: BigNumber | undefined
 ) {

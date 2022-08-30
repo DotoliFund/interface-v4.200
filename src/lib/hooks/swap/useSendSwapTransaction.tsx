@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 // eslint-disable-next-line no-restricted-imports
-import Typography from '@mui/material/Typography';
+import Typography from '@mui/material/Typography'
 import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, Percent, TradeType } from '@uniswap/sdk-core'
+import { Currency, TradeType } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import isZero from 'utils/isZero'
@@ -72,7 +72,10 @@ export default function useSendSwapTransaction(
                   .call(tx)
                   .then((result) => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
-                    return { call, error: <Typography>Unexpected issue with estimating the gas. Please try again.</Typography> }
+                    return {
+                      call,
+                      error: <Typography>Unexpected issue with estimating the gas. Please try again.</Typography>,
+                    }
                   })
                   .catch((callError) => {
                     console.debug('Call threw error', call, callError)

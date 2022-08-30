@@ -1,4 +1,4 @@
-import Typography from '@mui/material/Typography';
+import Typography from '@mui/material/Typography'
 import { ReactNode } from 'react'
 /**
  * This is hacking out the revert reason from the ethers provider thrown error however it can.
@@ -33,7 +33,9 @@ export function swapErrorToUserReadableMessage(error: any): ReactNode {
     case 'TransferHelper: TRANSFER_FROM_FAILED':
       return <Typography>The input token cannot be transferred. There may be an issue with the input token.</Typography>
     case 'UniswapV2: TRANSFER_FAILED':
-      return <Typography>The output token cannot be transferred. There may be an issue with the output token.</Typography>
+      return (
+        <Typography>The output token cannot be transferred. There may be an issue with the output token.</Typography>
+      )
     case 'UniswapV2: K':
       return (
         <Typography>

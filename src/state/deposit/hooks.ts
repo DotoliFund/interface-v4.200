@@ -1,13 +1,13 @@
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { useWeb3React } from '@web3-react/core'
+import { ParsedQs } from 'qs'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { isAddress } from 'utils'
+
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { AppState } from '../index'
 import { replaceDepositState, selectCurrency, setSender, typeInput } from './actions'
 import { DepositState } from './reducer'
-import { ParsedQs } from 'qs'
-import { isAddress } from 'utils'
-import { useWeb3React } from '@web3-react/core'
-
 
 export function useDepositState(): AppState['deposit'] {
   return useAppSelector((state) => state.deposit)
@@ -18,7 +18,6 @@ export function useDepositActionHandlers(): {
   onUserInput: (typedValue: string) => void
   onChangeSender: (sender: string | null) => void
 } {
-  
   const dispatch = useAppDispatch()
 
   const onCurrencySelection = useCallback(
@@ -34,18 +33,14 @@ export function useDepositActionHandlers(): {
 
   const onUserInput = useCallback(
     (typedValue: string) => {
-      dispatch(
-        typeInput({ typedValue })
-      )
+      dispatch(typeInput({ typedValue }))
     },
     [dispatch]
   )
 
   const onChangeSender = useCallback(
     (sender: string | null) => {
-      dispatch(
-        setSender({ sender })
-      )
+      dispatch(setSender({ sender }))
     },
     [dispatch]
   )
@@ -56,10 +51,6 @@ export function useDepositActionHandlers(): {
     onChangeSender,
   }
 }
-
-
-
-
 
 function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
   if (typeof urlParam === 'string') {
@@ -95,7 +86,6 @@ export function queryParametersToDepositState(parsedQs: ParsedQs): DepositState 
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
   const fundAccount = parseFundAccountURLParameter(parsedQs.fundAccount)
 
-
   if (inputCurrency === '' && typedValue === '') {
     // Defaults to having the native currency selected
     inputCurrency = 'ETH'
@@ -104,11 +94,11 @@ export function queryParametersToDepositState(parsedQs: ParsedQs): DepositState 
   const sender = validatedSender(parsedQs.sender)
 
   return {
-    currency : inputCurrency === '' ? '' : inputCurrency ?? '',
+    currency: inputCurrency === '' ? '' : inputCurrency ?? '',
     typedValue,
     sender,
-    fundAccount
-  };
+    fundAccount,
+  }
 }
 
 // updates the swap state to use the defaults for a given network
@@ -129,7 +119,7 @@ export function useDefaultsFromURLSearch(): DepositState {
         currency: parsedDepositState.currency,
         typedValue: parsedDepositState.typedValue,
         sender: parsedDepositState.sender,
-        fundAccount: parsedDepositState.fundAccount
+        fundAccount: parsedDepositState.fundAccount,
       })
     )
 
