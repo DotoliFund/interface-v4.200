@@ -9,8 +9,8 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import store from 'state'
 
-import App from './App'
 import Web3Provider from './components/Web3Provider'
+import App from './pages/App'
 import reportWebVitals from './reportWebVitals'
 
 if (!!window.ethereum) {
