@@ -115,7 +115,6 @@
     "@reduxjs/toolkit": "^1.8.3",
 
 
-    "@metamask/jazzicon": "^2.0.0",
     "@walletconnect/ethereum-provider": "1.7.1",
     "@coinbase/wallet-sdk": "^3.3.0",
     "react-virtualized-auto-sizer": "^1.0.2",
