@@ -1,8 +1,7 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/system';
-
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import { styled } from '@mui/system'
+import * as React from 'react'
 
 const MainWrapper = styled('div')({
   color: 'white',
@@ -11,9 +10,8 @@ const MainWrapper = styled('div')({
   flexDirection: 'column',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center'
-});
-
+  justifyContent: 'center',
+})
 
 export default function Main() {
   return (
@@ -38,14 +36,12 @@ export default function Main() {
           h6. Heading
         </Typography>
 
-
         <Box style={{ width: 200 }} component="div" sx={{ whiteSpace: 'nowrap' }}>
           Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
         </Box>
         <Box style={{ width: 200 }} component="div" sx={{ whiteSpace: 'normal' }}>
           Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
         </Box>
-
 
         <Typography variant="button" display="block" gutterBottom>
           button text
@@ -58,5 +54,5 @@ export default function Main() {
         </Typography>
       </Box>
     </MainWrapper>
-  );
+  )
 }

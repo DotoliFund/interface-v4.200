@@ -2,7 +2,7 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
 import { safeNamehash } from 'utils/safeNamehash'
 
-import isZero from 'utils/isZero'
+import isZero from '../utils/isZero'
 import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 import useDebounce from './useDebounce'
 

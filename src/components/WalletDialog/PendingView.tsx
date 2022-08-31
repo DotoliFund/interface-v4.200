@@ -1,11 +1,10 @@
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import { Connector } from '@web3-react/types'
-import * as React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-
+import * as React from 'react'
 
 export default function PendingView({
   connector,
@@ -18,17 +17,15 @@ export default function PendingView({
   tryActivation: (connector: Connector) => void
   openOptions: () => void
 }) {
-
   // return (
   //   <>
   //     <Box sx={{ display: 'flex', witdh: 200, height: 200}} >
   //       <Paper variant="outlined" sx={{ p: 10 }}>
   //         <CircularProgress size={40}/>
-  //       </Paper> 
+  //       </Paper>
   //     </Box>
   //   </>
   // )
-
 
   return (
     <>
@@ -38,7 +35,12 @@ export default function PendingView({
           <Typography>
             The connection attempt failed. Please click try again and follow the steps to connect in your wallet.
           </Typography>
-          <Button variant="contained" onClick={() => { tryActivation(connector) }}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              tryActivation(connector)
+            }}
+          >
             <Typography>Try Again</Typography>
           </Button>
           <Button variant="contained" onClick={openOptions}>
@@ -47,18 +49,16 @@ export default function PendingView({
         </>
       ) : (
         <>
-          <Box sx={{ display: 'flex', witdh: 200, height: 200}} >
+          <Box sx={{ display: 'flex', witdh: 200, height: 200 }}>
             <Paper variant="outlined" sx={{ p: 10 }}>
-            <CircularProgress size={40}/>
+              <CircularProgress size={40} />
               <Typography>Connecting...</Typography>
-            </Paper> 
+            </Paper>
           </Box>
         </>
       )}
     </>
   )
-
-
 
   // return (
   //   <>

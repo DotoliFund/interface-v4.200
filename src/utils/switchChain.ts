@@ -1,9 +1,7 @@
 import { Connector } from '@web3-react/types'
-import {
-  injectedConnection,
-} from 'connection'
+import { networkConnection, walletConnectConnection } from 'connection'
 import { getChainInfo } from 'constants/chainInfo'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { RPC_URLS } from 'constants/networks'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
@@ -26,26 +24,21 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
       return ['https://polygon-rpc.com/']
     case SupportedChainId.POLYGON_MUMBAI:
       return ['https://rpc-endpoints.superfluid.dev/mumbai']
+    case SupportedChainId.CELO:
+      return ['https://forno.celo.org']
+    case SupportedChainId.CELO_ALFAJORES:
+      return ['https://alfajores-forno.celo-testnet.org']
     default:
   }
   // Our API-keyed URLs will fail security checks when used with external wallets.
   throw new Error('RPC URLs must use public endpoints')
 }
 
-export function isChainAllowed(connector: Connector, chainId: number | undefined) {
-  if (chainId === undefined) {
-    return false
-  }
-  switch (connector) {
-    case injectedConnection.connector: return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
-    default:
-      return false
-  }
-}
-
 export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {
-  if (!isChainAllowed(connector, chainId)) {
+  if (!isSupportedChain(chainId)) {
     throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
+  } else if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
+    await connector.activate(chainId)
   } else {
     const info = getChainInfo(chainId)
     const addChainParameter = {

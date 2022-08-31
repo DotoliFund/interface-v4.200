@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 // eslint-disable-next-line no-restricted-imports
-import Typography from '@mui/material/Typography';
+import { t, Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, Percent, TradeType } from '@uniswap/sdk-core'
+import { Currency, TradeType } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import isZero from 'utils/isZero'
@@ -72,7 +72,7 @@ export default function useSendSwapTransaction(
                   .call(tx)
                   .then((result) => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
-                    return { call, error: <Typography>Unexpected issue with estimating the gas. Please try again.</Typography> }
+                    return { call, error: <Trans>Unexpected issue with estimating the gas. Please try again.</Trans> }
                   })
                   .catch((callError) => {
                     console.debug('Call threw error', call, callError)
@@ -95,7 +95,7 @@ export default function useSendSwapTransaction(
           const firstNoErrorCall = estimatedCalls.find<SwapCallEstimate>(
             (call): call is SwapCallEstimate => !('error' in call)
           )
-          if (!firstNoErrorCall) throw new Error('Unexpected error. Could not estimate gas for the swap.')
+          if (!firstNoErrorCall) throw new Error(t`Unexpected error. Could not estimate gas for the swap.`)
           bestCallOption = firstNoErrorCall
         }
 
@@ -119,13 +119,12 @@ export default function useSendSwapTransaction(
           .catch((error) => {
             // if the user rejected the tx, pass this along
             if (error?.code === 4001) {
-              throw new Error('Transaction rejected.')
+              throw new Error(t`Transaction rejected`)
             } else {
               // otherwise, the error was unexpected and we need to convey that
               console.error(`Swap failed`, error, address, calldata, value)
 
-              throw new Error('Swap failed: ${swapErrorToUserReadableMessage(error)}')
-              //throw new Error(t`Swap failed: ${swapErrorToUserReadableMessage(error)}`)
+              throw new Error(t`Swap failed: ${swapErrorToUserReadableMessage(error)}`)
             }
           })
       },

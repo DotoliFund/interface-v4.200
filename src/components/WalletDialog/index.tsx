@@ -1,28 +1,17 @@
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import { blue } from '@mui/material/colors';
-import { useAppDispatch, useAppSelector } from 'state/hooks'
-import { Trans } from '@lingui/macro'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
-import { ConnectionType } from 'connection'
 import { getConnection, getIsInjected, getIsMetaMask } from 'connection/utils'
 import { useCallback, useEffect, useState } from 'react'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
-import { isMobile } from 'utils/userAgent'
-import Typography from '@mui/material/Typography';
-import AccountDetails from '../AccountDetails'
 import { updateConnectionError } from 'state/connection/reducer'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
-import PendingView from './PendingView'
+import { isMobile } from 'utils/userAgent'
 
+import AccountDetails from '../AccountDetails2'
+import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
+import PendingView from './PendingView'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -30,18 +19,17 @@ const WALLET_VIEWS = {
   PENDING: 'pending',
 }
 
-const tokens = ['ETH', 'WBTC', 'DAI', 'USDC'];
+const tokens = ['ETH', 'WBTC', 'DAI', 'USDC']
 
 export default function WalletDialog({
   open,
   onClose,
   ENSName,
-} : { 
-  open: boolean;
-  onClose: () => void;
+}: {
+  open: boolean
+  onClose: () => void
   ENSName?: string | undefined
 }) {
-
   const dispatch = useAppDispatch()
   const { account } = useWeb3React()
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
@@ -65,18 +53,16 @@ export default function WalletDialog({
   }, [open, setWalletView, account])
 
   const handleClose = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleListItemClick = (value: string) => {
-    onClose();
-  };
+    onClose()
+  }
 
   const openOptions = useCallback(() => {
     setWalletView(WALLET_VIEWS.OPTIONS)
   }, [setWalletView])
-
-
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
@@ -88,7 +74,7 @@ export default function WalletDialog({
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
         await connector.activate()
-        
+
         dispatch(updateSelectedWallet({ wallet: connectionType }))
       } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`)
@@ -118,13 +104,8 @@ export default function WalletDialog({
       }
     }
 
-    return (
-      <>
-        {injectedOption}
-      </>
-    )
+    return <>{injectedOption}</>
   }
-
 
   // return (
   //   <Dialog onClose={handleClose} open={open}>
@@ -132,16 +113,12 @@ export default function WalletDialog({
   //   </Dialog>
   // );
 
-
   return (
     <Dialog onClose={handleClose} open={open}>
       {walletView === WALLET_VIEWS.ACCOUNT ? (
         <>
           <DialogTitle>Account</DialogTitle>
-          <AccountDetails 
-            ENSName={ENSName}
-            openOptions={openOptions}
-          />
+          <AccountDetails ENSName={ENSName} openOptions={openOptions} />
         </>
       ) : walletView === WALLET_VIEWS.PENDING && pendingConnector ? (
         <>
@@ -159,6 +136,5 @@ export default function WalletDialog({
         </>
       )}
     </Dialog>
-  );
-
+  )
 }

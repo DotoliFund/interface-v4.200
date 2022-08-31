@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
 
-
 export const selectCurrency = createAction<{ currency: string }>('deposit/selectCurrency')
 export const typeInput = createAction<{ typedValue: string }>('deposit/typeInput')
 export const replaceDepositState = createAction<{

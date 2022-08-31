@@ -1,12 +1,11 @@
-import * as React from 'react';
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import { styled } from '@mui/material/styles'
+import * as React from 'react'
+
+import DoughnutChart from '../../components/Chart/DoughnutChart'
 import LineChart from '../../components/Chart/LineChart'
-import EnhancedTable from '../../components/Table';
-import DoughnutChart from '../../components/Chart/DoughnutChart';
-
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-
+import EnhancedTable from '../../components/Table'
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -14,15 +13,11 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-}));
+}))
 
-
-
-        // <Route path='/swap' element={<Swap />}/>
-        // <Route path='/deposit' element={<Deposit />}/>
-        // <Route path='/withdraw' element={<Withdraw />}/>
-
-
+// <Route path='/swap' element={<Swap />}/>
+// <Route path='/deposit' element={<Deposit />}/>
+// <Route path='/withdraw' element={<Withdraw />}/>
 
 export default function Fund() {
   return (
@@ -37,5 +32,5 @@ export default function Fund() {
       </Grid>
       <EnhancedTable />
     </div>
-  );
+  )
 }

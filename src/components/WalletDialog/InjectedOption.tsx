@@ -1,10 +1,9 @@
-import { Trans } from '@lingui/macro'
+import Typography from '@mui/material/Typography'
 import { Connector } from '@web3-react/types'
 import INJECTED_ICON_URL from 'assets/images/arrow-right.svg'
 import METAMASK_ICON_URL from 'assets/images/metamask.png'
 import { ConnectionType, injectedConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
-import Typography from '@mui/material/Typography';
 
 import Option from './Option'
 

@@ -1,15 +1,15 @@
 // eslint-disable-next-line no-restricted-imports
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import Typography from '@mui/material/Typography';
+import { Trans } from '@lingui/macro'
+import { Trade } from '@uniswap/router-sdk'
+import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import useENS from 'hooks/useENS'
-import { SignatureData } from 'hooks/useERC20Permit'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { ReactNode, useMemo } from 'react'
-import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, Percent, TradeType } from '@uniswap/sdk-core'
+
 import useSendSwapTransaction from './useSendSwapTransaction'
 
 export enum SwapCallbackState {
@@ -42,13 +42,7 @@ export function useSwapCallback({
 }: UseSwapCallbackArgs): UseSwapCallbackReturns {
   const { account, chainId, provider } = useWeb3React()
 
-  const swapCalls = useSwapCallArguments(
-    trade,
-    allowedSlippage,
-    recipientAddressOrName,
-    deadline,
-    feeOptions
-  )
+  const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, deadline, feeOptions)
   const { callback } = useSendSwapTransaction(account, chainId, provider, trade, swapCalls)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
@@ -56,11 +50,11 @@ export function useSwapCallback({
 
   return useMemo(() => {
     if (!trade || !provider || !account || !chainId || !callback) {
-      return { state: SwapCallbackState.INVALID, error: <Typography>Missing dependencies</Typography> }
+      return { state: SwapCallbackState.INVALID, error: <Trans>Missing dependencies</Trans> }
     }
     if (!recipient) {
       if (recipientAddressOrName !== null) {
-        return { state: SwapCallbackState.INVALID, error: <Typography>Invalid recipient</Typography> }
+        return { state: SwapCallbackState.INVALID, error: <Trans>Invalid recipient</Trans> }
       } else {
         return { state: SwapCallbackState.LOADING }
       }

@@ -1,7 +1,9 @@
 import { Connector } from '@web3-react/types'
+import { Connection, gnosisSafeConnection, networkConnection } from 'connection'
 import { getConnection } from 'connection/utils'
 import { useEffect } from 'react'
-import { useAppSelector } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { updateSelectedWallet } from 'state/user/reducer'
 
 async function connect(connector: Connector) {
   try {
@@ -16,11 +18,25 @@ async function connect(connector: Connector) {
 }
 
 export default function useEagerlyConnect() {
+  const dispatch = useAppDispatch()
+
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
 
+  let selectedConnection: Connection | undefined
+  if (selectedWallet) {
+    try {
+      selectedConnection = getConnection(selectedWallet)
+    } catch {
+      dispatch(updateSelectedWallet({ wallet: undefined }))
+    }
+  }
+
   useEffect(() => {
-    if (selectedWallet) {
-      connect(getConnection(selectedWallet).connector)
+    connect(gnosisSafeConnection.connector)
+    connect(networkConnection.connector)
+
+    if (selectedConnection) {
+      connect(selectedConnection.connector)
     } // The dependency list is empty so this is only run once on mount
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 }

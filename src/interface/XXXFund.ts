@@ -1,21 +1,11 @@
-import {
-  BigintIsh,
-  Percent,
-  Token,
-  CurrencyAmount,
-  validateAndParseAddress,
-  Currency,
-  NativeCurrency
-} from '@uniswap/sdk-core'
-import JSBI from 'jsbi'
-import invariant from 'tiny-invariant'
-import { ONE, ZERO } from './utils/internalConstants'
-import { MethodParameters, toHex } from './utils/calldata'
 import { Interface } from '@ethersproject/abi'
+import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, validateAndParseAddress } from '@uniswap/sdk-core'
 import IXXXFund from 'abis/XXXFund.json'
-import { Multicall } from './utils/multicall'
-import { BigNumber } from 'ethers'
 import { XXXToken_ADDRESS } from 'constants/addresses'
+import JSBI from 'jsbi'
+
+import { MethodParameters, toHex } from './utils/calldata'
+import { Multicall } from './utils/multicall'
 
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
 const token_address = XXXToken_ADDRESS
@@ -62,11 +52,7 @@ export type AddLiquidityOptions = MintOptions | IncreaseOptions
 export abstract class XXXFund {
   public static INTERFACE: Interface = new Interface(IXXXFund.abi)
 
-  public static depositParameters(
-      account: string,
-      token: string,
-      amount: CurrencyAmount<Currency>
-  ): MethodParameters {
+  public static depositParameters(account: string, token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
     const investor: string = validateAndParseAddress(account)
@@ -83,7 +69,7 @@ export abstract class XXXFund {
       XXXFund.INTERFACE.encodeFunctionData('deposit', [
         investor,
         token_address,
-        toHex(amount.quotient)
+        toHex(amount.quotient),
         //deadline: deadline
       ])
     )
@@ -104,16 +90,11 @@ export abstract class XXXFund {
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
-      value
+      value,
     }
   }
 
-
-  public static withdrawParameters(
-      account: string,
-      token: string,
-      amount: CurrencyAmount<Currency>
-  ): MethodParameters {
+  public static withdrawParameters(account: string, token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
     const investor: string = validateAndParseAddress(account)
@@ -131,7 +112,7 @@ export abstract class XXXFund {
       XXXFund.INTERFACE.encodeFunctionData('withdraw', [
         investor,
         token_address,
-        toHex(amount.quotient)
+        toHex(amount.quotient),
         //deadline: deadline
       ])
     )
@@ -152,15 +133,11 @@ export abstract class XXXFund {
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
-      value
+      value,
     }
   }
 
-  public static swapParameters(
-      account: string,
-      token: string,
-      amount: CurrencyAmount<Currency>
-  ): MethodParameters {
+  public static swapParameters(account: string, token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
     const investor: string = validateAndParseAddress(account)
@@ -178,7 +155,7 @@ export abstract class XXXFund {
       XXXFund.INTERFACE.encodeFunctionData('swapExactInputSingle', [
         investor,
         token_address,
-        toHex(amount.quotient)
+        toHex(amount.quotient),
         //deadline: deadline
       ])
     )
@@ -199,7 +176,7 @@ export abstract class XXXFund {
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
-      value
+      value,
     }
   }
 }

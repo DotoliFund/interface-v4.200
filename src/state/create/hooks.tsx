@@ -1,18 +1,19 @@
+import Typography from '@mui/material/Typography'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
+import { useCurrency } from 'hooks/Tokens'
+import useENS from 'hooks/useENS'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { isAddress } from 'utils'
+
 import useParsedQueryString from '../../hooks/useParsedQueryString'
+import { useCurrencyBalances } from '../connection/hooks'
 import { AppState } from '../index'
 import { replaceCreateState, selectCurrency, setSender, typeInput } from './actions'
 import { CreateState } from './reducer'
-import { ParsedQs } from 'qs'
-import { isAddress } from 'utils'
-import { useWeb3React } from '@web3-react/core'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useCurrency } from 'hooks/Tokens'
-import useENS from 'hooks/useENS'
-import { useCurrencyBalances } from '../connection/hooks'
-import Typography from '@mui/material/Typography'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useCreateState(): AppState['create'] {
   return useAppSelector((state) => state.create)
@@ -23,14 +24,13 @@ export function useCreateActionHandlers(): {
   onUserInput: (typedValue: string) => void
   onChangeSender: (sender: string | null) => void
 } {
-  
   const dispatch = useAppDispatch()
 
   const onCurrencySelection = useCallback(
     (currencyAddress: string) => {
       dispatch(
         selectCurrency({
-            inputCurrencyId: currencyAddress ? currencyAddress : '',
+          inputCurrencyId: currencyAddress ? currencyAddress : '',
         })
       )
     },
@@ -39,18 +39,14 @@ export function useCreateActionHandlers(): {
 
   const onUserInput = useCallback(
     (typedValue: string) => {
-      dispatch(
-        typeInput({ typedValue })
-      )
+      dispatch(typeInput({ typedValue }))
     },
     [dispatch]
   )
 
   const onChangeSender = useCallback(
     (sender: string | null) => {
-      dispatch(
-        setSender({ sender })
-      )
+      dispatch(setSender({ sender }))
     },
     [dispatch]
   )
@@ -77,13 +73,9 @@ export function useDerivedCreateInfo(): {
 } {
   const { account } = useWeb3React()
 
-  const {
-    inputCurrencyId,
-    typedValue,
-    sender
-  } = useCreateState()
+  const { inputCurrencyId, typedValue, sender } = useCreateState()
 
-  const inputCurrency: Currency | undefined | null= useCurrency(inputCurrencyId)
+  const inputCurrency: Currency | undefined | null = useCurrency(inputCurrencyId)
   const senderLookup = useENS(sender ?? undefined)
   const to: string | null = (sender === null ? account : senderLookup.address) ?? null
 
@@ -138,7 +130,7 @@ export function useDerivedCreateInfo(): {
     currency,
     currencyBalance,
     parsedAmount,
-    inputError
+    inputError,
   }
 }
 
@@ -171,7 +163,6 @@ export function queryParametersToCreateState(parsedQs: ParsedQs): CreateState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
 
-
   if (inputCurrency === '' && typedValue === '') {
     // Defaults to having the native currency selected
     inputCurrency = 'ETH'
@@ -180,10 +171,10 @@ export function queryParametersToCreateState(parsedQs: ParsedQs): CreateState {
   const sender = validatedSender(parsedQs.sender)
 
   return {
-    inputCurrencyId : inputCurrency === '' ? '' : inputCurrency ?? '',
+    inputCurrencyId: inputCurrency === '' ? '' : inputCurrency ?? '',
     typedValue,
-    sender
-  };
+    sender,
+  }
 }
 
 // updates the swap state to use the defaults for a given network
@@ -203,7 +194,7 @@ export function useDefaultsFromURLSearch(): CreateState {
       replaceCreateState({
         inputCurrencyId: parsedCreateState.inputCurrencyId,
         typedValue: parsedCreateState.typedValue,
-        sender: parsedCreateState.sender
+        sender: parsedCreateState.sender,
       })
     )
 
