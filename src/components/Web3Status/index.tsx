@@ -1,68 +1,310 @@
-import { Trans } from '@lingui/macro'
-import Fab from '@mui/material/Fab'
-import Typography from '@mui/material/Typography'
+// eslint-disable-next-line no-restricted-imports
+import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
+import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
+import { ButtonSecondary } from 'components/Button'
+import StatusIcon from 'components/Identicon/StatusIcon'
+import Loader from 'components/Loader'
+import { RowBetween } from 'components/Row'
+import WalletDropdown from 'components/WalletDropdown'
+import WalletModal from 'components/WalletModal'
 import { getConnection } from 'connection/utils'
-import * as React from 'react'
+import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
+import { useOnClickOutside } from 'hooks/useOnClickOutside'
+import { useHasSocks } from 'hooks/useSocksBalance'
+import { Portal } from 'nft/components/common/Portal'
+import { getIsValidSwapQuote } from 'pages/Fund/FundDetail/swap'
+import { darken } from 'polished'
+import { useMemo, useRef } from 'react'
+import { AlertTriangle, ChevronDown, ChevronUp } from 'react-feather'
+import { useCloseModal, useModalIsOpen, useToggleWalletDropdown, useToggleWalletModal } from 'state/application/hooks'
+import { ApplicationModal } from 'state/application/reducer'
 import { useAppSelector } from 'state/hooks'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
+import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import { TransactionDetails } from 'state/transactions/types'
+import styled, { css } from 'styled-components/macro'
 import { shortenAddress } from 'utils'
-import { isChainAllowed } from 'utils/switchChain'
 
-import WalletDialog from '../WalletDialog'
+const Web3StatusGeneric = styled(ButtonSecondary)`
+  ${({ theme }) => theme.flexRowNoWrap}
+  width: 100%;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+  height: 36px;
+  margin-right: 2px;
+  margin-left: 2px;
+  :focus {
+    outline: none;
+  }
+`
+const Web3StatusError = styled(Web3StatusGeneric)`
+  background-color: ${({ theme }) => theme.deprecated_red1};
+  border: 1px solid ${({ theme }) => theme.deprecated_red1};
+  color: ${({ theme }) => theme.deprecated_white};
+  font-weight: 500;
+  :hover,
+  :focus {
+    background-color: ${({ theme }) => darken(0.1, theme.deprecated_red1)};
+  }
+`
 
-export default function Web3Status() {
-  const { account, connector, chainId, ENSName } = useWeb3React()
-  const chainAllowed = isChainAllowed(connector, chainId)
-  const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
+const Web3StatusConnectNavbar = styled.button<{ faded?: boolean }>`
+  dispay: flex;
+  align-items: center;
+  ${({ theme }) => theme.flexRowNoWrap}
+  background-color: ${({ theme }) => theme.accentActionSoft};
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  padding: 10px 12px;
 
-  const [open, setOpen] = React.useState(false)
+  :hover,
+  :active,
+  :focus {
+    border: none;
+  }
+`
 
-  const handleClickOpen = () => {
-    setOpen(true)
+const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
+  background-color: ${({ theme }) => theme.deprecated_primary4};
+  border: none;
+  color: ${({ theme }) => theme.deprecated_primaryText1};
+  font-weight: 500;
+
+  :hover,
+  :focus {
+    border: 1px solid ${({ theme }) => darken(0.05, theme.deprecated_primary4)};
+    color: ${({ theme }) => theme.deprecated_primaryText1};
   }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  ${({ faded }) =>
+    faded &&
+    css`
+      background-color: ${({ theme }) => theme.deprecated_primary5};
+      border: 1px solid ${({ theme }) => theme.deprecated_primary5};
+      color: ${({ theme }) => theme.deprecated_primaryText1};
 
-  function Web3StatusInner() {
-    if (!chainId) {
-      return (
-        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick={handleClickOpen}>
-          <Typography>No ChainId</Typography>
-        </Fab>
-      )
-    } else if (!chainAllowed) {
-      return (
-        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick={handleClickOpen}>
-          <Typography>Wrong Network</Typography>
-        </Fab>
-      )
-    } else if (error) {
-      return (
-        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick={handleClickOpen}>
-          <Trans>Error</Trans>
-        </Fab>
-      )
-    } else if (account) {
-      return (
-        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick={handleClickOpen}>
-          <Typography>{ENSName || shortenAddress(account)}</Typography>
-        </Fab>
-      )
-    } else {
-      return (
-        <Fab variant="extended" size="medium" color="primary" aria-label="edit" onClick={handleClickOpen}>
-          <Typography>Connect Wallet</Typography>
-        </Fab>
-      )
+      :hover,
+      :focus {
+        border: 1px solid ${({ theme }) => darken(0.05, theme.deprecated_primary4)};
+        color: ${({ theme }) => darken(0.05, theme.deprecated_primaryText1)};
+      }
+    `}
+`
+
+const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
+  background-color: ${({ pending, theme }) => (pending ? theme.deprecated_primary1 : theme.deprecated_bg1)};
+  border: 1px solid ${({ pending, theme }) => (pending ? theme.deprecated_primary1 : theme.deprecated_bg1)};
+  color: ${({ pending, theme }) => (pending ? theme.deprecated_white : theme.deprecated_text1)};
+  font-weight: 500;
+  :hover,
+  :focus {
+    border: 1px solid ${({ theme }) => darken(0.05, theme.deprecated_bg3)};
+
+    :focus {
+      border: 1px solid
+        ${({ pending, theme }) =>
+          pending ? darken(0.1, theme.deprecated_primary1) : darken(0.1, theme.deprecated_bg2)};
     }
   }
+`
+
+const Text = styled.p`
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 0.5rem 0 0.25rem;
+  font-size: 1rem;
+  width: fit-content;
+  font-weight: 500;
+`
+
+const NetworkIcon = styled(AlertTriangle)`
+  margin-left: 0.25rem;
+  margin-right: 0.5rem;
+  width: 16px;
+  height: 16px;
+`
+
+// we want the latest one to come first, so return negative if a is after b
+function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+  return b.addedTime - a.addedTime
+}
+
+function Sock() {
+  return (
+    <span role="img" aria-label={t`has socks emoji`} style={{ marginTop: -4, marginBottom: -4 }}>
+      🧦
+    </span>
+  )
+}
+
+const VerticalDivider = styled.div`
+  height: 20px;
+  width: 1px;
+  background-color: ${({ theme }) => theme.accentAction};
+`
+
+const StyledConnect = styled.div`
+  color: ${({ theme }) => theme.accentAction};
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 8px;
+
+  &:hover {
+    color: ${({ theme }) => theme.accentActionSoft};
+    transition: ${({
+      theme: {
+        transition: { duration, timing },
+      },
+    }) => `${duration.fast}ms color ${timing.in}`};
+  }
+`
+
+const StyledChevron = styled.span`
+  color: ${({ theme }) => theme.accentAction};
+  height: 24px;
+  margin-left: 4px;
+
+  &:hover {
+    color: ${({ theme }) => theme.accentActionSoft};
+    transition: ${({
+      theme: {
+        transition: { duration, timing },
+      },
+    }) => `${duration.fast}ms color ${timing.in}`};
+  }
+`
+
+function Web3StatusInner() {
+  const { account, connector, chainId, ENSName } = useWeb3React()
+  const connectionType = getConnection(connector).type
+  const {
+    trade: { state: tradeState, trade },
+    inputError: swapInputError,
+  } = useDerivedSwapInfo()
+  const validSwapQuote = getIsValidSwapQuote(trade, tradeState, swapInputError)
+  const navbarFlag = useNavBarFlag()
+  const toggleWalletDropdown = useToggleWalletDropdown()
+  const toggleWalletModal = useToggleWalletModal()
+  const walletIsOpen = useIsOpen()
+
+  const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
+
+  const allTransactions = useAllTransactions()
+
+  const sortedRecentTransactions = useMemo(() => {
+    const txs = Object.values(allTransactions)
+    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+  }, [allTransactions])
+
+  const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
+
+  const hasPendingTransactions = !!pending.length
+  const hasSocks = useHasSocks()
+  const toggleWallet = navbarFlag === NavBarVariant.Enabled ? toggleWalletDropdown : toggleWalletModal
+
+  if (!chainId) {
+    return null
+  } else if (error) {
+    return (
+      <Web3StatusError onClick={toggleWallet}>
+        <NetworkIcon />
+        <Text>
+          <Trans>Error</Trans>
+        </Text>
+      </Web3StatusError>
+    )
+  } else if (account) {
+    return (
+      <Web3StatusConnected data-testid="web3-status-connected" onClick={toggleWallet} pending={hasPendingTransactions}>
+        {hasPendingTransactions ? (
+          <RowBetween>
+            <Text>
+              <Trans>{pending?.length} Pending</Trans>
+            </Text>{' '}
+            <Loader stroke="white" />
+          </RowBetween>
+        ) : (
+          <>
+            {hasSocks ? <Sock /> : null}
+            <Text>{ENSName || shortenAddress(account)}</Text>
+          </>
+        )}
+        {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
+      </Web3StatusConnected>
+    )
+  } else {
+    return (
+      <TraceEvent
+        events={[Event.onClick]}
+        name={EventName.CONNECT_WALLET_BUTTON_CLICKED}
+        properties={{ received_swap_quote: validSwapQuote }}
+        element={ElementName.CONNECT_WALLET_BUTTON}
+      >
+        {navbarFlag === NavBarVariant.Enabled ? (
+          <Web3StatusConnectNavbar faded={!account}>
+            <StyledConnect onClick={toggleWalletModal}>
+              <Trans>Connect</Trans>
+            </StyledConnect>
+            <VerticalDivider />
+            <StyledChevron onClick={toggleWalletDropdown}>
+              {walletIsOpen ? <ChevronUp /> : <ChevronDown />}
+            </StyledChevron>
+          </Web3StatusConnectNavbar>
+        ) : (
+          <Web3StatusConnect onClick={toggleWallet} faded={!account}>
+            <Text>
+              <Trans>Connect Wallet</Trans>
+            </Text>
+          </Web3StatusConnect>
+        )}
+      </TraceEvent>
+    )
+  }
+}
+
+const useIsOpen = () => {
+  const walletDropdownOpen = useModalIsOpen(ApplicationModal.WALLET_DROPDOWN)
+  const navbarFlag = useNavBarFlag()
+
+  return useMemo(() => navbarFlag === NavBarVariant.Enabled && walletDropdownOpen, [navbarFlag, walletDropdownOpen])
+}
+
+export default function Web3Status() {
+  const { ENSName } = useWeb3React()
+
+  const allTransactions = useAllTransactions()
+  const ref = useRef<HTMLDivElement>(null)
+  const walletRef = useRef<HTMLDivElement>(null)
+  const closeModal = useCloseModal(ApplicationModal.WALLET_DROPDOWN)
+  const isOpen = useIsOpen()
+
+  useOnClickOutside(ref, isOpen ? closeModal : undefined, [walletRef])
+
+  const sortedRecentTransactions = useMemo(() => {
+    const txs = Object.values(allTransactions)
+    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+  }, [allTransactions])
+
+  const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
+  const confirmed = sortedRecentTransactions.filter((tx) => tx.receipt).map((tx) => tx.hash)
 
   return (
-    <>
+    <span ref={ref}>
       <Web3StatusInner />
-      <WalletDialog open={open} onClose={handleClose} ENSName={ENSName ?? undefined} />
-    </>
+      <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <Portal>
+        <span ref={walletRef}>
+          <WalletDropdown />
+        </span>
+      </Portal>
+    </span>
   )
 }
