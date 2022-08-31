@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import StatusIcon from 'components/Identicon/StatusIcon'
 import { getConnection, getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from 'connection/utils'
 import { useCallback } from 'react'
 import { ExternalLink as LinkIcon } from 'react-feather'
@@ -16,6 +15,7 @@ import { CopyHelper, ExternalLink, LinkStyledButton, ThemedText } from '../../th
 import { shortenAddress } from '../../utils'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ButtonSecondary } from '../Button'
+import StatusIcon from '../Identicon/StatusIcon'
 import { AutoRow } from '../Row'
 import Transaction from './Transaction'
 

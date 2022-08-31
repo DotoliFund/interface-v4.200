@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import Typography from '@mui/material/Typography'
+import { Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { FeeOptions } from '@uniswap/v3-sdk'
@@ -50,11 +50,11 @@ export function useSwapCallback({
 
   return useMemo(() => {
     if (!trade || !provider || !account || !chainId || !callback) {
-      return { state: SwapCallbackState.INVALID, error: <Typography>Missing dependencies</Typography> }
+      return { state: SwapCallbackState.INVALID, error: <Trans>Missing dependencies</Trans> }
     }
     if (!recipient) {
       if (recipientAddressOrName !== null) {
-        return { state: SwapCallbackState.INVALID, error: <Typography>Invalid recipient</Typography> }
+        return { state: SwapCallbackState.INVALID, error: <Trans>Invalid recipient</Trans> }
       } else {
         return { state: SwapCallbackState.LOADING }
       }
