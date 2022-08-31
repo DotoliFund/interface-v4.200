@@ -1,4 +1,6 @@
-import { Trans } from '@lingui/macro'
+//import { Trans } from '@lingui/macro'
+import Typography from '@mui/material/Typography'
+
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
@@ -143,23 +145,23 @@ export function useDerivedSwapInfo(): {
     let inputError: ReactNode | undefined
 
     if (!account) {
-      inputError = <Trans>Connect Wallet</Trans>
+      inputError = <Typography>Connect Wallet</Typography>
     }
 
     if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-      inputError = inputError ?? <Trans>Select a token</Trans>
+      inputError = inputError ?? <Typography>Select a token</Typography>
     }
 
     if (!parsedAmount) {
-      inputError = inputError ?? <Trans>Enter an amount</Trans>
+      inputError = inputError ?? <Typography>Enter an amount</Typography>
     }
 
     const formattedTo = isAddress(to)
     if (!to || !formattedTo) {
-      inputError = inputError ?? <Trans>Enter a recipient</Trans>
+      inputError = inputError ?? <Typography>Enter a recipient</Typography>
     } else {
       if (BAD_RECIPIENT_ADDRESSES[formattedTo]) {
-        inputError = inputError ?? <Trans>Invalid recipient</Trans>
+        inputError = inputError ?? <Typography>Invalid recipient</Typography>
       }
     }
 
@@ -167,7 +169,7 @@ export function useDerivedSwapInfo(): {
     const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)]
 
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-      inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
+      inputError = <Typography>Insufficient {amountIn.currency.symbol} balance</Typography>
     }
 
     return inputError

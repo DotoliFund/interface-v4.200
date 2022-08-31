@@ -473,7 +473,6 @@ export default function Swap() {
               onDismiss={handleConfirmDismiss}
               swapQuoteReceivedDate={swapQuoteReceivedDate}
             />
-
             <AutoColumn gap={'0px'}>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
