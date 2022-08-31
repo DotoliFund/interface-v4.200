@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
-import NetworkSelector from '../components/Header/NetworkSelector'
+import NetworkSelector from '../components/Header2/NetworkSelector'
 import Web3Status from '../components/Web3Status'
 
 const pages = ['Products', 'Pricing', 'Blog']
