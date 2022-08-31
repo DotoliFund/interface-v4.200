@@ -1,21 +1,16 @@
-import { TransactionResponse } from '@ethersproject/providers'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { useWeb3React } from '@web3-react/core'
-import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
-import { XXXFactory } from 'interface/XXXFactory'
 import { useCallback } from 'react'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useCreateActionHandlers, useCreateState, useDerivedCreateInfo } from 'state/create/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
-import { TransactionType } from 'state/transactions/types'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
 
-import { CustomButton } from '../../components/Button'
+import { CustomButton } from '../../components/Button2'
 import CurrencyInputPanel from '../../components/createFund/CurrencyInputPanel'
 //import { useToggleWalletModal } from 'state/application/hooks'
 
@@ -91,54 +86,54 @@ export default function CreateFund() {
     //   return
     // }
     //if (currency && account && deadline) {
-    if (factory && currency && account) {
-      //const useNative = baseCurrency.isNative ? baseCurrency : undefined
-      const { calldata, value } = XXXFactory.createFundParameters(
-        account
-        //deadline: deadline,
-      )
-      const txn: { to: string; data: string; value: string } = {
-        to: XXXFACTORY_ADDRESSES,
-        data: calldata,
-        value,
-      }
-      // setAttemptingTxn(true)
-      provider
-        .getSigner()
-        .estimateGas(txn)
-        .then((estimate) => {
-          const newTxn = {
-            ...txn,
-            gasLimit: calculateGasMargin(estimate),
-          }
-          return provider
-            .getSigner()
-            .sendTransaction(newTxn)
-            .then((response: TransactionResponse) => {
-              console.log(response)
-              //setAttemptingTxn(false)
-              addTransaction(response, {
-                type: TransactionType.CREATE_FUND,
-              })
-              setTxHash(response.hash)
-              // sendEvent({
-              //   category: 'Fund',
-              //   action: 'Create',
-              //   label: ['test11111', 'test22222'].join('/'),
-              // })
-            })
-        })
-        .catch((error) => {
-          console.error('Failed to send transaction', error)
-          //setAttemptingTxn(false)
-          // we only care if the error is something _other_ than the user rejected the tx
-          if (error?.code !== 4001) {
-            console.error(error)
-          }
-        })
-    } else {
-      return
-    }
+    // if (factory && currency && account) {
+    //   //const useNative = baseCurrency.isNative ? baseCurrency : undefined
+    //   const { calldata, value } = XXXFactory.createFundParameters(
+    //     account
+    //     //deadline: deadline,
+    //   )
+    //   const txn: { to: string; data: string; value: string } = {
+    //     to: XXXFACTORY_ADDRESSES,
+    //     data: calldata,
+    //     value,
+    //   }
+    //   // setAttemptingTxn(true)
+    //   provider
+    //     .getSigner()
+    //     .estimateGas(txn)
+    //     .then((estimate) => {
+    //       const newTxn = {
+    //         ...txn,
+    //         gasLimit: calculateGasMargin(estimate),
+    //       }
+    //       return provider
+    //         .getSigner()
+    //         .sendTransaction(newTxn)
+    //         .then((response: TransactionResponse) => {
+    //           console.log(response)
+    //           //setAttemptingTxn(false)
+    //           addTransaction(response, {
+    //             type: TransactionType.CREATE_FUND,
+    //           })
+    //           setTxHash(response.hash)
+    //           // sendEvent({
+    //           //   category: 'Fund',
+    //           //   action: 'Create',
+    //           //   label: ['test11111', 'test22222'].join('/'),
+    //           // })
+    //         })
+    //     })
+    //     .catch((error) => {
+    //       console.error('Failed to send transaction', error)
+    //       //setAttemptingTxn(false)
+    //       // we only care if the error is something _other_ than the user rejected the tx
+    //       if (error?.code !== 4001) {
+    //         console.error(error)
+    //       }
+    //     })
+    // } else {
+    //   return
+    // }
   }
 
   return (

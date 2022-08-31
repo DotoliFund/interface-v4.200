@@ -9,7 +9,6 @@ import { useMemo } from 'react'
 
 //import { useArgentWalletContract } from './useArgentWalletContract'
 import useENS from './useENS'
-import { SignatureData } from './useERC20Permit'
 
 interface SwapCall {
   address: string
@@ -22,13 +21,11 @@ interface SwapCall {
  * @param trade trade to execute
  * @param allowedSlippage user allowed slippage
  * @param recipientAddressOrName the ENS name or address of the recipient of the swap output
- * @param signatureData the signature data of the permit of the input token amount, if available
  */
 export function useSwapCallArguments(
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
-  signatureData: SignatureData | null | undefined,
   deadline: BigNumber | undefined,
   feeOptions: FeeOptions | undefined
 ): SwapCall[] {
@@ -51,26 +48,6 @@ export function useSwapCallArguments(
         fee: feeOptions,
         recipient,
         slippageTolerance: allowedSlippage,
-        ...(signatureData
-          ? {
-              inputTokenPermit:
-                'allowed' in signatureData
-                  ? {
-                      expiry: signatureData.deadline,
-                      nonce: signatureData.nonce,
-                      s: signatureData.s,
-                      r: signatureData.r,
-                      v: signatureData.v as any,
-                    }
-                  : {
-                      deadline: signatureData.deadline,
-                      amount: signatureData.amount,
-                      s: signatureData.s,
-                      r: signatureData.r,
-                      v: signatureData.v as any,
-                    },
-            }
-          : {}),
       }
 
       const swapRouterAddress = chainId
@@ -119,16 +96,5 @@ export function useSwapCallArguments(
         },
       ]
     }
-  }, [
-    account,
-    allowedSlippage,
-    argentWalletContract,
-    chainId,
-    deadline,
-    feeOptions,
-    provider,
-    recipient,
-    signatureData,
-    trade,
-  ])
+  }, [account, allowedSlippage, argentWalletContract, chainId, deadline, feeOptions, provider, recipient, trade])
 }

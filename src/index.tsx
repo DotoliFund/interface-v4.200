@@ -1,20 +1,38 @@
 import './index.css'
 
 import { green, purple } from '@mui/material/colors'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
+import Web3Provider from 'components/Web3Provider'
+import { FeatureFlagsProvider } from 'featureFlags'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
+import App from 'pages/App'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import store from 'state'
+import ThemeProvider from 'theme'
 
-import Web3Provider from './components/Web3Provider'
-import App from './pages/App'
+import { LanguageProvider } from './i18n'
 import reportWebVitals from './reportWebVitals'
+import ApplicationUpdater from './state/application/updater'
+import ListsUpdater from './state/lists/updater'
+import TransactionUpdater from './state/transactions/updater'
+import UserUpdater from './state/user/updater'
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
+}
+
+function Updaters() {
+  return (
+    <>
+      <ListsUpdater />
+      <UserUpdater />
+      <ApplicationUpdater />
+      <TransactionUpdater />
+    </>
+  )
 }
 
 const theme = createTheme({
@@ -32,15 +50,20 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <HashRouter>
-        <Web3Provider>
-          <BlockNumberProvider>
-            <ThemeProvider theme={theme}>
-              <App />
-            </ThemeProvider>
-          </BlockNumberProvider>
-        </Web3Provider>
-      </HashRouter>
+      <FeatureFlagsProvider>
+        <HashRouter>
+          <LanguageProvider>
+            <Web3Provider>
+              <BlockNumberProvider>
+                <Updaters />
+                <ThemeProvider>
+                  <App />
+                </ThemeProvider>
+              </BlockNumberProvider>
+            </Web3Provider>
+          </LanguageProvider>
+        </HashRouter>
+      </FeatureFlagsProvider>
     </Provider>
   </React.StrictMode>
 )

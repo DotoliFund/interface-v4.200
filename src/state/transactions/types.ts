@@ -21,7 +21,6 @@ export enum TransactionType {
   DEPOSIT_LIQUIDITY_STAKING,
   WITHDRAW_LIQUIDITY_STAKING,
   CLAIM,
-  VOTE,
   DELEGATE,
   WRAP,
   CREATE_V3_POOL,
@@ -33,7 +32,6 @@ export enum TransactionType {
   SUBMIT_PROPOSAL,
   QUEUE,
   EXECUTE,
-  CREATE_FUND,
 }
 
 export interface BaseTransactionInfo {
@@ -143,6 +141,8 @@ export interface CollectFeesTransactionInfo {
   type: TransactionType.COLLECT_FEES
   currencyId0: string
   currencyId1: string
+  expectedCurrencyOwed0: string
+  expectedCurrencyOwed1: string
 }
 
 export interface RemoveLiquidityV3TransactionInfo {
@@ -155,10 +155,6 @@ export interface RemoveLiquidityV3TransactionInfo {
 
 export interface SubmitProposalTransactionInfo {
   type: TransactionType.SUBMIT_PROPOSAL
-}
-
-export interface CreateFundTransactionInfo {
-  type: TransactionType.CREATE_FUND
 }
 
 export type TransactionInfo =
@@ -179,7 +175,6 @@ export type TransactionInfo =
   | CollectFeesTransactionInfo
   | RemoveLiquidityV3TransactionInfo
   | SubmitProposalTransactionInfo
-  | CreateFundTransactionInfo
 
 export interface TransactionDetails {
   hash: string

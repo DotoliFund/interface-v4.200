@@ -10,15 +10,19 @@ import transactions from 'state/transactions/reducer'
 import user from 'state/user/reducer'
 import { isTestEnv } from 'utils/env'
 
+import application from './application/reducer'
 import { updateVersion } from './global/actions'
 import lists from './lists/reducer'
 import { routingApi } from './routing/slice'
+import wallets from './wallets/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
 export const store = configureStore({
   reducer: {
+    application,
     deposit,
+    wallets,
     create,
     user,
     connection,

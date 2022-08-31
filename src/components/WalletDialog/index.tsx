@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
 import { isMobile } from 'utils/userAgent'
 
-import AccountDetails from '../AccountDetails'
+import AccountDetails from '../AccountDetails2'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
 import PendingView from './PendingView'
 
