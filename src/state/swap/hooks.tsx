@@ -1,6 +1,5 @@
 //import { Trans } from '@lingui/macro'
 import Typography from '@mui/material/Typography'
-
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
