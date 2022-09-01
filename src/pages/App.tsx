@@ -148,9 +148,9 @@ export default function App() {
               {isLoaded ? (
                 <Routes>
                   <Route path="/" element={<Main />} />
-                  <Route path="/overview" element={<Overview />} />
-                  <Route path="/fund" element={<FundList />} />
-                  <Route path="/fund/:fundID" element={<Fund />} />
+                  <Route path="overview" element={<Overview />} />
+                  <Route path="fund" element={<FundList />} />
+                  <Route path="fund/:fundID" element={<Fund />} />
                   <Route path="deposit/:fund/:tokenId" element={<Deposit />} />
                   <Route path="withdraw/:fund/:tokenId" element={<Withdraw />} />
                   <Route path="swap/:fund/:currencyIdA/:currencyIdB" element={<Swap />} />
