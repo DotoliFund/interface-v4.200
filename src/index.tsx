@@ -5,6 +5,7 @@ import { createTheme } from '@mui/material/styles'
 import Web3Provider from 'components/Web3Provider'
 import { FeatureFlagsProvider } from 'featureFlags'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
+import { MulticallUpdater } from 'lib/state/multicall'
 import App from 'pages/App'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
@@ -31,6 +32,7 @@ function Updaters() {
       <UserUpdater />
       <ApplicationUpdater />
       <TransactionUpdater />
+      <MulticallUpdater />
     </>
   )
 }
