@@ -8,15 +8,15 @@ import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { useNftFlag } from 'featureFlags/flags/nft'
 import { useTokensFlag } from 'featureFlags/flags/tokens'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
+import Deposit from 'pages/Deposit'
 //import Swap from './Swap'
 //import CreateFund from 'pages/CreateFund'
 import Fund from 'pages/Fund'
 import FundList from 'pages/Fund'
-import Deposit from 'pages/Fund/FundDetail/deposit'
-import Swap from 'pages/Fund/FundDetail/swap/swap'
-import Withdraw from 'pages/Fund/FundDetail/withdraw'
 import Main from 'pages/Main'
 import Overview from 'pages/OverView'
+import Swap from 'pages/Swap'
+import Withdraw from 'pages/Withdraw'
 import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
@@ -34,7 +34,7 @@ import Popups from '../components/Popups'
 import { useIsExpertMode } from '../state/user/hooks'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 
-const Vote = lazy(() => import('pages/Fund/FundDetail/swap/swap'))
+const Vote = lazy(() => import('pages/Swap'))
 
 const AppWrapper = styled.div`
   display: flex;
@@ -151,6 +151,7 @@ export default function App() {
                   <Route path="overview" element={<Overview />} />
                   <Route path="fund" element={<FundList />} />
                   <Route path="fund/:fundID" element={<Fund />} />
+                  <Route path="swap" element={<Swap />} />
                   <Route path="deposit/:fund/:tokenId" element={<Deposit />} />
                   <Route path="withdraw/:fund/:tokenId" element={<Withdraw />} />
                   <Route path="swap/:fund/:currencyIdA/:currencyIdB" element={<Swap />} />
