@@ -12,3 +12,5 @@ export abstract class Multicall {
     return calldatas.length === 1 ? calldatas[0] : Multicall.INTERFACE.encodeFunctionData('multicall', [calldatas])
   }
 }
+
+// TODO : use this sample to make fund multicall
