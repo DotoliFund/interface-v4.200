@@ -5,9 +5,7 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 import { useMemo } from 'react'
-import approveAmountCalldata from 'utils/approveAmountCalldata'
 
-import { useArgentWalletContract } from './useArgentWalletContract'
 import useENS from './useENS'
 
 interface SwapCall {
@@ -33,7 +31,6 @@ export function useSwapCallArguments(
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const argentWalletContract = useArgentWalletContract()
 
   return useMemo(() => {
     if (!trade || !recipient || !provider || !account || !chainId || !deadline) return []
@@ -50,24 +47,6 @@ export function useSwapCallArguments(
       deadlineOrPreviousBlockhash: deadline.toString(),
     })
 
-    if (argentWalletContract && trade.inputAmount.currency.isToken) {
-      return [
-        {
-          address: argentWalletContract.address,
-          calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
-            [
-              approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
-              {
-                to: swapRouterAddress,
-                value,
-                data: calldata,
-              },
-            ],
-          ]),
-          value: '0x0',
-        },
-      ]
-    }
     return [
       {
         address: swapRouterAddress,
@@ -75,5 +54,5 @@ export function useSwapCallArguments(
         value,
       },
     ]
-  }, [account, allowedSlippage, argentWalletContract, chainId, deadline, feeOptions, provider, recipient, trade])
+  }, [account, allowedSlippage, chainId, deadline, feeOptions, provider, recipient, trade])
 }
