@@ -56,6 +56,33 @@ export interface CommonAddLiquidityOptions {
   useNative?: NativeCurrency
 }
 
+enum V3TradeType {
+  EXACT_INPUT,
+  EXACT_OUTPUT,
+}
+
+enum V3SwapType {
+  SINGLE_HOP,
+  MULTI_HOP,
+}
+
+/**
+ * V3TradeParams for producing the arguments to send calls to the router.
+ */
+export interface V3TradeParams {
+  investor: string
+  tradeType: V3TradeType
+  swapType: V3SwapType
+  input: string
+  output: string
+  path: string
+  inputAmount: number
+  outputAmount: number
+  amountInMaximum: number
+  amountOutMinimum: number
+  fee: number
+}
+
 /**
  * Options for producing the arguments to send calls to the router.
  */
@@ -252,13 +279,7 @@ export abstract class XXXFund {
       | V3Trade<Currency, Currency, TradeType>[],
     options: SwapOptions
   ): {
-    calldatas: string[]
-    sampleTrade: V3Trade<Currency, Currency, TradeType>
-    inputIsNative: boolean
-    outputIsNative: boolean
-    totalAmountIn: CurrencyAmount<Currency>
-    minimumAmountOut: CurrencyAmount<Currency>
-    quoteAmountOut: CurrencyAmount<Currency>
+    v3TradeParams: V3TradeParams[]
   } {
     // If dealing with an instance of the aggregated Trade object, unbundle it to individual trade objects.
     if (trades instanceof Trade) {
@@ -341,14 +362,24 @@ export abstract class XXXFund {
       ZERO_IN
     )
 
+    const v3TradeParams: V3TradeParams[] = []
+
+    v3TradeParams.push({
+      investor: '0xsfse',
+      tradeType: V3TradeType.EXACT_INPUT,
+      swapType: V3SwapType.MULTI_HOP,
+      input: '0xetst',
+      output: '0xetst',
+      path: 'test',
+      inputAmount: 23,
+      outputAmount: 3,
+      amountInMaximum: 2,
+      amountOutMinimum: 1,
+      fee: 1,
+    })
+
     return {
-      calldatas,
-      sampleTrade,
-      inputIsNative,
-      outputIsNative,
-      totalAmountIn,
-      minimumAmountOut,
-      quoteAmountOut,
+      v3TradeParams,
     }
   }
 
@@ -359,11 +390,26 @@ export abstract class XXXFund {
       | V3Trade<Currency, Currency, TradeType>[],
     options: SwapOptions
   ): MethodParameters {
-    const calldatas: string[] = []
     const value = toHex(0)
 
+    const { v3TradeParams } = XXXFund.encodeSwaps(trades, options)
+
+    // const v3TradeParams = {
+    //   investor: '0xsfse',
+    //   tradeType: TradeType.EXACT_INPUT,
+    //   swapType: V3SwapType.MULTI_HOP,
+    //   input: '0xetst',
+    //   output: '0xetst',
+    //   path: 'test',
+    //   inputAmount: 23,
+    //   outputAmount: 3,
+    //   amountInMaximum: 2,
+    //   amountOutMinimum: 1,
+    //   fee: 1,
+    // }
+
     return {
-      calldata: Multicall.encodeMulticall(calldatas),
+      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [v3TradeParams]),
       value,
     }
   }
