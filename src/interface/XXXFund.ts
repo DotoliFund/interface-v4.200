@@ -9,7 +9,7 @@ import {
   TradeType,
   validateAndParseAddress,
 } from '@uniswap/sdk-core'
-import { Trade as V3Trade } from '@uniswap/v3-sdk'
+import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund from 'abis/XXXFund.json'
 import { XXXToken_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
@@ -176,80 +176,90 @@ export abstract class XXXFund {
   private static encodeV3Swap(trade: V3Trade<Currency, Currency, TradeType>, options: SwapOptions): string[] {
     const calldatas: string[] = []
 
-    // for (const { route, inputAmount, outputAmount } of trade.swaps) {
-    //   const amountIn: string = toHex(trade.maximumAmountIn(options.slippageTolerance, inputAmount).quotient)
-    //   const amountOut: string = toHex(trade.minimumAmountOut(options.slippageTolerance, outputAmount).quotient)
+    for (const { route, inputAmount, outputAmount } of trade.swaps) {
+      const amountIn: string = toHex(trade.maximumAmountIn(options.slippageTolerance, inputAmount).quotient)
+      const amountOut: string = toHex(trade.minimumAmountOut(options.slippageTolerance, outputAmount).quotient)
 
-    //   // flag for whether the trade is single hop or not
-    //   const singleHop = route.pools.length === 1
+      // flag for whether the trade is single hop or not
+      const singleHop = route.pools.length === 1
 
-    //   const recipient = routerMustCustody
-    //     ? ADDRESS_THIS
-    //     : typeof options.recipient === 'undefined'
-    //     ? MSG_SENDER
-    //     : validateAndParseAddress(options.recipient)
+      const recipient = 'test'
 
-    //   if (singleHop) {
-    //     if (trade.tradeType === TradeType.EXACT_INPUT) {
-    //       const exactInputSingleParams = {
-    //         tokenIn: route.tokenPath[0].address,
-    //         tokenOut: route.tokenPath[1].address,
-    //         fee: route.pools[0].fee,
-    //         recipient,
-    //         amountIn,
-    //         amountOutMinimum: performAggregatedSlippageCheck ? 0 : amountOut,
-    //         sqrtPriceLimitX96: 0,
-    //       }
+      if (singleHop) {
+        if (trade.tradeType === TradeType.EXACT_INPUT) {
+          const exactInputSingleParams = {
+            tokenIn: route.tokenPath[0].address,
+            tokenOut: route.tokenPath[1].address,
+            fee: route.pools[0].fee,
+            recipient,
+            amountIn,
+            amountOutMinimum: amountOut,
+            sqrtPriceLimitX96: 0,
+          }
 
-    //       calldatas.push(SwapRouter.INTERFACE.encodeFunctionData('exactInputSingle', [exactInputSingleParams]))
-    //     } else {
-    //       const exactOutputSingleParams = {
-    //         tokenIn: route.tokenPath[0].address,
-    //         tokenOut: route.tokenPath[1].address,
-    //         fee: route.pools[0].fee,
-    //         recipient,
-    //         amountOut,
-    //         amountInMaximum: amountIn,
-    //         sqrtPriceLimitX96: 0,
-    //       }
+          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactInputSingle', [exactInputSingleParams]))
+        } else {
+          const exactOutputSingleParams = {
+            tokenIn: route.tokenPath[0].address,
+            tokenOut: route.tokenPath[1].address,
+            fee: route.pools[0].fee,
+            recipient,
+            amountOut,
+            amountInMaximum: amountIn,
+            sqrtPriceLimitX96: 0,
+          }
 
-    //       calldatas.push(SwapRouter.INTERFACE.encodeFunctionData('exactOutputSingle', [exactOutputSingleParams]))
-    //     }
-    //   } else {
-    //     const path: string = encodeRouteToPath(route, trade.tradeType === TradeType.EXACT_OUTPUT)
+          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactOutputSingle', [exactOutputSingleParams]))
+        }
+      } else {
+        const path: string = encodeRouteToPath(route, trade.tradeType === TradeType.EXACT_OUTPUT)
 
-    //     if (trade.tradeType === TradeType.EXACT_INPUT) {
-    //       const exactInputParams = {
-    //         path,
-    //         recipient,
-    //         amountIn,
-    //         amountOutMinimum: performAggregatedSlippageCheck ? 0 : amountOut,
-    //       }
+        if (trade.tradeType === TradeType.EXACT_INPUT) {
+          const exactInputParams = {
+            path,
+            recipient,
+            amountIn,
+            amountOutMinimum: amountOut,
+          }
 
-    //       calldatas.push(SwapRouter.INTERFACE.encodeFunctionData('exactInput', [exactInputParams]))
-    //     } else {
-    //       const exactOutputParams = {
-    //         path,
-    //         recipient,
-    //         amountOut,
-    //         amountInMaximum: amountIn,
-    //       }
+          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactInput', [exactInputParams]))
+        } else {
+          const exactOutputParams = {
+            path,
+            recipient,
+            amountOut,
+            amountInMaximum: amountIn,
+          }
 
-    //       calldatas.push(SwapRouter.INTERFACE.encodeFunctionData('exactOutput', [exactOutputParams]))
-    //     }
-    //   }
-    // }
+          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactOutput', [exactOutputParams]))
+        }
+      }
+    }
 
     return calldatas
   }
 
-  public static swapCallParameters(
+  /**
+   * @notice Generates the calldata for a Swap with a V3 Route.
+   * @param trade The V3Trade to encode.
+   * @param options SwapOptions to use for the trade.
+   * @returns A string array of calldatas for the trade.
+   */
+  private static encodeSwaps(
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>[],
     options: SwapOptions
-  ): MethodParameters {
+  ): {
+    calldatas: string[]
+    sampleTrade: V3Trade<Currency, Currency, TradeType>
+    inputIsNative: boolean
+    outputIsNative: boolean
+    totalAmountIn: CurrencyAmount<Currency>
+    minimumAmountOut: CurrencyAmount<Currency>
+    quoteAmountOut: CurrencyAmount<Currency>
+  } {
     // If dealing with an instance of the aggregated Trade object, unbundle it to individual trade objects.
     if (trades instanceof Trade) {
       invariant(
@@ -282,7 +292,26 @@ export abstract class XXXFund {
 
     const numberOfTrades = trades.reduce((numberOfTrades, trade) => numberOfTrades + trade.swaps.length, 0)
 
+    const sampleTrade = trades[0]
+
+    // All trades should have the same starting/ending currency and trade type
+    invariant(
+      trades.every((trade) => trade.inputAmount.currency.equals(sampleTrade.inputAmount.currency)),
+      'TOKEN_IN_DIFF'
+    )
+    invariant(
+      trades.every((trade) => trade.outputAmount.currency.equals(sampleTrade.outputAmount.currency)),
+      'TOKEN_OUT_DIFF'
+    )
+    invariant(
+      trades.every((trade) => trade.tradeType === sampleTrade.tradeType),
+      'TRADE_TYPE_DIFF'
+    )
+
     const calldatas: string[] = []
+
+    const inputIsNative = sampleTrade.inputAmount.currency.isNative
+    const outputIsNative = sampleTrade.outputAmount.currency.isNative
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
@@ -294,7 +323,44 @@ export abstract class XXXFund {
       }
     }
 
-    const value: string = toHex(0)
+    const ZERO_IN: CurrencyAmount<Currency> = CurrencyAmount.fromRawAmount(sampleTrade.inputAmount.currency, 0)
+    const ZERO_OUT: CurrencyAmount<Currency> = CurrencyAmount.fromRawAmount(sampleTrade.outputAmount.currency, 0)
+
+    const minimumAmountOut: CurrencyAmount<Currency> = trades.reduce(
+      (sum, trade) => sum.add(trade.minimumAmountOut(options.slippageTolerance)),
+      ZERO_OUT
+    )
+
+    const quoteAmountOut: CurrencyAmount<Currency> = trades.reduce(
+      (sum, trade) => sum.add(trade.outputAmount),
+      ZERO_OUT
+    )
+
+    const totalAmountIn: CurrencyAmount<Currency> = trades.reduce(
+      (sum, trade) => sum.add(trade.maximumAmountIn(options.slippageTolerance)),
+      ZERO_IN
+    )
+
+    return {
+      calldatas,
+      sampleTrade,
+      inputIsNative,
+      outputIsNative,
+      totalAmountIn,
+      minimumAmountOut,
+      quoteAmountOut,
+    }
+  }
+
+  public static swapCallParameters(
+    trades:
+      | Trade<Currency, Currency, TradeType>
+      | V3Trade<Currency, Currency, TradeType>
+      | V3Trade<Currency, Currency, TradeType>[],
+    options: SwapOptions
+  ): MethodParameters {
+    const calldatas: string[] = []
+    const value = toHex(0)
 
     return {
       calldata: Multicall.encodeMulticall(calldatas),
