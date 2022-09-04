@@ -1,12 +1,19 @@
 import { Interface } from '@ethersproject/abi'
-import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, validateAndParseAddress } from '@uniswap/sdk-core'
+import { 
+  BigintIsh, 
+  Currency, 
+  CurrencyAmount,
+  NativeCurrency, 
+  validateAndParseAddress,
+  TradeType,
+  Percent 
+} from '@uniswap/sdk-core'
 import IXXXFund from 'abis/XXXFund.json'
 import { XXXToken_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
-
+import { Trade } from '@uniswap/router-sdk'
 import { MethodParameters, toHex } from './utils/calldata'
 import { Multicall } from './utils/multicall'
-
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
 const token_address = XXXToken_ADDRESS
 
@@ -42,6 +49,26 @@ export interface CommonAddLiquidityOptions {
    * Whether to spend ether. If true, one of the pool tokens must be WETH, by default false
    */
   useNative?: NativeCurrency
+}
+
+/**
+ * Options for producing the arguments to send calls to the router.
+ */
+export interface SwapOptions {
+  /**
+   * How much the execution price is allowed to move unfavorably from the trade execution price.
+   */
+  slippageTolerance: Percent
+
+  /**
+   * The account that should receive the output. If omitted, output is sent to msg.sender.
+   */
+  recipient?: string
+
+  /**
+   * Either deadline (when the transaction expires, in epoch seconds), or previousBlockhash.
+   */
+  deadlineOrPreviousBlockhash?: BigintIsh | string
 }
 
 export type MintOptions = CommonAddLiquidityOptions & MintSpecificOptions
@@ -137,40 +164,14 @@ export abstract class XXXFund {
     }
   }
 
-  public static swapParameters(account: string, token: string, amount: CurrencyAmount<Currency>): MethodParameters {
+  public static swapParameters(
+    trades:
+      | Trade<Currency, Currency, TradeType>
+      | Trade<Currency, Currency, TradeType>[],
+    options: SwapOptions
+  ): MethodParameters {
     const calldatas: string[] = []
-    //const deadline = toHex(JSBI.BigInt(fund.deadline))
-    const investor: string = validateAndParseAddress(account)
 
-    // console.log(_amount)
-    // console.log(_amount.quotient)
-    // console.log(toHex(_amount.quotient))
-    // console.log(_amount.toExact())
-    // console.log(_amount.toFixed())
-    // console.log(_amount.toSignificant(6))
-
-    console.log('investor : ' + investor)
-    console.log('amount.quotient : ' + toHex(amount.quotient))
-    calldatas.push(
-      XXXFund.INTERFACE.encodeFunctionData('swapExactInputSingle', [
-        investor,
-        token_address,
-        toHex(amount.quotient),
-        //deadline: deadline
-      ])
-    )
-    // calldatas.push(
-    //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-    //     {
-    //       manager: manager,
-    //       //token: fund.token,
-    //       token: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
-    //       amount: 1
-    //       //amount: toHex(_amount.quotient),
-    //       //deadline: deadline
-    //     }
-    //   ])
-    // )
 
     const value: string = toHex(0)
 

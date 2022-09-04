@@ -50,7 +50,7 @@ export type AddLiquidityOptions = MintOptions | IncreaseOptions
 export abstract class XXXFactory {
   public static INTERFACE: Interface = new Interface(IXXXFactory.abi)
 
-  public static createFundParameters(account: string): MethodParameters {
+  public static createCallParameters(account: string): MethodParameters {
     const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
     const manager: string = validateAndParseAddress(account)
