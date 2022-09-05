@@ -73,14 +73,16 @@ export interface V3TradeParams {
   investor: string
   tradeType: V3TradeType
   swapType: V3SwapType
-  input: string
-  output: string
-  path: string
-  inputAmount: number
-  outputAmount: number
-  amountInMaximum: number
-  amountOutMinimum: number
+  tokenIn: string
+  tokenOut: string
   fee: number
+  recipient: string
+  path: string
+  amountIn: string
+  amountOut: string
+  amountInMaximum: string
+  amountOutMinimum: string
+  sqrtPriceLimitX96: number
 }
 
 /**
@@ -200,8 +202,12 @@ export abstract class XXXFund {
    * @param options SwapOptions to use for the trade.
    * @returns A string array of calldatas for the trade.
    */
-  private static encodeV3Swap(trade: V3Trade<Currency, Currency, TradeType>, options: SwapOptions): string[] {
-    const calldatas: string[] = []
+  private static encodeV3Swap(
+    investor: string,
+    trade: V3Trade<Currency, Currency, TradeType>,
+    options: SwapOptions
+  ): V3TradeParams[] {
+    const params: V3TradeParams[] = []
 
     for (const { route, inputAmount, outputAmount } of trade.swaps) {
       const amountIn: string = toHex(trade.maximumAmountIn(options.slippageTolerance, inputAmount).quotient)
@@ -214,56 +220,82 @@ export abstract class XXXFund {
 
       if (singleHop) {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
-          const exactInputSingleParams = {
+          //exactInputSingleParams
+          params.push({
+            investor,
+            tradeType: V3TradeType.EXACT_INPUT,
+            swapType: V3SwapType.SINGLE_HOP,
             tokenIn: route.tokenPath[0].address,
             tokenOut: route.tokenPath[1].address,
             fee: route.pools[0].fee,
             recipient,
+            path: 'test',
             amountIn,
+            amountOut: '',
+            amountInMaximum: '',
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
-          }
-
-          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactInputSingle', [exactInputSingleParams]))
+          })
         } else {
-          const exactOutputSingleParams = {
+          //exactOutputSingleParams
+          params.push({
+            investor,
+            tradeType: V3TradeType.EXACT_OUTPUT,
+            swapType: V3SwapType.SINGLE_HOP,
             tokenIn: route.tokenPath[0].address,
             tokenOut: route.tokenPath[1].address,
             fee: route.pools[0].fee,
             recipient,
+            path: 'test',
+            amountIn: '',
             amountOut,
             amountInMaximum: amountIn,
+            amountOutMinimum: '',
             sqrtPriceLimitX96: 0,
-          }
-
-          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactOutputSingle', [exactOutputSingleParams]))
+          })
         }
       } else {
         const path: string = encodeRouteToPath(route, trade.tradeType === TradeType.EXACT_OUTPUT)
 
         if (trade.tradeType === TradeType.EXACT_INPUT) {
-          const exactInputParams = {
-            path,
+          //exactInputParams
+          params.push({
+            investor,
+            tradeType: V3TradeType.EXACT_INPUT,
+            swapType: V3SwapType.MULTI_HOP,
+            tokenIn: '',
+            tokenOut: '',
+            fee: 0,
             recipient,
+            path,
             amountIn,
+            amountOut: '',
+            amountInMaximum: '',
             amountOutMinimum: amountOut,
-          }
-
-          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactInput', [exactInputParams]))
+            sqrtPriceLimitX96: 0,
+          })
         } else {
-          const exactOutputParams = {
-            path,
+          //exactOutputParams
+          params.push({
+            investor,
+            tradeType: V3TradeType.EXACT_OUTPUT,
+            swapType: V3SwapType.MULTI_HOP,
+            tokenIn: '',
+            tokenOut: '',
+            fee: 0,
             recipient,
+            path,
+            amountIn: '',
             amountOut,
             amountInMaximum: amountIn,
-          }
-
-          calldatas.push(XXXFund.INTERFACE.encodeFunctionData('exactOutput', [exactOutputParams]))
+            amountOutMinimum: '',
+            sqrtPriceLimitX96: 0,
+          })
         }
       }
     }
 
-    return calldatas
+    return params
   }
 
   /**
@@ -273,13 +305,14 @@ export abstract class XXXFund {
    * @returns A string array of calldatas for the trade.
    */
   private static encodeSwaps(
+    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>[],
     options: SwapOptions
   ): {
-    v3TradeParams: V3TradeParams[]
+    params: V3TradeParams[]
   } {
     // If dealing with an instance of the aggregated Trade object, unbundle it to individual trade objects.
     if (trades instanceof Trade) {
@@ -329,15 +362,15 @@ export abstract class XXXFund {
       'TRADE_TYPE_DIFF'
     )
 
-    const calldatas: string[] = []
+    const params: V3TradeParams[] = []
 
     const inputIsNative = sampleTrade.inputAmount.currency.isNative
     const outputIsNative = sampleTrade.outputAmount.currency.isNative
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
-        for (const calldata of XXXFund.encodeV3Swap(trade, options)) {
-          calldatas.push(calldata)
+        for (const param of XXXFund.encodeV3Swap(investor, trade, options)) {
+          params.push(param)
         }
       } else {
         throw new Error('Unsupported trade object')
@@ -362,28 +395,27 @@ export abstract class XXXFund {
       ZERO_IN
     )
 
-    const v3TradeParams: V3TradeParams[] = []
-
-    v3TradeParams.push({
-      investor: '0xsfse',
-      tradeType: V3TradeType.EXACT_INPUT,
-      swapType: V3SwapType.MULTI_HOP,
-      input: '0xetst',
-      output: '0xetst',
-      path: 'test',
-      inputAmount: 23,
-      outputAmount: 3,
-      amountInMaximum: 2,
-      amountOutMinimum: 1,
-      fee: 1,
-    })
+    // v3TradeParams.push({
+    //   investor: '0xsfse',
+    //   tradeType: V3TradeType.EXACT_INPUT,
+    //   swapType: V3SwapType.MULTI_HOP,
+    //   input: '0xetst',
+    //   output: '0xetst',
+    //   path: 'test',
+    //   inputAmount: 23,
+    //   outputAmount: 3,
+    //   amountInMaximum: 2,
+    //   amountOutMinimum: 1,
+    //   fee: 1,
+    // })
 
     return {
-      v3TradeParams,
+      params,
     }
   }
 
   public static swapCallParameters(
+    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -392,7 +424,7 @@ export abstract class XXXFund {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { v3TradeParams } = XXXFund.encodeSwaps(trades, options)
+    const { params } = XXXFund.encodeSwaps(investor, trades, options)
 
     // const v3TradeParams = {
     //   investor: '0xsfse',
@@ -409,7 +441,7 @@ export abstract class XXXFund {
     // }
 
     return {
-      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [v3TradeParams]),
+      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params]),
       value,
     }
   }
