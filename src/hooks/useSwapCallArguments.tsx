@@ -21,6 +21,7 @@ interface SwapCall {
  * @param allowedSlippage user allowed slippage
  */
 export function useSwapCallArguments(
+  investor: string,
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent
 ): SwapCall[] {
@@ -35,6 +36,7 @@ export function useSwapCallArguments(
     if (!swapRouterAddress) return []
 
     const { value, calldata } = XXXFund.swapCallParameters(trade, {
+      investor,
       slippageTolerance: allowedSlippage,
     })
 
@@ -45,5 +47,5 @@ export function useSwapCallArguments(
         value,
       },
     ]
-  }, [account, allowedSlippage, chainId, provider, trade])
+  }, [investor, account, allowedSlippage, chainId, provider, trade])
 }

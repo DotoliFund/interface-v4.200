@@ -89,6 +89,7 @@ export interface V3TradeParams {
  * Options for producing the arguments to send calls to the router.
  */
 export interface SwapOptions {
+  investor: string
   /**
    * How much the execution price is allowed to move unfavorably from the trade execution price.
    */
@@ -202,11 +203,7 @@ export abstract class XXXFund {
    * @param options SwapOptions to use for the trade.
    * @returns A string array of calldatas for the trade.
    */
-  private static encodeV3Swap(
-    investor: string,
-    trade: V3Trade<Currency, Currency, TradeType>,
-    options: SwapOptions
-  ): V3TradeParams[] {
+  private static encodeV3Swap(trade: V3Trade<Currency, Currency, TradeType>, options: SwapOptions): V3TradeParams[] {
     const params: V3TradeParams[] = []
 
     for (const { route, inputAmount, outputAmount } of trade.swaps) {
@@ -222,7 +219,7 @@ export abstract class XXXFund {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
           //exactInputSingleParams
           params.push({
-            investor,
+            investor: options.investor,
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.SINGLE_HOP,
             tokenIn: route.tokenPath[0].address,
@@ -239,7 +236,7 @@ export abstract class XXXFund {
         } else {
           //exactOutputSingleParams
           params.push({
-            investor,
+            investor: options.investor,
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.SINGLE_HOP,
             tokenIn: route.tokenPath[0].address,
@@ -260,7 +257,7 @@ export abstract class XXXFund {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
           //exactInputParams
           params.push({
-            investor,
+            investor: options.investor,
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.MULTI_HOP,
             tokenIn: '',
@@ -277,7 +274,7 @@ export abstract class XXXFund {
         } else {
           //exactOutputParams
           params.push({
-            investor,
+            investor: options.investor,
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.MULTI_HOP,
             tokenIn: '',
@@ -305,7 +302,6 @@ export abstract class XXXFund {
    * @returns A string array of calldatas for the trade.
    */
   private static encodeSwaps(
-    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -369,7 +365,7 @@ export abstract class XXXFund {
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
-        for (const param of XXXFund.encodeV3Swap(investor, trade, options)) {
+        for (const param of XXXFund.encodeV3Swap(trade, options)) {
           params.push(param)
         }
       } else {
@@ -395,27 +391,12 @@ export abstract class XXXFund {
       ZERO_IN
     )
 
-    // v3TradeParams.push({
-    //   investor: '0xsfse',
-    //   tradeType: V3TradeType.EXACT_INPUT,
-    //   swapType: V3SwapType.MULTI_HOP,
-    //   input: '0xetst',
-    //   output: '0xetst',
-    //   path: 'test',
-    //   inputAmount: 23,
-    //   outputAmount: 3,
-    //   amountInMaximum: 2,
-    //   amountOutMinimum: 1,
-    //   fee: 1,
-    // })
-
     return {
       params,
     }
   }
 
   public static swapCallParameters(
-    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -424,21 +405,7 @@ export abstract class XXXFund {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = XXXFund.encodeSwaps(investor, trades, options)
-
-    // const v3TradeParams = {
-    //   investor: '0xsfse',
-    //   tradeType: TradeType.EXACT_INPUT,
-    //   swapType: V3SwapType.MULTI_HOP,
-    //   input: '0xetst',
-    //   output: '0xetst',
-    //   path: 'test',
-    //   inputAmount: 23,
-    //   outputAmount: 3,
-    //   amountInMaximum: 2,
-    //   amountOutMinimum: 1,
-    //   fee: 1,
-    // }
+    const { params } = XXXFund.encodeSwaps(trades, options)
 
     return {
       calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params]),
