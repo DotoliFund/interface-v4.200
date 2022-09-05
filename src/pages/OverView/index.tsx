@@ -2,16 +2,13 @@ import { Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { ElementName, Event, EventName, PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
+import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { sendEvent } from 'components/analytics'
 import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
-import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import SwapCurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
-import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import { PageWrapper, SwapCallbackError, SwapWrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
@@ -28,8 +25,6 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { useSwapCallback } from 'hooks/useSwapCallback'
-import useWrapCallback, { WrapErrorText, WrapType } from 'hooks/useWrapCallback'
-import JSBI from 'jsbi'
 import { useCallback, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -131,35 +126,21 @@ export default function Swap() {
     inputError: swapInputError,
   } = useDerivedSwapInfo()
 
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError,
-  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+  // const {
+  //   wrapType,
+  //   execute: onWrap,
+  //   inputError: wrapInputError,
+  // } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
+  // const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+
   const { address: recipientAddress } = useENSAddress(recipient)
 
-  const parsedAmounts = useMemo(
-    () =>
-      showWrap
-        ? {
-            [Field.INPUT]: parsedAmount,
-            [Field.OUTPUT]: parsedAmount,
-          }
-        : {
-            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-          },
-    [independentField, parsedAmount, showWrap, trade]
-  )
-
-  const [routeNotFound, routeIsLoading, routeIsSyncing] = useMemo(
-    () => [!trade?.swaps, TradeState.LOADING === tradeState, TradeState.SYNCING === tradeState],
-    [trade, tradeState]
-  )
+  const parsedAmounts = {
+    [Field.INPUT]: parsedAmount,
+  }
 
   // show price estimates based on wrap trade
-  const inputValue = showWrap ? parsedAmount : trade?.inputAmount
+  const inputValue = parsedAmount
   const fiatValueInput = useStablecoinValue(inputValue)
 
   const { onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
@@ -194,19 +175,9 @@ export default function Swap() {
     txHash: undefined,
   })
 
-  const formattedAmounts = useMemo(
-    () => ({
-      [independentField]: typedValue,
-      [dependentField]: showWrap
-        ? parsedAmounts[independentField]?.toExact() ?? ''
-        : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
-    }),
-    [dependentField, independentField, parsedAmounts, showWrap, typedValue]
-  )
-
-  const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
-  )
+  const formattedAmounts = {
+    [Field.INPUT]: typedValue,
+  }
 
   const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
     () => maxAmountSpend(currencyBalances[Field.INPUT]),
@@ -281,17 +252,17 @@ export default function Swap() {
   // errors
   const [swapQuoteReceivedDate] = useState<Date | undefined>()
 
-  const handleConfirmDismiss = useCallback(() => {
-    setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
-    // if there was a tx hash, we want to clear the input
-    if (txHash) {
-      onUserInput(Field.INPUT, '')
-    }
-  }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
+  // const handleConfirmDismiss = useCallback(() => {
+  //   setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
+  //   // if there was a tx hash, we want to clear the input
+  //   if (txHash) {
+  //     onUserInput(Field.INPUT, '')
+  //   }
+  // }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
 
-  const handleAcceptChanges = useCallback(() => {
-    setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
-  }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
+  // const handleAcceptChanges = useCallback(() => {
+  //   setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
+  // }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
@@ -334,7 +305,7 @@ export default function Swap() {
         <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
           <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
             <SwapHeader allowedSlippage={allowedSlippage} />
-            <ConfirmSwapModal
+            {/* <ConfirmSwapModal
               isOpen={showConfirm}
               trade={trade}
               originalTrade={tradeToConfirm}
@@ -347,19 +318,13 @@ export default function Swap() {
               swapErrorMessage={swapErrorMessage}
               onDismiss={handleConfirmDismiss}
               swapQuoteReceivedDate={swapQuoteReceivedDate}
-            />
+            /> */}
             <AutoColumn gap={'0px'}>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
                     <SwapCurrencyInputPanel
-                      label={
-                        independentField === Field.OUTPUT && !showWrap ? (
-                          <Trans>From (at most)</Trans>
-                        ) : (
-                          <Trans>From</Trans>
-                        )
-                      }
+                      label={<Trans>From</Trans>}
                       value={formattedAmounts[Field.INPUT]}
                       showMaxButton={showMaxButton}
                       currency={currencies[Field.INPUT] ?? null}
@@ -370,7 +335,7 @@ export default function Swap() {
                       otherCurrency={currencies[Field.OUTPUT]}
                       showCommonBases={true}
                       id={SectionName.CURRENCY_INPUT_PANEL}
-                      loading={independentField === Field.OUTPUT && routeIsSyncing}
+                      loading={independentField === Field.OUTPUT}
                     />
                   </Trace>
                 </TopInputWrapper>
@@ -386,32 +351,9 @@ export default function Swap() {
                         </ThemedText.DeprecatedMain>
                       </ButtonPrimary>
                     ) : !account ? (
-                      <TraceEvent
-                        events={[Event.onClick]}
-                        name={EventName.CONNECT_WALLET_BUTTON_CLICKED}
-                        properties={{ received_swap_quote: getIsValidSwapQuote(trade, tradeState, swapInputError) }}
-                        element={ElementName.CONNECT_WALLET_BUTTON}
-                      >
-                        <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
-                          <Trans>Connect Wallet</Trans>
-                        </ButtonLight>
-                      </TraceEvent>
-                    ) : showWrap ? (
-                      <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                        {wrapInputError ? (
-                          <WrapErrorText wrapInputError={wrapInputError} />
-                        ) : wrapType === WrapType.WRAP ? (
-                          <Trans>Wrap</Trans>
-                        ) : wrapType === WrapType.UNWRAP ? (
-                          <Trans>Unwrap</Trans>
-                        ) : null}
-                      </ButtonPrimary>
-                    ) : routeNotFound && userHasSpecifiedInputOutput && !routeIsLoading && !routeIsSyncing ? (
-                      <GreyCard style={{ textAlign: 'center' }}>
-                        <ThemedText.DeprecatedMain mb="4px">
-                          <Trans>Insufficient liquidity for this trade.</Trans>
-                        </ThemedText.DeprecatedMain>
-                      </GreyCard>
+                      <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
+                        <Trans>Connect Wallet</Trans>
+                      </ButtonLight>
                     ) : (
                       <ButtonError
                         onClick={() => {
@@ -424,17 +366,11 @@ export default function Swap() {
                           })
                         }}
                         id="swap-button"
-                        disabled={!isValid || routeIsSyncing || routeIsLoading || !!swapCallbackError}
+                        disabled={!isValid || !!swapCallbackError}
                         error={isValid && !swapCallbackError}
                       >
                         <Text fontSize={20} fontWeight={500}>
-                          {swapInputError ? (
-                            swapInputError
-                          ) : routeIsSyncing || routeIsLoading ? (
-                            <Trans>Swap</Trans>
-                          ) : (
-                            <Trans>Swap</Trans>
-                          )}
+                          {swapInputError ? swapInputError : <Trans>Swap</Trans>}
                         </Text>
                       </ButtonError>
                     )}
