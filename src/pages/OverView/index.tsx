@@ -10,7 +10,6 @@ import { AutoColumn } from 'components/Column'
 import SwapCurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { PageWrapper, SwapCallbackError, SwapWrapper } from 'components/swap/styleds'
-import SwapHeader from 'components/swap/SwapHeader'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
@@ -22,18 +21,19 @@ import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import useENSAddress from 'hooks/useENSAddress'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+//import { useIsDepositUnsupported } from 'hooks/useIsDepositUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
-import { useSwapCallback } from 'hooks/useSwapCallback'
 import { useCallback, useMemo, useState } from 'react'
-import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
-import { Field } from 'state/swap/actions'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { Field } from 'state/deposit/actions'
+import {
+  useDefaultsFromURLSearch,
+  useDepositActionHandlers,
+  useDepositState,
+  useDerivedDepositInfo,
+} from 'state/deposit/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -57,13 +57,13 @@ const TopInputWrapper = styled.div<{ redesignFlag: boolean }>`
   visibility: ${({ redesignFlag }) => !redesignFlag && 'none'};
 `
 
-export function getIsValidSwapQuote(
-  trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
-  tradeState: TradeState,
-  swapInputError?: ReactNode
-): boolean {
-  return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
-}
+// export function getIsValidSwapQuote(
+//   trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
+//   tradeState: TradeState,
+//   swapInputError?: ReactNode
+// ): boolean {
+//   return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
+// }
 
 export default function Swap() {
   const navigate = useNavigate()
@@ -76,14 +76,11 @@ export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
   // token warning stuff
-  const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId),
-    useCurrency(loadedUrlParams?.[Field.OUTPUT]?.currencyId),
-  ]
+  const [loadedInputCurrency] = [useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId)]
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const urlLoadedTokens: Token[] = useMemo(
-    () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
-    [loadedInputCurrency, loadedOutputCurrency]
+    () => [loadedInputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
+    [loadedInputCurrency]
   )
   const handleConfirmTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
@@ -116,15 +113,8 @@ export default function Swap() {
   const toggleWalletModal = useToggleWalletModal()
 
   // swap state
-  const { independentField, typedValue, recipient } = useSwapState()
-  const {
-    trade: { state: tradeState, trade },
-    allowedSlippage,
-    currencyBalances,
-    parsedAmount,
-    currencies,
-    inputError: swapInputError,
-  } = useDerivedSwapInfo()
+  const { typedValue, recipient } = useDepositState()
+  const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedDepositInfo()
 
   // const {
   //   wrapType,
@@ -143,13 +133,12 @@ export default function Swap() {
   const inputValue = parsedAmount
   const fiatValueInput = useStablecoinValue(inputValue)
 
-  const { onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+  const { onCurrencySelection, onUserInput } = useDepositActionHandlers()
   const isValid = !swapInputError
-  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const handleTypeInput = useCallback(
     (value: string) => {
-      onUserInput(Field.INPUT, value)
+      onUserInput(value)
     },
     [onUserInput]
   )
@@ -189,12 +178,12 @@ export default function Swap() {
   const investor = '0x1234'
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
-    trade,
-    allowedSlippage,
-    recipient,
-    investor
-  )
+  // const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+  //   trade,
+  //   allowedSlippage,
+  //   recipient,
+  //   investor
+  // )
 
   const handleSwap = useCallback(
     () => {
@@ -250,7 +239,7 @@ export default function Swap() {
   )
 
   // errors
-  const [swapQuoteReceivedDate] = useState<Date | undefined>()
+  //const [swapQuoteReceivedDate] = useState<Date | undefined>()
 
   // const handleConfirmDismiss = useCallback(() => {
   //   setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
@@ -266,20 +255,22 @@ export default function Swap() {
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
-      onCurrencySelection(Field.INPUT, inputCurrency)
+      onCurrencySelection(inputCurrency)
     },
     [onCurrencySelection]
   )
 
   const handleMaxInput = useCallback(() => {
-    maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
+    maxInputAmount && onUserInput(maxInputAmount.toExact())
     sendEvent({
       category: 'Swap',
       action: 'Max',
     })
   }, [maxInputAmount, onUserInput])
 
-  const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
+  // const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
+  //const depositIsUnsupported = useIsDepositUnsupported(currencies[Field.INPUT])
+  const depositIsUnsupported = false
 
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
@@ -304,7 +295,7 @@ export default function Swap() {
         )}
         <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
           <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
-            <SwapHeader allowedSlippage={allowedSlippage} />
+            {/* <SwapHeader allowedSlippage={allowedSlippage} /> */}
             {/* <ConfirmSwapModal
               isOpen={showConfirm}
               trade={trade}
@@ -332,10 +323,10 @@ export default function Swap() {
                       onMax={handleMaxInput}
                       fiatValue={fiatValueInput ?? undefined}
                       onCurrencySelect={handleInputSelect}
-                      otherCurrency={currencies[Field.OUTPUT]}
+                      otherCurrency={null}
                       showCommonBases={true}
                       id={SectionName.CURRENCY_INPUT_PANEL}
-                      loading={independentField === Field.OUTPUT}
+                      loading={false}
                     />
                   </Trace>
                 </TopInputWrapper>
@@ -344,7 +335,7 @@ export default function Swap() {
                 {redesignFlagEnabled && 'For'}
                 <AutoColumn gap={redesignFlagEnabled ? '0px' : '8px'}>
                   <div>
-                    {swapIsUnsupported ? (
+                    {depositIsUnsupported ? (
                       <ButtonPrimary disabled={true}>
                         <ThemedText.DeprecatedMain mb="4px">
                           <Trans>Unsupported Asset</Trans>
@@ -357,17 +348,17 @@ export default function Swap() {
                     ) : (
                       <ButtonError
                         onClick={() => {
-                          setSwapState({
-                            tradeToConfirm: trade,
-                            attemptingTxn: false,
-                            swapErrorMessage: undefined,
-                            showConfirm: true,
-                            txHash: undefined,
-                          })
+                          // setSwapState({
+                          //   tradeToConfirm: trade,
+                          //   attemptingTxn: false,
+                          //   swapErrorMessage: undefined,
+                          //   showConfirm: true,
+                          //   txHash: undefined,
+                          // })
                         }}
                         id="swap-button"
-                        disabled={!isValid || !!swapCallbackError}
-                        error={isValid && !swapCallbackError}
+                        disabled={!isValid}
+                        error={isValid}
                       >
                         <Text fontSize={20} fontWeight={500}>
                           {swapInputError ? swapInputError : <Trans>Swap</Trans>}
@@ -383,11 +374,8 @@ export default function Swap() {
           <NetworkAlert />
         </PageWrapper>
         <SwitchLocaleLink />
-        {!swapIsUnsupported ? null : (
-          <UnsupportedCurrencyFooter
-            show={swapIsUnsupported}
-            currencies={[currencies[Field.INPUT], currencies[Field.OUTPUT]]}
-          />
+        {!depositIsUnsupported ? null : (
+          <UnsupportedCurrencyFooter show={depositIsUnsupported} currencies={[currencies[Field.INPUT]]} />
         )}
       </>
     </Trace>
