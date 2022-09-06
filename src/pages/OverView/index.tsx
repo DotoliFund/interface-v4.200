@@ -62,7 +62,7 @@ const TopInputWrapper = styled.div<{ redesignFlag: boolean }>`
   visibility: ${({ redesignFlag }) => !redesignFlag && 'none'};
 `
 
-export default function Swap() {
+export default function Deposit() {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
