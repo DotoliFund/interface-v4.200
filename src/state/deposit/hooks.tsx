@@ -178,17 +178,13 @@ function validatedRecipient(recipient: any): string | null {
   return null
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs): DepositState {
+export function queryParametersToDepositState(parsedQs: ParsedQs): DepositState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
 
-  if (inputCurrency === '' && outputCurrency === '' && typedValue === '') {
+  if (inputCurrency === '' && typedValue === '') {
     // Defaults to having the native currency selected
     inputCurrency = 'ETH'
-  } else if (inputCurrency === outputCurrency) {
-    // clear output if identical
-    outputCurrency = ''
   }
 
   const recipient = validatedRecipient(parsedQs.recipient)
@@ -202,30 +198,30 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): DepositState {
   }
 }
 
-// updates the swap state to use the defaults for a given network
+// updates the deposit state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): DepositState {
   const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 
-  const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs)
+  const parsedDepositState = useMemo(() => {
+    return queryParametersToDepositState(parsedQs)
   }, [parsedQs])
 
   useEffect(() => {
     if (!chainId) return
-    const inputCurrencyId = parsedSwapState[Field.INPUT].currencyId ?? undefined
+    const inputCurrencyId = parsedDepositState[Field.INPUT].currencyId ?? undefined
 
     dispatch(
       replaceDepositState({
-        typedValue: parsedSwapState.typedValue,
+        typedValue: parsedDepositState.typedValue,
         inputCurrencyId,
-        recipient: parsedSwapState.recipient,
+        recipient: parsedDepositState.recipient,
       })
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, chainId])
 
-  return parsedSwapState
+  return parsedDepositState
 }
