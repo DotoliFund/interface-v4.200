@@ -241,8 +241,6 @@ export default function Swap() {
 
   //////////////////////////// deposit test ///////////////////////////////////
 
-  //const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-  const WETH_ADDRESS = '0xc778417E063141139Fce010982780140Aa0cD5Ab'
   // check whether the user has approved the router on the tokens
   const [approval, approveCallback] = useApproveCallback(
     parsedAmounts[Field.INPUT],
@@ -255,9 +253,11 @@ export default function Swap() {
   async function handleDeposit() {
     if (!chainId || !provider || !account) return
     if (!parsedAmount) return
-    if (account) {
+
+    const depositTokenAddress = parsedAmount.currency.wrapped.address
+    if (depositTokenAddress && account) {
       await approveCallback()
-      const { calldata, value } = XXXFund.depositCallParameters(account, WETH_ADDRESS, parsedAmount)
+      const { calldata, value } = XXXFund.depositCallParameters(account, depositTokenAddress, parsedAmount)
       const txn: { to: string; data: string; value: string } = {
         to: NEWFUND_ADDRESS,
         data: calldata,
