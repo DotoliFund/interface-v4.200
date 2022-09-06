@@ -108,7 +108,7 @@ export abstract class XXXFund {
     token: string,
     amount: CurrencyAmount<Currency>
   ): MethodParameters {
-    const calldatas: string[] = []
+    //const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
     const investor: string = validateAndParseAddress(account)
     // console.log(_amount)
@@ -117,34 +117,33 @@ export abstract class XXXFund {
     // console.log(_amount.toExact())
     // console.log(_amount.toFixed())
     // console.log(_amount.toSignificant(6))
-
+    console.log('amount.currency.name : ' + amount.currency.name)
+    console.log('amount.currency.symbol : ' + amount.currency.symbol)
     console.log('investor : ' + investor)
-    console.log('amount.quotient : ' + toHex(amount.quotient))
-    calldatas.push(
-      XXXFund.INTERFACE.encodeFunctionData('deposit', [
-        investor,
-        token_address,
-        toHex(amount.quotient),
-        //deadline: deadline
-      ])
-    )
+    console.log('token : ' + token)
+    console.log('amount.quotient toHex(): ' + toHex(amount.quotient))
+    console.log('amount.quotient : ' + amount.quotient)
     // calldatas.push(
-    //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-    //     {
-    //       manager: manager,
-    //       //token: fund.token,
-    //       token: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
-    //       amount: 1
-    //       //amount: toHex(_amount.quotient),
-    //       //deadline: deadline
-    //     }
+    //   XXXFund.INTERFACE.encodeFunctionData('deposit', [
+    //     investor,
+    //     token,
+    //     toHex(amount.quotient),
+    //     //amount.quotient.toString(),
+    //     //deadline: deadline
     //   ])
     // )
+    const calldatas: string = XXXFund.INTERFACE.encodeFunctionData('deposit', [
+      investor,
+      token,
+      toHex(amount.quotient),
+      //amount.quotient.toString(),
+      //deadline: deadline
+    ])
 
     const value: string = toHex(0)
 
     return {
-      calldata: Multicall.encodeMulticall(calldatas),
+      calldata: calldatas,
       value,
     }
   }

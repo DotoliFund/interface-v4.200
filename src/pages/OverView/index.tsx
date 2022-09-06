@@ -1,3 +1,4 @@
+import { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
@@ -15,14 +16,17 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import TokenWarningModal from 'components/TokenWarningModal'
+import { NEWFUND_ADDRESS } from 'constants/addresses'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
+import { useApproveCallback } from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
 //import { useIsDepositUnsupported } from 'hooks/useIsDepositUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
+import { XXXFund } from 'interface/XXXFund'
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -36,6 +40,7 @@ import {
 } from 'state/deposit/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { supportedChainId } from 'utils/supportedChainId'
 
@@ -57,14 +62,6 @@ const TopInputWrapper = styled.div<{ redesignFlag: boolean }>`
   visibility: ${({ redesignFlag }) => !redesignFlag && 'none'};
 `
 
-// export function getIsValidSwapQuote(
-//   trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
-//   tradeState: TradeState,
-//   swapInputError?: ReactNode
-// ): boolean {
-//   return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
-// }
-
 export default function Swap() {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
@@ -72,7 +69,7 @@ export default function Swap() {
   const redesignFlag = useRedesignFlag()
   const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
   const tokensFlag = useTokensFlag()
-  const { account, chainId } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
 
   // token warning stuff
@@ -115,13 +112,6 @@ export default function Swap() {
   // swap state
   const { typedValue, recipient } = useDepositState()
   const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedDepositInfo()
-
-  // const {
-  //   wrapType,
-  //   execute: onWrap,
-  //   inputError: wrapInputError,
-  // } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  // const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
 
   const { address: recipientAddress } = useENSAddress(recipient)
 
@@ -177,14 +167,6 @@ export default function Swap() {
   //TODO : change investor
   const investor = '0x1234'
 
-  // the callback to execute the swap
-  // const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
-  //   trade,
-  //   allowedSlippage,
-  //   recipient,
-  //   investor
-  // )
-
   const handleSwap = useCallback(
     () => {
       // if (!swapCallback) {
@@ -238,21 +220,6 @@ export default function Swap() {
     ]
   )
 
-  // errors
-  //const [swapQuoteReceivedDate] = useState<Date | undefined>()
-
-  // const handleConfirmDismiss = useCallback(() => {
-  //   setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
-  //   // if there was a tx hash, we want to clear the input
-  //   if (txHash) {
-  //     onUserInput(Field.INPUT, '')
-  //   }
-  // }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
-
-  // const handleAcceptChanges = useCallback(() => {
-  //   setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
-  // }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
-
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
       onCurrencySelection(inputCurrency)
@@ -271,6 +238,78 @@ export default function Swap() {
   // const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
   //const depositIsUnsupported = useIsDepositUnsupported(currencies[Field.INPUT])
   const depositIsUnsupported = false
+
+  //////////////////////////// deposit test ///////////////////////////////////
+
+  //const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+  const WETH_ADDRESS = '0xc778417E063141139Fce010982780140Aa0cD5Ab'
+  // check whether the user has approved the router on the tokens
+  const [approval, approveCallback] = useApproveCallback(
+    parsedAmounts[Field.INPUT],
+    chainId ? NEWFUND_ADDRESS : undefined
+  )
+
+  const isDepositTestMode = true
+  const isWithdrawTestMode = false
+
+  async function handleDeposit() {
+    if (!chainId || !provider || !account) return
+    if (!parsedAmount) return
+    if (account) {
+      await approveCallback()
+      const { calldata, value } = XXXFund.depositCallParameters(account, WETH_ADDRESS, parsedAmount)
+      const txn: { to: string; data: string; value: string } = {
+        to: NEWFUND_ADDRESS,
+        data: calldata,
+        value,
+      }
+
+      provider
+        .getSigner()
+        .estimateGas(txn)
+        .then((estimate) => {
+          const newTxn = {
+            ...txn,
+            gasLimit: calculateGasMargin(estimate),
+          }
+          return provider
+            .getSigner()
+            .sendTransaction(newTxn)
+            .then((response: TransactionResponse) => {
+              // setAttemptingTxn(false)
+              // addTransaction(response, {
+              //   type: TransactionType.ADD_LIQUIDITY_V3_POOL,
+              //   baseCurrencyId: currencyId(baseCurrency),
+              //   quoteCurrencyId: currencyId(quoteCurrency),
+              //   createPool: Boolean(noLiquidity),
+              //   expectedAmountBaseRaw: parsedAmounts[Field.CURRENCY_A]?.quotient?.toString() ?? '0',
+              //   expectedAmountQuoteRaw: parsedAmounts[Field.CURRENCY_B]?.quotient?.toString() ?? '0',
+              //   feeAmount: position.pool.fee,
+              // })
+              // setTxHash(response.hash)
+              // sendEvent({
+              //   category: 'Liquidity',
+              //   action: 'Add',
+              //   label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/'),
+              // })
+            })
+        })
+        .catch((error) => {
+          console.error('Failed to send transaction', error)
+          //setAttemptingTxn(false)
+          // we only care if the error is something _other_ than the user rejected the tx
+          if (error?.code !== 4001) {
+            console.error(error)
+          }
+        })
+    } else {
+      return
+    }
+  }
+
+  const handleWithdraw = useCallback(() => {
+    return
+  }, [])
 
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
@@ -348,13 +387,19 @@ export default function Swap() {
                     ) : (
                       <ButtonError
                         onClick={() => {
-                          // setSwapState({
-                          //   tradeToConfirm: trade,
-                          //   attemptingTxn: false,
-                          //   swapErrorMessage: undefined,
-                          //   showConfirm: true,
-                          //   txHash: undefined,
-                          // })
+                          if (isDepositTestMode) {
+                            handleDeposit()
+                          } else if (isWithdrawTestMode) {
+                            handleWithdraw()
+                          } else {
+                            // setSwapState({
+                            //   tradeToConfirm: trade,
+                            //   attemptingTxn: false,
+                            //   swapErrorMessage: undefined,
+                            //   showConfirm: true,
+                            //   txHash: undefined,
+                            // })
+                          }
                         }}
                         id="swap-button"
                         disabled={!isValid}
