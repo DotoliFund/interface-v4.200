@@ -35,8 +35,7 @@ export function useSwapCallArguments(
 
     if (!swapRouterAddress) return []
 
-    const { value, calldata } = XXXFund.swapCallParameters(trade, {
-      investor,
+    const { value, calldata } = XXXFund.swapCallParameters(investor, trade, {
       slippageTolerance: allowedSlippage,
     })
 

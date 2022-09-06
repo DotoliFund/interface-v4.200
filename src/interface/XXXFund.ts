@@ -70,26 +70,25 @@ enum V3SwapType {
  * V3TradeParams for producing the arguments to send calls to the router.
  */
 export interface V3TradeParams {
-  investor: string
   tradeType: V3TradeType
   swapType: V3SwapType
+  investor: string
   tokenIn: string
   tokenOut: string
-  fee: number
   recipient: string
-  path: string
+  fee: number
   amountIn: string
   amountOut: string
   amountInMaximum: string
   amountOutMinimum: string
   sqrtPriceLimitX96: number
+  path: string
 }
 
 /**
  * Options for producing the arguments to send calls to the router.
  */
 export interface SwapOptions {
-  investor: string
   /**
    * How much the execution price is allowed to move unfavorably from the trade execution price.
    */
@@ -203,7 +202,11 @@ export abstract class XXXFund {
    * @param options SwapOptions to use for the trade.
    * @returns A string array of calldatas for the trade.
    */
-  private static encodeV3Swap(trade: V3Trade<Currency, Currency, TradeType>, options: SwapOptions): V3TradeParams[] {
+  private static encodeV3Swap(
+    investor: string,
+    trade: V3Trade<Currency, Currency, TradeType>,
+    options: SwapOptions
+  ): V3TradeParams[] {
     const params: V3TradeParams[] = []
 
     for (const { route, inputAmount, outputAmount } of trade.swaps) {
@@ -219,36 +222,36 @@ export abstract class XXXFund {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
           //exactInputSingleParams
           params.push({
-            investor: options.investor,
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.SINGLE_HOP,
+            investor,
             tokenIn: route.tokenPath[0].address,
             tokenOut: route.tokenPath[1].address,
-            fee: route.pools[0].fee,
             recipient,
-            path: 'test',
+            fee: route.pools[0].fee,
             amountIn,
             amountOut: '',
             amountInMaximum: '',
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
+            path: 'test',
           })
         } else {
           //exactOutputSingleParams
           params.push({
-            investor: options.investor,
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.SINGLE_HOP,
+            investor,
             tokenIn: route.tokenPath[0].address,
             tokenOut: route.tokenPath[1].address,
-            fee: route.pools[0].fee,
             recipient,
-            path: 'test',
+            fee: route.pools[0].fee,
             amountIn: '',
             amountOut,
             amountInMaximum: amountIn,
             amountOutMinimum: '',
             sqrtPriceLimitX96: 0,
+            path: 'test',
           })
         }
       } else {
@@ -257,36 +260,36 @@ export abstract class XXXFund {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
           //exactInputParams
           params.push({
-            investor: options.investor,
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.MULTI_HOP,
+            investor,
             tokenIn: '',
             tokenOut: '',
-            fee: 0,
             recipient,
-            path,
+            fee: 0,
             amountIn,
             amountOut: '',
             amountInMaximum: '',
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
+            path,
           })
         } else {
           //exactOutputParams
           params.push({
-            investor: options.investor,
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.MULTI_HOP,
+            investor,
             tokenIn: '',
             tokenOut: '',
-            fee: 0,
             recipient,
-            path,
+            fee: 0,
             amountIn: '',
             amountOut,
             amountInMaximum: amountIn,
             amountOutMinimum: '',
             sqrtPriceLimitX96: 0,
+            path,
           })
         }
       }
@@ -302,6 +305,7 @@ export abstract class XXXFund {
    * @returns A string array of calldatas for the trade.
    */
   private static encodeSwaps(
+    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -365,7 +369,7 @@ export abstract class XXXFund {
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
-        for (const param of XXXFund.encodeV3Swap(trade, options)) {
+        for (const param of XXXFund.encodeV3Swap(investor, trade, options)) {
           params.push(param)
         }
       } else {
@@ -397,6 +401,7 @@ export abstract class XXXFund {
   }
 
   public static swapCallParameters(
+    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -405,7 +410,7 @@ export abstract class XXXFund {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = XXXFund.encodeSwaps(trades, options)
+    const { params } = XXXFund.encodeSwaps(investor, trades, options)
 
     return {
       calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params]),
