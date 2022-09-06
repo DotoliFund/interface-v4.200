@@ -12,6 +12,7 @@ import {
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund from 'abis/XXXFund.json'
 import { XXXToken_ADDRESS } from 'constants/addresses'
+import { NEWFUND_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
@@ -215,7 +216,7 @@ export abstract class XXXFund {
       // flag for whether the trade is single hop or not
       const singleHop = route.pools.length === 1
 
-      const recipient = 'test'
+      const recipient = NEWFUND_ADDRESS
 
       if (singleHop) {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
@@ -229,11 +230,11 @@ export abstract class XXXFund {
             recipient,
             fee: route.pools[0].fee,
             amountIn,
-            amountOut: '',
-            amountInMaximum: '',
+            amountOut: toHex(0),
+            amountInMaximum: toHex(0),
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
-            path: 'test',
+            path: toHex(''),
           })
         } else {
           //exactOutputSingleParams
@@ -245,12 +246,12 @@ export abstract class XXXFund {
             tokenOut: route.tokenPath[1].address,
             recipient,
             fee: route.pools[0].fee,
-            amountIn: '',
+            amountIn: toHex(0),
             amountOut,
             amountInMaximum: amountIn,
-            amountOutMinimum: '',
+            amountOutMinimum: toHex(0),
             sqrtPriceLimitX96: 0,
-            path: 'test',
+            path: toHex(''),
           })
         }
       } else {
@@ -262,13 +263,13 @@ export abstract class XXXFund {
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.MULTI_HOP,
             investor,
-            tokenIn: '',
-            tokenOut: '',
+            tokenIn: NEWFUND_ADDRESS,
+            tokenOut: NEWFUND_ADDRESS,
             recipient,
             fee: 0,
             amountIn,
-            amountOut: '',
-            amountInMaximum: '',
+            amountOut: toHex(0),
+            amountInMaximum: toHex(0),
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
             path,
@@ -279,14 +280,14 @@ export abstract class XXXFund {
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.MULTI_HOP,
             investor,
-            tokenIn: '',
-            tokenOut: '',
+            tokenIn: NEWFUND_ADDRESS,
+            tokenOut: NEWFUND_ADDRESS,
             recipient,
             fee: 0,
-            amountIn: '',
+            amountIn: toHex(0),
             amountOut,
             amountInMaximum: amountIn,
-            amountOutMinimum: '',
+            amountOutMinimum: toHex(0),
             sqrtPriceLimitX96: 0,
             path,
           })
