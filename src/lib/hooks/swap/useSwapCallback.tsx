@@ -25,7 +25,6 @@ interface UseSwapCallbackArgs {
   trade: Trade<Currency, Currency, TradeType> | undefined // trade to execute, required
   allowedSlippage: Percent // in bips
   recipientAddressOrName: string | null | undefined // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  investor: string
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
@@ -34,11 +33,10 @@ export function useSwapCallback({
   trade,
   allowedSlippage,
   recipientAddressOrName,
-  investor,
 }: UseSwapCallbackArgs): UseSwapCallbackReturns {
   const { account, chainId, provider } = useWeb3React()
 
-  const swapCalls = useSwapCallArguments(investor, trade, allowedSlippage)
+  const swapCalls = useSwapCallArguments(trade, allowedSlippage)
   const { callback } = useSendSwapTransaction(account, chainId, provider, trade, swapCalls)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)

@@ -3,10 +3,10 @@
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+import { NEWFUND_ADDRESS } from 'constants/addresses'
 //import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 import { XXXFund } from 'interface/XXXFund'
 import { useMemo } from 'react'
-
 //import useENS from './useENS'
 
 interface SwapCall {
@@ -21,7 +21,6 @@ interface SwapCall {
  * @param allowedSlippage user allowed slippage
  */
 export function useSwapCallArguments(
-  investor: string,
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent
 ): SwapCall[] {
@@ -35,16 +34,16 @@ export function useSwapCallArguments(
 
     if (!swapRouterAddress) return []
 
-    const { value, calldata } = XXXFund.swapCallParameters(investor, trade, {
+    const { value, calldata } = XXXFund.swapCallParameters(account, trade, {
       slippageTolerance: allowedSlippage,
     })
 
     return [
       {
-        address: swapRouterAddress,
+        address: NEWFUND_ADDRESS,
         calldata,
         value,
       },
     ]
-  }, [investor, account, allowedSlippage, chainId, provider, trade])
+  }, [account, allowedSlippage, chainId, provider, trade])
 }

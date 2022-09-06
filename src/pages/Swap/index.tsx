@@ -304,12 +304,7 @@ export default function Swap() {
   const investor = '0x1234'
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
-    trade,
-    allowedSlippage,
-    recipient,
-    investor
-  )
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
 
   const handleSwap = useCallback(() => {
     if (!swapCallback) {

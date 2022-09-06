@@ -54,7 +54,6 @@ export default function FundSwap() {
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade.trade,
     allowedSlippage,
-    '0xAC8fa658D92eB97D92c145774d103f4D9578da16',
     '0xAC8fa658D92eB97D92c145774d103f4D9578da16'
   )
 
