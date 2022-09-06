@@ -1,14 +1,13 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { SwapRouter, Trade } from '@uniswap/router-sdk'
+//import { BigNumber } from '@ethersproject/bignumber'
+//import { SwapRouter, Trade } from '@uniswap/router-sdk'
+import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
+//import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
+import { XXXFund } from 'interface/XXXFund'
 import { useMemo } from 'react'
-import approveAmountCalldata from 'utils/approveAmountCalldata'
 
-import { useArgentWalletContract } from './useArgentWalletContract'
-import useENS from './useENS'
+//import useENS from './useENS'
 
 interface SwapCall {
   address: string
@@ -20,54 +19,26 @@ interface SwapCall {
  * Returns the swap calls that can be used to make the trade
  * @param trade trade to execute
  * @param allowedSlippage user allowed slippage
- * @param recipientAddressOrName the ENS name or address of the recipient of the swap output
  */
 export function useSwapCallArguments(
+  investor: string,
   trade: Trade<Currency, Currency, TradeType> | undefined,
-  allowedSlippage: Percent,
-  recipientAddressOrName: string | null | undefined,
-  deadline: BigNumber | undefined,
-  feeOptions: FeeOptions | undefined
+  allowedSlippage: Percent
 ): SwapCall[] {
   const { account, chainId, provider } = useWeb3React()
 
-  const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const argentWalletContract = useArgentWalletContract()
-
   return useMemo(() => {
-    if (!trade || !recipient || !provider || !account || !chainId || !deadline) return []
+    if (!trade || !provider || !account || !chainId) return []
 
-    const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
+    //const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
+    const swapRouterAddress = '0x39f90436eBD4A08f5Fa7674257b198632599E5F5'
+
     if (!swapRouterAddress) return []
 
-    const { value, calldata } = SwapRouter.swapCallParameters(trade, {
-      fee: feeOptions,
-      recipient,
+    const { value, calldata } = XXXFund.swapCallParameters(investor, trade, {
       slippageTolerance: allowedSlippage,
-      ...{},
-
-      deadlineOrPreviousBlockhash: deadline.toString(),
     })
 
-    if (argentWalletContract && trade.inputAmount.currency.isToken) {
-      return [
-        {
-          address: argentWalletContract.address,
-          calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
-            [
-              approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
-              {
-                to: swapRouterAddress,
-                value,
-                data: calldata,
-              },
-            ],
-          ]),
-          value: '0x0',
-        },
-      ]
-    }
     return [
       {
         address: swapRouterAddress,
@@ -75,5 +46,5 @@ export function useSwapCallArguments(
         value,
       },
     ]
-  }, [account, allowedSlippage, argentWalletContract, chainId, deadline, feeOptions, provider, recipient, trade])
+  }, [investor, account, allowedSlippage, chainId, provider, trade])
 }

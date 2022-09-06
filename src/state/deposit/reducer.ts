@@ -1,36 +1,44 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 
-import { replaceDepositState, selectCurrency, setSender, typeInput } from './actions'
-import { queryParametersToDepositState } from './hooks'
+import { Field, replaceDepositState, selectCurrency, setRecipient, typeInput } from './actions'
+import { queryParametersToSwapState } from './hooks'
 
 export interface DepositState {
   readonly typedValue: string
-  readonly currency: string
+  readonly [Field.INPUT]: {
+    readonly currencyId: string | undefined | null
+  }
   // the typed recipient address or ENS name, or null if swap should go to sender
-  readonly sender: string | null
-  readonly fundAccount: string | null
+  readonly recipient: string | null
 }
 
-const initialState: DepositState = queryParametersToDepositState(parsedQueryString())
+const initialState: DepositState = queryParametersToSwapState(parsedQueryString())
 
 export default createReducer<DepositState>(initialState, (builder) =>
   builder
-    .addCase(replaceDepositState, (state, { payload: { currency, typedValue, sender, fundAccount } }) => {
+    .addCase(replaceDepositState, (state, { payload: { typedValue, recipient, inputCurrencyId } }) => {
       return {
-        currency,
+        [Field.INPUT]: {
+          currencyId: inputCurrencyId ?? null,
+        },
         typedValue,
-        sender,
-        fundAccount,
+        recipient,
       }
     })
-    .addCase(selectCurrency, (state, { payload: { currency } }) => {
-      state.currency = currency
+    .addCase(selectCurrency, (state, { payload: { currencyId } }) => {
+      return {
+        ...state,
+        [Field.INPUT]: { currencyId },
+      }
     })
     .addCase(typeInput, (state, { payload: { typedValue } }) => {
-      state.typedValue = typedValue
+      return {
+        ...state,
+        typedValue,
+      }
     })
-    .addCase(setSender, (state, { payload: { sender } }) => {
-      state.sender = sender
+    .addCase(setRecipient, (state, { payload: { recipient } }) => {
+      state.recipient = recipient
     })
 )

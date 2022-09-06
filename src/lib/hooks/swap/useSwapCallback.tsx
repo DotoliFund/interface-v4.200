@@ -1,10 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
-import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import useENS from 'hooks/useENS'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
@@ -27,8 +25,7 @@ interface UseSwapCallbackArgs {
   trade: Trade<Currency, Currency, TradeType> | undefined // trade to execute, required
   allowedSlippage: Percent // in bips
   recipientAddressOrName: string | null | undefined // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  deadline: BigNumber | undefined
-  feeOptions?: FeeOptions
+  investor: string
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
@@ -37,12 +34,11 @@ export function useSwapCallback({
   trade,
   allowedSlippage,
   recipientAddressOrName,
-  deadline,
-  feeOptions,
+  investor,
 }: UseSwapCallbackArgs): UseSwapCallbackReturns {
   const { account, chainId, provider } = useWeb3React()
 
-  const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, deadline, feeOptions)
+  const swapCalls = useSwapCallArguments(investor, trade, allowedSlippage)
   const { callback } = useSendSwapTransaction(account, chainId, provider, trade, swapCalls)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
