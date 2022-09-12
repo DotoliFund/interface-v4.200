@@ -414,8 +414,26 @@ export abstract class XXXFund {
     console.log(params.length)
     console.log(params[0])
     console.log(params)
+
+    const params_Test: V3TradeParams[] = []
+    params_Test.push({
+      tradeType: V3TradeType.EXACT_INPUT,
+      swapType: V3SwapType.SINGLE_HOP,
+      investor,
+      tokenIn: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+      tokenOut: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+      recipient: NEWFUND_ADDRESS,
+      fee: 0,
+      amountIn: '0x02c68af0bb140000', //0.2??
+      amountOut: toHex(0),
+      amountInMaximum: toHex(0),
+      amountOutMinimum: '0x03d9f536fbd49a38',
+      sqrtPriceLimitX96: 0,
+      path: toHex(''),
+    })
+
     return {
-      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params]),
+      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params_Test]),
       value,
     }
   }
