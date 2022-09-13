@@ -12,6 +12,7 @@ import {
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund from 'abis/XXXFund.json'
 import { XXXToken_ADDRESS } from 'constants/addresses'
+import { NEWFUND_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
@@ -215,7 +216,7 @@ export abstract class XXXFund {
       // flag for whether the trade is single hop or not
       const singleHop = route.pools.length === 1
 
-      const recipient = 'test'
+      const recipient = NEWFUND_ADDRESS
 
       if (singleHop) {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
@@ -229,11 +230,11 @@ export abstract class XXXFund {
             recipient,
             fee: route.pools[0].fee,
             amountIn,
-            amountOut: '',
-            amountInMaximum: '',
+            amountOut: toHex(0),
+            amountInMaximum: toHex(0),
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
-            path: 'test',
+            path: toHex(''),
           })
         } else {
           //exactOutputSingleParams
@@ -245,12 +246,12 @@ export abstract class XXXFund {
             tokenOut: route.tokenPath[1].address,
             recipient,
             fee: route.pools[0].fee,
-            amountIn: '',
+            amountIn: toHex(0),
             amountOut,
             amountInMaximum: amountIn,
-            amountOutMinimum: '',
+            amountOutMinimum: toHex(0),
             sqrtPriceLimitX96: 0,
-            path: 'test',
+            path: toHex(''),
           })
         }
       } else {
@@ -262,13 +263,13 @@ export abstract class XXXFund {
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.MULTI_HOP,
             investor,
-            tokenIn: '',
-            tokenOut: '',
+            tokenIn: NEWFUND_ADDRESS,
+            tokenOut: NEWFUND_ADDRESS,
             recipient,
             fee: 0,
             amountIn,
-            amountOut: '',
-            amountInMaximum: '',
+            amountOut: toHex(0),
+            amountInMaximum: toHex(0),
             amountOutMinimum: amountOut,
             sqrtPriceLimitX96: 0,
             path,
@@ -279,14 +280,14 @@ export abstract class XXXFund {
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.MULTI_HOP,
             investor,
-            tokenIn: '',
-            tokenOut: '',
+            tokenIn: NEWFUND_ADDRESS,
+            tokenOut: NEWFUND_ADDRESS,
             recipient,
             fee: 0,
-            amountIn: '',
+            amountIn: toHex(0),
             amountOut,
             amountInMaximum: amountIn,
-            amountOutMinimum: '',
+            amountOutMinimum: toHex(0),
             sqrtPriceLimitX96: 0,
             path,
           })
@@ -410,9 +411,40 @@ export abstract class XXXFund {
     const value = toHex(0)
 
     const { params } = XXXFund.encodeSwaps(investor, trades, options)
+    console.log(params.length)
+    console.log(params[0])
+    console.log(params)
+
+    const params_Test: V3TradeParams[] = []
+    params_Test.push({
+      tradeType: V3TradeType.EXACT_INPUT,
+      swapType: V3SwapType.SINGLE_HOP,
+      investor,
+      tokenIn: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+      tokenOut: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+      recipient: NEWFUND_ADDRESS,
+      fee: 500,
+      amountIn: '0x016345785d8a0000', //0.1
+      amountOut: toHex(0),
+      amountInMaximum: toHex(0),
+      amountOutMinimum: '0x01e02c8ae808cc66',
+      sqrtPriceLimitX96: 0,
+      path: toHex(''),
+    })
+
+    // exactInputSingleParams :
+    // {tokenIn: '0xc778417E063141139Fce010982780140Aa0cD5Ab', tokenOut: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', fee: 500, recipient: '0xAC8fa658D92eB97D92c145774d103f4D9578da16', amountIn: '0x016345785d8a0000', …}
+    // amountIn: "0x016345785d8a0000"
+    // amountOutMinimum: "0x01e02c8ae808cc66"
+    // fee: 500
+    // recipient: "0xAC8fa658D92eB97D92c145774d103f4D9578da16"
+    // sqrtPriceLimitX96: 0
+    // tokenIn: "0xc778417E063141139Fce010982780140Aa0cD5Ab"
+    // tokenOut: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+    // [[Prototype]]: Object
 
     return {
-      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params]),
+      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params_Test]),
       value,
     }
   }
