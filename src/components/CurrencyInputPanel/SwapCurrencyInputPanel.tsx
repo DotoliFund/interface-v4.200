@@ -6,6 +6,7 @@ import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/con
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
+import { NEWFUND_ADDRESS } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { darken } from 'polished'
@@ -270,7 +271,8 @@ export default function SwapCurrencyInputPanel({
   const { account, chainId } = useWeb3React()
   const redesignFlag = useRedesignFlag()
   const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  //const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const selectedCurrencyBalance = useCurrencyBalance(NEWFUND_ADDRESS ?? undefined, currency ?? undefined)
   const theme = useTheme()
   const { pathname } = useLocation()
   const isAddLiquidityPage = pathname.includes('/add') && !pathname.includes('/add/v2')
