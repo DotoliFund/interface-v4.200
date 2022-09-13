@@ -1,8 +1,16 @@
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import React, { useMemo } from 'react'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
-import styled, { css, DefaultTheme, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import styled, {
+  createGlobalStyle,
+  css,
+  DefaultTheme,
+  ThemeProvider as StyledComponentsThemeProvider,
+} from 'styled-components/macro'
 
+import { cssStringFromTheme } from '../nft/css/cssStringFromTheme'
+import { darkTheme } from '../nft/themes/darkTheme'
+import { lightTheme } from '../nft/themes/lightTheme'
 import { useIsDarkMode } from '../state/user/hooks'
 import { colors as ColorsPalette, colorsDark, colorsLight } from './colors'
 import { AllColors, Colors, ThemeColors } from './styled'
@@ -376,3 +384,18 @@ export const ThemedText = {
     return <TextWrapper fontWeight={500} color={error ? 'deprecated_red1' : 'deprecated_text2'} {...props} />
   },
 }
+
+export const ThemedGlobalStyle = createGlobalStyle`
+html {
+  color: ${({ theme }) => theme.deprecated_text1};
+  background-color: ${({ theme }) => theme.deprecated_bg1} !important;
+}
+
+a {
+ color: ${({ theme }) => theme.deprecated_blue1}; 
+}
+
+:root {
+  ${({ theme }) => (theme.darkMode ? cssStringFromTheme(darkTheme) : cssStringFromTheme(lightTheme))}
+}
+`

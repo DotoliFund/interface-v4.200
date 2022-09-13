@@ -24,6 +24,7 @@ const themeContractValues = {
     magicGradient: '',
     placeholder: '',
     lightGrayButton: '',
+    loading: '',
 
     // Opacities of black and white
     white95: '',

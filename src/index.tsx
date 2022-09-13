@@ -1,5 +1,3 @@
-//import './index.css'
-
 import { green, purple } from '@mui/material/colors'
 import { createTheme } from '@mui/material/styles'
 import Web3Provider from 'components/Web3Provider'
@@ -12,7 +10,7 @@ import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import store from 'state'
-import ThemeProvider from 'theme'
+import ThemeProvider, { ThemedGlobalStyle } from 'theme'
 
 import { LanguageProvider } from './i18n'
 import reportWebVitals from './reportWebVitals'
@@ -59,6 +57,7 @@ root.render(
               <BlockNumberProvider>
                 <Updaters />
                 <ThemeProvider>
+                  <ThemedGlobalStyle />
                   <App />
                 </ThemeProvider>
               </BlockNumberProvider>
