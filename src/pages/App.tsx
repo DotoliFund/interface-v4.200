@@ -9,8 +9,6 @@ import { useNftFlag } from 'featureFlags/flags/nft'
 import { useTokensFlag } from 'featureFlags/flags/tokens'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Deposit from 'pages/Deposit'
-//import Swap from './Swap'
-//import CreateFund from 'pages/CreateFund'
 import Fund from 'pages/Fund'
 import FundList from 'pages/Fund'
 import Main from 'pages/Main'
@@ -33,6 +31,10 @@ import Navbar from '../components/NavBar'
 import Popups from '../components/Popups'
 import { useIsExpertMode } from '../state/user/hooks'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
+// import Pool from './Pool'
+// import { PositionPage } from './Pool/PositionPage'
+// import PoolV2 from './Pool/v2'
+// import PoolFinder from './PoolFinder'
 
 const Vote = lazy(() => import('pages/Swap'))
 
@@ -151,6 +153,12 @@ export default function App() {
                   <Route path="overview" element={<Overview />} />
                   <Route path="fund" element={<FundList />} />
                   <Route path="fund/:fundID" element={<Fund />} />
+
+                  {/* <Route path="pool/v2/find" element={<PoolFinder />} />
+                  <Route path="pool/v2" element={<PoolV2 />} />
+                  <Route path="pool" element={<Pool />} />
+                  <Route path="pool/:tokenId" element={<PositionPage />} /> */}
+
                   <Route path="swap" element={<Swap />} />
                   <Route path="deposit/:fund/:tokenId" element={<Deposit />} />
                   <Route path="withdraw/:fund/:tokenId" element={<Withdraw />} />
