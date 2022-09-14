@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import XXXFund2Json from 'abis/XXXFund2.json'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
@@ -24,11 +25,14 @@ import styled, { css, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 //import { PositionDetails } from 'types/position'
 import { FundDetails } from 'types/fund'
+import { getContract } from 'utils'
 
 //import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
+
+const { abi: XXXFund2ABI } = XXXFund2Json
 
 const PageWrapper = styled(AutoColumn)<{ navBarFlag: boolean }>`
   padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px')};
@@ -203,7 +207,7 @@ function WrongNetworkCard() {
 export default function Fund() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const { account, chainId } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const toggleWalletModal = useToggleWalletModal()
   const XXXFactory = useXXXFactoryContract()
   const theme = useTheme()
@@ -219,27 +223,34 @@ export default function Fund() {
   const investingFunds: FundDetails[] = []
   let investingFundsLoading = false
 
-  if (account) {
+  if (account && provider) {
     managingFundLoading = true
     XXXFactory?.getFundByManager(account).then((response: any) => {
       //managingFund = response
       console.log(response)
-      managingFundLoading = false
+
+      const fundContract = getContract('address', XXXFund2Json, provider, account)
+      fundContract?.getInvestorTokens(account).then((response2: any) => {
+        console.log(response2)
+        managingFundLoading = false
+      })
     })
     investingFundsLoading = true
     XXXFactory?.getInvestorFundList(account).then((response: any) => {
       //investingFunds = response
       console.log(response)
+
+      // const balances = useMultipleContractSingleData(
+      //   validatedTokenAddresses,
+      //   XXXFund2Json,
+      //   'getInvestorTokens',
+      //   useMemo(() => [address], [address]),
+      //   tokenBalancesGasRequirement
+      // )
+
       investingFundsLoading = false
     })
   }
-  // const balances = useMultipleContractSingleData(
-  //   validatedTokenAddresses,
-  //   ERC20Interface,
-  //   'balanceOf',
-  //   useMemo(() => [address], [address]),
-  //   tokenBalancesGasRequirement
-  // )
 
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />

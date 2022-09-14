@@ -19,7 +19,6 @@ import ERC1155_ABI from 'abis/erc1155.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
 import XXXFactoryJson from 'abis/XXXFactory.json'
-import XXXFund2Json from 'abis/XXXFund2.json'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
@@ -30,12 +29,10 @@ import {
   V2_ROUTER_ADDRESS,
   V3_MIGRATOR_ADDRESSES,
   XXXFACTORY_ADDRESSES,
-  XXXFUND2_ADDRESSES,
 } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
 import { XXXFactory } from 'types/fund/XXXFactory'
-import { XXXFund2 } from 'types/fund/XXXFund2'
 import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall } from 'types/v3'
 import { V3Migrator } from 'types/v3/V3Migrator'
 
@@ -50,7 +47,6 @@ const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 const { abi: NFTPositionManagerABI } = NonfungiblePositionManagerJson
 const { abi: V2MigratorABI } = V3MigratorJson
 const { abi: XXXFactoryABI } = XXXFactoryJson
-const { abi: XXXFund2ABI } = XXXFund2Json
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
@@ -152,8 +148,4 @@ export function useTickLens(): TickLens | null {
 
 export function useXXXFactoryContract(withSignerIfPossible?: boolean): XXXFactory | null {
   return useContract<XXXFactory>(XXXFACTORY_ADDRESSES, XXXFactoryABI, withSignerIfPossible)
-}
-
-export function useXXXFund2Contract(withSignerIfPossible?: boolean): XXXFund2 | null {
-  return useContract<XXXFund2>(XXXFUND2_ADDRESSES, XXXFund2ABI, withSignerIfPossible)
 }
