@@ -23,8 +23,8 @@ export interface UserState {
 
   userClientSideRouter: boolean // whether routes should be calculated with the client side router only
 
-  // hides closed (inactive) positions across the app
-  userHideClosedPositions: boolean
+  // hides closed (inactive) Funds across the app
+  userHideClosedFunds: boolean
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number | 'auto'
@@ -68,7 +68,7 @@ export const initialState: UserState = {
   userExpertMode: false,
   userLocale: null,
   userClientSideRouter: false,
-  userHideClosedPositions: false,
+  userHideClosedFunds: false,
   userSlippageTolerance: 'auto',
   userSlippageToleranceHasBeenMigratedToAuto: true,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
@@ -115,8 +115,8 @@ const userSlice = createSlice({
     updateUserClientSideRouter(state, action) {
       state.userClientSideRouter = action.payload.userClientSideRouter
     },
-    updateHideClosedPositions(state, action) {
-      state.userHideClosedPositions = action.payload.userHideClosedPositions
+    updateHideClosedFunds(state, action) {
+      state.userHideClosedFunds = action.payload.userHideClosedFunds
     },
     updateShowSurveyPopup(state, action) {
       state.showSurveyPopup = action.payload.showSurveyPopup
@@ -206,7 +206,7 @@ export const {
   addSerializedToken,
   removeSerializedPair,
   removeSerializedToken,
-  updateHideClosedPositions,
+  updateHideClosedFunds,
   updateMatchesDarkMode,
   updateShowDonationLink,
   updateShowSurveyPopup,

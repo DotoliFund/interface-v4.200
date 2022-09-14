@@ -4,24 +4,27 @@ import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import { FlyoutAlignment, NewMenu } from 'components/Menu'
 //import PositionList from 'components/PositionList'
+import FundList from 'components/FundList'
+import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
 import { isSupportedChain } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
+import { useXXXFactoryContract } from 'hooks/useContract'
 //import { useV3Positions } from 'hooks/useV3Positions'
-import { useFunds } from 'hooks/useFunds'
 import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { useUserHideClosedPositions } from 'state/user/hooks'
+//import { useUserHideClosedPositions } from 'state/user/hooks'
+import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
-
 //import { PositionDetails } from 'types/position'
+import { FundDetails } from 'types/fund'
+
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
@@ -142,7 +145,7 @@ const MainContentWrapper = styled.main`
   flex-direction: column;
 `
 
-function PositionsLoadingPlaceholder() {
+function FundsLoadingPlaceholder() {
   return (
     <LoadingRows>
       <div />
@@ -196,31 +199,60 @@ function WrongNetworkCard() {
   )
 }
 
-export default function Pool() {
+export default function Fund() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const { account, chainId } = useWeb3React()
   const toggleWalletModal = useToggleWalletModal()
-
+  const XXXFactory = useXXXFactoryContract()
   const theme = useTheme()
-  const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
+  //const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
+  const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
 
   //const { positions, loading: positionsLoading } = useV3Positions(account)
-  const { funds, loading: fundsLoading } = useFunds(account)
+  //const { funds, loading: fundsLoading } = useFunds(account)
+  //const { funds: managingFund, loading: managingFundLoading } = useManagingFund(account)
+  //const { funds: investingFunds, loading: investingFundsLoading } = useInvestingFunds(account)
+  let managingFund: FundDetails[] = []
+  let managingFundLoading = false
+  let investingFunds: FundDetails[] = []
+  let investingFundsLoading = false
+
+  if (account) {
+    managingFundLoading = true
+    XXXFactory?.getFundByManager(account).then((response: any) => {
+      managingFund = response
+      managingFundLoading = false
+    })
+    investingFundsLoading = true
+    XXXFactory?.getInvestorFundList(account).then((response: any) => {
+      investingFunds = response
+      investingFundsLoading = false
+    })
+  }
 
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />
   }
 
-  // const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
-  //   (acc, p) => {
-  //     acc[p.liquidity?.isZero() ? 1 : 0].push(p)
-  //     return acc
-  //   },
-  //   [[], []]
-  // ) ?? [[], []]
+  const [openManagingFunds, closedManagingFunds] = managingFund?.reduce<[FundDetails[], FundDetails[]]>(
+    (acc, p) => {
+      acc[p.liquidity?.isZero() ? 1 : 0].push(p)
+      return acc
+    },
+    [[], []]
+  ) ?? [[], []]
+  const [openInvestingFunds, closedInvestingFunds] = investingFunds?.reduce<[FundDetails[], FundDetails[]]>(
+    (acc, p) => {
+      acc[p.liquidity?.isZero() ? 1 : 0].push(p)
+      return acc
+    },
+    [[], []]
+  ) ?? [[], []]
 
   //const filteredPositions = [...openPositions, ...(userHideClosedPositions ? [] : closedPositions)]
+  const filteredManagingFunds = [...openManagingFunds, ...closedManagingFunds]
+  const filteredInvestingFunds = [...openInvestingFunds, ...closedInvestingFunds]
   const showConnectAWallet = Boolean(!account)
   const showV2Features = Boolean(V2_FACTORY_ADDRESSES[chainId])
 
@@ -279,8 +311,10 @@ export default function Pool() {
               </TitleRow>
 
               <MainContentWrapper>
-                {fundLoading ? (
-                  <PositionsLoadingPlaceholder />
+                {managingFundLoading ? (
+                  <FundsLoadingPlaceholder />
+                ) : filteredManagingFunds && filteredManagingFunds.length > 0 ? (
+                  <FundList funds={filteredManagingFunds} setUserHideClosedFunds={false} userHideClosedFunds={false} />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
@@ -293,14 +327,24 @@ export default function Pool() {
                 )}
               </MainContentWrapper>
               <MainContentWrapper>
-                <ErrorContainer>
-                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
-                    <InboxIcon strokeWidth={1} />
-                    <div>
-                      <Trans>Your investing funds will appear here.</Trans>
-                    </div>
-                  </ThemedText.DeprecatedBody>
-                </ErrorContainer>
+                {investingFundsLoading ? (
+                  <FundsLoadingPlaceholder />
+                ) : filteredInvestingFunds && closedInvestingFunds && filteredInvestingFunds.length > 0 ? (
+                  <FundList
+                    funds={filteredInvestingFunds}
+                    setUserHideClosedFunds={setUserHideClosedFunds}
+                    userHideClosedFunds={userHideClosedFunds}
+                  />
+                ) : (
+                  <ErrorContainer>
+                    <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                      <InboxIcon strokeWidth={1} />
+                      <div>
+                        <Trans>Your investing funds will appear here.</Trans>
+                      </div>
+                    </ThemedText.DeprecatedBody>
+                  </ErrorContainer>
+                )}
               </MainContentWrapper>
               <HideSmall>
                 <CTACards />

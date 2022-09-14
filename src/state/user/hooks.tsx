@@ -17,7 +17,7 @@ import {
   addSerializedPair,
   addSerializedToken,
   removeSerializedToken,
-  updateHideClosedPositions,
+  updateHideClosedFunds,
   updateShowSurveyPopup,
   updateShowTokensPromoBanner,
   updateUserClientSideRouter,
@@ -181,19 +181,19 @@ export function useUserSlippageTolerance(): [Percent | 'auto', (slippageToleranc
   )
 }
 
-export function useUserHideClosedPositions(): [boolean, (newHideClosedPositions: boolean) => void] {
+export function useUserHideClosedFunds(): [boolean, (newHideClosedFunds: boolean) => void] {
   const dispatch = useAppDispatch()
 
-  const hideClosedPositions = useAppSelector((state) => state.user.userHideClosedPositions)
+  const hideClosedFunds = useAppSelector((state) => state.user.userHideClosedFunds)
 
-  const setHideClosedPositions = useCallback(
-    (newHideClosedPositions: boolean) => {
-      dispatch(updateHideClosedPositions({ userHideClosedPositions: newHideClosedPositions }))
+  const setHideClosedFunds = useCallback(
+    (newHideClosedFunds: boolean) => {
+      dispatch(updateHideClosedFunds({ userHideClosedFunds: newHideClosedFunds }))
     },
     [dispatch]
   )
 
-  return [hideClosedPositions, setHideClosedPositions]
+  return [hideClosedFunds, setHideClosedFunds]
 }
 
 /**
