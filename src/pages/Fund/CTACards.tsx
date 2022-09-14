@@ -113,7 +113,7 @@ export default function CTACards() {
             <Trans>Top funds</Trans> ↗
           </HeaderText>
           <ThemedText.DeprecatedBody fontWeight={400} style={{ alignSelf: 'flex-start' }}>
-            <Trans>Explore XXXFund Analytics.</Trans>
+            <Trans>Explore XXXFund2 Analytics.</Trans>
           </ThemedText.DeprecatedBody>
         </ResponsiveColumn>
       </CTA2>

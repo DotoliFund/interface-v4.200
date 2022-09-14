@@ -25,6 +25,7 @@ import { HideSmall, ThemedText } from 'theme'
 //import { PositionDetails } from 'types/position'
 import { FundDetails } from 'types/fund'
 
+//import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
@@ -213,23 +214,32 @@ export default function Fund() {
   //const { funds, loading: fundsLoading } = useFunds(account)
   //const { funds: managingFund, loading: managingFundLoading } = useManagingFund(account)
   //const { funds: investingFunds, loading: investingFundsLoading } = useInvestingFunds(account)
-  let managingFund: FundDetails[] = []
+  const managingFund: FundDetails[] = []
   let managingFundLoading = false
-  let investingFunds: FundDetails[] = []
+  const investingFunds: FundDetails[] = []
   let investingFundsLoading = false
 
   if (account) {
     managingFundLoading = true
     XXXFactory?.getFundByManager(account).then((response: any) => {
-      managingFund = response
+      //managingFund = response
+      console.log(response)
       managingFundLoading = false
     })
     investingFundsLoading = true
     XXXFactory?.getInvestorFundList(account).then((response: any) => {
-      investingFunds = response
+      //investingFunds = response
+      console.log(response)
       investingFundsLoading = false
     })
   }
+  // const balances = useMultipleContractSingleData(
+  //   validatedTokenAddresses,
+  //   ERC20Interface,
+  //   'balanceOf',
+  //   useMemo(() => [address], [address]),
+  //   tokenBalancesGasRequirement
+  // )
 
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />

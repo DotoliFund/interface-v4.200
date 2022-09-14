@@ -109,7 +109,7 @@ export default function FundWithdraw() {
     // if (factory && currency && account) {
     //   console.log(3)
     //   //const useNative = baseCurrency.isNative ? baseCurrency : undefined
-    //   const { calldata, value } = XXXFund.withdrawParameters(
+    //   const { calldata, value } = XXXFund2.withdrawParameters(
     //     account,
     //     inputCurrencyId,
     //     parsedAmount
