@@ -15,3 +15,10 @@ export interface FundDetails {
   tokensOwed0: BigNumber
   tokensOwed1: BigNumber
 }
+
+// export interface FundDetails {
+//   fundAddress: string
+//   manager: string
+//   investor: string
+//   tokens: string[]
+// }
