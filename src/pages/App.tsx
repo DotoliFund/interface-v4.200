@@ -160,6 +160,7 @@ export default function App() {
                   <Route path="pool/:tokenId" element={<PositionPage />} /> */}
 
                   <Route path="swap" element={<Swap />} />
+                  <Route path="deposit" element={<Deposit />} />
                   <Route path="deposit/:fund/:tokenId" element={<Deposit />} />
                   <Route path="withdraw/:fund/:tokenId" element={<Withdraw />} />
                   <Route path="swap/:fund/:currencyIdA/:currencyIdB" element={<Swap />} />

@@ -297,13 +297,16 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <Trans>Swap</Trans>
         </StyledNavLink>
+        <StyledNavLink id={`swap-nav-link`} to={'/deposit'}>
+          <Trans>Deposit</Trans>
+        </StyledNavLink>
         <StyledNavLink
           data-cy="pool-nav-link"
           id={`pool-nav-link`}
           to={'/pool'}
           className={isPoolActive ? activeClassName : undefined}
         >
-          <Trans>Deposit</Trans>
+          <Trans>Pool</Trans>
         </StyledNavLink>
         {(!chainId || chainId === SupportedChainId.MAINNET) && (
           <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
