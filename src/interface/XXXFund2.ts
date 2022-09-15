@@ -415,36 +415,8 @@ export abstract class XXXFund2 {
     console.log(params[0])
     console.log(params)
 
-    const params_Test: V3TradeParams[] = []
-    params_Test.push({
-      tradeType: V3TradeType.EXACT_INPUT,
-      swapType: V3SwapType.SINGLE_HOP,
-      investor,
-      tokenIn: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
-      tokenOut: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-      recipient: NEWFUND_ADDRESS,
-      fee: 500,
-      amountIn: '0x016345785d8a0000', //0.1
-      amountOut: toHex(0),
-      amountInMaximum: toHex(0),
-      amountOutMinimum: '0x01e02c8ae808cc66',
-      sqrtPriceLimitX96: 0,
-      path: toHex(''),
-    })
-
-    // exactInputSingleParams :
-    // {tokenIn: '0xc778417E063141139Fce010982780140Aa0cD5Ab', tokenOut: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', fee: 500, recipient: '0xAC8fa658D92eB97D92c145774d103f4D9578da16', amountIn: '0x016345785d8a0000', …}
-    // amountIn: "0x016345785d8a0000"
-    // amountOutMinimum: "0x01e02c8ae808cc66"
-    // fee: 500
-    // recipient: "0xAC8fa658D92eB97D92c145774d103f4D9578da16"
-    // sqrtPriceLimitX96: 0
-    // tokenIn: "0xc778417E063141139Fce010982780140Aa0cD5Ab"
-    // tokenOut: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
-    // [[Prototype]]: Object
-
     return {
-      calldata: XXXFund2.INTERFACE.encodeFunctionData('swap', [params_Test]),
+      calldata: XXXFund2.INTERFACE.encodeFunctionData('swap', [params]),
       value,
     }
   }
