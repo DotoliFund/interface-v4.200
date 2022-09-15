@@ -56,7 +56,7 @@ export default function CreateFund() {
 
   //const fundAddress = Fund.getFundAddress(XXXFACTORY_ADDRESSES, account)
   // check whether the user has approved the router on the tokens
-  // const [approval, approveCallback] = useApproveCallback(parsedAmount, XXXFUND_ADDRESSES)
+  // const [approval, approveCallback] = useApproveCallback(parsedAmount, XXXFUND2_ADDRESSES)
   // // we need an existence check on parsed amounts for single-asset deposits
   // const showApproval =
   //   approval !== ApprovalState.APPROVED && !!parsedAmount

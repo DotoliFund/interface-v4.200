@@ -5,7 +5,7 @@ import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { NEWFUND_ADDRESS } from 'constants/addresses'
 //import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { XXXFund } from 'interface/XXXFund'
+import { XXXFund2 } from 'interface/XXXFund2'
 import { useMemo } from 'react'
 //import useENS from './useENS'
 
@@ -34,7 +34,7 @@ export function useSwapCallArguments(
 
     if (!swapRouterAddress) return []
 
-    const { value, calldata } = XXXFund.swapCallParameters(account, trade, {
+    const { value, calldata } = XXXFund2.swapCallParameters(account, trade, {
       slippageTolerance: allowedSlippage,
     })
 

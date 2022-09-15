@@ -10,7 +10,7 @@ import {
   validateAndParseAddress,
 } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
-import IXXXFund from 'abis/XXXFund.json'
+import IXXXFund2 from 'abis/XXXFund2.json'
 import { XXXToken_ADDRESS } from 'constants/addresses'
 import { NEWFUND_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
@@ -101,8 +101,8 @@ export type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOption
 
 export type AddLiquidityOptions = MintOptions | IncreaseOptions
 
-export abstract class XXXFund {
-  public static INTERFACE: Interface = new Interface(IXXXFund.abi)
+export abstract class XXXFund2 {
+  public static INTERFACE: Interface = new Interface(IXXXFund2.abi)
 
   public static depositCallParameters(
     account: string,
@@ -125,7 +125,7 @@ export abstract class XXXFund {
     console.log('amount.quotient toHex(): ' + toHex(amount.quotient))
     console.log('amount.quotient : ' + amount.quotient)
     // calldatas.push(
-    //   XXXFund.INTERFACE.encodeFunctionData('deposit', [
+    //   XXXFund2.INTERFACE.encodeFunctionData('deposit', [
     //     investor,
     //     token,
     //     toHex(amount.quotient),
@@ -133,7 +133,7 @@ export abstract class XXXFund {
     //     //deadline: deadline
     //   ])
     // )
-    const calldatas: string = XXXFund.INTERFACE.encodeFunctionData('deposit', [
+    const calldatas: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [
       investor,
       token,
       toHex(amount.quotient),
@@ -168,7 +168,7 @@ export abstract class XXXFund {
     console.log('investor : ' + investor)
     console.log('amount.quotient : ' + toHex(amount.quotient))
     calldatas.push(
-      XXXFund.INTERFACE.encodeFunctionData('withdraw', [
+      XXXFund2.INTERFACE.encodeFunctionData('withdraw', [
         investor,
         token_address,
         toHex(amount.quotient),
@@ -369,7 +369,7 @@ export abstract class XXXFund {
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
-        for (const param of XXXFund.encodeV3Swap(investor, trade, options)) {
+        for (const param of XXXFund2.encodeV3Swap(investor, trade, options)) {
           params.push(param)
         }
       } else {
@@ -410,7 +410,7 @@ export abstract class XXXFund {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = XXXFund.encodeSwaps(investor, trades, options)
+    const { params } = XXXFund2.encodeSwaps(investor, trades, options)
     console.log(params.length)
     console.log(params[0])
     console.log(params)
@@ -444,7 +444,7 @@ export abstract class XXXFund {
     // [[Prototype]]: Object
 
     return {
-      calldata: XXXFund.INTERFACE.encodeFunctionData('swap', [params_Test]),
+      calldata: XXXFund2.INTERFACE.encodeFunctionData('swap', [params_Test]),
       value,
     }
   }
