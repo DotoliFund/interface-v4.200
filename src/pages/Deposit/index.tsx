@@ -132,9 +132,7 @@ const formatSwapQuoteReceivedEventProperties = (
   }
 }
 
-const TRADE_STRING = 'SwapRouter'
-
-export default function Swap() {
+export default function Deposit() {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled

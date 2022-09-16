@@ -18,7 +18,6 @@ import invariant from 'tiny-invariant'
 
 //import { Trade } from '@uniswap/router-sdk'
 import { MethodParameters, toHex } from './utils/calldata'
-import { Multicall } from './utils/multicall'
 
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
 const token_address = XXXToken_ADDRESS
@@ -133,7 +132,7 @@ export abstract class XXXFund2 {
     //     //deadline: deadline
     //   ])
     // )
-    const calldatas: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [
+    const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [
       investor,
       token,
       toHex(amount.quotient),
@@ -144,7 +143,7 @@ export abstract class XXXFund2 {
     const value: string = toHex(0)
 
     return {
-      calldata: calldatas,
+      calldata,
       value,
     }
   }
@@ -154,7 +153,6 @@ export abstract class XXXFund2 {
     token: string,
     amount: CurrencyAmount<Currency>
   ): MethodParameters {
-    const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
     const investor: string = validateAndParseAddress(account)
 
@@ -167,14 +165,13 @@ export abstract class XXXFund2 {
 
     console.log('investor : ' + investor)
     console.log('amount.quotient : ' + toHex(amount.quotient))
-    calldatas.push(
-      XXXFund2.INTERFACE.encodeFunctionData('withdraw', [
-        investor,
-        token_address,
-        toHex(amount.quotient),
-        //deadline: deadline
-      ])
-    )
+    const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('withdraw', [
+      investor,
+      token,
+      toHex(amount.quotient),
+      //deadline: deadline
+    ])
+
     // calldatas.push(
     //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
     //     {
@@ -191,7 +188,7 @@ export abstract class XXXFund2 {
     const value: string = toHex(0)
 
     return {
-      calldata: Multicall.encodeMulticall(calldatas),
+      calldata,
       value,
     }
   }
