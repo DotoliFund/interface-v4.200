@@ -8,6 +8,7 @@ import deposit from 'state/deposit/reducer'
 import swap from 'state/swap/reducer'
 import transactions from 'state/transactions/reducer'
 import user from 'state/user/reducer'
+import withdraw from 'state/withdraw/reducer'
 import { isTestEnv } from 'utils/env'
 
 import application from './application/reducer'
@@ -22,6 +23,7 @@ export const store = configureStore({
   reducer: {
     application,
     deposit,
+    withdraw,
     wallets,
     create,
     user,
