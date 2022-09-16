@@ -11,6 +11,7 @@ import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Deposit from 'pages/Deposit'
 import Fund from 'pages/Fund'
 import FundList from 'pages/Fund'
+import FundDetail from 'pages/FundDetail'
 import Main from 'pages/Main'
 import Overview from 'pages/OverView'
 import Swap from 'pages/Swap'
@@ -153,6 +154,7 @@ export default function App() {
                   <Route path="overview" element={<Overview />} />
                   <Route path="fund" element={<FundList />} />
                   <Route path="fund/:fundID" element={<Fund />} />
+                  <Route path="fundDetail" element={<FundDetail />} />
 
                   {/* <Route path="pool/v2/find" element={<PoolFinder />} />
                   <Route path="pool/v2" element={<PoolV2 />} />

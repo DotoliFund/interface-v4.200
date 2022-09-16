@@ -303,6 +303,9 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/withdraw'}>
           <Trans>Withdraw</Trans>
         </StyledNavLink>
+        <StyledNavLink id={`swap-nav-link`} to={'/fundDetail'}>
+          <Trans>FundDetail</Trans>
+        </StyledNavLink>
         <StyledNavLink
           data-cy="pool-nav-link"
           id={`pool-nav-link`}
