@@ -15,7 +15,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }))
 
-export default function Fund() {
+export default function Overview() {
   return (
     <div>
       <Grid container spacing={2}>
