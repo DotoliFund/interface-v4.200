@@ -3,21 +3,17 @@ import { Percent, Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
 import Badge from 'components/Badge'
 import RangeBadge from 'components/Badge/RangeBadge'
-import DoubleCurrencyLogo from 'components/DoubleLogo'
 import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
 //import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
-import { usePool } from 'hooks/usePools'
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 //import { Bound } from 'state/mint/v3/actions'
 import styled from 'styled-components/macro'
 import { HideSmall, MEDIA_WIDTHS, SmallOnly } from 'theme'
 import { FundDetails } from 'types/fund'
-//import { formatTickPrice } from 'utils/formatTickPrice'
-import { unwrappedToken } from 'utils/unwrappedToken'
 
+//import { formatTickPrice } from 'utils/formatTickPrice'
 import { DAI, USDC_MAINNET, USDT, WBTC, WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 
 const LinkRow = styled(Link)`
@@ -185,58 +181,64 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 }
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
-  const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
+  //const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
+  const { fund: fundAddress, manager: managerAddress, investor: investorAddress, tokens } = fundDetails
 
-  const token0 = useToken(token0Address)
-  const token1 = useToken(token1Address)
+  // const token0 = useToken(token0Address)
+  // const token1 = useToken(token1Address)
 
-  const currency0 = token0 ? unwrappedToken(token0) : undefined
-  const currency1 = token1 ? unwrappedToken(token1) : undefined
+  // const currency0 = token0 ? unwrappedToken(token0) : undefined
+  // const currency1 = token1 ? unwrappedToken(token1) : undefined
+
+  const token0 = useToken(tokens[0])
+  const token1 = useToken(tokens[1])
 
   // construct Position from details returned
-  const [, pool] = usePool(currency0 ?? undefined, currency1 ?? undefined, feeAmount)
+  //const [, pool] = usePool(currency0 ?? undefined, currency1 ?? undefined, feeAmount)
 
-  const position = useMemo(() => {
-    if (pool) {
-      return new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper })
-    }
-    return undefined
-  }, [liquidity, pool, tickLower, tickUpper])
+  // const position = useMemo(() => {
+  //   if (pool) {
+  //     return new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper })
+  //   }
+  //   return undefined
+  // }, [liquidity, pool, tickLower, tickUpper])
 
   //const tickAtLimit = useIsTickAtLimit(feeAmount, tickLower, tickUpper)
 
   // prices
-  const { priceLower, priceUpper, quote, base } = getPriceOrderingFromPositionForUI(position)
+  //const { priceLower, priceUpper, quote, base } = getPriceOrderingFromPositionForUI(position)
 
-  const currencyQuote = quote && unwrappedToken(quote)
-  const currencyBase = base && unwrappedToken(base)
+  // const currencyQuote = quote && unwrappedToken(quote)
+  // const currencyBase = base && unwrappedToken(base)
 
   // check if price is within range
-  const outOfRange: boolean = pool ? pool.tickCurrent < tickLower || pool.tickCurrent >= tickUpper : false
+  //const outOfRange: boolean = pool ? pool.tickCurrent < tickLower || pool.tickCurrent >= tickUpper : false
 
-  const positionSummaryLink = '/pool/' + fundDetails.tokenId
+  //const positionSummaryLink = '/pool/' + fundDetails.tokenId
 
-  const removed = liquidity?.eq(0)
+  //const removed = liquidity?.eq(0)
 
   return (
-    <LinkRow to={positionSummaryLink}>
+    <LinkRow to={'/myfunds'}>
       <RowBetween>
         <PrimaryPositionIdData>
-          <DoubleCurrencyLogo currency0={currencyBase} currency1={currencyQuote} size={18} margin />
+          {/* <DoubleCurrencyLogo currency0={currencyBase} currency1={currencyQuote} size={18} margin /> */}
           <DataText>
-            &nbsp;{currencyQuote?.symbol}&nbsp;/&nbsp;{currencyBase?.symbol}
+            {/* &nbsp;{currencyQuote?.symbol}&nbsp;/&nbsp;{currencyBase?.symbol} */}
+            test12345
           </DataText>
           &nbsp;
           <Badge>
             <BadgeText>
-              <Trans>{new Percent(feeAmount, 1_000_000).toSignificant()}%</Trans>
+              <Trans>{new Percent(123, 1_000_000).toSignificant()}%</Trans>
             </BadgeText>
           </Badge>
         </PrimaryPositionIdData>
-        <RangeBadge removed={removed} inRange={!outOfRange} />
+        {/* <RangeBadge removed={removed} inRange={!outOfRange} /> */}
+        <RangeBadge removed={true} inRange={true} />
       </RowBetween>
 
-      {priceLower && priceUpper ? (
+      {true ? (
         <RangeLineItem>
           <RangeText>
             <ExtentsText>

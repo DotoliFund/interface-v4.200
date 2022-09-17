@@ -5,6 +5,7 @@ import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
+import FundList from 'components/FundList'
 //import PositionList from 'components/PositionList'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
@@ -225,8 +226,8 @@ export default function MyFunds() {
   const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(XXXFactory, 'getFundByManager', [
     account ?? undefined,
   ])
-  console.log('loading', managingFundLoading)
-  console.log('result', managingFund)
+  // console.log('loading', managingFundLoading)
+  // console.log('result', managingFund)
   // const fund0: FundDetails[] = []
   // if (managingFund && managingFund?.length > 0) {
   //   fund0.push({
@@ -278,8 +279,15 @@ export default function MyFunds() {
     [[], []]
   ) ?? [[], []]
 
-  //const filteredPositions = [...openPositions, ...(userHideClosedPositions ? [] : closedPositions)]
-  const filteredInvestingFunds = [...openInvestingFunds, ...closedInvestingFunds]
+  //const filteredInvestingFunds = [...openInvestingFunds, ...closedInvestingFunds]
+  const filteredInvestingFunds: FundDetails[] = [
+    {
+      fund: '0xd850e79a4e02FC72CADB3bC303682907bC16662a',
+      manager: '0xAC8fa658D92eB97D92c145774d103f4D9578da16',
+      investor: '0xAC8fa658D92eB97D92c145774d103f4D9578da16',
+      tokens: ['0xc778417E063141139Fce010982780140Aa0cD5Ab', '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'],
+    },
+  ]
   const showConnectAWallet = Boolean(!account)
   const showV2Features = Boolean(V2_FACTORY_ADDRESSES[chainId])
 
@@ -357,7 +365,12 @@ export default function MyFunds() {
                 {investingFundsLoading ? (
                   <FundsLoadingPlaceholder />
                 ) : investingFunds && investingFunds.length > 0 ? (
-                  <Trans>{investingFunds}</Trans>
+                  //<Trans>{investingFunds}</Trans>
+                  <FundList
+                    funds={filteredInvestingFunds}
+                    setUserHideClosedFunds={setUserHideClosedFunds}
+                    userHideClosedFunds={userHideClosedFunds}
+                  />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">

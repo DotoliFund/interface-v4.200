@@ -106,7 +106,7 @@ export default function FundList({ funds, setUserHideClosedFunds, userHideClosed
         </ToggleWrap>
       </MobileHeader>
       {funds.map((p) => {
-        return <FundListItem key={p.tokenId.toString()} fundDetails={p} />
+        return <FundListItem key={p.fund.toString()} fundDetails={p} />
       })}
     </>
   )
