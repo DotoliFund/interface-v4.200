@@ -181,7 +181,7 @@ function WrongNetworkCard() {
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow padding={'0'}>
               <ThemedText.LargeHeader>
-                <Trans>Funds</Trans>
+                <Trans>My Funds</Trans>
               </ThemedText.LargeHeader>
             </TitleRow>
 
@@ -203,7 +203,7 @@ function WrongNetworkCard() {
   )
 }
 
-export default function Fund() {
+export default function MyFunds() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const { account, chainId, provider } = useWeb3React()
@@ -314,7 +314,7 @@ export default function Fund() {
             <AutoColumn gap="lg" style={{ width: '100%' }}>
               <TitleRow padding={'0'}>
                 <ThemedText.LargeHeader>
-                  <Trans>Funds</Trans>
+                  <Trans>My Funds</Trans>
                 </ThemedText.LargeHeader>
                 <ButtonRow>
                   {showV2Features && (

@@ -291,8 +291,8 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/overview'}>
           <Trans>OverView</Trans>
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
-          <Trans>Fund</Trans>
+        <StyledNavLink id={`swap-nav-link`} to={'/myfunds'}>
+          <Trans>My Funds</Trans>
         </StyledNavLink>
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <Trans>Swap</Trans>

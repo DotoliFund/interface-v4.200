@@ -9,10 +9,9 @@ import { useNftFlag } from 'featureFlags/flags/nft'
 import { useTokensFlag } from 'featureFlags/flags/tokens'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Deposit from 'pages/Deposit'
-import Fund from 'pages/Fund'
-import FundList from 'pages/Fund'
 import FundDetail from 'pages/FundDetail'
 import Main from 'pages/Main'
+import MyFunds from 'pages/MyFunds'
 import Overview from 'pages/OverView'
 import Swap from 'pages/Swap'
 import Withdraw from 'pages/Withdraw'
@@ -152,8 +151,8 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Main />} />
                   <Route path="overview" element={<Overview />} />
-                  <Route path="fund" element={<FundList />} />
-                  <Route path="fund/:fundID" element={<Fund />} />
+                  <Route path="myfunds" element={<MyFunds />} />
+                  <Route path="fund/:fundID" element={<MyFunds />} />
                   <Route path="fundDetail" element={<FundDetail />} />
 
                   {/* <Route path="pool/v2/find" element={<PoolFinder />} />
