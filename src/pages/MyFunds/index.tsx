@@ -16,6 +16,7 @@ import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useSingleCallResult } from 'lib/hooks/multicall'
+import { useEffect, useState } from 'react'
 //import { useV3Positions } from 'hooks/useV3Positions'
 import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
@@ -26,9 +27,9 @@ import styled, { css, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 //import { PositionDetails } from 'types/position'
 import { FundDetails } from 'types/fund'
+import { getContract } from 'utils'
 
 //import { useMultipleContractSingleData } from 'lib/hooks/multicall'
-import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
 
@@ -223,9 +224,6 @@ export default function MyFunds() {
   // const investingFunds: FundDetails[] = []
   // const investingFundsLoading = false
 
-  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(XXXFactory, 'getFundByManager', [
-    account ?? undefined,
-  ])
   // console.log('loading', managingFundLoading)
   // console.log('result', managingFund)
   // const fund0: FundDetails[] = []
@@ -235,41 +233,64 @@ export default function MyFunds() {
   //   })
   // }
 
+  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(XXXFactory, 'getFundByManager', [
+    account ?? undefined,
+  ])
+
+  const [managingFundTokens, setManagingFundTokens] = useState([''])
+  const [managingFundTokensLoading, setManagingFundTokensLoading] = useState(false)
+  useEffect(() => {
+    if (managingFundLoading) {
+      setManagingFundTokensLoading(true)
+    }
+    if (!managingFundLoading) {
+      getInvestorTokens()
+      setManagingFundTokensLoading(false)
+    }
+    async function getInvestorTokens() {
+      if (!managingFundLoading && managingFund && managingFund.length > 0 && provider && account) {
+        const fundContract = getContract(managingFund[0], XXXFund2ABI, provider, account)
+        const res = await fundContract.getInvestorTokens(account).then((response: any) => {
+          const _fundTokens = response.map((value: any) => [value[0], value[1].toNumber()])
+          setManagingFundTokens(_fundTokens)
+        })
+      }
+    }
+  }, [managingFundLoading, managingFund, provider, account])
+
   const { loading: investingFundsLoading, result: investingFunds } = useSingleCallResult(
     XXXFactory,
     'getInvestorFundList',
     [account ?? undefined]
   )
 
-  if (account && provider) {
-    // managingFundLoading = true
-    // XXXFactory?.getFundByManager(account).then((response: any) => {
-    //   //managingFund = response
-    //   console.log(response)
-    //   // const fundContract = getContract('address', XXXFund2Json, provider, account)
-    //   // fundContract?.getInvestorTokens(account).then((response2: any) => {
-    //   //   console.log(response2)
-    //   //   managingFundLoading = false
-    //   // })
-    // })
-    // investingFundsLoading = true
-    // XXXFactory?.getInvestorFundList(account).then((response: any) => {
-    //   //investingFunds = response
-    //   console.log(response)
-    //   // const balances = useMultipleContractSingleData(
-    //   //   validatedTokenAddresses,
-    //   //   XXXFund2Json,
-    //   //   'getInvestorTokens',
-    //   //   useMemo(() => [address], [address]),
-    //   //   tokenBalancesGasRequirement
-    //   // )
-    //   investingFundsLoading = false
-    // })
-  }
+  const [investingFundsTokens, setInvestingFundsTokens] = useState([''])
+  const [investingFundsTokensLoading, setInvestingFundsTokensLoading] = useState(false)
+  useEffect(() => {
+    if (investingFundsLoading) {
+      setInvestingFundsTokensLoading(true)
+    }
+    if (!investingFundsLoading) {
+      getInvestorTokens()
 
-  if (!isSupportedChain(chainId)) {
-    return <WrongNetworkCard />
-  }
+      setInvestingFundsTokensLoading(false)
+    }
+    async function getInvestorTokens() {
+      if (!investingFundsLoading && investingFunds && investingFunds[0].length > 0 && provider && account) {
+        console.log(investingFunds)
+        console.log(investingFunds.length)
+        console.log(investingFunds[0])
+        console.log(investingFunds[0].length)
+
+        const fundContract = getContract(investingFunds[0], XXXFund2ABI, provider, account)
+        const res = await fundContract.getInvestorTokens(account).then((response: any) => {
+          const _fundTokens = response.map((value: any) => [value[0], value[1].toNumber()])
+          console.log(_fundTokens)
+          setInvestingFundsTokens(_fundTokens)
+        })
+      }
+    }
+  }, [investingFundsLoading, investingFunds, provider, account])
 
   const [openInvestingFunds, closedInvestingFunds] = investingFunds?.reduce<[FundDetails[], FundDetails[]]>(
     (acc, p) => {
@@ -280,16 +301,25 @@ export default function MyFunds() {
   ) ?? [[], []]
 
   //const filteredInvestingFunds = [...openInvestingFunds, ...closedInvestingFunds]
+  const filteredManagingFunds: FundDetails[] = [
+    {
+      fund: managingFund ? managingFund.toString() : 'Managing fund not found',
+      investor: account ? account : 'Account Not found',
+      tokens: managingFundTokens,
+    },
+  ]
   const filteredInvestingFunds: FundDetails[] = [
     {
-      fund: '0xd850e79a4e02FC72CADB3bC303682907bC16662a',
-      manager: '0xAC8fa658D92eB97D92c145774d103f4D9578da16',
-      investor: '0xAC8fa658D92eB97D92c145774d103f4D9578da16',
-      tokens: ['0xc778417E063141139Fce010982780140Aa0cD5Ab', '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'],
+      fund: investingFunds
+        ? investingFunds[0].length > 0
+          ? investingFunds[0][0]
+          : 'Investing fund not found'
+        : 'Investing fund not found',
+      investor: account ? account : 'Account Not found',
+      tokens: ['test1', 'test2'],
     },
   ]
   const showConnectAWallet = Boolean(!account)
-  const showV2Features = Boolean(V2_FACTORY_ADDRESSES[chainId])
 
   const menuItems = [
     {
@@ -314,6 +344,10 @@ export default function MyFunds() {
     },
   ]
 
+  if (!isSupportedChain(chainId)) {
+    return <WrongNetworkCard />
+  }
+
   return (
     <Trace page={PageName.POOL_PAGE} shouldLogImpression>
       <>
@@ -325,7 +359,7 @@ export default function MyFunds() {
                   <Trans>My Funds</Trans>
                 </ThemedText.LargeHeader>
                 <ButtonRow>
-                  {showV2Features && (
+                  {
                     <Menu
                       menuItems={menuItems}
                       flyoutAlignment={FlyoutAlignment.LEFT}
@@ -338,7 +372,7 @@ export default function MyFunds() {
                         </MoreOptionsButton>
                       )}
                     />
-                  )}
+                  }
                   <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to="/add/ETH">
                     + <Trans>Create Fund</Trans>
                   </ResponsiveButtonPrimary>
@@ -346,10 +380,15 @@ export default function MyFunds() {
               </TitleRow>
 
               <MainContentWrapper>
-                {managingFundLoading ? (
+                {managingFundLoading || managingFundTokensLoading ? (
                   <FundsLoadingPlaceholder />
-                ) : managingFund && managingFund.length > 0 ? (
-                  <Trans>{managingFund}</Trans>
+                ) : managingFund && filteredManagingFunds.length > 0 && managingFundTokens ? (
+                  <FundList
+                    isManagingFund={true}
+                    funds={filteredManagingFunds}
+                    setUserHideClosedFunds={setUserHideClosedFunds}
+                    userHideClosedFunds={userHideClosedFunds}
+                  />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
@@ -364,9 +403,10 @@ export default function MyFunds() {
               <MainContentWrapper>
                 {investingFundsLoading ? (
                   <FundsLoadingPlaceholder />
-                ) : investingFunds && investingFunds.length > 0 ? (
+                ) : investingFunds && filteredInvestingFunds.length > 0 ? (
                   //<Trans>{investingFunds}</Trans>
                   <FundList
+                    isManagingFund={false}
                     funds={filteredInvestingFunds}
                     setUserHideClosedFunds={setUserHideClosedFunds}
                     userHideClosedFunds={userHideClosedFunds}

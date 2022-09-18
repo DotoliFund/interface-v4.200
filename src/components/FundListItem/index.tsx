@@ -182,7 +182,7 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
   //const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
-  const { fund: fundAddress, manager: managerAddress, investor: investorAddress, tokens } = fundDetails
+  const { fund: fundAddress, investor: investorAddress, tokens } = fundDetails
 
   // const token0 = useToken(token0Address)
   // const token1 = useToken(token1Address)
@@ -245,7 +245,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <Trans>Min: </Trans>
             </ExtentsText>
             <Trans>
-              hello world test 11111
+              {tokens[0][0]}
               {/* {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
               per <HoverInlineText text={currencyBase?.symbol ?? ''} /> */}
             </Trans>
@@ -261,7 +261,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <Trans>Max:</Trans>
             </ExtentsText>
             <Trans>
-              hello world test 22222
+              {tokens[0][1]}
               {/* {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
               per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} /> */}
             </Trans>
