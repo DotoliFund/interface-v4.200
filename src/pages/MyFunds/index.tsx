@@ -1,5 +1,7 @@
+import { Interface } from '@ethersproject/abi'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import IXXXFund2 from 'abis/IXXXFund2.json'
 import XXXFund2Json from 'abis/XXXFund2.json'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
@@ -27,6 +29,7 @@ import styled, { css, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 //import { PositionDetails } from 'types/position'
 import { FundDetails } from 'types/fund'
+import { IXXXFund2Interface } from 'types/fund/IXXXFund2'
 import { getContract } from 'utils'
 
 //import { useMultipleContractSingleData } from 'lib/hooks/multicall'
@@ -34,6 +37,7 @@ import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
 
 const { abi: XXXFund2ABI } = XXXFund2Json
+const XXXFUND2_INTERFACE = new Interface(IXXXFund2.abi) as IXXXFund2Interface
 
 const PageWrapper = styled(AutoColumn)<{ navBarFlag: boolean }>`
   padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px')};
@@ -250,13 +254,22 @@ export default function MyFunds() {
     async function getInvestorTokens() {
       if (!managingFundLoading && managingFund && managingFund.length > 0 && provider && account) {
         const fundContract = getContract(managingFund[0], XXXFund2ABI, provider, account)
-        const res = await fundContract.getInvestorTokens(account).then((response: any) => {
-          const _fundTokens = response.map((value: any) => [value[0], value[1].toNumber()])
+        await fundContract.getInvestorTokens(account).then((response: any) => {
+          const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
           setManagingFundTokens(_fundTokens)
         })
       }
     }
   }, [managingFundLoading, managingFund, provider, account])
+
+  // const investingFundsTokens = useMultipleContractSingleData(
+  //   //investingFunds ? investingFunds[0] : [],
+  //   // investingFunds ? ['0x54027Ff902b6103a559cb2e64b41fA9e55ce1284'] : ['0x54027Ff902b6103a559cb2e64b41fA9e55ce1284'],
+  //   ['0x54027Ff902b6103a559cb2e64b41fA9e55ce1284'],
+  //   XXXFUND2_INTERFACE,
+  //   'getInvestorTokens',
+  //   [account]
+  // )
 
   const { loading: investingFundsLoading, result: investingFunds } = useSingleCallResult(
     XXXFactory,
@@ -272,22 +285,38 @@ export default function MyFunds() {
     }
     if (!investingFundsLoading) {
       getInvestorTokens()
-
       setInvestingFundsTokensLoading(false)
     }
     async function getInvestorTokens() {
       if (!investingFundsLoading && investingFunds && investingFunds[0].length > 0 && provider && account) {
-        console.log(investingFunds)
-        console.log(investingFunds.length)
-        console.log(investingFunds[0])
-        console.log(investingFunds[0].length)
+        // console.log(investingFunds)
+        // console.log(investingFunds.length)
+        // console.log(investingFunds[0])
+        // console.log(investingFunds[0].length)
+        //console.log(investingFundList)
+        //investingFunds[0].map((value: any) => [value === '0x54027Ff902b6103a559cb2e64b41fA9e55ce1284' ? '' : value])
 
-        const fundContract = getContract(investingFunds[0], XXXFund2ABI, provider, account)
-        const res = await fundContract.getInvestorTokens(account).then((response: any) => {
-          const _fundTokens = response.map((value: any) => [value[0], value[1].toNumber()])
-          console.log(_fundTokens)
-          setInvestingFundsTokens(_fundTokens)
-        })
+        const investingFundList = investingFunds[0]
+        const investingFundTokenList: string[] = []
+
+        for (let i = 0; i < investingFundList.length; i++) {
+          const fundContract = getContract(investingFundList[i], XXXFund2ABI, provider, account)
+          const res = await fundContract.getInvestorTokens(account).then((response: any) => {
+            const fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
+            investingFundTokenList.push(fundTokens)
+          })
+        }
+        setInvestingFundsTokens(investingFundTokenList)
+        console.log(investingFundTokenList)
+
+        //investingFunds[0].map((value: any) => [value === '0x54027Ff902b6103a559cb2e64b41fA9e55ce1284' ? '' : value])
+        //console.log(investingFunds[0])
+
+        // const fundContract = getContract(managingFund[0], XXXFund2ABI, provider, account)
+        // const res = await fundContract.getInvestorTokens(account).then((response: any) => {
+        //   const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
+        //   setManagingFundTokens(_fundTokens)
+        // })
       }
     }
   }, [investingFundsLoading, investingFunds, provider, account])
@@ -301,7 +330,7 @@ export default function MyFunds() {
   ) ?? [[], []]
 
   //const filteredInvestingFunds = [...openInvestingFunds, ...closedInvestingFunds]
-  const filteredManagingFunds: FundDetails[] = [
+  const formatedManagingFunds: FundDetails[] = [
     {
       fund: managingFund ? managingFund.toString() : 'Managing fund not found',
       investor: account ? account : 'Account Not found',
@@ -316,9 +345,18 @@ export default function MyFunds() {
           : 'Investing fund not found'
         : 'Investing fund not found',
       investor: account ? account : 'Account Not found',
-      tokens: ['test1', 'test2'],
+      tokens: [investingFundsTokens.toString()],
     },
   ]
+  // const _filteredInvestingFunds = useMemo(() => {
+  //   investingFunds.map((value: any) => [value[0], value[1].toBigInt()])
+  //   const managingFund = formatedManagingFunds[0].fund
+  //   if ( == managingFund) {
+  //     return new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper })
+  //   }
+  //   return undefined
+  // }, [formatedManagingFunds])
+
   const showConnectAWallet = Boolean(!account)
 
   const menuItems = [
@@ -382,10 +420,10 @@ export default function MyFunds() {
               <MainContentWrapper>
                 {managingFundLoading || managingFundTokensLoading ? (
                   <FundsLoadingPlaceholder />
-                ) : managingFund && filteredManagingFunds.length > 0 && managingFundTokens ? (
+                ) : managingFund && formatedManagingFunds.length > 0 && managingFundTokens ? (
                   <FundList
                     isManagingFund={true}
-                    funds={filteredManagingFunds}
+                    funds={formatedManagingFunds}
                     setUserHideClosedFunds={setUserHideClosedFunds}
                     userHideClosedFunds={userHideClosedFunds}
                   />

@@ -184,6 +184,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
   //const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
   const { fund: fundAddress, investor: investorAddress, tokens } = fundDetails
 
+  //console.log(tokens, tokens[0])
   // const token0 = useToken(token0Address)
   // const token1 = useToken(token1Address)
 
