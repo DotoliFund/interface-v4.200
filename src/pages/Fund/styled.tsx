@@ -101,7 +101,7 @@ export const RightContainer = styled(AutoColumn)`
   height: fit-content;
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   grid-column: 1;
   `};
 `

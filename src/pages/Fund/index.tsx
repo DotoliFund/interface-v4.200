@@ -93,7 +93,7 @@ export default function AddLiquidity() {
               <ToggleWrapper width="fit-content">
                 <ToggleElement
                   isActive={true}
-                  fontSize="18px"
+                  fontSize="14px"
                   onClick={() => {
                     switchToMyAccount()
                   }}
@@ -102,12 +102,12 @@ export default function AddLiquidity() {
                 </ToggleElement>
                 <ToggleElement
                   isActive={false}
-                  fontSize="18px"
+                  fontSize="14px"
                   onClick={() => {
                     switchToFundAccount()
                   }}
                 >
-                  <Trans>Fund</Trans>
+                  <Trans>Fund Account</Trans>
                 </ToggleElement>
               </ToggleWrapper>
             </Row>
