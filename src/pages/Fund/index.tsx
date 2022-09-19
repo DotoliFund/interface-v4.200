@@ -5,6 +5,7 @@ import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/con
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
+import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components/macro'
 
@@ -31,12 +32,13 @@ import {
 
 const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
-export default function AddLiquidity() {
+export default function Fund() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
 
   const { account, chainId, provider } = useWeb3React()
   const theme = useTheme()
+  const { tokenId: tokenIdFromUrl } = useParams<{ tokenId?: string }>()
 
   function switchToMyAccount() {
     alert(1234)

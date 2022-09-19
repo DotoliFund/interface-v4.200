@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { Percent, Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
+import { useWeb3React } from '@web3-react/core'
 import Badge from 'components/Badge'
 import RangeBadge from 'components/Badge/RangeBadge'
 import Loader from 'components/Loader'
@@ -183,8 +184,11 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 export default function FundListItem({ fundDetails }: FundListItemProps) {
   //const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
   const { fund: fundAddress, investor: investorAddress, tokens } = fundDetails
+  const { account } = useWeb3React()
 
-  //console.log(tokens, tokens[0])
+  console.log('fundAddress :', fundAddress)
+  console.log('investorAddress :', investorAddress)
+  console.log('tokens :', tokens)
   // const token0 = useToken(token0Address)
   // const token1 = useToken(token1Address)
 
@@ -215,12 +219,12 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
   // check if price is within range
   //const outOfRange: boolean = pool ? pool.tickCurrent < tickLower || pool.tickCurrent >= tickUpper : false
 
-  //const positionSummaryLink = '/pool/' + fundDetails.tokenId
+  const fundLink = '/fund/' + fundAddress + '/' + account
 
   //const removed = liquidity?.eq(0)
 
   return (
-    <LinkRow to={'/account'}>
+    <LinkRow to={fundLink}>
       <RowBetween>
         <PrimaryPositionIdData>
           {/* <DoubleCurrencyLogo currency0={currencyBase} currency1={currencyQuote} size={18} margin /> */}
