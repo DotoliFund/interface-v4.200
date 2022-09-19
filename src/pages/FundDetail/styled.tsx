@@ -4,6 +4,16 @@ import Input from 'components/NumericalInput'
 import { BodyWrapper } from 'pages/AppBody'
 import styled from 'styled-components/macro'
 
+// export const PageWrapper = styled(BodyWrapper)<{ wide: boolean }>`
+//   max-width: ${({ wide }) => (wide ? '880px' : '480px')};
+//   width: 100%;
+
+//   padding: ${({ wide }) => (wide ? '10px' : '0')};
+
+//   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+//     max-width: 480px;
+//   `};
+// `
 export const PageWrapper = styled(BodyWrapper)<{ wide: boolean }>`
   max-width: ${({ wide }) => (wide ? '880px' : '480px')};
   width: 100%;
@@ -26,9 +36,28 @@ export const Wrapper = styled.div`
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToExtraSmall`
   min-width: 340px;
-`};
+  `};
 `
 
+// export const ScrollablePage = styled.div<{ navBarFlag: boolean }>`
+//   padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px')};
+//   position: relative;
+//   display: flex;
+//   flex-direction: column;
+
+//   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+//     max-width: 480px;
+//     margin: 0 auto;
+//   `};
+
+//   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
+//     padding: ${({ navBarFlag }) => (navBarFlag ? '48px 8px 0px' : '0px 8px 0px')};
+//   }
+
+//   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
+//     padding-top: ${({ navBarFlag }) => (navBarFlag ? '20px' : '0px')};
+//   }
+// `
 export const ScrollablePage = styled.div<{ navBarFlag: boolean }>`
   padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px')};
   position: relative;
@@ -47,7 +76,31 @@ export const ScrollablePage = styled.div<{ navBarFlag: boolean }>`
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
     padding-top: ${({ navBarFlag }) => (navBarFlag ? '20px' : '0px')};
   }
+
+  // @media screen and (max-width: 1440px) {
+  //   min-width: 880px;
+  //   display: grid;
+  //   grid-template-columns: repeat(3, 1fr);
+  //   grid-auto-rows: minmax(100px, auto);
+  //   margin: 0 auto;
+  //   gap: 10px;
+  //   grid-template-areas:
+  //     'header header header'
+  //     'nav nav  .'
+  //     'aside section section'
+  //     'aside main main'
+  //     'footer footer footer';
+  // }
 `
+export const FundChart1Wrapper = styled(Wrapper)
+export const FundChart2Wrapper = styled(Wrapper)
+export const FundChart3Wrapper = styled(Wrapper)
+export const MyChart1Wrapper = styled(Wrapper)
+export const MyChart2Wrapper = styled(Wrapper)
+export const MyChart3Wrapper = styled(Wrapper)
+export const DepositWrapper = styled(Wrapper)
+export const WithdrawWrapper = styled(Wrapper)
+export const SwapWrapper = styled(Wrapper)
 
 export const DynamicSection = styled(AutoColumn)<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
