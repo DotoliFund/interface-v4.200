@@ -209,7 +209,7 @@ function WrongNetworkCard() {
   )
 }
 
-export default function MyFunds() {
+export default function Account() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const { account, chainId, provider } = useWeb3React()

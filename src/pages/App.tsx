@@ -8,10 +8,10 @@ import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { useNftFlag } from 'featureFlags/flags/nft'
 import { useTokensFlag } from 'featureFlags/flags/tokens'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
+import Account from 'pages/Account'
 import Deposit from 'pages/Deposit'
-import FundDetail from 'pages/FundDetail'
+import Fund from 'pages/Fund'
 import Main from 'pages/Main'
-import MyFunds from 'pages/MyFunds'
 import Overview from 'pages/Overview'
 import Swap from 'pages/Swap'
 import Withdraw from 'pages/Withdraw'
@@ -151,9 +151,9 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Main />} />
                   <Route path="overview" element={<Overview />} />
-                  <Route path="myfunds" element={<MyFunds />} />
-                  <Route path="fund/:fundID" element={<MyFunds />} />
-                  <Route path="fundDetail" element={<FundDetail />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path="fund/:fundID" element={<Account />} />
+                  <Route path="fund" element={<Fund />} />
 
                   {/* <Route path="pool/v2/find" element={<PoolFinder />} />
                   <Route path="pool/v2" element={<PoolV2 />} />
@@ -196,7 +196,7 @@ export default function App() {
 // import ResponsiveAppBar from 'pages/Appbar'
 // import CreateFund from 'pages/CreateFund'
 // import Fund from 'pages/Fund'
-// import FundDeposit from 'pages/Fund/FundDetail/deposit'
+// import FundDeposit from 'pages/Fund/Fund/deposit'
 // import FundSwap from 'pages/Fund/FundDetail/swap/swap'
 // import FundWithdraw from 'pages/Fund/FundDetail/withdraw'
 // import Main from 'pages/Main'

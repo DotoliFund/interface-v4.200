@@ -220,7 +220,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
   //const removed = liquidity?.eq(0)
 
   return (
-    <LinkRow to={'/myfunds'}>
+    <LinkRow to={'/account'}>
       <RowBetween>
         <PrimaryPositionIdData>
           {/* <DoubleCurrencyLogo currency0={currencyBase} currency1={currencyQuote} size={18} margin /> */}

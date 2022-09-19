@@ -291,8 +291,8 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/overview'}>
           <Trans>Overview</Trans>
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/myfunds'}>
-          <Trans>My Funds</Trans>
+        <StyledNavLink id={`swap-nav-link`} to={'/account'}>
+          <Trans>My Account</Trans>
         </StyledNavLink>
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <Trans>Swap</Trans>
@@ -303,8 +303,8 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/withdraw'}>
           <Trans>Withdraw</Trans>
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/fundDetail'}>
-          <Trans>FundDetail</Trans>
+        <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
+          <Trans>Fund</Trans>
         </StyledNavLink>
         {/* <StyledNavLink
           data-cy="pool-nav-link"
