@@ -289,10 +289,10 @@ export default function Header() {
       </Title>
       <HeaderLinks>
         <StyledNavLink id={`swap-nav-link`} to={'/overview'}>
-          <Trans>OverView</Trans>
+          <Trans>Overview</Trans>
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
-          <Trans>Fund</Trans>
+        <StyledNavLink id={`swap-nav-link`} to={'/account'}>
+          <Trans>My Account</Trans>
         </StyledNavLink>
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <Trans>Swap</Trans>
@@ -303,14 +303,17 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/withdraw'}>
           <Trans>Withdraw</Trans>
         </StyledNavLink>
-        <StyledNavLink
+        <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
+          <Trans>Fund</Trans>
+        </StyledNavLink>
+        {/* <StyledNavLink
           data-cy="pool-nav-link"
           id={`pool-nav-link`}
           to={'/pool'}
           className={isPoolActive ? activeClassName : undefined}
         >
           <Trans>Pool</Trans>
-        </StyledNavLink>
+        </StyledNavLink> */}
         {(!chainId || chainId === SupportedChainId.MAINNET) && (
           <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
             <Trans>Vote</Trans>

@@ -62,34 +62,43 @@ const MobileTogglePosition = styled.div`
 `
 
 type FundListProps = React.PropsWithChildren<{
+  isManagingFund: boolean
   funds: FundDetails[]
   setUserHideClosedFunds: any
   userHideClosedFunds: boolean
 }>
 
-export default function FundList({ funds, setUserHideClosedFunds, userHideClosedFunds }: FundListProps) {
+export default function FundList({
+  isManagingFund,
+  funds,
+  setUserHideClosedFunds,
+  userHideClosedFunds,
+}: FundListProps) {
   return (
     <>
       <DesktopHeader>
         <div>
-          <Trans>Your positions</Trans>
-          {funds && ' (' + funds.length + ')'}
+          {!isManagingFund ? <Trans>Investing Funds</Trans> : <Trans>Managing Fund</Trans>}
+          {!isManagingFund ? funds && ' (' + funds.length + ')' : null}
         </div>
-        <ToggleWrap>
-          <ToggleLabel>
-            <Trans>Show closed positions</Trans>
-          </ToggleLabel>
-          <Toggle
-            id="desktop-hide-closed-positions"
-            isActive={!userHideClosedFunds}
-            toggle={() => {
-              setUserHideClosedFunds(!userHideClosedFunds)
-            }}
-          />
-        </ToggleWrap>
+        {!isManagingFund ? (
+          <ToggleWrap>
+            <ToggleLabel>
+              <Trans>Show closed positions</Trans>
+            </ToggleLabel>
+            <Toggle
+              id="desktop-hide-closed-positions"
+              isActive={!userHideClosedFunds}
+              toggle={() => {
+                setUserHideClosedFunds(!userHideClosedFunds)
+              }}
+            />
+          </ToggleWrap>
+        ) : null}
       </DesktopHeader>
       <MobileHeader>
-        <Trans>Your positions</Trans>
+        {!isManagingFund ? <Trans>Investing Funds</Trans> : <Trans>Managing Fund</Trans>}
+        {!isManagingFund ? funds && ' (' + funds.length + ')' : null}
         <ToggleWrap>
           <ToggleLabel>
             <Trans>Show closed positions</Trans>
@@ -106,7 +115,7 @@ export default function FundList({ funds, setUserHideClosedFunds, userHideClosed
         </ToggleWrap>
       </MobileHeader>
       {funds.map((p) => {
-        return <FundListItem key={p.tokenId.toString()} fundDetails={p} />
+        return <FundListItem key={p.fund.toString()} fundDetails={p} />
       })}
     </>
   )
