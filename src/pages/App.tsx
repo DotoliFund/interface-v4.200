@@ -152,8 +152,8 @@ export default function App() {
                   <Route path="/" element={<Main />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="account" element={<Account />} />
-                  <Route path="fund/:fundID" element={<Account />} />
                   <Route path="fund" element={<Fund />} />
+                  <Route path="fund/:fundAddress/:account" element={<Fund />} />
 
                   {/* <Route path="pool/v2/find" element={<PoolFinder />} />
                   <Route path="pool/v2" element={<PoolV2 />} />

@@ -257,6 +257,7 @@ export default function Account() {
         await fundContract.getInvestorTokens(account).then((response: any) => {
           const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
           setManagingFundTokens(_fundTokens)
+          //console.log('managingFundTokens :', _fundTokens)
         })
       }
     }
@@ -307,7 +308,7 @@ export default function Account() {
           })
         }
         setInvestingFundsTokens(investingFundTokenList)
-        console.log(investingFundTokenList)
+        //console.log('investingFundTokenList :', investingFundTokenList)
 
         //investingFunds[0].map((value: any) => [value === '0x54027Ff902b6103a559cb2e64b41fA9e55ce1284' ? '' : value])
         //console.log(investingFunds[0])
@@ -321,15 +322,6 @@ export default function Account() {
     }
   }, [investingFundsLoading, investingFunds, provider, account])
 
-  const [openInvestingFunds, closedInvestingFunds] = investingFunds?.reduce<[FundDetails[], FundDetails[]]>(
-    (acc, p) => {
-      acc[p.liquidity?.isZero() ? 1 : 0].push(p)
-      return acc
-    },
-    [[], []]
-  ) ?? [[], []]
-
-  //const filteredInvestingFunds = [...openInvestingFunds, ...closedInvestingFunds]
   const formatedManagingFunds: FundDetails[] = [
     {
       fund: managingFund ? managingFund.toString() : 'Managing fund not found',
@@ -341,11 +333,11 @@ export default function Account() {
     {
       fund: investingFunds
         ? investingFunds[0].length > 0
-          ? investingFunds[0][0]
-          : 'Investing fund not found'
-        : 'Investing fund not found',
+          ? investingFunds[0]
+          : 'investingFunds[0] not found'
+        : 'investingFunds not found',
       investor: account ? account : 'Account Not found',
-      tokens: [investingFundsTokens.toString()],
+      tokens: investingFundsTokens,
     },
   ]
   // const _filteredInvestingFunds = useMemo(() => {
@@ -394,7 +386,7 @@ export default function Account() {
             <AutoColumn gap="lg" style={{ width: '100%' }}>
               <TitleRow padding={'0'}>
                 <ThemedText.LargeHeader>
-                  <Trans>My Funds</Trans>
+                  <Trans>My Account</Trans>
                 </ThemedText.LargeHeader>
                 <ButtonRow>
                   {
@@ -420,7 +412,7 @@ export default function Account() {
               <MainContentWrapper>
                 {managingFundLoading || managingFundTokensLoading ? (
                   <FundsLoadingPlaceholder />
-                ) : managingFund && formatedManagingFunds.length > 0 && managingFundTokens ? (
+                ) : managingFund && formatedManagingFunds.length > 0 ? (
                   <FundList
                     isManagingFund={true}
                     funds={formatedManagingFunds}
