@@ -1,14 +1,6 @@
 import { Interface } from '@ethersproject/abi'
 import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
-import {
-  BigintIsh,
-  Currency,
-  CurrencyAmount,
-  NativeCurrency,
-  Percent,
-  TradeType,
-  validateAndParseAddress,
-} from '@uniswap/sdk-core'
+import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, Percent, TradeType } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund2 from 'abis/XXXFund2.json'
 import { NEWFUND_ADDRESS, NULL_ADDRESS, XXXToken_ADDRESS } from 'constants/addresses'
@@ -102,14 +94,9 @@ export type AddLiquidityOptions = MintOptions | IncreaseOptions
 export abstract class XXXFund2 {
   public static INTERFACE: Interface = new Interface(IXXXFund2.abi)
 
-  public static depositCallParameters(
-    account: string,
-    token: string,
-    amount: CurrencyAmount<Currency>
-  ): MethodParameters {
+  public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     //const calldatas: string[] = []
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
-    const investor: string = validateAndParseAddress(account)
     // console.log(_amount)
     // console.log(_amount.quotient)
     // console.log(toHex(_amount.quotient))
@@ -118,7 +105,6 @@ export abstract class XXXFund2 {
     // console.log(_amount.toSignificant(6))
     console.log('amount.currency.name : ' + amount.currency.name)
     console.log('amount.currency.symbol : ' + amount.currency.symbol)
-    console.log('investor : ' + investor)
     console.log('token : ' + token)
     console.log('amount.quotient toHex(): ' + toHex(amount.quotient))
     console.log('amount.quotient : ' + amount.quotient)
@@ -132,7 +118,6 @@ export abstract class XXXFund2 {
     //   ])
     // )
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [
-      investor,
       token,
       toHex(amount.quotient),
       //amount.quotient.toString(),
@@ -147,13 +132,8 @@ export abstract class XXXFund2 {
     }
   }
 
-  public static withdrawCallParameters(
-    account: string,
-    token: string,
-    amount: CurrencyAmount<Currency>
-  ): MethodParameters {
+  public static withdrawCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     //const deadline = toHex(JSBI.BigInt(fund.deadline))
-    const investor: string = validateAndParseAddress(account)
 
     // console.log(_amount)
     // console.log(_amount.quotient)
@@ -162,10 +142,8 @@ export abstract class XXXFund2 {
     // console.log(_amount.toFixed())
     // console.log(_amount.toSignificant(6))
 
-    console.log('investor : ' + investor)
     console.log('amount.quotient : ' + toHex(amount.quotient))
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('withdraw', [
-      investor,
       token,
       toHex(amount.quotient),
       //deadline: deadline

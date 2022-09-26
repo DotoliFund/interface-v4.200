@@ -229,7 +229,7 @@ export default function Withdraw() {
     if (!currency || !parsedAmount) return
 
     console.log(0)
-    const { calldata, value } = XXXFund2.withdrawCallParameters(account, currency?.wrapped.address, parsedAmount)
+    const { calldata, value } = XXXFund2.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: NEWFUND_ADDRESS,
       data: calldata,

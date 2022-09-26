@@ -13,15 +13,16 @@ import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
+import { NULL_ADDRESS, XXXFACTORY_ADDRESSES } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useXXXFactoryContract } from 'hooks/useContract'
+import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 //import { useV3Positions } from 'hooks/useV3Positions'
 import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
-import { Link } from 'react-router-dom'
 import { useToggleWalletModal } from 'state/application/hooks'
 //import { useUserHideClosedPositions } from 'state/user/hooks'
 import { useUserHideClosedFunds } from 'state/user/hooks'
@@ -31,6 +32,7 @@ import { HideSmall, ThemedText } from 'theme'
 import { FundDetails } from 'types/fund'
 import { IXXXFund2Interface } from 'types/fund/IXXXFund2'
 import { getContract } from 'utils'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 
 //import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import CTACards from './CTACards'
@@ -214,7 +216,7 @@ export default function Account() {
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const { account, chainId, provider } = useWeb3React()
   const toggleWalletModal = useToggleWalletModal()
-  const XXXFactory = useXXXFactoryContract()
+  const XXXFactoryContract = useXXXFactoryContract()
   const theme = useTheme()
   //const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
   const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
@@ -237,9 +239,11 @@ export default function Account() {
   //   })
   // }
 
-  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(XXXFactory, 'getFundByManager', [
-    account ?? undefined,
-  ])
+  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(
+    XXXFactoryContract,
+    'getFundByManager',
+    [account ?? undefined]
+  )
 
   const [managingFundTokens, setManagingFundTokens] = useState([''])
   const [managingFundTokensLoading, setManagingFundTokensLoading] = useState(false)
@@ -252,7 +256,7 @@ export default function Account() {
       setManagingFundTokensLoading(false)
     }
     async function getInvestorTokens() {
-      if (!managingFundLoading && managingFund && managingFund.length > 0 && provider && account) {
+      if (!managingFundLoading && managingFund && managingFund[0] !== NULL_ADDRESS && provider && account) {
         const fundContract = getContract(managingFund[0], XXXFund2ABI, provider, account)
         await fundContract.getInvestorTokens(account).then((response: any) => {
           const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
@@ -273,7 +277,7 @@ export default function Account() {
   // )
 
   const { loading: investingFundsLoading, result: investingFunds } = useSingleCallResult(
-    XXXFactory,
+    XXXFactoryContract,
     'getInvestorFundList',
     [account ?? undefined]
   )
@@ -289,7 +293,14 @@ export default function Account() {
       setInvestingFundsTokensLoading(false)
     }
     async function getInvestorTokens() {
-      if (!investingFundsLoading && investingFunds && investingFunds[0].length > 0 && provider && account) {
+      if (
+        !investingFundsLoading &&
+        investingFunds &&
+        investingFunds[0].length > 0 &&
+        investingFunds[0] !== NULL_ADDRESS &&
+        provider &&
+        account
+      ) {
         // console.log(investingFunds)
         // console.log(investingFunds.length)
         // console.log(investingFunds[0])
@@ -322,17 +333,24 @@ export default function Account() {
     }
   }, [investingFundsLoading, investingFunds, provider, account])
 
-  const formatedManagingFunds: FundDetails[] = [
-    {
-      fund: managingFund ? managingFund.toString() : 'Managing fund not found',
-      investor: account ? account : 'Account Not found',
-      tokens: managingFundTokens,
-    },
-  ]
+  const formatedManagingFunds: FundDetails[] =
+    managingFund && managingFund[0] !== NULL_ADDRESS && account
+      ? [
+          {
+            fund: managingFund.toString(),
+            investor: account,
+            tokens: managingFundTokens,
+          },
+        ]
+      : []
+
+  console.log('managingFund', managingFund)
+  console.log('investingFunds', investingFunds)
+
   const filteredInvestingFunds: FundDetails[] = [
     {
       fund: investingFunds
-        ? investingFunds[0].length > 0
+        ? investingFunds[0].length > 0 && investingFunds[0] !== NULL_ADDRESS
           ? investingFunds[0]
           : 'investingFunds[0] not found'
         : 'investingFunds not found',
@@ -355,11 +373,11 @@ export default function Account() {
     {
       content: (
         <MenuItem>
-          <Trans>Invest in Fund</Trans>
+          <Trans>Invest</Trans>
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: '/add/ETH',
+      link: '/overview',
       external: false,
     },
     {
@@ -376,6 +394,40 @@ export default function Account() {
 
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />
+  }
+
+  async function onCreate() {
+    if (!chainId || !provider || !account) return
+
+    console.log(0)
+    const { calldata, value } = XXXFactory.createCallParameters(account)
+    const txn: { to: string; data: string; value: string } = {
+      to: XXXFACTORY_ADDRESSES,
+      data: calldata,
+      value,
+    }
+    provider
+      .getSigner()
+      .estimateGas(txn)
+      .then((estimate) => {
+        const newTxn = {
+          ...txn,
+          gasLimit: calculateGasMargin(estimate),
+        }
+        return provider
+          .getSigner()
+          .sendTransaction(newTxn)
+          .then((response) => {
+            console.log(response)
+          })
+      })
+      .catch((error) => {
+        //setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) {
+          console.error(error)
+        }
+      })
   }
 
   return (
@@ -403,9 +455,19 @@ export default function Account() {
                       )}
                     />
                   }
-                  <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to="/add/ETH">
-                    + <Trans>Create Fund</Trans>
-                  </ResponsiveButtonPrimary>
+                  {managingFund && formatedManagingFunds.length > 0 ? (
+                    <></>
+                  ) : (
+                    <ResponsiveButtonPrimary
+                      data-cy="join-pool-button"
+                      id="join-pool-button"
+                      onClick={() => {
+                        onCreate()
+                      }}
+                    >
+                      + <Trans>Create Fund</Trans>
+                    </ResponsiveButtonPrimary>
+                  )}
                 </ButtonRow>
               </TitleRow>
 
