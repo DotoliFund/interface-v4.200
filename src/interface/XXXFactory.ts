@@ -4,7 +4,6 @@ import IXXXFactory from 'abis/XXXFactory.json'
 import JSBI from 'jsbi'
 
 import { MethodParameters, toHex } from './utils/calldata'
-import { Multicall } from './utils/multicall'
 
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
 
@@ -62,29 +61,12 @@ export abstract class XXXFactory {
     // console.log(_amount.toFixed())
     // console.log(_amount.toSignificant(6))
 
-    calldatas.push(
-      XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-        manager,
-        //deadline: deadline
-      ])
-    )
-    // calldatas.push(
-    //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-    //     {
-    //       manager: manager,
-    //       //token: fund.token,
-    //       token: '0x49A4799652998d8Fe8a1AA14d7E9Ab7C461d40c4',
-    //       amount: 1
-    //       //amount: toHex(_amount.quotient),
-    //       //deadline: deadline
-    //     }
-    //   ])
-    // )
+    const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('createFund', [manager])
 
     const value: string = toHex(0)
 
     return {
-      calldata: Multicall.encodeMulticall(calldatas),
+      calldata,
       value,
     }
   }

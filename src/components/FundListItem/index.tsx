@@ -186,42 +186,14 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
   const { fund: fundAddress, investor: investorAddress, tokens } = fundDetails
   const { account } = useWeb3React()
 
-  console.log('fundAddress :', fundAddress)
-  console.log('investorAddress :', investorAddress)
-  console.log('tokens :', tokens)
-  // const token0 = useToken(token0Address)
-  // const token1 = useToken(token1Address)
-
-  // const currency0 = token0 ? unwrappedToken(token0) : undefined
-  // const currency1 = token1 ? unwrappedToken(token1) : undefined
+  // console.log('fundAddress :', fundAddress)
+  // console.log('investorAddress :', investorAddress)
+  // console.log('tokens :', tokens)
 
   const token0 = useToken(tokens[0])
   const token1 = useToken(tokens[1])
 
-  // construct Position from details returned
-  //const [, pool] = usePool(currency0 ?? undefined, currency1 ?? undefined, feeAmount)
-
-  // const position = useMemo(() => {
-  //   if (pool) {
-  //     return new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper })
-  //   }
-  //   return undefined
-  // }, [liquidity, pool, tickLower, tickUpper])
-
-  //const tickAtLimit = useIsTickAtLimit(feeAmount, tickLower, tickUpper)
-
-  // prices
-  //const { priceLower, priceUpper, quote, base } = getPriceOrderingFromPositionForUI(position)
-
-  // const currencyQuote = quote && unwrappedToken(quote)
-  // const currencyBase = base && unwrappedToken(base)
-
-  // check if price is within range
-  //const outOfRange: boolean = pool ? pool.tickCurrent < tickLower || pool.tickCurrent >= tickUpper : false
-
   const fundLink = '/fund/' + fundAddress + '/' + account
-
-  //const removed = liquidity?.eq(0)
 
   return (
     <LinkRow to={fundLink}>
