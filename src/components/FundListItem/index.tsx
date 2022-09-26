@@ -250,7 +250,8 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <Trans>Min: </Trans>
             </ExtentsText>
             <Trans>
-              {tokens[0][0]}
+              {/* {tokens[0][0]} */}
+              ddddddddddddddddd
               {/* {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
               per <HoverInlineText text={currencyBase?.symbol ?? ''} /> */}
             </Trans>
@@ -266,7 +267,8 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <Trans>Max:</Trans>
             </ExtentsText>
             <Trans>
-              {tokens[0][1]}
+              {/* {tokens[0][1]} */}
+              hhhhhhhhhhhhhhhhhhh
               {/* {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
               per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} /> */}
             </Trans>
