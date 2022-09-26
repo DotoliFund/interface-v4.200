@@ -303,7 +303,7 @@ export default function Deposit() {
     //   })
 
     console.log(0)
-    const { calldata, value } = XXXFund2.depositCallParameters(account, currency?.wrapped.address, parsedAmount)
+    const { calldata, value } = XXXFund2.depositCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: NEWFUND_ADDRESS,
       data: calldata,
