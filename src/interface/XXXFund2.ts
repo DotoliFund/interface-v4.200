@@ -11,8 +11,7 @@ import {
 } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund2 from 'abis/XXXFund2.json'
-import { XXXToken_ADDRESS } from 'constants/addresses'
-import { NEWFUND_ADDRESS } from 'constants/addresses'
+import { NEWFUND_ADDRESS, NULL_ADDRESS, XXXToken_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
@@ -260,8 +259,8 @@ export abstract class XXXFund2 {
             tradeType: V3TradeType.EXACT_INPUT,
             swapType: V3SwapType.MULTI_HOP,
             investor,
-            tokenIn: NEWFUND_ADDRESS,
-            tokenOut: NEWFUND_ADDRESS,
+            tokenIn: NULL_ADDRESS,
+            tokenOut: NULL_ADDRESS,
             recipient,
             fee: 0,
             amountIn,
@@ -277,8 +276,8 @@ export abstract class XXXFund2 {
             tradeType: V3TradeType.EXACT_OUTPUT,
             swapType: V3SwapType.MULTI_HOP,
             investor,
-            tokenIn: NEWFUND_ADDRESS,
-            tokenOut: NEWFUND_ADDRESS,
+            tokenIn: NULL_ADDRESS,
+            tokenOut: NULL_ADDRESS,
             recipient,
             fee: 0,
             amountIn: toHex(0),
