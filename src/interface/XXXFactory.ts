@@ -61,7 +61,7 @@ export abstract class XXXFactory {
     // console.log(_amount.toFixed())
     // console.log(_amount.toSignificant(6))
 
-    const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('createFund', [manager])
+    const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('createFund')
 
     const value: string = toHex(0)
 
