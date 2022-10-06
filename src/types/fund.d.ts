@@ -19,5 +19,5 @@
 export interface FundDetails {
   fund: string
   investor: string
-  tokens: string[]
+  //tokens: string[]
 }

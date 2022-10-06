@@ -6,7 +6,6 @@ import Badge from 'components/Badge'
 import RangeBadge from 'components/Badge/RangeBadge'
 import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
-import { useToken } from 'hooks/Tokens'
 //import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
 import { Link } from 'react-router-dom'
 //import { Bound } from 'state/mint/v3/actions'
@@ -183,15 +182,15 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
   //const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
-  const { fund: fundAddress, investor: investorAddress, tokens } = fundDetails
+  const { fund: fundAddress, investor: investorAddress } = fundDetails
   const { account } = useWeb3React()
 
   // console.log('fundAddress :', fundAddress)
   // console.log('investorAddress :', investorAddress)
   // console.log('tokens :', tokens)
 
-  const token0 = useToken(tokens[0])
-  const token1 = useToken(tokens[1])
+  // const token0 = useToken(tokens[0])
+  // const token1 = useToken(tokens[1])
 
   const fundLink = '/fund/' + fundAddress + '/' + account
 

@@ -1,8 +1,5 @@
-import { Interface } from '@ethersproject/abi'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import IXXXFund2 from 'abis/IXXXFund2.json'
-import XXXFund2Json from 'abis/XXXFund2.json'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
@@ -30,16 +27,11 @@ import styled, { css, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 //import { PositionDetails } from 'types/position'
 import { FundDetails } from 'types/fund'
-import { IXXXFund2Interface } from 'types/fund/IXXXFund2'
-import { getContract } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
 //import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
-
-const { abi: XXXFund2ABI } = XXXFund2Json
-const XXXFUND2_INTERFACE = new Interface(IXXXFund2.abi) as IXXXFund2Interface
 
 const PageWrapper = styled(AutoColumn)<{ navBarFlag: boolean }>`
   padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px')};
@@ -244,55 +236,50 @@ export default function Account() {
     'getFundByManager',
     [account ?? undefined]
   )
-
-  const [managingFundTokens, setManagingFundTokens] = useState([''])
-  const [managingFundTokensLoading, setManagingFundTokensLoading] = useState(false)
+  const [managingFundInfo, setManagingFundInfo] = useState<FundDetails[]>()
+  const [managingFundInfoLoading, setManagingFundInfoLoading] = useState(false)
   useEffect(() => {
     if (managingFundLoading) {
-      setManagingFundTokensLoading(true)
+      setManagingFundInfoLoading(true)
     }
     if (!managingFundLoading) {
-      getInvestorTokens()
-      setManagingFundTokensLoading(false)
+      getInfo()
+      setManagingFundInfoLoading(false)
     }
-    async function getInvestorTokens() {
+    async function getInfo() {
       if (!managingFundLoading && managingFund && managingFund[0] !== NULL_ADDRESS && provider && account) {
-        const fundContract = getContract(managingFund[0], XXXFund2ABI, provider, account)
-        await fundContract.getInvestorTokens(account).then((response: any) => {
-          const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
-          setManagingFundTokens(_fundTokens)
-          //console.log('managingFundTokens :', _fundTokens)
-        })
+        setManagingFundInfo([
+          {
+            fund: managingFund[0],
+            investor: account,
+          },
+        ])
+        // const fundContract = getContract(managingFund[0], XXXFund2Json, provider, account)
+        // await fundContract.getManagerTokens().then((response: any) => {
+        //   const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
+        //   setManagingFundInfo(_fundTokens)
+        //   console.log('111111 managingFundTokens :', _fundTokens)
+        // })
       }
     }
   }, [managingFundLoading, managingFund, provider, account])
 
-  // const investingFundsTokens = useMultipleContractSingleData(
-  //   //investingFunds ? investingFunds[0] : [],
-  //   // investingFunds ? ['0x54027Ff902b6103a559cb2e64b41fA9e55ce1284'] : ['0x54027Ff902b6103a559cb2e64b41fA9e55ce1284'],
-  //   ['0x54027Ff902b6103a559cb2e64b41fA9e55ce1284'],
-  //   XXXFUND2_INTERFACE,
-  //   'getInvestorTokens',
-  //   [account]
-  // )
-
   const { loading: investingFundsLoading, result: investingFunds } = useSingleCallResult(
     XXXFactoryContract,
-    'getInvestorFundList',
-    [account ?? undefined]
+    'subscribedFunds',
+    []
   )
-
-  const [investingFundsTokens, setInvestingFundsTokens] = useState([''])
-  const [investingFundsTokensLoading, setInvestingFundsTokensLoading] = useState(false)
+  const [investingFundsInfo, setInvestingFundsInfo] = useState<FundDetails[]>()
+  const [investingFundsInfoLoading, setInvestingFundsInfoLoading] = useState(false)
   useEffect(() => {
     if (investingFundsLoading) {
-      setInvestingFundsTokensLoading(true)
+      setInvestingFundsInfoLoading(true)
     }
     if (!investingFundsLoading) {
-      getInvestorTokens()
-      setInvestingFundsTokensLoading(false)
+      getInfo()
+      setInvestingFundsInfoLoading(false)
     }
-    async function getInvestorTokens() {
+    async function getInfo() {
       if (
         !investingFundsLoading &&
         investingFunds &&
@@ -301,71 +288,23 @@ export default function Account() {
         provider &&
         account
       ) {
-        // console.log(investingFunds)
-        // console.log(investingFunds.length)
-        // console.log(investingFunds[0])
-        // console.log(investingFunds[0].length)
-        //console.log(investingFundList)
-        //investingFunds[0].map((value: any) => [value === '0x54027Ff902b6103a559cb2e64b41fA9e55ce1284' ? '' : value])
-
         const investingFundList = investingFunds[0]
-        const investingFundTokenList: string[] = []
+        const investingFundsInfoList: FundDetails[] = []
 
         for (let i = 0; i < investingFundList.length; i++) {
-          const fundContract = getContract(investingFundList[i], XXXFund2ABI, provider, account)
-          const res = await fundContract.getInvestorTokens(account).then((response: any) => {
-            const fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
-            investingFundTokenList.push(fundTokens)
-          })
+          const investingFundsInfo: FundDetails = {
+            fund: investingFundList[i],
+            investor: account,
+          }
+          investingFundsInfoList.push(investingFundsInfo)
         }
-        setInvestingFundsTokens(investingFundTokenList)
-        //console.log('investingFundTokenList :', investingFundTokenList)
-
-        //investingFunds[0].map((value: any) => [value === '0x54027Ff902b6103a559cb2e64b41fA9e55ce1284' ? '' : value])
-        //console.log(investingFunds[0])
-
-        // const fundContract = getContract(managingFund[0], XXXFund2ABI, provider, account)
-        // const res = await fundContract.getInvestorTokens(account).then((response: any) => {
-        //   const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
-        //   setManagingFundTokens(_fundTokens)
-        // })
+        setInvestingFundsInfo(investingFundsInfoList)
       }
     }
   }, [investingFundsLoading, investingFunds, provider, account])
 
-  const formatedManagingFunds: FundDetails[] =
-    managingFund && managingFund[0] !== NULL_ADDRESS && account
-      ? [
-          {
-            fund: managingFund.toString(),
-            investor: account,
-            tokens: managingFundTokens,
-          },
-        ]
-      : []
-
   console.log('managingFund', managingFund)
   console.log('investingFunds', investingFunds)
-
-  const filteredInvestingFunds: FundDetails[] = [
-    {
-      fund: investingFunds
-        ? investingFunds[0].length > 0 && investingFunds[0] !== NULL_ADDRESS
-          ? investingFunds[0]
-          : 'investingFunds[0] not found'
-        : 'investingFunds not found',
-      investor: account ? account : 'Account Not found',
-      tokens: investingFundsTokens,
-    },
-  ]
-  // const _filteredInvestingFunds = useMemo(() => {
-  //   investingFunds.map((value: any) => [value[0], value[1].toBigInt()])
-  //   const managingFund = formatedManagingFunds[0].fund
-  //   if ( == managingFund) {
-  //     return new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper })
-  //   }
-  //   return undefined
-  // }, [formatedManagingFunds])
 
   const showConnectAWallet = Boolean(!account)
 
@@ -455,7 +394,7 @@ export default function Account() {
                       )}
                     />
                   }
-                  {managingFund && formatedManagingFunds.length > 0 ? (
+                  {managingFundInfo && managingFundInfo.length > 0 ? (
                     <></>
                   ) : (
                     <ResponsiveButtonPrimary
@@ -472,12 +411,12 @@ export default function Account() {
               </TitleRow>
 
               <MainContentWrapper>
-                {managingFundLoading || managingFundTokensLoading ? (
+                {managingFundLoading || managingFundInfoLoading ? (
                   <FundsLoadingPlaceholder />
-                ) : managingFund && formatedManagingFunds.length > 0 ? (
+                ) : managingFundInfo && managingFundInfo.length > 0 ? (
                   <FundList
                     isManagingFund={true}
-                    funds={formatedManagingFunds}
+                    funds={managingFundInfo}
                     setUserHideClosedFunds={setUserHideClosedFunds}
                     userHideClosedFunds={userHideClosedFunds}
                   />
@@ -495,11 +434,11 @@ export default function Account() {
               <MainContentWrapper>
                 {investingFundsLoading ? (
                   <FundsLoadingPlaceholder />
-                ) : investingFunds && filteredInvestingFunds.length > 0 ? (
+                ) : investingFundsInfo && investingFundsInfo.length > 0 ? (
                   //<Trans>{investingFunds}</Trans>
                   <FundList
                     isManagingFund={false}
-                    funds={filteredInvestingFunds}
+                    funds={investingFundsInfo}
                     setUserHideClosedFunds={setUserHideClosedFunds}
                     userHideClosedFunds={userHideClosedFunds}
                   />
