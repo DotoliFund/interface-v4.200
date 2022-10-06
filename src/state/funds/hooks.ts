@@ -23,8 +23,15 @@ export function useUpdateFundData(): (funds: FundData[]) => void {
   )
 }
 
-export function useFundDatas(FundAddresses: string[]): FundData[] {
+export function useFundDatas(fundAddresses: string[]): FundData[] {
   const allFundData = useAllFundData()
+
+  const untrackedAddresses = fundAddresses.reduce((accum: string[], address) => {
+    if (!Object.keys(allFundData).includes(address)) {
+      accum.push(address)
+    }
+    return accum
+  }, [])
 
   // filter for funds with data
   const fundsWithData = fundAddresses

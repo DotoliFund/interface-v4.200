@@ -1,5 +1,7 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
+import { EthereumNetworkInfo } from 'constants/networks'
+import { NetworkInfo } from 'constants/networks'
 
 import { SupportedChainId } from '../../constants/chains'
 
@@ -41,12 +43,14 @@ export interface ApplicationState {
   readonly chainId: number | null
   readonly openModal: ApplicationModal | null
   readonly popupList: PopupList
+  readonly activeNetworkVersion: NetworkInfo
 }
 
 const initialState: ApplicationState = {
   chainId: null,
   openModal: null,
   popupList: [],
+  activeNetworkVersion: EthereumNetworkInfo,
 }
 
 const applicationSlice = createSlice({
@@ -77,8 +81,12 @@ const applicationSlice = createSlice({
         }
       })
     },
+    updateActiveNetworkVersion(state, { payload: { activeNetworkVersion } }) {
+      state.activeNetworkVersion = activeNetworkVersion
+    },
   },
 })
 
-export const { updateChainId, setOpenModal, addPopup, removePopup } = applicationSlice.actions
+export const { updateChainId, setOpenModal, addPopup, removePopup, updateActiveNetworkVersion } =
+  applicationSlice.actions
 export default applicationSlice.reducer

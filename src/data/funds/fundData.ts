@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
 import { FundData } from 'state/funds/reducer'
 import { get2DayChange } from 'utils/data'
 import { useDeltaTimestamps } from 'utils/queries'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 
-export const FundS_BULK = (block: number | undefined, funds: string[]) => {
+export const FUNDS_BULK = (block: number | undefined, funds: string[]) => {
   let fundString = `[`
   funds.map((address) => {
     return (fundString += `"${address}",`)
@@ -115,7 +114,7 @@ export function useFundDatas(fundAddresses: string[]): {
   const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
   const [block24, block48, blockWeek] = blocks ?? []
 
-  const { loading, error, data } = useQuery<FundDataResponse>(FundS_BULK(undefined, fundAddresses), {
+  const { loading, error, data } = useQuery<FundDataResponse>(FUNDS_BULK(undefined, fundAddresses), {
     client: dataClient,
   })
 
@@ -123,17 +122,17 @@ export function useFundDatas(fundAddresses: string[]): {
     loading: loading24,
     error: error24,
     data: data24,
-  } = useQuery<FundDataResponse>(FundS_BULK(block24?.number, fundAddresses), { client: dataClient })
+  } = useQuery<FundDataResponse>(FUNDS_BULK(block24?.number, fundAddresses), { client: dataClient })
   const {
     loading: loading48,
     error: error48,
     data: data48,
-  } = useQuery<FundDataResponse>(FundS_BULK(block48?.number, fundAddresses), { client: dataClient })
+  } = useQuery<FundDataResponse>(FUNDS_BULK(block48?.number, fundAddresses), { client: dataClient })
   const {
     loading: loadingWeek,
     error: errorWeek,
     data: dataWeek,
-  } = useQuery<FundDataResponse>(FundS_BULK(blockWeek?.number, fundAddresses), { client: dataClient })
+  } = useQuery<FundDataResponse>(FUNDS_BULK(blockWeek?.number, fundAddresses), { client: dataClient })
 
   const anyError = Boolean(error || error24 || error48 || blockError || errorWeek)
   const anyLoading = Boolean(loading || loading24 || loading48 || loadingWeek)

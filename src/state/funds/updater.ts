@@ -1,5 +1,4 @@
 import { useFundDatas } from 'data/funds/fundData'
-import { useTopFundAddresses } from 'data/funds/topFunds'
 import { useEffect, useMemo } from 'react'
 
 import { useAllFundData, useUpdateFundData } from './hooks'
@@ -10,7 +9,6 @@ export default function Updater(): null {
 
   // data
   const allFundData = useAllFundData()
-  const { loading, error, addresses } = useTopFundAddresses()
 
   // detect for which addresses we havent loaded pool data yet
   const unfetchedFundAddresses = useMemo(() => {

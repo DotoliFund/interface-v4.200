@@ -49,3 +49,7 @@ export function escapeRegExp(string: string): string {
 export function isTokenOnList(chainTokenMap: ChainTokenMap, token?: Token): boolean {
   return Boolean(token?.isToken && chainTokenMap[token.chainId]?.[token.address])
 }
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
+}
