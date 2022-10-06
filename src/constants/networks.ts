@@ -27,3 +27,11 @@ export const RPC_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.CELO]: `https://forno.celo.org`,
   [SupportedChainId.CELO_ALFAJORES]: `https://alfajores-forno.celo-testnet.org`,
 }
+
+export enum SupportedNetwork {
+  ETHEREUM,
+  ARBITRUM,
+  OPTIMISM,
+  POLYGON,
+  CELO,
+}
