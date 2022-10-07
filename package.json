@@ -61,13 +61,9 @@
     "multicodec": "^3.2.1",
     "multihashes": "^4.0.3",
     "redux-localstorage-simple": "^2.5.1",
-
-
     "@craco/craco": "6.4.3",
     "@ethersproject/experimental": "^5.4.0",
     "@lingui/cli": "^3.9.0",
-
-    
     "@types/styled-components": "^5.1.25",
     "@types/testing-library__cypress": "^5.0.5",
     "cypress": "^10.1.0",
@@ -121,6 +117,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.2",
     "@mui/styled-engine-sc": "^5.8.0",
+
 
 
     "@apollo/client": "^3.3.15",
