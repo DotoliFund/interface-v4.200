@@ -4,47 +4,19 @@ import { SupportedNetwork } from 'constants/networks'
 import { updateFundData } from './actions'
 
 export interface FundData {
-  // basic token info
   address: string
-  feeTier: number
-
-  token0: {
-    name: string
-    symbol: string
-    address: string
-    decimals: number
-    derivedETH: number
-  }
-
-  token1: {
-    name: string
-    symbol: string
-    address: string
-    decimals: number
-    derivedETH: number
-  }
-
-  // for tick math
-  liquidity: number
-  sqrtPrice: number
-  tick: number
-
-  // volume
+  createdAtTimestamp: number
+  createdAtBlockNumber: number
+  manager: string
+  principalETH: number
+  principalUSD: number
+  volumeETH: number
   volumeUSD: number
-  volumeUSDChange: number
-  volumeUSDWeek: number
-
-  // liquidity
-  tvlUSD: number
-  tvlUSDChange: number
-
-  // prices
-  token0Price: number
-  token1Price: number
-
-  // token amounts
-  tvlToken0: number
-  tvlToken1: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  investorCount: number
 }
 
 export interface FundsState {

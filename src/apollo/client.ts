@@ -1,15 +1,10 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 
 export const client = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+  uri: 'https://api.studio.thegraph.com/query/32291/fund/v0.0.9',
   cache: new InMemoryCache({
     typePolicies: {
-      Token: {
-        // Singleton types that have no identifying field can use an empty
-        // array for their keyFields.
-        keyFields: false,
-      },
-      Pool: {
+      Fund: {
         // Singleton types that have no identifying field can use an empty
         // array for their keyFields.
         keyFields: false,
@@ -29,7 +24,7 @@ export const client = new ApolloClient({
 })
 
 export const blockClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+  uri: 'https://api.studio.thegraph.com/query/32291/fund/v0.0.9',
   cache: new InMemoryCache(),
   queryDeduplication: true,
   defaultOptions: {

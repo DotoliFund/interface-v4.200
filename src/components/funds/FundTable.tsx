@@ -113,17 +113,17 @@ const DataRow = ({ fundData, index }: { fundData: FundData; index: number }) => 
             {/* <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} /> */}
             <DoubleCurrencyLogo />
             {/* <TYPE.label ml="8px"> */}
-            {fundData.token0.symbol}/{fundData.token1.symbol}
+            {fundData.address}
             {/* </TYPE.label> */}
             <Badge>
               {/* {feeTierPercent(poolData.feeTier)} */}
-              {fundData.feeTier}
+              {fundData.manager}
             </Badge>
           </RowFixed>
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.tvlUSD)} */}
-          {fundData.tvlUSD}
+          {fundData.volumeETH}
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.volumeUSD)} */}
@@ -131,7 +131,7 @@ const DataRow = ({ fundData, index }: { fundData: FundData; index: number }) => 
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.volumeUSDWeek)} */}
-          {fundData.volumeUSDWeek}
+          {fundData.volumeUSD}
         </Label>
       </ResponsiveGrid>
     </LinkWrapper>

@@ -1,7 +1,9 @@
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { styled } from '@mui/material/styles'
+import FundTable from 'components/funds/FundTable'
 import * as React from 'react'
+import { useFundListData } from 'state/funds/hooks'
 
 import DoughnutChart from '../../components/Chart/DoughnutChart'
 import LineChart from '../../components/Chart/LineChart'
@@ -16,6 +18,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 
 export default function Overview() {
+  const fundListData = useFundListData()
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -27,6 +31,8 @@ export default function Overview() {
         </Grid>
       </Grid>
       <EnhancedTable />
+      ( !fundListData.loading && !fundListData.error ?
+      <FundTable fundDatas={fundListData.data} />)
     </div>
   )
 }

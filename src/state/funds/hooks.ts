@@ -1,18 +1,11 @@
+import { useFundDatas } from 'data/funds/fundData'
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useActiveNetworkVersion } from 'state/application/hooks'
-import { notEmpty } from 'utils'
 
-import { AppDispatch, AppState } from './../index'
+import { AppDispatch } from './../index'
 import { updateFundData } from './actions'
 import { FundData } from './reducer'
-
-export function useAllFundData(): {
-  [address: string]: { data: FundData | undefined; lastUpdated: number | undefined }
-} {
-  const [network] = useActiveNetworkVersion()
-  return useSelector((state: AppState) => state.funds.byAddress[network.id] ?? {})
-}
 
 export function useUpdateFundData(): (funds: FundData[]) => void {
   const dispatch = useDispatch<AppDispatch>()
@@ -23,23 +16,10 @@ export function useUpdateFundData(): (funds: FundData[]) => void {
   )
 }
 
-export function useFundDatas(fundAddresses: string[]): FundData[] {
-  const allFundData = useAllFundData()
-
-  const untrackedAddresses = fundAddresses.reduce((accum: string[], address) => {
-    if (!Object.keys(allFundData).includes(address)) {
-      accum.push(address)
-    }
-    return accum
-  }, [])
-
-  // filter for funds with data
-  const fundsWithData = fundAddresses
-    .map((address) => {
-      const fundData = allFundData[address]?.data
-      return fundData ?? undefined
-    })
-    .filter(notEmpty)
-
-  return fundsWithData
+export function useFundListData(): {
+  loading: boolean
+  error: boolean
+  data: FundData[]
+} {
+  return useFundDatas()
 }
