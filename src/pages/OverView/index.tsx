@@ -7,7 +7,6 @@ import { useFundListData } from 'state/funds/hooks'
 
 import DoughnutChart from '../../components/Chart/DoughnutChart'
 import LineChart from '../../components/Chart/LineChart'
-import EnhancedTable from '../../components/Table'
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -30,9 +29,7 @@ export default function Overview() {
           <DoughnutChart />
         </Grid>
       </Grid>
-      <EnhancedTable />
-      ( !fundListData.loading && !fundListData.error ?
-      <FundTable fundDatas={fundListData.data} />)
+      <FundTable fundDatas={fundListData.data} />
     </div>
   )
 }

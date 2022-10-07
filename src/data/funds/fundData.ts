@@ -42,6 +42,10 @@ interface FundFields {
   investorCount: string
 }
 
+interface FundDataResponse {
+  funds: FundFields[]
+}
+
 /**
  * Fetch top funds by profit
  */
@@ -53,7 +57,7 @@ export function useFundDatas(): {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundFields[]>(FUNDS_BULK(), {
+  const { loading, error, data } = useQuery<FundDataResponse>(FUNDS_BULK(), {
     client: dataClient,
   })
 
@@ -70,8 +74,8 @@ export function useFundDatas(): {
   }
 
   const formatted: FundData[] = data
-    ? data.map((value, index) => {
-        const fundFields = data[index]
+    ? data.funds.map((value, index) => {
+        const fundFields = data.funds[index]
         const fundData: FundData = {
           address: fundFields.id,
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),

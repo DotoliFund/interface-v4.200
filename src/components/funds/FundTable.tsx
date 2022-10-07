@@ -248,16 +248,6 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
         <LoadingRows>
           <div />
           <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
         </LoadingRows>
       )}
     </Wrapper>
