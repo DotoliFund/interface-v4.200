@@ -153,13 +153,7 @@ export default function App() {
                   <Route path="overview" element={<Overview />} />
                   <Route path="account" element={<Account />} />
                   <Route path="fund" element={<Fund />} />
-                  <Route path="fund/:fundAddress/:account" element={<Fund />} />
-
-                  {/* <Route path="pool/v2/find" element={<PoolFinder />} />
-                  <Route path="pool/v2" element={<PoolV2 />} />
-                  <Route path="pool" element={<Pool />} />
-                  <Route path="pool/:tokenId" element={<PositionPage />} /> */}
-
+                  <Route path="fund/:fundAddress" element={<Fund />} />
                   <Route path="swap" element={<Swap />} />
                   <Route path="deposit" element={<Deposit />} />
                   <Route path="deposit/:fund/:tokenId" element={<Deposit />} />

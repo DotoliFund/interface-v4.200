@@ -104,7 +104,7 @@ const SORT_FIELD = {
 const DataRow = ({ fundData, index }: { fundData: FundData; index: number }) => {
   return (
     //<LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
-    <LinkWrapper to={'/overview'}>
+    <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>
         <Label color="textPrimary">{index + 1}</Label>
         <Label color="textPrimary">
