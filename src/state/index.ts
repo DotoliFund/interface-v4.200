@@ -12,6 +12,7 @@ import withdraw from 'state/withdraw/reducer'
 import { isTestEnv } from 'utils/env'
 
 import application from './application/reducer'
+import funds from './funds/reducer'
 import { updateVersion } from './global/actions'
 import lists from './lists/reducer'
 import { routingApi } from './routing/slice'
@@ -27,6 +28,7 @@ export const store = configureStore({
     wallets,
     create,
     user,
+    funds,
     connection,
     transactions,
     lists,

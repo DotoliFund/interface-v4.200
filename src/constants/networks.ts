@@ -1,4 +1,5 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
+import ETHEREUM_LOGO_URL from 'assets/images/ethereum-logo.png'
 
 import { SupportedChainId } from './chains'
 
@@ -26,4 +27,33 @@ export const RPC_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.POLYGON_MUMBAI]: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.CELO]: `https://forno.celo.org`,
   [SupportedChainId.CELO_ALFAJORES]: `https://alfajores-forno.celo-testnet.org`,
+}
+
+export type NetworkInfo = {
+  id: SupportedNetwork
+  route: string
+  name: string
+  imageURL: string
+  bgColor: string
+  primaryColor: string
+  secondaryColor: string
+  blurb?: string
+}
+
+export enum SupportedNetwork {
+  ETHEREUM,
+  ARBITRUM,
+  OPTIMISM,
+  POLYGON,
+  CELO,
+}
+
+export const EthereumNetworkInfo: NetworkInfo = {
+  id: SupportedNetwork.ETHEREUM,
+  route: '',
+  name: 'Ethereum',
+  bgColor: '#fc077d',
+  primaryColor: '#fc077d',
+  secondaryColor: '#2172E5',
+  imageURL: ETHEREUM_LOGO_URL,
 }

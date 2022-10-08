@@ -1,5 +1,3 @@
-import { green, purple } from '@mui/material/colors'
-import { createTheme } from '@mui/material/styles'
 import Web3Provider from 'components/Web3Provider'
 import { FeatureFlagsProvider } from 'featureFlags'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
@@ -34,17 +32,6 @@ function Updaters() {
     </>
   )
 }
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[500],
-    },
-    secondary: {
-      main: purple[500],
-    },
-  },
-})
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
