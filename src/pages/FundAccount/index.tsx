@@ -4,15 +4,10 @@ import { useWeb3React } from '@web3-react/core'
 import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { useXXXFactoryContract } from 'hooks/useContract'
-import { XXXFactory } from 'interface/XXXFactory'
-import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components/macro'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
 
 import { ButtonError, ButtonLight } from '../../components/Button'
 import { BlueCard } from '../../components/Card'
@@ -37,14 +32,13 @@ import {
 
 const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
-export default function Fund() {
+export default function FundAccount() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const XXXFactoryContract = useXXXFactoryContract()
 
   const { account, chainId, provider } = useWeb3React()
   const theme = useTheme()
-  const { fundAddress } = useParams<{ fundAddress?: string }>()
+  const { fund, investor } = useParams<{ fund: string; investor: string }>()
 
   function switchToMyAccount() {
     alert(1234)
@@ -55,53 +49,6 @@ export default function Fund() {
     alert(5678)
     //navigate(`/add/${currencyIdB as string}/${currencyIdA as string}${feeAmount ? '/' + feeAmount : ''}`)
     //navigate(`/fund/:fundAddress`)
-  }
-
-  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(
-    XXXFactoryContract,
-    'getFundByManager',
-    [account ?? undefined]
-  )
-
-  const { loading: isSubscribeLoading, result: isSubscribe } = useSingleCallResult(XXXFactoryContract, 'isSubscribed', [
-    account ?? undefined,
-    fundAddress ?? undefined,
-  ])
-
-  async function onSubscribe() {
-    if (!chainId || !provider || !account || !fundAddress) return
-    console.log(222)
-
-    const { calldata, value } = XXXFactory.subscribeCallParameters(fundAddress)
-    console.log(333)
-
-    const txn: { to: string; data: string; value: string } = {
-      to: XXXFACTORY_ADDRESSES,
-      data: calldata,
-      value,
-    }
-    provider
-      .getSigner()
-      .estimateGas(txn)
-      .then((estimate) => {
-        const newTxn = {
-          ...txn,
-          gasLimit: calculateGasMargin(estimate),
-        }
-        return provider
-          .getSigner()
-          .sendTransaction(newTxn)
-          .then((response) => {
-            console.log(response)
-          })
-      })
-      .catch((error) => {
-        //setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) {
-          console.error(error)
-        }
-      })
   }
 
   const toggleWalletModal = useToggleWalletModal() // toggle wallet when disconnected
@@ -118,48 +65,16 @@ export default function Fund() {
           <Trans>Connect Wallet</Trans>
         </ButtonLight>
       </TraceEvent>
-    ) : managingFundLoading || isSubscribeLoading ? (
-      <AutoColumn gap={'md'}>
-        <ButtonError disabled={true}>
-          <Text fontWeight={500}>
-            <Trans>Loading...</Trans>
-          </Text>
-        </ButtonError>
-      </AutoColumn>
-    ) : managingFund?.at(0).toUpperCase() === fundAddress?.toUpperCase() && !isSubscribe?.at(0) ? (
-      <AutoColumn gap={'md'}>
-        <ButtonError disabled={true}>
-          <Text fontWeight={500}>
-            <Trans>You are manager</Trans>
-          </Text>
-        </ButtonError>
-      </AutoColumn>
-    ) : managingFund?.at(0).toUpperCase() !== fundAddress?.toUpperCase() && isSubscribe?.at(0) ? (
-      <AutoColumn gap={'md'}>
-        <ButtonError disabled={true}>
-          <Text fontWeight={500}>
-            <Trans>You are investor</Trans>
-          </Text>
-        </ButtonError>
-      </AutoColumn>
-    ) : managingFund?.at(0).toUpperCase() !== fundAddress?.toUpperCase() && !isSubscribe?.at(0) ? (
+    ) : (
       <AutoColumn gap={'md'}>
         <ButtonError
           onClick={() => {
-            onSubscribe()
+            return
           }}
           disabled={false}
         >
           <Text fontWeight={500}>
-            <Trans>Subscribe</Trans>
-          </Text>
-        </ButtonError>
-      </AutoColumn>
-    ) : (
-      <AutoColumn gap={'md'}>
-        <ButtonError disabled={true}>
-          <Text fontWeight={500}>
-            <Trans>Unexpected Error</Trans>
+            <Trans>Preview</Trans>
           </Text>
         </ButtonError>
       </AutoColumn>

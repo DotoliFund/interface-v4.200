@@ -306,8 +306,6 @@ export default function Account() {
   console.log('managingFund', managingFund)
   console.log('investingFunds', investingFunds)
 
-  const showConnectAWallet = Boolean(!account)
-
   const menuItems = [
     {
       content: (
@@ -338,8 +336,7 @@ export default function Account() {
   async function onCreate() {
     if (!chainId || !provider || !account) return
 
-    console.log(0)
-    const { calldata, value } = XXXFactory.createCallParameters(account)
+    const { calldata, value } = XXXFactory.createCallParameters()
     const txn: { to: string; data: string; value: string } = {
       to: XXXFACTORY_ADDRESSES,
       data: calldata,

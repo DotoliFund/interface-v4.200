@@ -1,5 +1,5 @@
 import { Interface } from '@ethersproject/abi'
-import { BigintIsh, NativeCurrency, validateAndParseAddress } from '@uniswap/sdk-core'
+import { BigintIsh, NativeCurrency } from '@uniswap/sdk-core'
 import IXXXFactory from 'abis/XXXFactory.json'
 import JSBI from 'jsbi'
 
@@ -49,22 +49,18 @@ export type AddLiquidityOptions = MintOptions | IncreaseOptions
 export abstract class XXXFactory {
   public static INTERFACE: Interface = new Interface(IXXXFactory.abi)
 
-  public static createCallParameters(account: string): MethodParameters {
-    const calldatas: string[] = []
-    //const deadline = toHex(JSBI.BigInt(fund.deadline))
-    const manager: string = validateAndParseAddress(account)
-
-    // console.log(_amount)
-    // console.log(_amount.quotient)
-    // console.log(toHex(_amount.quotient))
-    // console.log(_amount.toExact())
-    // console.log(_amount.toFixed())
-    // console.log(_amount.toSignificant(6))
-
+  public static createCallParameters(): MethodParameters {
     const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('createFund')
-
     const value: string = toHex(0)
+    return {
+      calldata,
+      value,
+    }
+  }
 
+  public static subscribeCallParameters(fund: string): MethodParameters {
+    const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('subscribe', [fund])
+    const value: string = toHex(0)
     return {
       calldata,
       value,
