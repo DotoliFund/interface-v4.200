@@ -1,4 +1,4 @@
-import Typography from '@mui/material/Typography'
+import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrency } from 'hooks/Tokens'
@@ -97,30 +97,30 @@ export function useDerivedCreateInfo(): {
     let inputError: ReactNode | undefined
 
     if (!account) {
-      inputError = <Typography>Connect Wallet</Typography>
+      inputError = <Trans>Connect Wallet</Trans>
     }
 
     if (!currency) {
-      inputError = inputError ?? <Typography>Select a token</Typography>
+      inputError = inputError ?? <Trans>Select a token</Trans>
     }
 
     if (!parsedAmount) {
-      inputError = inputError ?? <Typography>Enter an amount</Typography>
+      inputError = inputError ?? <Trans>Enter an amount</Trans>
     }
 
     const formattedTo = isAddress(to)
     if (!to || !formattedTo) {
-      inputError = inputError ?? <Typography>Enter a sender</Typography>
+      inputError = inputError ?? <Trans>Enter a sender</Trans>
     } else {
       if (BAD_RECIPIENT_ADDRESSES[formattedTo]) {
-        inputError = inputError ?? <Typography>Invalid sender</Typography>
+        inputError = inputError ?? <Trans>Invalid sender</Trans>
       }
     }
 
     // compare input balance to max input based on version
     const [balanceIn, amountIn] = [currencyBalance, parsedAmount]
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-      inputError = <Typography>Insufficient {amountIn.currency.symbol} balance</Typography>
+      inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
     }
 
     return inputError

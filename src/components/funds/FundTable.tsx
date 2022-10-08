@@ -1,4 +1,3 @@
-import Badge from 'components/Badge'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
@@ -115,19 +114,15 @@ const DataRow = ({ fundData, index }: { fundData: FundData; index: number }) => 
             {/* <TYPE.label ml="8px"> */}
             {fundData.address}
             {/* </TYPE.label> */}
-            <Badge>
-              {/* {feeTierPercent(poolData.feeTier)} */}
-              {fundData.manager}
-            </Badge>
           </RowFixed>
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.tvlUSD)} */}
-          {fundData.volumeETH}
+          {fundData.manager}
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.volumeUSD)} */}
-          {fundData.volumeUSD}
+          {fundData.volumeETH}
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.volumeUSDWeek)} */}
@@ -205,7 +200,7 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
               Fund {arrow(SORT_FIELD.feeTier)}
             </ClickableText>
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
-              TVL {arrow(SORT_FIELD.tvlUSD)}
+              Manager {arrow(SORT_FIELD.tvlUSD)}
             </ClickableText>
             <ClickableText color={theme.deprecated_text1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume 24H {arrow(SORT_FIELD.volumeUSD)}
