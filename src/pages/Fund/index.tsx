@@ -10,6 +10,7 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components/macro'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -41,6 +42,7 @@ export default function Fund() {
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const XXXFactoryContract = useXXXFactoryContract()
+  const navigate = useNavigate()
 
   const { account, chainId, provider } = useWeb3React()
   const theme = useTheme()
@@ -70,11 +72,7 @@ export default function Fund() {
 
   async function onSubscribe() {
     if (!chainId || !provider || !account || !fundAddress) return
-    console.log(222)
-
     const { calldata, value } = XXXFactory.subscribeCallParameters(fundAddress)
-    console.log(333)
-
     const txn: { to: string; data: string; value: string } = {
       to: XXXFACTORY_ADDRESSES,
       data: calldata,
@@ -128,17 +126,27 @@ export default function Fund() {
       </AutoColumn>
     ) : managingFund?.at(0).toUpperCase() === fundAddress?.toUpperCase() && !isSubscribe?.at(0) ? (
       <AutoColumn gap={'md'}>
-        <ButtonError disabled={true}>
+        <ButtonError
+          onClick={() => {
+            navigate(`/fund/${fundAddress}/${account}`)
+          }}
+          disabled={false}
+        >
           <Text fontWeight={500}>
-            <Trans>You are manager</Trans>
+            <Trans>My Account : {account}</Trans>
           </Text>
         </ButtonError>
       </AutoColumn>
     ) : managingFund?.at(0).toUpperCase() !== fundAddress?.toUpperCase() && isSubscribe?.at(0) ? (
       <AutoColumn gap={'md'}>
-        <ButtonError disabled={true}>
+        <ButtonError
+          onClick={() => {
+            navigate(`/fund/${fundAddress}/${account}`)
+          }}
+          disabled={false}
+        >
           <Text fontWeight={500}>
-            <Trans>You are investor</Trans>
+            <Trans>My Account : {account}</Trans>
           </Text>
         </ButtonError>
       </AutoColumn>

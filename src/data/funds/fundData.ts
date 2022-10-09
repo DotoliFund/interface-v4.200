@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { FundData } from 'state/funds/reducer'
 
 export const FUNDS_BULK = () => {
   const queryString = `
@@ -26,7 +25,54 @@ export const FUNDS_BULK = () => {
   return gql(queryString)
 }
 
+export interface FundData {
+  address: string
+  createdAtTimestamp: number
+  createdAtBlockNumber: number
+  manager: string
+  principalETH: number
+  principalUSD: number
+  volumeETH: number
+  volumeUSD: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  investorCount: number
+}
+
+export interface FundSnapshotData {
+  id: string
+  timestamp: number
+  fund: string
+  volumeUSD: number
+  volumeETH: number
+  principalUSD: number
+  principalETH: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  investorCount: number
+}
+
 interface FundFields {
+  id: string
+  createdAtTimestamp: string
+  createdAtBlockNumber: string
+  manager: string
+  principalETH: string
+  principalUSD: string
+  volumeETH: string
+  volumeUSD: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
+  investorCount: string
+}
+
+interface FundSnapshotFields {
   id: string
   createdAtTimestamp: string
   createdAtBlockNumber: string
@@ -44,6 +90,10 @@ interface FundFields {
 
 interface FundDataResponse {
   funds: FundFields[]
+}
+
+interface FundSnapshotDataResponse {
+  funds: FundSnapshotFields[]
 }
 
 /**

@@ -109,7 +109,7 @@ export default function FundAccount() {
                     switchToFundAccount()
                   }}
                 >
-                  <Trans>Fund Account</Trans>
+                  <Trans>Fund</Trans>
                 </ToggleElement>
               </ToggleWrapper>
             </Row>

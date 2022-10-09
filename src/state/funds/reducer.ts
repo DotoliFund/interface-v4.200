@@ -1,13 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { SupportedNetwork } from 'constants/networks'
+import { FundData } from 'data/funds/fundData'
 
 import { updateFundData } from './actions'
 
-export interface FundData {
-  address: string
+export interface InvestorData {
+  id: string
   createdAtTimestamp: number
   createdAtBlockNumber: number
-  manager: string
+  fund: string
+  investor: string
   principalETH: number
   principalUSD: number
   volumeETH: number
@@ -16,7 +18,19 @@ export interface FundData {
   profitUSD: number
   profitRatioETH: number
   profitRatioUSD: number
-  investorCount: number
+}
+
+export interface InvestorSnapshotData {
+  id: string
+  timestamp: number
+  fund: string
+  investor: string
+  volumeUSD: number
+  volumeETH: number
+  principalUSD: number
+  principalETH: number
+  profitETH: number
+  profitUSD: number
 }
 
 export interface FundsState {

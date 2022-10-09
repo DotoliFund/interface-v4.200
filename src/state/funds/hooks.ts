@@ -1,11 +1,11 @@
 import { useFundDatas } from 'data/funds/fundData'
+import { FundData } from 'data/funds/fundData'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 
 import { AppDispatch } from './../index'
 import { updateFundData } from './actions'
-import { FundData } from './reducer'
 
 export function useUpdateFundData(): (funds: FundData[]) => void {
   const dispatch = useDispatch<AppDispatch>()
