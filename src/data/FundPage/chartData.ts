@@ -99,7 +99,7 @@ interface FundSnapshotDataResponse {
 /**
  * Fetch top funds by profit
  */
-export function useFundDatas(): {
+export function useTopFunds(): {
   loading: boolean
   error: boolean
   data: FundData[]

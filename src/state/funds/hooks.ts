@@ -1,5 +1,5 @@
-import { useFundDatas } from 'data/funds/fundData'
-import { FundData } from 'data/funds/fundData'
+import { useTopFunds } from 'data/menu/Overview/topFunds'
+import { FundData } from 'data/menu/Overview/topFunds'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -21,5 +21,5 @@ export function useFundListData(): {
   error: boolean
   data: FundData[]
 } {
-  return useFundDatas()
+  return useTopFunds()
 }

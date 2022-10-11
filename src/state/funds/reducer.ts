@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { SupportedNetwork } from 'constants/networks'
-import { FundData } from 'data/funds/fundData'
+import { FundData } from 'data/menu/Overview/topFunds'
 
 import { updateFundData } from './actions'
 

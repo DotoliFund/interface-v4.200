@@ -129,7 +129,7 @@ interface ManagerSnapshotsResponse {
 /**
  * Fetch ManagerData
  */
-export function useManagerData(): {
+export function useTopManagers(): {
   loading: boolean
   error: boolean
   data: ManagerData[]
