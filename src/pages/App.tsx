@@ -1,6 +1,7 @@
 import { initializeAnalytics, sendAnalyticsEvent, user } from 'components/AmplitudeAnalytics'
 import { CUSTOM_USER_PROPERTIES, EventName, PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import TopBar from 'components/Header/TopBar'
 import Loader from 'components/Loader'
 import TopLevelModals from 'components/TopLevelModals'
 import { useFeatureFlagsIsLoaded } from 'featureFlags'
@@ -10,8 +11,8 @@ import { useTokensFlag } from 'featureFlags/flags/tokens'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Account from 'pages/Account'
 import Deposit from 'pages/Deposit'
-import Fund from 'pages/Fund'
 import FundAccount from 'pages/FundAccount'
+import FundPage from 'pages/FundPage'
 import Main from 'pages/Main'
 import Overview from 'pages/Overview'
 import Swap from 'pages/Swap'
@@ -28,7 +29,6 @@ import { useAnalyticsReporter } from '../components/analytics'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Header from '../components/Header'
 import Polling from '../components/Header/Polling'
-import Navbar from '../components/NavBar'
 import Popups from '../components/Popups'
 import { useIsExpertMode } from '../state/user/hooks'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
@@ -60,9 +60,8 @@ const BodyWrapper = styled.div<{ navBarFlag: NavBarVariant }>`
 const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
-  justify-content: space-between;
   position: fixed;
-  top: 0;
+  justify-content: space-between;
   z-index: 2;
 `
 
@@ -142,7 +141,9 @@ export default function App() {
       <ApeModeQueryParamReader />
       <AppWrapper>
         <Trace page={currentPage}>
-          <HeaderWrapper>{navBarFlag === NavBarVariant.Enabled ? <Navbar /> : <Header />}</HeaderWrapper>
+          <TopBar />
+          <Header />
+
           <BodyWrapper navBarFlag={navBarFlag}>
             <Popups />
             <Polling />
@@ -153,7 +154,7 @@ export default function App() {
                   <Route path="/" element={<Main />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="account" element={<Account />} />
-                  <Route path="fund/:fundAddress" element={<Fund />} />
+                  <Route path="fund/:fundAddress" element={<FundPage />} />
                   <Route path="fund/:fundAddress/:account" element={<FundAccount />} />
                   <Route path="swap" element={<Swap />} />
                   <Route path="deposit" element={<Deposit />} />
