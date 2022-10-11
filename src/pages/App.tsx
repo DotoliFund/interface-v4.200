@@ -11,8 +11,8 @@ import { useTokensFlag } from 'featureFlags/flags/tokens'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Account from 'pages/Account'
 import Deposit from 'pages/Deposit'
-import Fund from 'pages/Fund'
 import FundAccount from 'pages/FundAccount'
+import FundPage from 'pages/FundPage'
 import Main from 'pages/Main'
 import Overview from 'pages/Overview'
 import Swap from 'pages/Swap'
@@ -154,7 +154,7 @@ export default function App() {
                   <Route path="/" element={<Main />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="account" element={<Account />} />
-                  <Route path="fund/:fundAddress" element={<Fund />} />
+                  <Route path="fund/:fundAddress" element={<FundPage />} />
                   <Route path="fund/:fundAddress/:account" element={<FundAccount />} />
                   <Route path="swap" element={<Swap />} />
                   <Route path="deposit" element={<Deposit />} />

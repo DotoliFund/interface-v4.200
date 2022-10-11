@@ -1,5 +1,9 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
+import ARBITRUM_LOGO_URL from 'assets/images/arbitrumCircle.png'
+import CELO_LOGO_URL from 'assets/images/celoCircle.png'
 import ETHEREUM_LOGO_URL from 'assets/images/ethereum-logo.png'
+import OPTIMISM_LOGO_URL from 'assets/images/optimismCircle.png'
+import POLYGON_LOGO_URL from 'assets/images/polygonCircle.png'
 
 import { SupportedChainId } from './chains'
 
@@ -29,6 +33,14 @@ export const RPC_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.CELO_ALFAJORES]: `https://alfajores-forno.celo-testnet.org`,
 }
 
+export enum SupportedNetwork {
+  ETHEREUM,
+  ARBITRUM,
+  OPTIMISM,
+  POLYGON,
+  CELO,
+}
+
 export type NetworkInfo = {
   id: SupportedNetwork
   route: string
@@ -40,14 +52,6 @@ export type NetworkInfo = {
   blurb?: string
 }
 
-export enum SupportedNetwork {
-  ETHEREUM,
-  ARBITRUM,
-  OPTIMISM,
-  POLYGON,
-  CELO,
-}
-
 export const EthereumNetworkInfo: NetworkInfo = {
   id: SupportedNetwork.ETHEREUM,
   route: '',
@@ -57,3 +61,52 @@ export const EthereumNetworkInfo: NetworkInfo = {
   secondaryColor: '#2172E5',
   imageURL: ETHEREUM_LOGO_URL,
 }
+
+export const ArbitrumNetworkInfo: NetworkInfo = {
+  id: SupportedNetwork.ARBITRUM,
+  route: 'arbitrum',
+  name: 'Arbitrum',
+  imageURL: ARBITRUM_LOGO_URL,
+  bgColor: '#0A294B',
+  primaryColor: '#0490ED',
+  secondaryColor: '#96BEDC',
+}
+
+export const OptimismNetworkInfo: NetworkInfo = {
+  id: SupportedNetwork.OPTIMISM,
+  route: 'optimism',
+  name: 'Optimism',
+  bgColor: '#F01B36',
+  primaryColor: '#F01B36',
+  secondaryColor: '#FB7876',
+  imageURL: OPTIMISM_LOGO_URL,
+}
+
+export const PolygonNetworkInfo: NetworkInfo = {
+  id: SupportedNetwork.POLYGON,
+  route: 'polygon',
+  name: 'Polygon',
+  bgColor: '#8247e5',
+  primaryColor: '#8247e5',
+  secondaryColor: '#FB7876',
+  imageURL: POLYGON_LOGO_URL,
+  blurb: '',
+}
+export const CeloNetworkInfo: NetworkInfo = {
+  id: SupportedNetwork.CELO,
+  route: 'celo',
+  name: 'Celo',
+  bgColor: '#02502F',
+  primaryColor: '#35D07F',
+  secondaryColor: '#9ACDB2',
+  imageURL: CELO_LOGO_URL,
+  blurb: '',
+}
+
+export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [
+  EthereumNetworkInfo,
+  PolygonNetworkInfo,
+  OptimismNetworkInfo,
+  ArbitrumNetworkInfo,
+  CeloNetworkInfo,
+]
