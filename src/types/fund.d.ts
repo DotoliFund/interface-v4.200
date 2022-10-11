@@ -35,3 +35,9 @@ export type Transaction = {
   amountToken0: number
   amountToken1: number
 }
+
+export enum TransactionType {
+  SWAP,
+  MINT,
+  BURN,
+}
