@@ -41,38 +41,7 @@ export interface FundData {
   investorCount: number
 }
 
-export interface FundSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  volumeUSD: number
-  volumeETH: number
-  principalUSD: number
-  principalETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
 interface FundFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundSnapshotFields {
   id: string
   createdAtTimestamp: string
   createdAtBlockNumber: string
@@ -90,10 +59,6 @@ interface FundSnapshotFields {
 
 interface FundDataResponse {
   funds: FundFields[]
-}
-
-interface FundSnapshotDataResponse {
-  funds: FundSnapshotFields[]
 }
 
 /**
