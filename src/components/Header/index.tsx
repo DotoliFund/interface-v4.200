@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
 import { useWeb3React } from '@web3-react/core'
+import { AutoColumn } from 'components/Column'
+import SearchSmall from 'components/Search'
 import { getChainInfoOrDefault } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import { useTokensFlag } from 'featureFlags/flags/tokens'
@@ -16,14 +18,11 @@ import styled, { useTheme } from 'styled-components/macro'
 
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 import { ExternalLink, ThemedText } from '../../theme'
-import ClaimModal from '../claim/ClaimModal'
 import { CardNoise } from '../earn/styled'
 import Menu from '../Menu'
-import Row from '../Row'
+import Row, { RowBetween } from '../Row'
 import { Dots } from '../swap/styleds'
-import Web3Status from '../Web3Status'
 import HolidayOrnament from './HolidayOrnament'
-import NetworkSelector from './NetworkSelector'
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;
@@ -36,8 +35,7 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   top: 0;
   position: relative;
   padding: 1rem;
-  z-index: 21;
-  position: relative;
+  z-index: 2;
   /* Background slide effect on scroll. */
   background-image: ${({ theme }) => `linear-gradient(to bottom, transparent 50%, ${theme.deprecated_bg0} 50% )}}`};
   background-position: ${({ showBackground }) => (showBackground ? '0 -100%' : '0 0')};
@@ -242,7 +240,13 @@ const StyledExternalLink = styled(ExternalLink)`
     text-decoration: none;
   }
 `
-
+const SmallContentGrouping = styled.div`
+  width: 100%;
+  display: none;
+  @media (max-width: 1080px) {
+    display: initial;
+  }
+`
 export default function Header() {
   const tokensFlag = useTokensFlag()
 
@@ -280,7 +284,6 @@ export default function Header() {
 
   return (
     <HeaderFrame showBackground={scrollY > 45}>
-      <ClaimModal />
       <Title href=".">
         <UniIcon>
           <Logo fill={darkMode ? deprecated_white : deprecated_black} width="24px" height="100%" title="logo" />
@@ -306,14 +309,7 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
           <Trans>Fund</Trans>
         </StyledNavLink>
-        {/* <StyledNavLink
-          data-cy="pool-nav-link"
-          id={`pool-nav-link`}
-          to={'/pool'}
-          className={isPoolActive ? activeClassName : undefined}
-        >
-          <Trans>Pool</Trans>
-        </StyledNavLink> */}
+
         {(!chainId || chainId === SupportedChainId.MAINNET) && (
           <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
             <Trans>Vote</Trans>
@@ -322,9 +318,6 @@ export default function Header() {
       </HeaderLinks>
 
       <HeaderControls>
-        <HeaderElement>
-          <NetworkSelector />
-        </HeaderElement>
         <HeaderElement>
           {availableClaim && !showClaimPopup && (
             <UNIWrapper onClick={toggleClaimModal}>
@@ -342,21 +335,19 @@ export default function Header() {
               <CardNoise />
             </UNIWrapper>
           )}
-          <AccountElement active={!!account}>
-            {account && userEthBalance ? (
-              <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr=".4rem" fontWeight={500}>
-                <Trans>
-                  {userEthBalance?.toSignificant(3)} {nativeCurrencySymbol}
-                </Trans>
-              </BalanceText>
-            ) : null}
-            <Web3Status />
-          </AccountElement>
         </HeaderElement>
         <HeaderElement>
           <Menu />
         </HeaderElement>
       </HeaderControls>
+      <SmallContentGrouping>
+        <AutoColumn gap="sm">
+          <RowBetween>
+            <Menu />
+          </RowBetween>
+          <SearchSmall />
+        </AutoColumn>
+      </SmallContentGrouping>
     </HeaderFrame>
   )
 }
