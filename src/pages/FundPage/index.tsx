@@ -327,6 +327,10 @@ export default function FundPage() {
           <DarkGreyCard>
             {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
           </DarkGreyCard>
+          <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
+          <DarkGreyCard>
+            {/* {investors ? <InvestorTable investors={investors} /> : <LocalLoader fill={false} />} */}
+          </DarkGreyCard>
         </AutoColumn>
       ) : (
         <Loader />
