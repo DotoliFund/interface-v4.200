@@ -1,11 +1,12 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { FundSnapshot, FundSnapshotFields } from 'types/fund'
 
-export const FUND_CHART_DATA_BULK = () => {
+export const FUND_CHART = (fund: string) => {
   const queryString = `
     query fundChartData {
-      fundSnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
+      fundSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: {fund: ${fund}}, subgraphError: allow) {
         id
         timestamp
         fund
@@ -24,52 +25,22 @@ export const FUND_CHART_DATA_BULK = () => {
   return gql(queryString)
 }
 
-export interface FundSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  principalUSD: number
-  principalETH: number
-  volumeUSD: number
-  volumeETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-interface FundSnapshotFields {
-  id: string
-  timestamp: string
-  fund: string
-  principalUSD: string
-  principalETH: string
-  volumeUSD: string
-  volumeETH: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundSnapshotDataResponse {
+interface FundSnapshotResponse {
   fundSnapshots: FundSnapshotFields[]
 }
 
 /**
- * Fetch top funds by profit
+ * Fetch fund chart data
  */
-export function useTopFunds(): {
+export function useFundChartData(fund: string): {
   loading: boolean
   error: boolean
-  data: FundSnapshotData[]
+  data: FundSnapshot[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundSnapshotDataResponse>(FUND_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<FundSnapshotResponse>(FUND_CHART(fund), {
     client: dataClient,
   })
 
@@ -85,10 +56,10 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: FundSnapshotData[] = data
+  const formatted: FundSnapshot[] = data
     ? data.fundSnapshots.map((value, index) => {
         const fundSnapshotFields = data.fundSnapshots[index]
-        const fundSnapshotData: FundSnapshotData = {
+        const fundSnapshotData: FundSnapshot = {
           id: fundSnapshotFields.id,
           timestamp: parseFloat(fundSnapshotFields.timestamp),
           fund: fundSnapshotFields.fund,

@@ -1,11 +1,12 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { Fund, FundFields } from 'types/fund'
 
-export const FUNDS_BULK = () => {
+export const FUND_DATA = (fund: string) => {
   const queryString = `
-    query funds {
-      funds(orderBy: profitETH, orderDirection: desc, subgraphError: allow) {
+    query fundData {
+      Fund(where: {id: ${fund}}, subgraphError: allow) {
         id
         createdAtTimestamp
         createdAtBlockNumber
@@ -25,54 +26,22 @@ export const FUNDS_BULK = () => {
   return gql(queryString)
 }
 
-export interface FundData {
-  address: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  manager: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-interface FundFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundDataResponse {
-  funds: FundFields[]
+interface FundResponse {
+  fund: FundFields[]
 }
 
 /**
  * Fetch top funds by profit
  */
-export function useTopFunds(): {
+export function useFundData(fund: string): {
   loading: boolean
   error: boolean
-  data: FundData[]
+  data: Fund[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundDataResponse>(FUNDS_BULK(), {
+  const { loading, error, data } = useQuery<FundResponse>(FUND_DATA(fund), {
     client: dataClient,
   })
 
@@ -88,10 +57,10 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: FundData[] = data
-    ? data.funds.map((value, index) => {
-        const fundFields = data.funds[index]
-        const fundData: FundData = {
+  const formatted: Fund[] = data
+    ? data.fund.map((value, index) => {
+        const fundFields = data.fund[index]
+        const fundData: Fund = {
           address: fundFields.id,
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
           createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),

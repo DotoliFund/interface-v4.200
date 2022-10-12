@@ -89,8 +89,6 @@ const SORT_FIELD = {
 const DataRow = ({ transaction, color }: { transaction: Transaction; color?: string }) => {
   const abs0 = Math.abs(transaction.amountToken0)
   const abs1 = Math.abs(transaction.amountToken1)
-  const outputTokenSymbol = transaction.amountToken0 < 0 ? transaction.token0Symbol : transaction.token1Symbol
-  const inputTokenSymbol = transaction.amountToken1 < 0 ? transaction.token0Symbol : transaction.token1Symbol
   const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
 
@@ -99,20 +97,20 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === TransactionType.MINT
-            ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
+            ? `Add token0Symbol and token0Symbol`
             : transaction.type === TransactionType.SWAP
-            ? `Swap ${inputTokenSymbol} for ${outputTokenSymbol}`
-            : `Remove ${transaction.token0Symbol} and ${transaction.token1Symbol}`}
+            ? `Swap inputTokenSymbol for outputTokenSymbol`
+            : `Remove token0Symbol and token1Symbol`}
         </Label>
       </ExternalLink>
       <Label end={1} fontWeight={400}>
         {formatDollarAmount(transaction.amountUSD)}
       </Label>
       <Label end={1} fontWeight={400}>
-        <HoverInlineText text={`${formatAmount(abs0)}  ${transaction.token0Symbol}`} maxCharacters={16} />
+        <HoverInlineText text={`${formatAmount(abs0)}  token0Symbol`} maxCharacters={16} />
       </Label>
       <Label end={1} fontWeight={400}>
-        <HoverInlineText text={`${formatAmount(abs1)}  ${transaction.token1Symbol}`} maxCharacters={16} />
+        <HoverInlineText text={`${formatAmount(abs1)}  token1Symbol`} maxCharacters={16} />
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink

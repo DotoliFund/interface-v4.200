@@ -22,13 +22,109 @@ export interface FundDetails {
   //tokens: string[]
 }
 
+export interface Fund {
+  address: string
+  createdAtTimestamp: number
+  createdAtBlockNumber: number
+  manager: string
+  principalETH: number
+  principalUSD: number
+  volumeETH: number
+  volumeUSD: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  investorCount: number
+}
+
+export interface FundFields {
+  id: string
+  createdAtTimestamp: string
+  createdAtBlockNumber: string
+  manager: string
+  principalETH: string
+  principalUSD: string
+  volumeETH: string
+  volumeUSD: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
+  investorCount: string
+}
+
+export interface Manager {
+  address: string
+  createdAtTimestamp: number
+  createdAtBlockNumber: number
+  fund: string
+  principalETH: number
+  principalUSD: number
+  volumeETH: number
+  volumeUSD: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  feeVolumeUSD: number
+  feeVolumeETH: number
+}
+
+export interface ManagerFields {
+  id: string
+  createdAtTimestamp: string
+  createdAtBlockNumber: string
+  fund: string
+  principalETH: string
+  principalUSD: string
+  volumeETH: string
+  volumeUSD: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
+  feeVolumeETH: string
+  feeVolumeUSD: string
+}
+
+export interface Investor {
+  id: string
+  createdAtTimestamp: number
+  createdAtBlockNumber: number
+  fund: string
+  investor: string
+  principalETH: number
+  principalUSD: number
+  volumeETH: number
+  volumeUSD: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+}
+
+export interface InvestorFields {
+  id: string
+  createdAtTimestamp: string
+  createdAtBlockNumber: string
+  fund: string
+  investor: string
+  principalETH: string
+  principalUSD: string
+  volumeETH: string
+  volumeUSD: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
+}
+
 export type Transaction = {
   type: TransactionType
   hash: string
   timestamp: string
   sender: string
-  token0Symbol: string
-  token1Symbol: string
   token0Address: string
   token1Address: string
   amountUSD: number
@@ -40,4 +136,101 @@ export enum TransactionType {
   SWAP,
   MINT,
   BURN,
+  DEPOSIT,
+  WITHDRAW,
+  SUBSCRIBE,
+}
+
+export interface FundSnapshot {
+  id: string
+  timestamp: number
+  fund: string
+  principalUSD: number
+  principalETH: number
+  volumeUSD: number
+  volumeETH: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  investorCount: number
+}
+
+export interface FundSnapshotFields {
+  id: string
+  timestamp: string
+  fund: string
+  principalUSD: string
+  principalETH: string
+  volumeUSD: string
+  volumeETH: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
+  investorCount: string
+}
+
+export interface ManagerSnapshot {
+  id: string
+  timestamp: number
+  fund: string
+  manager: string
+  principalUSD: number
+  principalETH: number
+  volumeUSD: number
+  volumeETH: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+  feeVolumeUSD: number
+  feeVolumeETH: number
+}
+
+export interface ManagerSnapshotFields {
+  id: string
+  timestamp: string
+  fund: string
+  manager: string
+  principalUSD: string
+  principalETH: string
+  volumeUSD: string
+  volumeETH: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
+  feeVolumeUSD: string
+  feeVolumeETH: string
+}
+
+export interface InvestorSnapshot {
+  id: string
+  timestamp: number
+  fund: string
+  investor: string
+  principalUSD: number
+  principalETH: number
+  volumeUSD: number
+  volumeETH: number
+  profitETH: number
+  profitUSD: number
+  profitRatioETH: number
+  profitRatioUSD: number
+}
+
+export interface InvestorSnapshotFields {
+  id: string
+  timestamp: string
+  fund: string
+  investor: string
+  principalUSD: string
+  principalETH: string
+  volumeUSD: string
+  volumeETH: string
+  profitETH: string
+  profitUSD: string
+  profitRatioETH: string
+  profitRatioUSD: string
 }

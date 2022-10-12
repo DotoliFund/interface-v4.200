@@ -4,12 +4,12 @@ import DoubleCurrencyLogo from 'components/DoubleLogo'
 import Loader from 'components/Loader'
 import { LoadingRows } from 'components/Loader/styled'
 import { RowFixed } from 'components/Row'
-import { FundData } from 'data/menu/Overview/topFunds'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components/macro'
 import { Color } from 'theme/styled'
+import { Fund } from 'types/fund'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -101,7 +101,7 @@ const SORT_FIELD = {
   volumeUSDWeek: 'volumeUSDWeek',
 }
 
-const DataRow = ({ fundData, index }: { fundData: FundData; index: number }) => {
+const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
   return (
     //<LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
     <LinkWrapper to={'/fund/' + fundData.address}>
@@ -135,7 +135,7 @@ const DataRow = ({ fundData, index }: { fundData: FundData; index: number }) => 
 
 const MAX_ITEMS = 10
 
-export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDatas: FundData[]; maxItems?: number }) {
+export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDatas: Fund[]; maxItems?: number }) {
   // theming
   const theme = useTheme()
 
@@ -160,7 +160,7 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
           .filter((x) => !!x)
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof FundData] > b[sortField as keyof FundData]
+              return a[sortField as keyof Fund] > b[sortField as keyof Fund]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {

@@ -1,15 +1,16 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { Manager, ManagerFields } from 'types/fund'
 
-export const FUNDS_BULK = () => {
+export const MANAGER_DATA = (manager: string) => {
   const queryString = `
-    query funds {
-      funds(orderBy: profitETH, orderDirection: desc, subgraphError: allow) {
+    query manager {
+      manager(where: {manager: ${manager}}, subgraphError: allow) {
         id
         createdAtTimestamp
         createdAtBlockNumber
-        manager
+        fund
         principalETH
         principalUSD
         volumeETH
@@ -18,96 +19,30 @@ export const FUNDS_BULK = () => {
         profitUSD
         profitRatioETH
         profitRatioUSD
-        investorCount
+        feeVolumeETH
+        feeVolumeUSD
       }
     }
     `
   return gql(queryString)
 }
 
-export interface FundData {
-  address: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  manager: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-export interface FundSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  volumeUSD: number
-  volumeETH: number
-  principalUSD: number
-  principalETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-interface FundFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundSnapshotFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundDataResponse {
-  funds: FundFields[]
-}
-
-interface FundSnapshotDataResponse {
-  funds: FundSnapshotFields[]
+interface ManagerResponse {
+  manager: ManagerFields[]
 }
 
 /**
- * Fetch top funds by profit
+ * Fetch manager data
  */
-export function useTopFunds(): {
+export function useManagerData(manager: string): {
   loading: boolean
   error: boolean
-  data: FundData[]
+  data: Manager[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundDataResponse>(FUNDS_BULK(), {
+  const { loading, error, data } = useQuery<ManagerResponse>(MANAGER_DATA(manager), {
     client: dataClient,
   })
 
@@ -123,25 +58,26 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: FundData[] = data
-    ? data.funds.map((value, index) => {
-        const fundFields = data.funds[index]
-        const fundData: FundData = {
-          address: fundFields.id,
-          createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),
-          manager: fundFields.manager,
-          principalETH: parseFloat(fundFields.principalETH),
-          principalUSD: parseFloat(fundFields.principalUSD),
-          volumeETH: parseFloat(fundFields.volumeETH),
-          volumeUSD: parseFloat(fundFields.volumeUSD),
-          profitETH: parseFloat(fundFields.profitETH),
-          profitUSD: parseFloat(fundFields.profitUSD),
-          profitRatioETH: parseFloat(fundFields.profitRatioETH),
-          profitRatioUSD: parseFloat(fundFields.profitRatioUSD),
-          investorCount: parseInt(fundFields.investorCount),
+  const formatted: Manager[] = data
+    ? data.manager.map((value, index) => {
+        const managerDataFields = data.manager[index]
+        const managerData: Manager = {
+          address: managerDataFields.id,
+          createdAtTimestamp: parseFloat(managerDataFields.createdAtTimestamp),
+          createdAtBlockNumber: parseFloat(managerDataFields.createdAtBlockNumber),
+          fund: managerDataFields.fund,
+          principalETH: parseFloat(managerDataFields.principalETH),
+          principalUSD: parseFloat(managerDataFields.principalUSD),
+          volumeETH: parseFloat(managerDataFields.volumeETH),
+          volumeUSD: parseFloat(managerDataFields.volumeUSD),
+          profitETH: parseFloat(managerDataFields.profitETH),
+          profitUSD: parseFloat(managerDataFields.profitUSD),
+          profitRatioETH: parseFloat(managerDataFields.profitRatioETH),
+          profitRatioUSD: parseFloat(managerDataFields.profitRatioUSD),
+          feeVolumeETH: parseFloat(managerDataFields.profitRatioUSD),
+          feeVolumeUSD: parseFloat(managerDataFields.profitRatioUSD),
         }
-        return fundData
+        return managerData
       })
     : []
 

@@ -1,11 +1,12 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { InvestorSnapshot, InvestorSnapshotFields } from 'types/fund'
 
-export const INVESTOR_CHART_DATA_BULK = () => {
+export const INVESTOR_CHART = (fund: string, investor: string) => {
   const queryString = `
     query investorChartData {
-      investorSnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
+      investorSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: {fund: ${fund}, investor: ${investor}}, subgraphError: allow) {
         id
         timestamp
         fund
@@ -24,52 +25,25 @@ export const INVESTOR_CHART_DATA_BULK = () => {
   return gql(queryString)
 }
 
-export interface InvestorSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  investor: string
-  principalUSD: number
-  principalETH: number
-  volumeUSD: number
-  volumeETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-}
-
-interface InvestorSnapshotFields {
-  id: string
-  timestamp: string
-  fund: string
-  investor: string
-  principalUSD: string
-  principalETH: string
-  volumeUSD: string
-  volumeETH: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-}
-
-interface InvestorSnapshotDataResponse {
+interface InvestorSnapshotResponse {
   investorSnapshots: InvestorSnapshotFields[]
 }
 
 /**
- * Fetch top funds by profit
+ * Fetch investor chart data
  */
-export function useTopFunds(): {
+export function useInvestorChartData(
+  fund: string,
+  investor: string
+): {
   loading: boolean
   error: boolean
-  data: InvestorSnapshotData[]
+  data: InvestorSnapshot[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<InvestorSnapshotDataResponse>(INVESTOR_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<InvestorSnapshotResponse>(INVESTOR_CHART(fund, investor), {
     client: dataClient,
   })
 
@@ -85,10 +59,10 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: InvestorSnapshotData[] = data
+  const formatted: InvestorSnapshot[] = data
     ? data.investorSnapshots.map((value, index) => {
         const investorSnapshotFields = data.investorSnapshots[index]
-        const investorSnapshotData: InvestorSnapshotData = {
+        const investorSnapshotData: InvestorSnapshot = {
           id: investorSnapshotFields.id,
           timestamp: parseFloat(investorSnapshotFields.timestamp),
           fund: investorSnapshotFields.fund,

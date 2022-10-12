@@ -1,15 +1,17 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { Investor, InvestorFields } from 'types/fund'
 
-export const FUNDS_BULK = () => {
+export const INVESTOR_DATA = (investor: string) => {
   const queryString = `
-    query funds {
-      funds(orderBy: profitETH, orderDirection: desc, subgraphError: allow) {
+    query investor {
+      investor(where: {investor: ${investor}}, subgraphError: allow) {
         id
         createdAtTimestamp
         createdAtBlockNumber
-        manager
+        fund
+        investor
         principalETH
         principalUSD
         volumeETH
@@ -18,96 +20,28 @@ export const FUNDS_BULK = () => {
         profitUSD
         profitRatioETH
         profitRatioUSD
-        investorCount
       }
     }
     `
   return gql(queryString)
 }
 
-export interface FundData {
-  address: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  manager: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-export interface FundSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  volumeUSD: number
-  volumeETH: number
-  principalUSD: number
-  principalETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-interface FundFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundSnapshotFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundDataResponse {
-  funds: FundFields[]
-}
-
-interface FundSnapshotDataResponse {
-  funds: FundSnapshotFields[]
+interface InvestorResponse {
+  investor: InvestorFields[]
 }
 
 /**
  * Fetch top funds by profit
  */
-export function useTopFunds(): {
+export function useTopFunds(investor: string): {
   loading: boolean
   error: boolean
-  data: FundData[]
+  data: Investor[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundDataResponse>(FUNDS_BULK(), {
+  const { loading, error, data } = useQuery<InvestorResponse>(INVESTOR_DATA(investor), {
     client: dataClient,
   })
 
@@ -123,25 +57,25 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: FundData[] = data
-    ? data.funds.map((value, index) => {
-        const fundFields = data.funds[index]
-        const fundData: FundData = {
-          address: fundFields.id,
-          createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),
-          manager: fundFields.manager,
-          principalETH: parseFloat(fundFields.principalETH),
-          principalUSD: parseFloat(fundFields.principalUSD),
-          volumeETH: parseFloat(fundFields.volumeETH),
-          volumeUSD: parseFloat(fundFields.volumeUSD),
-          profitETH: parseFloat(fundFields.profitETH),
-          profitUSD: parseFloat(fundFields.profitUSD),
-          profitRatioETH: parseFloat(fundFields.profitRatioETH),
-          profitRatioUSD: parseFloat(fundFields.profitRatioUSD),
-          investorCount: parseInt(fundFields.investorCount),
+  const formatted: Investor[] = data
+    ? data.investor.map((value, index) => {
+        const investorDataFields = data.investor[index]
+        const investorData: Investor = {
+          id: investorDataFields.id,
+          createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
+          createdAtBlockNumber: parseFloat(investorDataFields.createdAtBlockNumber),
+          fund: investorDataFields.fund,
+          investor: investorDataFields.investor,
+          principalETH: parseFloat(investorDataFields.principalETH),
+          principalUSD: parseFloat(investorDataFields.principalUSD),
+          volumeETH: parseFloat(investorDataFields.volumeETH),
+          volumeUSD: parseFloat(investorDataFields.volumeUSD),
+          profitETH: parseFloat(investorDataFields.profitETH),
+          profitUSD: parseFloat(investorDataFields.profitUSD),
+          profitRatioETH: parseFloat(investorDataFields.profitRatioETH),
+          profitRatioUSD: parseFloat(investorDataFields.profitRatioUSD),
         }
-        return fundData
+        return investorData
       })
     : []
 

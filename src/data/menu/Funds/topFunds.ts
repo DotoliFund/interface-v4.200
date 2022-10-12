@@ -1,11 +1,12 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { Fund, FundFields } from 'types/fund'
 
-export const FUNDS_BULK = () => {
+export const TOP_FUNDS = () => {
   const queryString = `
     query funds {
-      funds(orderBy: profitETH, orderDirection: desc, subgraphError: allow) {
+      funds(first: 100, orderBy: profitUSD, orderDirection: desc, subgraphError: allow) {
         id
         createdAtTimestamp
         createdAtBlockNumber
@@ -25,75 +26,8 @@ export const FUNDS_BULK = () => {
   return gql(queryString)
 }
 
-export interface FundData {
-  address: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  manager: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-export interface FundSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  volumeUSD: number
-  volumeETH: number
-  principalUSD: number
-  principalETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-interface FundFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundSnapshotFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  manager: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundDataResponse {
+interface FundResponse {
   funds: FundFields[]
-}
-
-interface FundSnapshotDataResponse {
-  funds: FundSnapshotFields[]
 }
 
 /**
@@ -102,12 +36,12 @@ interface FundSnapshotDataResponse {
 export function useTopFunds(): {
   loading: boolean
   error: boolean
-  data: FundData[]
+  data: Fund[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundDataResponse>(FUNDS_BULK(), {
+  const { loading, error, data } = useQuery<FundResponse>(TOP_FUNDS(), {
     client: dataClient,
   })
 
@@ -123,10 +57,10 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: FundData[] = data
+  const formatted: Fund[] = data
     ? data.funds.map((value, index) => {
         const fundFields = data.funds[index]
-        const fundData: FundData = {
+        const fundData: Fund = {
           address: fundFields.id,
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
           createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),

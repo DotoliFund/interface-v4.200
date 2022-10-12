@@ -1,241 +1,92 @@
-import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { Transaction, TransactionType } from 'types/fund'
 
-export const MANAGER_DATA = () => {
-  const queryString = `
-    query manager {
-      manager(id: manager, subgraphError: allow) {
-        id
-        createdAtTimestamp
-        createdAtBlockNumber
-        fund
-        principalETH
-        principalUSD
-        volumeETH
-        volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-        feeVolumeUSD
-        feeVolumeETH
-      }
+const FUND_TRANSACTIONS = gql`
+  query transactions($fund: Bytes!) {
+    swaps(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+      id
+      timestamp
+      fund
+      manager
+      investor
+      token0
+      token1
+      amount0
+      amount1
+      amountETH
+      amountUSD
     }
-    `
-  return gql(queryString)
-}
+  }
+`
 
-export const MANAGER_SNAPSHOTS_BULK = () => {
-  const queryString = `
-    query managerSnpashots {
-      managerSnpashots(fund: fundAddress, manager: account, orderBy: createdAtTimestamp, orderDirection: desc, subgraphError: allow) {
-        id
-        timestamp: number
-        fund: string
-        manager: string
-        principalETH
-        principalUSD
-        volumeETH
-        volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-        feeVolumeUSD
-        feeVolumeETH
-      }
+interface FundTransactionResults {
+  swaps: {
+    id: string
+    transaction: {
+      id: string
     }
-    `
-  return gql(queryString)
-}
-
-export interface ManagerData {
-  address: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  fund: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  feeVolumeUSD: number
-  feeVolumeETH: number
-}
-
-export interface ManagerSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  manager: string
-  principalUSD: number
-  principalETH: number
-  volumeUSD: number
-  volumeETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  feeVolumeUSD: number
-  feeVolumeETH: number
-}
-
-interface ManagerDataFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  fund: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  feeVolumeUSD: string
-  feeVolumeETH: string
-}
-
-interface ManagerSnapshotFields {
-  id: string
-  timestamp: string
-  fund: string
-  manager: string
-  principalUSD: string
-  principalETH: string
-  volumeUSD: string
-  volumeETH: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  feeVolumeUSD: string
-  feeVolumeETH: string
-}
-
-interface ManagerDataResponse {
-  managerData: ManagerDataFields[]
-}
-
-interface ManagerSnapshotsResponse {
-  managerSnapshots: ManagerSnapshotFields[]
+    timestamp: string
+    fund: string
+    manager: string
+    investor: string
+    token0: string
+    token1: string
+    amount0: string
+    amount1: string
+    amountETH: string
+    amountUSD: string
+  }[]
 }
 
 /**
  * Fetch ManagerData
  */
-export function useTopManagers(): {
+export async function useFundTransactions(fund: string): Promise<{
   loading: boolean
   error: boolean
-  data: ManagerData[]
-} {
+  data: Transaction[] | undefined
+}> {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<ManagerDataResponse>(MANAGER_DATA(), {
-    client: dataClient,
+  const { data, error, loading } = await dataClient.query<FundTransactionResults>({
+    query: FUND_TRANSACTIONS,
+    variables: {
+      fund,
+    },
+    fetchPolicy: 'cache-first',
   })
 
-  const anyError = Boolean(error)
-  const anyLoading = Boolean(loading)
-
-  // return early if not all data yet
-  if (anyError || anyLoading) {
+  if (error) {
     return {
-      loading: anyLoading,
-      error: anyError,
-      data: [],
+      data: undefined,
+      error: true,
+      loading: false,
     }
   }
 
-  const formatted: ManagerData[] = data
-    ? data.managerData.map((value, index) => {
-        const managerDataFields = data.managerData[index]
-        const managerData: ManagerData = {
-          address: managerDataFields.id,
-          createdAtTimestamp: parseFloat(managerDataFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(managerDataFields.createdAtBlockNumber),
-          fund: managerDataFields.fund,
-          principalETH: parseFloat(managerDataFields.principalETH),
-          principalUSD: parseFloat(managerDataFields.principalUSD),
-          volumeETH: parseFloat(managerDataFields.volumeETH),
-          volumeUSD: parseFloat(managerDataFields.volumeUSD),
-          profitETH: parseFloat(managerDataFields.profitETH),
-          profitUSD: parseFloat(managerDataFields.profitUSD),
-          profitRatioETH: parseFloat(managerDataFields.profitRatioETH),
-          profitRatioUSD: parseFloat(managerDataFields.profitRatioUSD),
-          feeVolumeUSD: parseFloat(managerDataFields.feeVolumeUSD),
-          feeVolumeETH: parseFloat(managerDataFields.feeVolumeETH),
-        }
-        return managerData
-      })
-    : []
-
-  return {
-    loading: anyLoading,
-    error: anyError,
-    data: formatted,
-  }
-}
-
-/**
- * Fetch ManagerSnapshots
- */
-export function useManagerSnapshotDatas(): {
-  loading: boolean
-  error: boolean
-  data: ManagerSnapshotData[]
-} {
-  // get client
-  const { dataClient } = useClients()
-
-  const { loading, error, data } = useQuery<ManagerSnapshotsResponse>(MANAGER_SNAPSHOTS_BULK(), {
-    client: dataClient,
-  })
-
-  const anyError = Boolean(error)
-  const anyLoading = Boolean(loading)
-
-  // return early if not all data yet
-  if (anyError || anyLoading) {
+  if (loading && !data) {
     return {
-      loading: anyLoading,
-      error: anyError,
-      data: [],
+      data: undefined,
+      error: false,
+      loading: true,
     }
   }
 
-  const formatted: ManagerSnapshotData[] = data
-    ? data.managerSnapshots.map((value, index) => {
-        const managerSnapshotFields = data.managerSnapshots[index]
-        const managerSnapshotData: ManagerSnapshotData = {
-          id: managerSnapshotFields.id,
-          timestamp: parseFloat(managerSnapshotFields.timestamp),
-          fund: managerSnapshotFields.fund,
-          manager: managerSnapshotFields.manager,
-          principalETH: parseFloat(managerSnapshotFields.principalETH),
-          principalUSD: parseFloat(managerSnapshotFields.principalUSD),
-          volumeETH: parseFloat(managerSnapshotFields.volumeETH),
-          volumeUSD: parseFloat(managerSnapshotFields.volumeUSD),
-          profitETH: parseFloat(managerSnapshotFields.profitETH),
-          profitUSD: parseFloat(managerSnapshotFields.profitUSD),
-          profitRatioETH: parseFloat(managerSnapshotFields.profitRatioETH),
-          profitRatioUSD: parseFloat(managerSnapshotFields.profitRatioUSD),
-          feeVolumeUSD: parseFloat(managerSnapshotFields.feeVolumeUSD),
-          feeVolumeETH: parseFloat(managerSnapshotFields.feeVolumeETH),
-        }
-        return managerSnapshotData
-      })
-    : []
+  const swaps = data.swaps.map((m) => {
+    return {
+      type: TransactionType.SWAP,
+      hash: m.transaction.id,
+      timestamp: m.timestamp,
+      sender: m.manager,
+      token0Address: m.token0,
+      token1Address: m.token1,
+      amountUSD: parseFloat(m.amountUSD),
+      amountToken0: parseFloat(m.amount0),
+      amountToken1: parseFloat(m.amount1),
+    }
+  })
 
-  return {
-    loading: anyLoading,
-    error: anyError,
-    data: formatted,
-  }
+  return { data: [...swaps], error: false, loading: false }
 }

@@ -1,14 +1,16 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import { ManagerSnapshot, ManagerSnapshotFields } from 'types/fund'
 
-export const FUND_CHART_DATA_BULK = () => {
+export const MANAGER_CHART = (manager: string) => {
   const queryString = `
-    query fundChartData {
-      fundSnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
+    query managerChartData {
+      managerSnapshots(where: {manager: ${manager}}, orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
         id
         timestamp
         fund
+        manager
         principalUSD
         principalETH
         volumeUSD
@@ -17,59 +19,30 @@ export const FUND_CHART_DATA_BULK = () => {
         profitUSD
         profitRatioETH
         profitRatioUSD
-        investorCount
+        feeVolumeUSD
+        feeVolumeETH
       }
     }
     `
   return gql(queryString)
 }
 
-export interface FundSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  principalUSD: number
-  principalETH: number
-  volumeUSD: number
-  volumeETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  investorCount: number
-}
-
-interface FundSnapshotFields {
-  id: string
-  timestamp: string
-  fund: string
-  principalUSD: string
-  principalETH: string
-  volumeUSD: string
-  volumeETH: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  investorCount: string
-}
-
-interface FundSnapshotDataResponse {
-  fundSnapshots: FundSnapshotFields[]
+interface ManagerSnapshotResponse {
+  managerSnapshots: ManagerSnapshotFields[]
 }
 
 /**
- * Fetch top funds by profit
+ * Fetch manager chart data
  */
-export function useTopFunds(): {
+export function useManagerChartData(manager: string): {
   loading: boolean
   error: boolean
-  data: FundSnapshotData[]
+  data: ManagerSnapshot[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundSnapshotDataResponse>(FUND_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<ManagerSnapshotResponse>(MANAGER_CHART(manager), {
     client: dataClient,
   })
 
@@ -85,24 +58,26 @@ export function useTopFunds(): {
     }
   }
 
-  const formatted: FundSnapshotData[] = data
-    ? data.fundSnapshots.map((value, index) => {
-        const fundSnapshotFields = data.fundSnapshots[index]
-        const fundSnapshotData: FundSnapshotData = {
-          id: fundSnapshotFields.id,
-          timestamp: parseFloat(fundSnapshotFields.timestamp),
-          fund: fundSnapshotFields.fund,
-          principalUSD: parseFloat(fundSnapshotFields.principalUSD),
-          principalETH: parseFloat(fundSnapshotFields.principalETH),
-          volumeUSD: parseFloat(fundSnapshotFields.volumeUSD),
-          volumeETH: parseFloat(fundSnapshotFields.volumeETH),
-          profitETH: parseFloat(fundSnapshotFields.profitETH),
-          profitUSD: parseFloat(fundSnapshotFields.profitUSD),
-          profitRatioETH: parseFloat(fundSnapshotFields.profitRatioETH),
-          profitRatioUSD: parseFloat(fundSnapshotFields.profitRatioUSD),
-          investorCount: parseFloat(fundSnapshotFields.investorCount),
+  const formatted: ManagerSnapshot[] = data
+    ? data.managerSnapshots.map((value, index) => {
+        const managerSnapshotFields = data.managerSnapshots[index]
+        const managerSnapshot: ManagerSnapshot = {
+          id: managerSnapshotFields.id,
+          timestamp: parseFloat(managerSnapshotFields.timestamp),
+          fund: managerSnapshotFields.fund,
+          manager: managerSnapshotFields.manager,
+          principalUSD: parseFloat(managerSnapshotFields.principalUSD),
+          principalETH: parseFloat(managerSnapshotFields.principalETH),
+          volumeUSD: parseFloat(managerSnapshotFields.volumeUSD),
+          volumeETH: parseFloat(managerSnapshotFields.volumeETH),
+          profitETH: parseFloat(managerSnapshotFields.profitETH),
+          profitUSD: parseFloat(managerSnapshotFields.profitUSD),
+          profitRatioETH: parseFloat(managerSnapshotFields.profitRatioETH),
+          profitRatioUSD: parseFloat(managerSnapshotFields.profitRatioUSD),
+          feeVolumeUSD: parseFloat(managerSnapshotFields.feeVolumeUSD),
+          feeVolumeETH: parseFloat(managerSnapshotFields.feeVolumeETH),
         }
-        return fundSnapshotData
+        return managerSnapshot
       })
     : []
 

@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { SupportedNetwork } from 'constants/networks'
-import { FundData } from 'data/menu/Overview/topFunds'
+import { Fund } from 'types/fund'
 
 import { updateFundData } from './actions'
 
@@ -38,7 +38,7 @@ export interface FundsState {
   byAddress: {
     [networkId: string]: {
       [address: string]: {
-        data: FundData | undefined
+        data: Fund | undefined
         lastUpdated: number | undefined
       }
     }
