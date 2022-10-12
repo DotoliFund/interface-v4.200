@@ -88,6 +88,10 @@ export default function FundPage() {
   const fundData = useFundListData().data[0]
   // const chartData = useFundChartData(address)
   // const transactions = useFundTransactions(address)
+  console.log(111, fundData)
+  console.log(222, fundData?.address)
+  //const investors = fetchFundInvestors(fundData?.address)
+  //console.log(333, investors)
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -328,9 +332,7 @@ export default function FundPage() {
             {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
           </DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {/* {investors ? <InvestorTable investors={investors} /> : <LocalLoader fill={false} />} */}
-          </DarkGreyCard>
+          <DarkGreyCard>{/* {investors ? <InvestorTable investors={investors.data} /> : <Loader />} */}</DarkGreyCard>
         </AutoColumn>
       ) : (
         <Loader />

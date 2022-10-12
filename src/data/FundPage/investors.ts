@@ -1,65 +1,69 @@
-import { useQuery } from '@apollo/client'
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import gql from 'graphql-tag'
-import { useClients } from 'state/application/hooks'
 import { Investor, InvestorFields } from 'types/fund'
 
-export const FUND_INVESTORS = (fund: string) => {
-  const queryString = `
-    query investors {
-      investors(first: 100, orderBy: principalETH, orderDirection: desc, where: {fund: ${fund}}, subgraphError: allow) {
-        id
-        createdAtTimestamp
-        createdAtBlockNumber
-        fund
-        investor
-        principalETH
-        principalUSD
-        volumeETH
-        volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-      }
+const FUND_INVESTORS = gql`
+  query investors($fund: Bytes!) {
+    investors(first: 100, orderBy: principalETH, orderDirection: desc, where: { id: $fund }, subgraphError: allow) {
+      id
+      createdAtTimestamp
+      createdAtBlockNumber
+      fund
+      investor
+      principalETH
+      principalUSD
+      volumeETH
+      volumeUSD
+      profitETH
+      profitUSD
+      profitRatioETH
+      profitRatioUSD
     }
-    `
-  return gql(queryString)
-}
+  }
+`
 
-interface InvestorSnapshotResponse {
-  investorSnapshots: InvestorFields[]
+interface InvestorResponse {
+  investors: InvestorFields[]
 }
 
 /**
  * Fetch InvestorData
  */
-export function useFundInvestors(fund: string): {
+export async function fetchFundInvestors(
+  fund: string,
+  client: ApolloClient<NormalizedCacheObject>
+): Promise<{
   loading: boolean
   error: boolean
-  data: Investor[]
-} {
-  // get client
-  const { dataClient } = useClients()
-
-  const { loading, error, data } = useQuery<InvestorSnapshotResponse>(FUND_INVESTORS(fund), {
-    client: dataClient,
+  data: Investor[] | undefined
+}> {
+  const { data, error, loading } = await client.query<InvestorResponse>({
+    query: FUND_INVESTORS,
+    variables: {
+      fund,
+    },
+    fetchPolicy: 'cache-first',
   })
 
-  const anyError = Boolean(error)
-  const anyLoading = Boolean(loading)
-
-  // return early if not all data yet
-  if (anyError || anyLoading) {
+  if (error) {
     return {
-      loading: anyLoading,
-      error: anyError,
-      data: [],
+      data: undefined,
+      error: true,
+      loading: false,
     }
   }
 
-  const formatted: Investor[] = data
-    ? data.investorSnapshots.map((value, index) => {
-        const investorDataFields = data.investorSnapshots[index]
+  if (loading && !data) {
+    return {
+      data: undefined,
+      error: false,
+      loading: true,
+    }
+  }
+
+  const investors: Investor[] = data
+    ? data.investors.map((value, index) => {
+        const investorDataFields = data.investors[index]
         const investorData: Investor = {
           id: investorDataFields.id,
           createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
@@ -79,9 +83,5 @@ export function useFundInvestors(fund: string): {
       })
     : []
 
-  return {
-    loading: anyLoading,
-    error: anyError,
-    data: formatted,
-  }
+  return { data: [...investors], error: false, loading: false }
 }
