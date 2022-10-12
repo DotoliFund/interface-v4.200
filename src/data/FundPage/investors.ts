@@ -1,5 +1,6 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
+import { useClients } from 'state/application/hooks'
 import { Investor, InvestorFields } from 'types/fund'
 
 const FUND_INVESTORS = gql`
@@ -29,15 +30,18 @@ interface InvestorResponse {
 /**
  * Fetch InvestorData
  */
-export async function fetchFundInvestors(
-  fund: string,
-  client: ApolloClient<NormalizedCacheObject>
-): Promise<{
+export async function useFundInvestors(fund: string | undefined): Promise<{
   loading: boolean
   error: boolean
   data: Investor[] | undefined
 }> {
-  const { data, error, loading } = await client.query<InvestorResponse>({
+  if (!fund) {
+    fund = NULL_ADDRESS
+  }
+  // get client
+  const { dataClient } = useClients()
+
+  const { data, error, loading } = await dataClient.query<InvestorResponse>({
     query: FUND_INVESTORS,
     variables: {
       fund,

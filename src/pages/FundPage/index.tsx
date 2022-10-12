@@ -3,6 +3,7 @@ import { DarkGreyCard, GreyCard } from 'components/Card'
 import LineChart from 'components/Chart/LineChart'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
+import InvestorTable from 'components/funds/InvestorTable'
 import Loader from 'components/Loader'
 import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
@@ -10,14 +11,15 @@ import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 // import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
+// import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
+import { useFundData } from 'data/FundPage/fundData'
+import { useFundInvestors } from 'data/FundPage/investors'
 import { useColor } from 'hooks/useColor'
 import { PageWrapper, ThemedBackground } from 'pages/styled'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Download, ExternalLink } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
-// import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
-import { useFundListData } from 'state/funds/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { getEtherscanLink } from 'utils'
@@ -68,7 +70,7 @@ enum ChartView {
   FEES,
 }
 
-export default function FundPage() {
+export default async function FundPage() {
   const params = useParams()
   const address = useMemo(() => {
     return params.address
@@ -85,13 +87,39 @@ export default function FundPage() {
   const theme = useTheme()
 
   // token data
-  const fundData = useFundListData().data[0]
+  const fundData = useFundData(address).data[0]
   // const chartData = useFundChartData(address)
   // const transactions = useFundTransactions(address)
-  console.log(111, fundData)
-  console.log(222, fundData?.address)
-  //const investors = fetchFundInvestors(fundData?.address)
-  //console.log(333, investors)
+  //const investors = useFundInvestors(address)
+  // const investors = useFundInvestors(address).then((value) => {
+  //   if (value.error) {
+  //     return []
+  //   } else if (value.loading) {
+  //     return []
+  //   } else if (value.data && value.data.length > 0) {
+  //     return value.data
+  //   }
+  //   return []
+  // })
+  const [error, setError] = useState(false)
+  useEffect(() => {
+    async function fetch() {
+      const { error, data } = await useFundInvestors(address)
+      if (error) {
+        setError(true)
+      } else if (data) {
+        dispatch(updatePoolTransactions({ poolAddress: address, transactions: data, networkId: activeNetwork.id }))
+      }
+    }
+  }, [address, dispatch, error, dataClient, activeNetwork.id])
+
+  // useEffect(() => {
+  //   async function getFundInvestors() {
+  //     useFundInvestors(address)
+  //       .then((value) => setTempList(list))
+  //       .catch(() => console.log())
+  //   }
+  // }, [useFundInvestors, address])
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -332,7 +360,7 @@ export default function FundPage() {
             {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
           </DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
-          <DarkGreyCard>{/* {investors ? <InvestorTable investors={investors.data} /> : <Loader />} */}</DarkGreyCard>
+          <DarkGreyCard> {investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
         </AutoColumn>
       ) : (
         <Loader />

@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { Fund, FundFields } from 'types/fund'
@@ -33,11 +34,14 @@ interface FundResponse {
 /**
  * Fetch top funds by profit
  */
-export function useFundData(fund: string): {
+export function useFundData(fund: string | undefined): {
   loading: boolean
   error: boolean
   data: Fund[]
 } {
+  if (!fund) {
+    fund = NULL_ADDRESS
+  }
   // get client
   const { dataClient } = useClients()
 
