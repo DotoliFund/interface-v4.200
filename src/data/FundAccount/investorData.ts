@@ -5,22 +5,23 @@ import { useClients } from 'state/application/hooks'
 import { Investor, InvestorFields } from 'types/fund'
 
 const INVESTOR_DATA = gql`
-query investor($fund: Bytes!, $investor: Bytes!) {
-  investor(where: {fund: $fund, investor: $investor}, subgraphError: allow) {
-    id
-    createdAtTimestamp
-    createdAtBlockNumber
-    fund
-    manager
-    investor
-    principalETH
-    principalUSD
-    volumeETH
-    volumeUSD
-    profitETH
-    profitUSD
-    profitRatioETH
-    profitRatioUSD
+  query investor($fund: Bytes!, $investor: Bytes!) {
+    investor(where: { fund: $fund, investor: $investor }, subgraphError: allow) {
+      id
+      createdAtTimestamp
+      createdAtBlockNumber
+      fund
+      manager
+      investor
+      principalETH
+      principalUSD
+      volumeETH
+      volumeUSD
+      profitETH
+      profitUSD
+      profitRatioETH
+      profitRatioUSD
+    }
   }
 `
 

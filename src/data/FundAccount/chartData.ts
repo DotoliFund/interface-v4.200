@@ -10,6 +10,7 @@ export const INVESTOR_CHART = (fund: string, investor: string) => {
         id
         timestamp
         fund
+        manager
         investor
         principalUSD
         principalETH
@@ -66,6 +67,7 @@ export function useInvestorChartData(
           id: investorSnapshotFields.id,
           timestamp: parseFloat(investorSnapshotFields.timestamp),
           fund: investorSnapshotFields.fund,
+          manager: investorSnapshotFields.manager,
           investor: investorSnapshotFields.investor,
           principalUSD: parseFloat(investorSnapshotFields.principalUSD),
           principalETH: parseFloat(investorSnapshotFields.principalETH),
