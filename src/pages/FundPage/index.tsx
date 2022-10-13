@@ -1,3 +1,5 @@
+import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import LineChart from 'components/Chart/LineChart'
@@ -9,24 +11,29 @@ import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
+import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
 // import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
 // import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
 import { useColor } from 'hooks/useColor'
+import { useXXXFactoryContract } from 'hooks/useContract'
+import { XXXFactory } from 'interface/XXXFactory'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 import { PageWrapper, ThemedBackground } from 'pages/styled'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Download, ExternalLink } from 'react-feather'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
+import { ExternalLink as StyledExternalLink } from 'theme/components'
 import { getEtherscanLink } from 'utils'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
-
-import { ExternalLink as StyledExternalLink } from '../../theme/components'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -72,9 +79,11 @@ enum ChartView {
 
 export default function FundPage() {
   const params = useParams()
-  const address = params.fundAddress
-
+  const fundAddress = params.fundAddress
+  const XXXFactoryContract = useXXXFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
+  const { account, chainId, provider } = useWeb3React()
+  const navigate = useNavigate()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -85,10 +94,10 @@ export default function FundPage() {
   const theme = useTheme()
 
   // token data
-  const fundData = useFundData(address).data
-  // const chartData = useFundChartData(address)
-  // const transactions = useFundTransactions(address)
-  const investors = useFundInvestors(address).data
+  const fundData = useFundData(fundAddress).data
+  // const chartData = useFundChartData(fundAddress)
+  // const transactions = useFundTransactions(fundAddress)
+  const investors = useFundInvestors(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -142,6 +151,95 @@ export default function FundPage() {
   //   }
   // }, [chartData])
 
+  function onAccount(fund: string, account: string) {
+    navigate('/fund')
+    navigate(`/fund/${fund}/${account}`)
+  }
+
+  async function onSubscribe() {
+    if (!chainId || !provider || !account || !fundAddress) return
+    const { calldata, value } = XXXFactory.subscribeCallParameters(fundAddress)
+    const txn: { to: string; data: string; value: string } = {
+      to: XXXFACTORY_ADDRESSES,
+      data: calldata,
+      value,
+    }
+    provider
+      .getSigner()
+      .estimateGas(txn)
+      .then((estimate) => {
+        const newTxn = {
+          ...txn,
+          gasLimit: calculateGasMargin(estimate),
+        }
+        return provider
+          .getSigner()
+          .sendTransaction(newTxn)
+          .then((response) => {
+            console.log(response)
+          })
+      })
+      .catch((error) => {
+        //setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) {
+          console.error(error)
+        }
+      })
+  }
+
+  const { loading: isManagerLoading, result: myFund } = useSingleCallResult(XXXFactoryContract, 'getFundByManager', [
+    account ?? undefined,
+  ])
+  const [isManager, setIsManager] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isManagerLoading) {
+      setState()
+    }
+    async function setState() {
+      if (myFund && fundAddress && myFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+        setIsManager(true)
+      }
+    }
+  }, [isManagerLoading, myFund, fundAddress])
+
+  const { loading: isInvestorLoading, result: isSubscribed } = useSingleCallResult(XXXFactoryContract, 'isSubscribed', [
+    account,
+    fundAddress,
+  ])
+  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isInvestorLoading) {
+      setState()
+    }
+    async function setState() {
+      if (isSubscribed && isSubscribed[0] === true) {
+        setIsInvestor(true)
+      }
+    }
+  }, [isInvestorLoading, isSubscribed, myFund])
+
+  const Buttons = () =>
+    !account ? (
+      <ButtonPrimary $borderRadius="12px" padding={'12px'}>
+        <ThemedText.DeprecatedMain mb="4px">
+          <Trans>Connect Wallet</Trans>
+        </ThemedText.DeprecatedMain>
+      </ButtonPrimary>
+    ) : (isManager || isInvestor) && fundAddress ? (
+      <ButtonPrimary $borderRadius="12px" padding={'12px'} onClick={() => onAccount(fundAddress, account)}>
+        <ThemedText.DeprecatedMain mb="4px">
+          <Trans>My Account</Trans>
+        </ThemedText.DeprecatedMain>
+      </ButtonPrimary>
+    ) : (
+      <ButtonPrimary $borderRadius="12px" padding={'12px'} onClick={() => onSubscribe()}>
+        <ThemedText.DeprecatedMain mb="4px">
+          <Trans>Subscribe</Trans>
+        </ThemedText.DeprecatedMain>
+      </ButtonPrimary>
+    )
+
   return (
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
@@ -160,7 +258,7 @@ export default function FundPage() {
             </AutoRow>
             <RowFixed gap="10px" align="center">
               address ? (
-              <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
+              <StyledExternalLink href={getEtherscanLink(1, fundAddress, 'address', activeNetwork)}>
                 <ExternalLink stroke={theme.deprecated_text2} size={'17px'} style={{ marginLeft: '12px' }} />
               </StyledExternalLink>
               ) : (<></>)
@@ -219,9 +317,7 @@ export default function FundPage() {
                 {/* <StyledExternalLink
                   href={`https://app.uniswap.org/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}`}
                 > */}
-                <ButtonPrimary width="100px" style={{ height: '44px' }}>
-                  Trade
-                </ButtonPrimary>
+                <Buttons />
                 {/* </StyledExternalLink> */}
               </RowFixed>
             )}

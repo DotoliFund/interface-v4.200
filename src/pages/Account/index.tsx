@@ -247,19 +247,13 @@ export default function Account() {
       setManagingFundInfoLoading(false)
     }
     async function getInfo() {
-      if (!managingFundLoading && managingFund && managingFund[0] !== NULL_ADDRESS && provider && account) {
+      if (managingFund && managingFund[0] !== NULL_ADDRESS && provider && account) {
         setManagingFundInfo([
           {
             fund: managingFund[0],
             investor: account,
           },
         ])
-        // const fundContract = getContract(managingFund[0], XXXFund2Json, provider, account)
-        // await fundContract.getManagerTokens().then((response: any) => {
-        //   const _fundTokens = response.map((value: any) => [value[0], value[1].toBigInt()])
-        //   setManagingFundInfo(_fundTokens)
-        //   console.log('111111 managingFundTokens :', _fundTokens)
-        // })
       }
     }
   }, [managingFundLoading, managingFund, provider, account])
@@ -280,14 +274,7 @@ export default function Account() {
       setInvestingFundsInfoLoading(false)
     }
     async function getInfo() {
-      if (
-        !investingFundsLoading &&
-        investingFunds &&
-        investingFunds[0].length > 0 &&
-        investingFunds[0] !== NULL_ADDRESS &&
-        provider &&
-        account
-      ) {
+      if (investingFunds && investingFunds[0].length > 0 && investingFunds[0] !== NULL_ADDRESS && provider && account) {
         const investingFundList = investingFunds[0]
         const investingFundsInfoList: FundDetails[] = []
 
