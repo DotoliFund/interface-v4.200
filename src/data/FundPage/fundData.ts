@@ -4,31 +4,28 @@ import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { Fund, FundFields } from 'types/fund'
 
-export const FUND_DATA = (fund: string) => {
-  const queryString = `
-    query fundData {
-      Fund(where: {id: ${fund}}, subgraphError: allow) {
-        id
-        createdAtTimestamp
-        createdAtBlockNumber
-        manager
-        principalETH
-        principalUSD
-        volumeETH
-        volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-        investorCount
-      }
+const FUND_DATA = gql`
+  query fund($fund: Bytes!) {
+    fund(id: $fund, subgraphError: allow) {
+      id
+      createdAtTimestamp
+      createdAtBlockNumber
+      manager
+      principalETH
+      principalUSD
+      volumeETH
+      volumeUSD
+      profitETH
+      profitUSD
+      profitRatioETH
+      profitRatioUSD
+      investorCount
     }
-    `
-  return gql(queryString)
-}
+  }
+`
 
 interface FundResponse {
-  fund: FundFields[]
+  fund: FundFields
 }
 
 /**
@@ -37,7 +34,7 @@ interface FundResponse {
 export function useFundData(fund: string | undefined): {
   loading: boolean
   error: boolean
-  data: Fund[]
+  data: Fund | undefined
 } {
   if (!fund) {
     fund = NULL_ADDRESS
@@ -45,7 +42,8 @@ export function useFundData(fund: string | undefined): {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundResponse>(FUND_DATA(fund), {
+  const { loading, error, data } = useQuery<FundResponse>(FUND_DATA, {
+    variables: { fund },
     client: dataClient,
   })
 
@@ -57,35 +55,27 @@ export function useFundData(fund: string | undefined): {
     return {
       loading: anyLoading,
       error: anyError,
-      data: [],
+      data: undefined,
     }
   }
 
-  const formatted: Fund[] = data
-    ? data.fund.map((value, index) => {
-        const fundFields = data.fund[index]
-        const fundData: Fund = {
-          address: fundFields.id,
-          createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),
-          manager: fundFields.manager,
-          principalETH: parseFloat(fundFields.principalETH),
-          principalUSD: parseFloat(fundFields.principalUSD),
-          volumeETH: parseFloat(fundFields.volumeETH),
-          volumeUSD: parseFloat(fundFields.volumeUSD),
-          profitETH: parseFloat(fundFields.profitETH),
-          profitUSD: parseFloat(fundFields.profitUSD),
-          profitRatioETH: parseFloat(fundFields.profitRatioETH),
-          profitRatioUSD: parseFloat(fundFields.profitRatioUSD),
-          investorCount: parseInt(fundFields.investorCount),
-        }
-        return fundData
-      })
-    : []
+  const formatted: Fund | undefined = data
+    ? {
+        address: data.fund.id,
+        createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
+        createdAtBlockNumber: parseFloat(data.fund.createdAtBlockNumber),
+        manager: data.fund.manager,
+        principalETH: parseFloat(data.fund.principalETH),
+        principalUSD: parseFloat(data.fund.principalUSD),
+        volumeETH: parseFloat(data.fund.volumeETH),
+        volumeUSD: parseFloat(data.fund.volumeUSD),
+        profitETH: parseFloat(data.fund.profitETH),
+        profitUSD: parseFloat(data.fund.profitUSD),
+        profitRatioETH: parseFloat(data.fund.profitRatioETH),
+        profitRatioUSD: parseFloat(data.fund.profitRatioUSD),
+        investorCount: parseInt(data.fund.investorCount),
+      }
+    : undefined
 
-  return {
-    loading: anyLoading,
-    error: anyError,
-    data: formatted,
-  }
+  return { data: formatted, error: false, loading: false }
 }

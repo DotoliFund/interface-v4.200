@@ -70,11 +70,9 @@ enum ChartView {
   FEES,
 }
 
-export default async function FundPage() {
+export default function FundPage() {
   const params = useParams()
-  const address = useMemo(() => {
-    return params.address
-  }, [params.address])
+  const address = params.fundAddress
 
   const [activeNetwork] = useActiveNetworkVersion()
 
@@ -87,39 +85,10 @@ export default async function FundPage() {
   const theme = useTheme()
 
   // token data
-  const fundData = useFundData(address).data[0]
+  const fundData = useFundData(address).data
   // const chartData = useFundChartData(address)
   // const transactions = useFundTransactions(address)
-  //const investors = useFundInvestors(address)
-  // const investors = useFundInvestors(address).then((value) => {
-  //   if (value.error) {
-  //     return []
-  //   } else if (value.loading) {
-  //     return []
-  //   } else if (value.data && value.data.length > 0) {
-  //     return value.data
-  //   }
-  //   return []
-  // })
-  const [error, setError] = useState(false)
-  useEffect(() => {
-    async function fetch() {
-      const { error, data } = await useFundInvestors(address)
-      if (error) {
-        setError(true)
-      } else if (data) {
-        dispatch(updatePoolTransactions({ poolAddress: address, transactions: data, networkId: activeNetwork.id }))
-      }
-    }
-  }, [address, dispatch, error, dataClient, activeNetwork.id])
-
-  // useEffect(() => {
-  //   async function getFundInvestors() {
-  //     useFundInvestors(address)
-  //       .then((value) => setTempList(list))
-  //       .catch(() => console.log())
-  //   }
-  // }, [useFundInvestors, address])
+  const investors = useFundInvestors(address).data
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -360,7 +329,7 @@ export default async function FundPage() {
             {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
           </DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
-          <DarkGreyCard> {investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
+          <DarkGreyCard>{investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
         </AutoColumn>
       ) : (
         <Loader />

@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
@@ -30,38 +31,31 @@ interface InvestorResponse {
 /**
  * Fetch InvestorData
  */
-export async function useFundInvestors(fund: string | undefined): Promise<{
+export function useFundInvestors(fund: string | undefined): {
   loading: boolean
   error: boolean
   data: Investor[] | undefined
-}> {
+} {
   if (!fund) {
     fund = NULL_ADDRESS
   }
   // get client
   const { dataClient } = useClients()
 
-  const { data, error, loading } = await dataClient.query<InvestorResponse>({
-    query: FUND_INVESTORS,
-    variables: {
-      fund,
-    },
-    fetchPolicy: 'cache-first',
+  const { loading, error, data } = useQuery<InvestorResponse>(FUND_INVESTORS, {
+    variables: { fund },
+    client: dataClient,
   })
 
-  if (error) {
-    return {
-      data: undefined,
-      error: true,
-      loading: false,
-    }
-  }
+  const anyError = Boolean(error)
+  const anyLoading = Boolean(loading)
 
-  if (loading && !data) {
+  // return early if not all data yet
+  if (anyError || anyLoading) {
     return {
+      loading: anyLoading,
+      error: anyError,
       data: undefined,
-      error: false,
-      loading: true,
     }
   }
 
