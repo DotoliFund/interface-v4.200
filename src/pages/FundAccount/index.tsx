@@ -12,11 +12,11 @@ import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 // import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
+import { useInvestorData } from 'data/FundAccount/investorData'
 // import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
-import { useInvestorData } from 'data/InvestorAccount/investorData'
-import { useManagerData } from 'data/ManagerAccount/managerData'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 import { PageWrapper, ThemedBackground } from 'pages/styled'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Download, ExternalLink } from 'react-feather'
@@ -143,9 +143,7 @@ export default function FundAccount() {
     }
   }, [isInvestorLoading, isSubscribed, account, investorAddress])
 
-  // token data
-  const investorData = useInvestorData(investorAddress).data
-  const managerData = useManagerData(investorAddress).data
+  const investorData = useInvestorData(fundAddress, investorAddress).data[0]
   // const chartData = useFundChartData(fundAddress)
   // const transactions = useFundTransactions(fundAddress)
 
@@ -237,7 +235,7 @@ export default function FundAccount() {
   return (
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
-      {fundData ? (
+      {investorData ? (
         <AutoColumn gap="32px">
           <RowBetween>
             <AutoRow gap="4px">
@@ -248,7 +246,7 @@ export default function FundAccount() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{` ${fundData.address} / ${fundData.manager} `}</ThemedText.DeprecatedLabel>
+              <ThemedText.DeprecatedLabel>{` ${investorData.investor} / ${investorData.manager} `}</ThemedText.DeprecatedLabel>
             </AutoRow>
             <RowFixed gap="10px" align="center">
               address ? (
@@ -265,11 +263,11 @@ export default function FundAccount() {
                   ml="8px"
                   mr="8px"
                   fontSize="24px"
-                >{` ${fundData.investorCount} / ${fundData.createdAtBlockNumber} `}</ThemedText.DeprecatedLabel>
+                >{` ${investorData.id} / ${investorData.fund} `}</ThemedText.DeprecatedLabel>
                 {activeNetwork === EthereumNetworkInfo ? null : <></>}
               </RowFixed>
               <ResponsiveRow>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + fundData.createdAtTimestamp}>
+                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + investorData.createdAtTimestamp}>
                   <TokenButton>
                     <RowFixed>
                       <ThemedText.DeprecatedLabel
@@ -281,7 +279,7 @@ export default function FundAccount() {
                     </RowFixed>
                   </TokenButton>
                 </StyledInternalLink>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + fundData.address}>
+                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + investorData.fund}>
                   <TokenButton ml="10px">
                     <RowFixed>
                       <CurrencyLogo size={'20px'} />
@@ -326,22 +324,22 @@ export default function FundAccount() {
                       <RowFixed>
                         <CurrencyLogo size={'20px'} />
                         <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {fundData.manager}
+                          {investorData.manager}
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
                       <ThemedText.DeprecatedLabel fontSize="14px">
-                        {formatAmount(fundData.volumeETH)}
+                        {formatAmount(investorData.volumeETH)}
                       </ThemedText.DeprecatedLabel>
                     </RowBetween>
                     <RowBetween>
                       <RowFixed>
                         <CurrencyLogo size={'20px'} />
                         <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {fundData.address}
+                          {investorData.investor}
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
                       <ThemedText.DeprecatedLabel fontSize="14px">
-                        {formatAmount(fundData.volumeUSD)}
+                        {formatAmount(investorData.volumeUSD)}
                       </ThemedText.DeprecatedLabel>
                     </RowBetween>
                   </AutoColumn>
@@ -349,16 +347,16 @@ export default function FundAccount() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(fundData.principalETH)}
+                    {formatDollarAmount(investorData.principalETH)}
                   </ThemedText.DeprecatedLabel>
-                  <Percent value={fundData.profitRatioETH} />
+                  <Percent value={investorData.profitRatioETH} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Volume 24h</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(fundData.volumeUSD)}
+                    {formatDollarAmount(investorData.volumeUSD)}
                   </ThemedText.DeprecatedLabel>
-                  <Percent value={fundData.profitRatioUSD} />
+                  <Percent value={investorData.profitRatioUSD} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>24h Fees</ThemedText.DeprecatedMain>

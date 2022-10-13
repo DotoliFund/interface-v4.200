@@ -1,30 +1,28 @@
 import { useQuery } from '@apollo/client'
+import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { Investor, InvestorFields } from 'types/fund'
 
-export const INVESTOR_DATA = (investor: string) => {
-  const queryString = `
-    query investor {
-      investor(where: {investor: ${investor}}, subgraphError: allow) {
-        id
-        createdAtTimestamp
-        createdAtBlockNumber
-        fund
-        investor
-        principalETH
-        principalUSD
-        volumeETH
-        volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-      }
-    }
-    `
-  return gql(queryString)
-}
+const INVESTOR_DATA = gql`
+query investor($fund: Bytes!, $investor: Bytes!) {
+  investor(where: {fund: $fund, investor: $investor}, subgraphError: allow) {
+    id
+    createdAtTimestamp
+    createdAtBlockNumber
+    fund
+    manager
+    investor
+    principalETH
+    principalUSD
+    volumeETH
+    volumeUSD
+    profitETH
+    profitUSD
+    profitRatioETH
+    profitRatioUSD
+  }
+`
 
 interface InvestorResponse {
   investor: InvestorFields[]
@@ -33,15 +31,22 @@ interface InvestorResponse {
 /**
  * Fetch top funds by profit
  */
-export function useInvestorData(investor: string): {
+export function useInvestorData(
+  fund: string | undefined,
+  investor: string | undefined
+): {
   loading: boolean
   error: boolean
   data: Investor[]
 } {
+  if (!investor) {
+    investor = NULL_ADDRESS
+  }
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<InvestorResponse>(INVESTOR_DATA(investor), {
+  const { loading, error, data } = useQuery<InvestorResponse>(INVESTOR_DATA, {
+    variables: { fund, investor },
     client: dataClient,
   })
 
@@ -65,6 +70,7 @@ export function useInvestorData(investor: string): {
           createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
           createdAtBlockNumber: parseFloat(investorDataFields.createdAtBlockNumber),
           fund: investorDataFields.fund,
+          manager: investorDataFields.manager,
           investor: investorDataFields.investor,
           principalETH: parseFloat(investorDataFields.principalETH),
           principalUSD: parseFloat(investorDataFields.principalUSD),
