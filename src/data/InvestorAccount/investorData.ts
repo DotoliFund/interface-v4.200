@@ -33,7 +33,7 @@ interface InvestorResponse {
 /**
  * Fetch top funds by profit
  */
-export function useTopFunds(investor: string): {
+export function useInvestorData(investor: string): {
   loading: boolean
   error: boolean
   data: Investor[]
