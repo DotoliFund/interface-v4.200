@@ -126,59 +126,77 @@ export default function FundAccount() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
-  const { loading: isFundByInvestorLoading, result: fundByInvestor } = useSingleCallResult(
+  const { loading: accountFundLoading, result: accountFund } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
-  const [isManager, setIsManager] = useState<boolean>(false)
-  useEffect(() => {
-    if (!isFundByInvestorLoading) {
-      setState()
-    }
-    async function setState() {
-      if (fundByInvestor && fundAddress && fundByInvestor[0].toUpperCase() === fundAddress.toUpperCase()) {
-        setIsManager(true)
-      }
-    }
-  }, [isFundByInvestorLoading, fundByInvestor, fundAddress, investorAddress, account])
-
-  const { loading: isFundByAccountLoading, result: fundByAccount } = useSingleCallResult(
+  const { loading: investorFundLoading, result: investorFund } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [investorAddress ?? undefined]
   )
-  const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
+  const { loading: isAccountSubscribedLoading, result: isAccountSubscribed } = useSingleCallResult(
+    XXXFactoryContract,
+    'isSubscribed',
+    [account, fundAddress]
+  )
+
+  const [isManager, setIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!isFundByAccountLoading) {
+    if (!accountFundLoading) {
       setState()
     }
     async function setState() {
-      if (fundByAccount && fundAddress && fundByAccount[0].toUpperCase() === fundAddress.toUpperCase()) {
+      if (accountFund && fundAddress && accountFund[0].toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
       }
     }
-  }, [isFundByAccountLoading, fundByAccount, fundAddress, investorAddress, account])
+  }, [accountFundLoading, accountFund, fundAddress, account])
 
-  const { loading: isInvestorLoading, result: isSubscribed } = useSingleCallResult(XXXFactoryContract, 'isSubscribed', [
-    investorAddress,
-    fundAddress,
-  ])
-  const [isInvestor, setIsInvestor] = useState<boolean>(false)
-  const [isInvestorAccount, setIsInvestorAccount] = useState<boolean>(false)
+  const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
   useEffect(() => {
-    if (!isInvestorLoading) {
+    if (!investorFundLoading) {
       setState()
     }
     async function setState() {
-      if (isSubscribed && isSubscribed[0] === true) {
-        setIsInvestorAccount(true)
-        if (account && investorAddress && account.toUpperCase() === investorAddress.toUpperCase()) {
-          setIsInvestor(true)
-        }
+      if (investorFund && fundAddress && investorFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+        setIsManagerAccount(true)
       }
     }
-  }, [isInvestorLoading, isSubscribed, account, investorAddress])
+  }, [investorFundLoading, investorFund, fundAddress, investorAddress])
+
+  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isAccountSubscribedLoading) {
+      setState()
+    }
+    async function setState() {
+      if (
+        accountFund &&
+        fundAddress &&
+        accountFund[0].toUpperCase() !== fundAddress.toUpperCase() &&
+        isAccountSubscribed &&
+        isAccountSubscribed[0] === true
+      ) {
+        setIsInvestor(true)
+      }
+    }
+  }, [accountFund, fundAddress, isAccountSubscribedLoading, isAccountSubscribed])
+
+  const [isInvestorAccount, setIsInvestorAccount] = useState<boolean>(false)
+  useEffect(() => {
+    if (!investorFundLoading) {
+      setState()
+    }
+    async function setState() {
+      if (investorFund && fundAddress && investorFund[0].toUpperCase() !== fundAddress.toUpperCase()) {
+        setIsInvestorAccount(true)
+      }
+    }
+  }, [investorFund, fundAddress, investorFundLoading])
+
+  console.log(isManager, isManagerAccount, isInvestor, isInvestorAccount)
 
   const investorData = useInvestorData(fundAddress, investorAddress).data
   console.log(investorData)
@@ -245,7 +263,7 @@ export default function FundAccount() {
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: '/overview',
+      link: `/deposit/${fundAddress}/${investorAddress}`,
       external: false,
     },
     {
@@ -255,8 +273,8 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
+      link: `/withdraw/${fundAddress}/${investorAddress}`,
+      external: false,
     },
     {
       content: (
@@ -265,8 +283,8 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
     },
     {
       content: (
@@ -275,8 +293,8 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
     },
   ]
 
@@ -288,8 +306,8 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
     },
     {
       content: (
@@ -298,8 +316,8 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
     },
   ]
 
@@ -307,22 +325,22 @@ export default function FundAccount() {
     {
       content: (
         <MenuItem>
-          <Trans>Deposit</Trans>
+          <Trans>Withdraw</Trans>
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: '/overview',
+      link: `/withdraw/${fundAddress}/${investorAddress}`,
       external: false,
     },
     {
       content: (
         <MenuItem>
-          <Trans>Withdraw</Trans>
+          <Trans>Remove Liquidity</Trans>
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
     },
   ]
 
@@ -339,7 +357,7 @@ export default function FundAccount() {
           $borderRadius="12px"
           padding={'12px'}
           onClick={() => {
-            return
+            navigate(`/swap/${fundAddress}/${investorAddress}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -365,7 +383,7 @@ export default function FundAccount() {
           $borderRadius="12px"
           padding={'12px'}
           onClick={() => {
-            return
+            navigate(`/swap/${fundAddress}/${investorAddress}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -391,7 +409,7 @@ export default function FundAccount() {
           $borderRadius="12px"
           padding={'12px'}
           onClick={() => {
-            return
+            navigate(`/deposit/${fundAddress}/${investorAddress}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">

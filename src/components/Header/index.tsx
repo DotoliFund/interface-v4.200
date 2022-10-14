@@ -297,15 +297,6 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/account'}>
           <Trans>My Account</Trans>
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-          <Trans>Swap</Trans>
-        </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/deposit'}>
-          <Trans>Deposit</Trans>
-        </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/withdraw'}>
-          <Trans>Withdraw</Trans>
-        </StyledNavLink>
         <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
           <Trans>Fund</Trans>
         </StyledNavLink>

@@ -11,13 +11,13 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "manager",
+          "name": "fund",
           "type": "address"
         },
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
+          "name": "manager",
           "type": "address"
         }
       ],
@@ -49,13 +49,19 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "investor",
+          "name": "fund",
           "type": "address"
         },
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
+          "name": "manager",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "investor",
           "type": "address"
         }
       ],
