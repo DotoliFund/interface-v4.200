@@ -143,7 +143,8 @@ export default function FundAccount() {
     }
   }, [isInvestorLoading, isSubscribed, account, investorAddress])
 
-  const investorData = useInvestorData(fundAddress, investorAddress).data[0]
+  const investorData = useInvestorData(fundAddress, investorAddress).data
+  console.log(investorData)
   // const chartData = useFundChartData(fundAddress)
   // const transactions = useFundTransactions(fundAddress)
 

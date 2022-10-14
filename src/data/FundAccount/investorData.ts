@@ -5,8 +5,8 @@ import { useClients } from 'state/application/hooks'
 import { Investor, InvestorFields } from 'types/fund'
 
 const INVESTOR_DATA = gql`
-  query investor($fund: Bytes!, $investor: Bytes!) {
-    investor(where: { fund: $fund, investor: $investor }, subgraphError: allow) {
+  query investor($id: String!) {
+    investor(id: $id, subgraphError: allow) {
       id
       createdAtTimestamp
       createdAtBlockNumber
@@ -26,7 +26,7 @@ const INVESTOR_DATA = gql`
 `
 
 interface InvestorResponse {
-  investor: InvestorFields[]
+  investor: InvestorFields
 }
 
 /**
@@ -38,18 +38,24 @@ export function useInvestorData(
 ): {
   loading: boolean
   error: boolean
-  data: Investor[]
+  data: Investor | undefined
 } {
+  if (!fund) {
+    fund = NULL_ADDRESS
+  }
   if (!investor) {
     investor = NULL_ADDRESS
   }
   // get client
   const { dataClient } = useClients()
 
+  const id = fund.toUpperCase() + '-' + investor.toUpperCase()
+  console.log(111, fund, investor, id)
   const { loading, error, data } = useQuery<InvestorResponse>(INVESTOR_DATA, {
-    variables: { fund, investor },
+    variables: { id },
     client: dataClient,
   })
+  console.log(222, data)
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
@@ -59,32 +65,28 @@ export function useInvestorData(
     return {
       loading: anyLoading,
       error: anyError,
-      data: [],
+      data: undefined,
     }
   }
 
-  const formatted: Investor[] = data
-    ? data.investor.map((value, index) => {
-        const investorDataFields = data.investor[index]
-        const investorData: Investor = {
-          id: investorDataFields.id,
-          createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(investorDataFields.createdAtBlockNumber),
-          fund: investorDataFields.fund,
-          manager: investorDataFields.manager,
-          investor: investorDataFields.investor,
-          principalETH: parseFloat(investorDataFields.principalETH),
-          principalUSD: parseFloat(investorDataFields.principalUSD),
-          volumeETH: parseFloat(investorDataFields.volumeETH),
-          volumeUSD: parseFloat(investorDataFields.volumeUSD),
-          profitETH: parseFloat(investorDataFields.profitETH),
-          profitUSD: parseFloat(investorDataFields.profitUSD),
-          profitRatioETH: parseFloat(investorDataFields.profitRatioETH),
-          profitRatioUSD: parseFloat(investorDataFields.profitRatioUSD),
-        }
-        return investorData
-      })
-    : []
+  const formatted: Investor | undefined = data
+    ? {
+        id: data.investor.id,
+        createdAtTimestamp: parseFloat(data.investor.createdAtTimestamp),
+        createdAtBlockNumber: parseFloat(data.investor.createdAtBlockNumber),
+        fund: data.investor.fund,
+        manager: data.investor.manager,
+        investor: data.investor.investor,
+        principalETH: parseFloat(data.investor.principalETH),
+        principalUSD: parseFloat(data.investor.principalUSD),
+        volumeETH: parseFloat(data.investor.volumeETH),
+        volumeUSD: parseFloat(data.investor.volumeUSD),
+        profitETH: parseFloat(data.investor.profitETH),
+        profitUSD: parseFloat(data.investor.profitUSD),
+        profitRatioETH: parseFloat(data.investor.profitRatioETH),
+        profitRatioUSD: parseFloat(data.investor.profitRatioUSD),
+      }
+    : undefined
 
   return {
     loading: anyLoading,
