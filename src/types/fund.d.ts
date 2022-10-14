@@ -54,45 +54,12 @@ export interface FundFields {
   investorCount: string
 }
 
-export interface Manager {
-  address: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  fund: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  feeVolumeUSD: number
-  feeVolumeETH: number
-}
-
-export interface ManagerFields {
-  id: string
-  createdAtTimestamp: string
-  createdAtBlockNumber: string
-  fund: string
-  principalETH: string
-  principalUSD: string
-  volumeETH: string
-  volumeUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  feeVolumeETH: string
-  feeVolumeUSD: string
-}
-
 export interface Investor {
   id: string
   createdAtTimestamp: number
   createdAtBlockNumber: number
   fund: string
+  manager: string
   investor: string
   principalETH: number
   principalUSD: number
@@ -109,6 +76,7 @@ export interface InvestorFields {
   createdAtTimestamp: string
   createdAtBlockNumber: string
   fund: string
+  manager: string
   investor: string
   principalETH: string
   principalUSD: string
@@ -171,44 +139,11 @@ export interface FundSnapshotFields {
   investorCount: string
 }
 
-export interface ManagerSnapshot {
-  id: string
-  timestamp: number
-  fund: string
-  manager: string
-  principalUSD: number
-  principalETH: number
-  volumeUSD: number
-  volumeETH: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-  feeVolumeUSD: number
-  feeVolumeETH: number
-}
-
-export interface ManagerSnapshotFields {
-  id: string
-  timestamp: string
-  fund: string
-  manager: string
-  principalUSD: string
-  principalETH: string
-  volumeUSD: string
-  volumeETH: string
-  profitETH: string
-  profitUSD: string
-  profitRatioETH: string
-  profitRatioUSD: string
-  feeVolumeUSD: string
-  feeVolumeETH: string
-}
-
 export interface InvestorSnapshot {
   id: string
   timestamp: number
   fund: string
+  manager: string
   investor: string
   principalUSD: number
   principalETH: number
@@ -224,6 +159,7 @@ export interface InvestorSnapshotFields {
   id: string
   timestamp: string
   fund: string
+  manager: string
   investor: string
   principalUSD: string
   principalETH: string

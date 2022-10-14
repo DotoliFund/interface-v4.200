@@ -11,6 +11,7 @@ const FUND_INVESTORS = gql`
       createdAtTimestamp
       createdAtBlockNumber
       fund
+      manager
       investor
       principalETH
       principalUSD
@@ -67,6 +68,7 @@ export function useFundInvestors(fund: string | undefined): {
           createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
           createdAtBlockNumber: parseFloat(investorDataFields.createdAtBlockNumber),
           fund: investorDataFields.fund,
+          manager: investorDataFields.manager,
           investor: investorDataFields.investor,
           principalETH: parseFloat(investorDataFields.principalETH),
           principalUSD: parseFloat(investorDataFields.principalUSD),

@@ -112,13 +112,13 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
             {/* <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} /> */}
             <DoubleCurrencyLogo />
             {/* <TYPE.label ml="8px"> */}
-            {fundData.manager}
+            {fundData.address}
             {/* </TYPE.label> */}
           </RowFixed>
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.tvlUSD)} */}
-          {fundData.address}
+          {fundData.manager}
         </Label>
         <Label color="textPrimary">
           {/* {formatDollarAmount(poolData.volumeUSD)} */}
