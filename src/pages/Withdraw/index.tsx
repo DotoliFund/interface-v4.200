@@ -17,7 +17,6 @@ import TokensBanner from 'components/Tokens/TokensBanner'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { NEWFUND_ADDRESS } from 'constants/addresses'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
@@ -32,6 +31,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { InterfaceTrade } from 'state/routing/types'
@@ -80,6 +80,9 @@ export function getIsValidSwapQuote(
 }
 
 export default function Withdraw() {
+  const params = useParams()
+  const fundAddress = params.fundAddress
+  const investorAddress = params.investorAddress
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
@@ -131,7 +134,7 @@ export default function Withdraw() {
 
   // swap state
   const { typedValue, recipient } = useWithdrawState()
-  const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedWithdrawInfo()
+  const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedWithdrawInfo(fundAddress)
 
   // const {
   //   wrapType,
@@ -197,7 +200,7 @@ export default function Withdraw() {
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], NEWFUND_ADDRESS)
+  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], fundAddress)
 
   const handleApprove = useCallback(async () => {
     await approveCallback()
@@ -226,12 +229,12 @@ export default function Withdraw() {
 
   async function onWithdraw() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount) return
+    if (!currency || !parsedAmount || !fundAddress) return
 
     console.log(0)
     const { calldata, value } = XXXFund2.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: NEWFUND_ADDRESS,
+      to: fundAddress,
       data: calldata,
       value,
     }

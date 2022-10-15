@@ -44,7 +44,7 @@ const formatAnalyticsEventProperties = ({ trade, hash, allowedSlippage, succeede
 })
 
 export default function Updater() {
-  const { chainId } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const addPopup = useAddPopup()
   // speed up popup dismisall time if on L2
   const isL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId))
@@ -52,7 +52,7 @@ export default function Updater() {
   const {
     trade: { trade },
     allowedSlippage,
-  } = useDerivedSwapInfo()
+  } = useDerivedSwapInfo(account)
 
   const dispatch = useAppDispatch()
   const onCheck = useCallback(

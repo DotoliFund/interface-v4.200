@@ -11,9 +11,10 @@ import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
-// import TransactionTable from 'components/TransactionsTable'
+import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
 import { useInvestorData } from 'data/FundAccount/investorData'
+import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 // import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
@@ -201,7 +202,7 @@ export default function FundAccount() {
   const investorData = useInvestorData(fundAddress, investorAddress).data
   console.log(investorData)
   // const chartData = useFundChartData(fundAddress)
-  // const transactions = useFundTransactions(fundAddress)
+  const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -614,9 +615,7 @@ export default function FundAccount() {
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
-          </DarkGreyCard>
+          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
         </AutoColumn>
       ) : (

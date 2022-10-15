@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Transaction, TransactionType } from 'types/fund'
+import { Transaction, TransactionType } from 'types'
 
 const FUND_TRANSACTIONS = gql`
   query transactions($fund: Bytes!) {
@@ -82,9 +82,10 @@ export async function useFundTransactions(fund: string): Promise<{
       sender: m.manager,
       token0Address: m.token0,
       token1Address: m.token1,
-      amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      amountETH: parseFloat(m.amountETH),
+      amountUSD: parseFloat(m.amountUSD),
     }
   })
 

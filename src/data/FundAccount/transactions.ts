@@ -1,10 +1,51 @@
+import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Transaction, TransactionType } from 'types/fund'
+import { Transaction, TransactionType } from 'types'
 
-const INVESTOR_TRANSACTIONS = gql`
+const FUND_ACCOUNT_TRANSACTIONS = gql`
   query transactions($fund: Bytes!, $investor: Bytes!) {
+    deposits(
+      first: 100
+      orderBy: timestamp
+      orderDirection: desc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
+      timestamp
+      transaction {
+        id
+      }
+      fund
+      investor
+      token0
+      token1
+      amount0
+      amount1
+      amountETH
+      amountUSD
+    }
+    withdraws(
+      first: 100
+      orderBy: timestamp
+      orderDirection: desc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
+      timestamp
+      transaction {
+        id
+      }
+      fund
+      investor
+      token0
+      token1
+      amount0
+      amount1
+      amountETH
+      amountUSD
+    }
     swaps(
       first: 100
       orderBy: timestamp
@@ -12,46 +53,10 @@ const INVESTOR_TRANSACTIONS = gql`
       where: { fund: $fund, investor: $investor }
       subgraphError: allow
     ) {
-      id
       timestamp
-      fund
-      manager
-      investor
-      token0
-      token1
-      amount0
-      amount1
-      amountETH
-      amountUSD
-    }
-    investorDeposits(
-      first: 100
-      orderBy: timestamp
-      orderDirection: desc
-      where: { fund: $fund }
-      subgraphError: allow
-    ) {
-      id
-      timestamp
-      fund
-      manager
-      investor
-      token0
-      token1
-      amount0
-      amount1
-      amountETH
-      amountUSD
-    }
-    investorWithdraws(
-      first: 100
-      orderBy: timestamp
-      orderDirection: desc
-      where: { fund: $fund }
-      subgraphError: allow
-    ) {
-      id
-      timestamp
+      transaction {
+        id
+      }
       fund
       manager
       investor
@@ -66,6 +71,32 @@ const INVESTOR_TRANSACTIONS = gql`
 `
 
 interface InvestorTransactionResults {
+  deposits: {
+    id: string
+    transaction: {
+      id: string
+    }
+    timestamp: string
+    fund: string
+    investor: string
+    token: string
+    amount: string
+    amountETH: string
+    amountUSD: string
+  }[]
+  withdraws: {
+    id: string
+    transaction: {
+      id: string
+    }
+    timestamp: string
+    fund: string
+    investor: string
+    token: string
+    amount: string
+    amountETH: string
+    amountUSD: string
+  }[]
   swaps: {
     id: string
     transaction: {
@@ -82,151 +113,101 @@ interface InvestorTransactionResults {
     amountETH: string
     amountUSD: string
   }[]
-  managerDeposits: {
-    id: string
-    transaction: {
-      id: string
-    }
-    timestamp: string
-    fund: string
-    manager: string
-    token: string
-    amount: string
-    amountETH: string
-    amountUSD: string
-    origin: string
-    logIndex: string
-  }[]
-  managerWithdraws: {
-    id: string
-    transaction: {
-      id: string
-    }
-    timestamp: string
-    fund: string
-    manager: string
-    token: string
-    amount: string
-    amountETH: string
-    amountUSD: string
-    origin: string
-    logIndex: string
-  }[]
-  investorDeposits: {
-    id: string
-    transaction: {
-      id: string
-    }
-    timestamp: string
-    fund: string
-    manager: string
-    token: string
-    amount: string
-    amountETH: string
-    amountUSD: string
-    origin: string
-    logIndex: string
-  }[]
-  investorWithdraws: {
-    id: string
-    transaction: {
-      id: string
-    }
-    timestamp: string
-    fund: string
-    manager: string
-    token: string
-    amount: string
-    amountETH: string
-    amountUSD: string
-    origin: string
-    logIndex: string
-  }[]
 }
 
 /**
  * Fetch ManagerData
  */
-export async function useInvestorTransactions(
-  fund: string,
-  investor: string
-): Promise<{
+export function useFundAccountTransactions(
+  fund: string | undefined,
+  investor: string | undefined
+): {
   loading: boolean
   error: boolean
   data: Transaction[] | undefined
-}> {
+} {
+  if (!fund) {
+    fund = NULL_ADDRESS
+  }
+  if (!investor) {
+    investor = NULL_ADDRESS
+  }
   // get client
   const { dataClient } = useClients()
 
-  const { data, error, loading } = await dataClient.query<InvestorTransactionResults>({
-    query: INVESTOR_TRANSACTIONS,
-    variables: {
-      fund,
-      investor,
-    },
-    fetchPolicy: 'cache-first',
+  const id = fund.toUpperCase() + '-' + investor.toUpperCase()
+  console.log(111, fund, investor, id)
+  const { loading, error, data } = useQuery<InvestorTransactionResults>(FUND_ACCOUNT_TRANSACTIONS, {
+    variables: { fund, investor },
+    client: dataClient,
   })
+  console.log(222, data)
 
-  if (error) {
+  const anyError = Boolean(error)
+  const anyLoading = Boolean(loading)
+
+  // return early if not all data yet
+  if (anyError || anyLoading) {
     return {
+      loading: anyLoading,
+      error: anyError,
       data: undefined,
-      error: true,
-      loading: false,
     }
   }
 
-  if (loading && !data) {
-    return {
-      data: undefined,
-      error: false,
-      loading: true,
-    }
-  }
+  const deposits = data
+    ? data.deposits.map((m) => {
+        return {
+          type: TransactionType.DEPOSIT,
+          hash: m.transaction.id,
+          timestamp: m.timestamp,
+          sender: m.investor,
+          token0Address: m.token,
+          token1Address: NULL_ADDRESS,
+          amountToken0: parseFloat(m.amount),
+          amountToken1: 0,
+          amountETH: parseFloat(m.amountETH),
+          amountUSD: parseFloat(m.amountUSD),
+        }
+      })
+    : []
 
-  const swaps = data.swaps.map((m) => {
-    return {
-      type: TransactionType.SWAP,
-      hash: m.transaction.id,
-      timestamp: m.timestamp,
-      sender: m.manager,
-      token0Address: m.token0,
-      token1Address: m.token1,
-      amountUSD: parseFloat(m.amountUSD),
-      amountToken0: parseFloat(m.amount0),
-      amountToken1: parseFloat(m.amount1),
-    }
-  })
+  const withdraws = data
+    ? data.withdraws.map((m) => {
+        return {
+          type: TransactionType.WITHDRAW,
+          hash: m.transaction.id,
+          timestamp: m.timestamp,
+          sender: m.investor,
+          token0Address: m.token,
+          token1Address: NULL_ADDRESS,
+          amountToken0: parseFloat(m.amount),
+          amountToken1: 0,
+          amountETH: parseFloat(m.amountETH),
+          amountUSD: parseFloat(m.amountUSD),
+        }
+      })
+    : []
 
-  const investorDeposits = data.investorDeposits.map((m) => {
-    return {
-      type: TransactionType.DEPOSIT,
-      hash: m.transaction.id,
-      timestamp: m.timestamp,
-      sender: m.manager,
-      token0Address: m.token,
-      token1Address: NULL_ADDRESS,
-      amountUSD: parseFloat(m.amountUSD),
-      amountToken0: parseFloat(m.amount),
-      amountToken1: 0,
-    }
-  })
-
-  const investorWithdraws = data.investorWithdraws.map((m) => {
-    return {
-      type: TransactionType.WITHDRAW,
-      hash: m.transaction.id,
-      timestamp: m.timestamp,
-      sender: m.manager,
-      token0Address: m.token,
-      token1Address: NULL_ADDRESS,
-      amountUSD: parseFloat(m.amountUSD),
-      amountToken0: parseFloat(m.amount),
-      amountToken1: 0,
-    }
-  })
+  const swaps = data
+    ? data.swaps.map((m) => {
+        return {
+          type: TransactionType.WITHDRAW,
+          hash: m.transaction.id,
+          timestamp: m.timestamp,
+          sender: m.manager,
+          token0Address: m.token0,
+          token1Address: m.token1,
+          amountToken0: parseFloat(m.amount0),
+          amountToken1: parseFloat(m.amount1),
+          amountETH: parseFloat(m.amountETH),
+          amountUSD: parseFloat(m.amountUSD),
+        }
+      })
+    : []
 
   return {
-    data: [...swaps, ...investorDeposits, ...investorWithdraws],
+    data: [...deposits, ...withdraws, ...swaps],
     error: false,
     loading: false,
   }

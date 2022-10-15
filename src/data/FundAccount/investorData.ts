@@ -50,12 +50,10 @@ export function useInvestorData(
   const { dataClient } = useClients()
 
   const id = fund.toUpperCase() + '-' + investor.toUpperCase()
-  console.log(111, fund, investor, id)
   const { loading, error, data } = useQuery<InvestorResponse>(INVESTOR_DATA, {
     variables: { id },
     client: dataClient,
   })
-  console.log(222, data)
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)

@@ -88,27 +88,6 @@ export interface InvestorFields {
   profitRatioUSD: string
 }
 
-export type Transaction = {
-  type: TransactionType
-  hash: string
-  timestamp: string
-  sender: string
-  token0Address: string
-  token1Address: string
-  amountUSD: number
-  amountToken0: number
-  amountToken1: number
-}
-
-export enum TransactionType {
-  SWAP,
-  MINT,
-  BURN,
-  DEPOSIT,
-  WITHDRAW,
-  SUBSCRIBE,
-}
-
 export interface FundSnapshot {
   id: string
   timestamp: number

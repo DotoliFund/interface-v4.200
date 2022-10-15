@@ -3,7 +3,7 @@ import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
 import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, Percent, TradeType } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund2 from 'abis/XXXFund2.json'
-import { NEWFUND_ADDRESS, NULL_ADDRESS, XXXToken_ADDRESS } from 'constants/addresses'
+import { NULL_ADDRESS, XXXToken_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
@@ -177,6 +177,7 @@ export abstract class XXXFund2 {
    * @returns A string array of calldatas for the trade.
    */
   private static encodeV3Swap(
+    fundAddress: string,
     investor: string,
     trade: V3Trade<Currency, Currency, TradeType>,
     options: SwapOptions
@@ -190,7 +191,7 @@ export abstract class XXXFund2 {
       // flag for whether the trade is single hop or not
       const singleHop = route.pools.length === 1
 
-      const recipient = NEWFUND_ADDRESS
+      const recipient = fundAddress
 
       if (singleHop) {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
@@ -279,6 +280,7 @@ export abstract class XXXFund2 {
    * @returns A string array of calldatas for the trade.
    */
   private static encodeSwaps(
+    fundAddress: string,
     investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
@@ -343,7 +345,7 @@ export abstract class XXXFund2 {
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
-        for (const param of XXXFund2.encodeV3Swap(investor, trade, options)) {
+        for (const param of XXXFund2.encodeV3Swap(fundAddress, investor, trade, options)) {
           params.push(param)
         }
       } else {
@@ -375,6 +377,7 @@ export abstract class XXXFund2 {
   }
 
   public static swapCallParameters(
+    fundAddress: string,
     investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
@@ -384,7 +387,7 @@ export abstract class XXXFund2 {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = XXXFund2.encodeSwaps(investor, trades, options)
+    const { params } = XXXFund2.encodeSwaps(fundAddress, investor, trades, options)
     console.log(params.length)
     console.log(params[0])
     console.log(params)

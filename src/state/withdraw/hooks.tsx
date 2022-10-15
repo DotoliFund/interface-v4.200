@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { NEWFUND_ADDRESS } from 'constants/addresses'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
@@ -66,7 +65,7 @@ const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 }
 
 // from the current withdraw inputs, compute the best trade and return it.
-export function useDerivedWithdrawInfo(): {
+export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
   currencies: { [field in Field]?: Currency | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
@@ -89,7 +88,7 @@ export function useDerivedWithdrawInfo(): {
   //   useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
   // )
   const relevantTokenBalances = useCurrencyBalances(
-    NEWFUND_ADDRESS ?? undefined,
+    fundAddress ?? undefined,
     useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
   )
 
