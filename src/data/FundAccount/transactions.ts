@@ -19,10 +19,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       }
       fund
       investor
-      token0
-      token1
-      amount0
-      amount1
+      token
+      amount
       amountETH
       amountUSD
     }
@@ -39,10 +37,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       }
       fund
       investor
-      token0
-      token1
-      amount0
-      amount1
+      token
+      amount
       amountETH
       amountUSD
     }
@@ -136,12 +132,10 @@ export function useFundAccountTransactions(
   const { dataClient } = useClients()
 
   const id = fund.toUpperCase() + '-' + investor.toUpperCase()
-  console.log(111, fund, investor, id)
   const { loading, error, data } = useQuery<InvestorTransactionResults>(FUND_ACCOUNT_TRANSACTIONS, {
     variables: { fund, investor },
     client: dataClient,
   })
-  console.log(222, data)
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)

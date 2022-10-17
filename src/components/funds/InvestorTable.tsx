@@ -4,11 +4,14 @@ import HoverInlineText from 'components/HoverInlineText'
 import Loader from 'components/Loader'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
-import { ThemedText } from 'theme'
+import { ExternalLink, ThemedText } from 'theme'
 import { Investor } from 'types/fund'
+import { getEtherscanLink, shortenAddress } from 'utils'
+import { formatTime } from 'utils/date'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -82,25 +85,32 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
+  const abs0 = Math.abs(investor.profitRatioETH)
+  const abs1 = Math.abs(investor.principalUSD)
   const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
 
   return (
     <ResponsiveGrid>
-      <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
-        1234
+      <Label end={1} fontWeight={400}>
+        {formatDollarAmount(investor.principalETH)}
       </Label>
       <Label end={1} fontWeight={400}>
-        {investor.id}
+        <HoverInlineText text={`${formatAmount(abs0)}  token0Symbol`} maxCharacters={16} />
       </Label>
       <Label end={1} fontWeight={400}>
-        <HoverInlineText text={investor.fund} maxCharacters={16} />
+        <HoverInlineText text={`${formatAmount(abs1)}  token1Symbol`} maxCharacters={16} />
       </Label>
       <Label end={1} fontWeight={400}>
-        {investor.investor}
+        <ExternalLink
+          href={getEtherscanLink(1, investor.manager, 'address', activeNetwork)}
+          style={{ color: color ?? theme.deprecated_blue1 }}
+        >
+          {shortenAddress(investor.investor)}
+        </ExternalLink>
       </Label>
       <Label end={1} fontWeight={400}>
-        {investor.principalETH}
+        {formatTime(investor.createdAtTimestamp.toString(), 8)}
       </Label>
     </ResponsiveGrid>
   )
@@ -133,6 +143,23 @@ export default function InvestorTable({
     }
     setMaxPage(Math.floor(investors.length / maxItems) + extraPages)
   }, [maxItems, investors])
+
+  const sortedInvestors = useMemo(() => {
+    return investors
+      ? investors
+          .slice()
+          .sort((a, b) => {
+            if (a && b) {
+              return a[sortField as keyof Investor] > b[sortField as keyof Investor]
+                ? (sortDirection ? -1 : 1) * 1
+                : (sortDirection ? -1 : 1) * -1
+            } else {
+              return -1
+            }
+          })
+          .slice(maxItems * (page - 1), page * maxItems)
+      : []
+  }, [investors, maxItems, page, sortField, sortDirection])
 
   const handleSort = useCallback(
     (newField: string) => {
@@ -174,6 +201,19 @@ export default function InvestorTable({
           </ClickableText>
         </ResponsiveGrid>
         <Break />
+
+        {sortedInvestors.map((t, i) => {
+          if (t) {
+            return (
+              <React.Fragment key={i}>
+                <DataRow investor={t} color={color} />
+                <Break />
+              </React.Fragment>
+            )
+          }
+          return null
+        })}
+        {sortedInvestors.length === 0 ? <ThemedText.DeprecatedMain>No Investors</ThemedText.DeprecatedMain> : undefined}
         <PageButtons>
           <div
             onClick={() => {

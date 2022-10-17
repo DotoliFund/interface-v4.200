@@ -6,7 +6,7 @@ import { Investor, InvestorFields } from 'types/fund'
 
 const FUND_INVESTORS = gql`
   query investors($fund: Bytes!) {
-    investors(first: 100, orderBy: principalETH, orderDirection: desc, where: { id: $fund }, subgraphError: allow) {
+    investors(first: 100, orderBy: principalETH, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
       id
       createdAtTimestamp
       createdAtBlockNumber

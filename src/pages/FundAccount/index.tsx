@@ -197,10 +197,7 @@ export default function FundAccount() {
     }
   }, [investorFund, fundAddress, investorFundLoading])
 
-  console.log(isManager, isManagerAccount, isInvestor, isInvestorAccount)
-
   const investorData = useInvestorData(fundAddress, investorAddress).data
-  console.log(investorData)
   // const chartData = useFundChartData(fundAddress)
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
 
@@ -616,7 +613,6 @@ export default function FundAccount() {
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
           <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
-          <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
         </AutoColumn>
       ) : (
         <Loader />
