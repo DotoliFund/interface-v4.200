@@ -11,12 +11,13 @@ import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
+import TransactionTable from 'components/TransactionsTable'
 import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
-// import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
 // import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
+import { useFundTransactions } from 'data/FundPage/transactions'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
@@ -96,7 +97,7 @@ export default function FundPage() {
   // token data
   const fundData = useFundData(fundAddress).data
   // const chartData = useFundChartData(fundAddress)
-  // const transactions = useFundTransactions(fundAddress)
+  const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL)
@@ -421,9 +422,7 @@ export default function FundPage() {
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
-          </DarkGreyCard>
+          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
           <DarkGreyCard>{investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
         </AutoColumn>

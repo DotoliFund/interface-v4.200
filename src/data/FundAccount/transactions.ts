@@ -136,7 +136,6 @@ export function useFundAccountTransactions(
     variables: { fund, investor },
     client: dataClient,
   })
-  console.log(222, data)
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
