@@ -613,7 +613,6 @@ export default function FundAccount() {
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
           <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
-          <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
         </AutoColumn>
       ) : (
         <Loader />
