@@ -23,7 +23,6 @@ import TokensBanner from 'components/Tokens/TokensBanner'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { NEWFUND_ADDRESS } from 'constants/addresses'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
@@ -38,6 +37,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import {
@@ -133,6 +133,9 @@ const formatSwapQuoteReceivedEventProperties = (
 }
 
 export default function Deposit() {
+  const params = useParams()
+  const fundAddress = params.fundAddress
+  const investorAddress = params.investorAddress
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
@@ -188,28 +191,9 @@ export default function Deposit() {
   const { typedValue, recipient } = useDepositState()
   const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedDepositInfo()
 
-  // const {
-  //   wrapType,
-  //   execute: onWrap,
-  //   inputError: wrapInputError,
-  // } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  // const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
 
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
-
-  // const [routeNotFound, routeIsLoading, routeIsSyncing] = useMemo(
-  //   () => [!trade?.swaps, TradeState.LOADING === tradeState, TradeState.SYNCING === tradeState],
-  //   [trade, tradeState]
-  // )
-
-  // show price estimates based on wrap trade
-  // const inputValue = showWrap ? parsedAmount : trade?.inputAmount
-  // const fiatValueInput = useStablecoinValue(inputValue)
-  // const stablecoinPriceImpact = useMemo(
-  //   () => (routeIsSyncing ? undefined : computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)),
-  //   [fiatValueInput, routeIsSyncing]
-  // )
 
   const { onCurrencySelection, onUserInput, onChangeRecipient } = useDepositActionHandlers()
   const isValid = !swapInputError
@@ -252,7 +236,7 @@ export default function Deposit() {
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], NEWFUND_ADDRESS)
+  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], fundAddress)
 
   const handleApprove = useCallback(async () => {
     await approveCallback()
@@ -281,31 +265,12 @@ export default function Deposit() {
 
   async function onDeposit() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount) return
+    if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
 
-    // if (!tokenContract) return
-    // let useExact = false
-    // const estimatedGas = await tokenContract.estimateGas.approve(NEWFUND_ADDRESS, MaxUint256).catch(() => {
-    //   // general fallback for tokens which restrict approval amounts
-    //   useExact = true
-    //   return tokenContract.estimateGas.approve(NEWFUND_ADDRESS, parsedAmount.quotient.toString())
-    // })
-
-    // await tokenContract
-    //   .approve(NEWFUND_ADDRESS, parsedAmount.quotient.toString(), {
-    //     gasLimit: calculateGasMargin(estimatedGas),
-    //   })
-    //   .then((response) => {
-    //     console.log(response)
-    //   })
-    //   .catch((error: Error) => {
-    //     throw error
-    //   })
-
-    console.log(0)
-    const { calldata, value } = XXXFund2.depositCallParameters(currency?.wrapped.address, parsedAmount)
+    console.log(tokenAddress)
+    const { calldata, value } = XXXFund2.depositCallParameters(tokenAddress, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: NEWFUND_ADDRESS,
+      to: fundAddress,
       data: calldata,
       value,
     }
@@ -335,58 +300,6 @@ export default function Deposit() {
 
   const addIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], null)
 
-  //   return
-  // }, [account, chainId, provider, parsedAmount, currency, tokenContract])
-
-  // // the callback to execute the swap
-  // const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
-
-  // const handleSwap = useCallback(() => {
-  //   if (!swapCallback) {
-  //     return
-  //   }
-  //   // if (stablecoinPriceImpact && !confirmPriceImpactWithoutFee(stablecoinPriceImpact)) {
-  //   //   return
-  //   // }
-  //   setDepositState({ attemptingTxn: true, showConfirm, swapErrorMessage: undefined, txHash: undefined })
-  //   swapCallback()
-  //     .then((hash) => {
-  //       setDepositState({ attemptingTxn: false, showConfirm, swapErrorMessage: undefined, txHash: hash })
-  //       // sendEvent({
-  //       //   category: 'Swap',
-  //       //   action: 'transaction hash',
-  //       //   label: hash,
-  //       // })
-  //       // sendEvent({
-  //       //   category: 'Swap',
-  //       //   action:
-  //       //     recipient === null
-  //       //       ? 'Swap w/o Send'
-  //       //       : (recipientAddress ?? recipient) === account
-  //       //       ? 'Swap w/o Send + recipient'
-  //       //       : 'Swap w/ Send',
-  //       //   label: [TRADE_STRING, trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, 'MH'].join(
-  //       //     '/'
-  //       //   ),
-  //       // })
-  //     })
-  //     .catch((error) => {
-  //       setDepositState({
-  //         attemptingTxn: false,
-  //         showConfirm,
-  //         swapErrorMessage: error.message,
-  //         txHash: undefined,
-  //       })
-  //     })
-  // }, [swapCallback, showConfirm])
-
-  // // warnings on the greater of fiat value price impact and execution price impact
-  // const { priceImpactSeverity, largerPriceImpact } = useMemo(() => {
-  //   const marketPriceImpact = trade?.priceImpact ? computeRealizedPriceImpact(trade) : undefined
-  //   const largerPriceImpact = largerPercentValue(marketPriceImpact, stablecoinPriceImpact)
-  //   return { priceImpactSeverity: warningSeverity(largerPriceImpact), largerPriceImpact }
-  // }, [stablecoinPriceImpact, trade])
-
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -402,43 +315,6 @@ export default function Deposit() {
       action: 'Max',
     })
   }, [maxInputAmount, onUserInput])
-
-  // const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
-
-  // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
-  // const showPriceImpactWarning = largerPriceImpact && priceImpactSeverity > 3
-
-  // // Handle time based logging events and event properties.
-  // useEffect(() => {
-  //   const now = new Date()
-  //   // If a trade exists, and we need to log the receipt of this new swap quote:
-  //   if (newSwapQuoteNeedsLogging && !!trade) {
-  //     // Set the current datetime as the time of receipt of latest swap quote.
-  //     setSwapQuoteReceivedDate(now)
-  //     // Log swap quote.
-  //     sendAnalyticsEvent(
-  //       EventName.SWAP_QUOTE_RECEIVED,
-  //       formatSwapQuoteReceivedEventProperties(trade, fetchingSwapQuoteStartTime)
-  //     )
-  //     // Latest swap quote has just been logged, so we don't need to log the current trade anymore
-  //     // unless user inputs change again and a new trade is in the process of being generated.
-  //     setNewSwapQuoteNeedsLogging(false)
-  //     // New quote is not being fetched, so set start time of quote fetch to undefined.
-  //     setFetchingSwapQuoteStartTime(undefined)
-  //   }
-  //   // If another swap quote is being loaded based on changed user inputs:
-  //   if (routeIsLoading) {
-  //     setNewSwapQuoteNeedsLogging(true)
-  //     if (!fetchingSwapQuoteStartTime) setFetchingSwapQuoteStartTime(now)
-  //   }
-  // }, [
-  //   newSwapQuoteNeedsLogging,
-  //   routeIsSyncing,
-  //   routeIsLoading,
-  //   fetchingSwapQuoteStartTime,
-  //   trade,
-  //   setSwapQuoteReceivedDate,
-  // ])
 
   const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
 
@@ -465,21 +341,6 @@ export default function Deposit() {
         )}
         <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
           <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
-            {/* <SwapHeader allowedSlippage={undefined} />
-            <ConfirmSwapModal
-              isOpen={showConfirm}
-              trade={undefined}
-              originalTrade={undefined}
-              onAcceptChanges={handleAcceptChanges}
-              attemptingTxn={attemptingTxn}
-              txHash={txHash}
-              recipient={recipient}
-              allowedSlippage={undefined}
-              onConfirm={handleDeposit}
-              swapErrorMessage={swapErrorMessage}
-              onDismiss={handleConfirmDismiss}
-              swapQuoteReceivedDate={swapQuoteReceivedDate}
-            /> */}
             <AutoColumn gap={'0px'}>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
@@ -518,17 +379,6 @@ export default function Deposit() {
                         <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
                       </>
                     ) : null}
-                    {/* {userHasSpecifiedInput && (
-                      <SwapDetailsDropdown
-                        trade={trade}
-                        syncing={routeIsSyncing}
-                        loading={routeIsLoading}
-                        showInverted={showInverted}
-                        setShowInverted={setShowInverted}
-                        allowedSlippage={allowedSlippage}
-                      />
-                    )} */}
-                    {/* {showPriceImpactWarning && <PriceImpactWarning priceImpact={largerPriceImpact} />} */}
                   </BottomInputWrapper>
 
                   <div>

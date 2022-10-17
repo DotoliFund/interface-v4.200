@@ -6,20 +6,23 @@ import LineChart from 'components/Chart/LineChart'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
+import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
-// import TransactionTable from 'components/TransactionsTable'
+import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
 import { useInvestorData } from 'data/FundAccount/investorData'
+import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 // import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { PageWrapper, ThemedBackground } from 'pages/styled'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Download, ExternalLink } from 'react-feather'
+import { BookOpen, Download, ExternalLink, PlusCircle } from 'react-feather'
+import { ChevronDown } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -65,6 +68,41 @@ const ToggleRow = styled(RowBetween)`
   }
 `
 
+const MoreOptionsButton = styled(ButtonGray)`
+  border-radius: 12px;
+  flex: 1 1 auto;
+  padding: 6px 8px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.deprecated_bg0};
+  margin-right: 8px;
+`
+
+const MoreOptionsText = styled(ThemedText.DeprecatedBody)`
+  align-items: center;
+  display: flex;
+`
+
+const Menu = styled(NewMenu)`
+  margin-left: 0;
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+    flex: 1 1 auto;
+    width: 49%;
+    right: 0px;
+  `};
+
+  a {
+    width: 100%;
+  }
+`
+
+const MenuItem = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-weight: 500;
+`
+
 enum ChartView {
   VOL,
   PRICE,
@@ -89,64 +127,82 @@ export default function FundAccount() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
-  const { loading: isFundByInvestorLoading, result: fundByInvestor } = useSingleCallResult(
+  const { loading: accountFundLoading, result: accountFund } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
-  const [isManager, setIsManager] = useState<boolean>(false)
-  useEffect(() => {
-    if (!isFundByInvestorLoading) {
-      setState()
-    }
-    async function setState() {
-      if (fundByInvestor && fundAddress && fundByInvestor[0].toUpperCase() === fundAddress.toUpperCase()) {
-        setIsManager(true)
-      }
-    }
-  }, [isFundByInvestorLoading, fundByInvestor, fundAddress, investorAddress, account])
-
-  const { loading: isFundByAccountLoading, result: fundByAccount } = useSingleCallResult(
+  const { loading: investorFundLoading, result: investorFund } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [investorAddress ?? undefined]
   )
-  const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
+  const { loading: isAccountSubscribedLoading, result: isAccountSubscribed } = useSingleCallResult(
+    XXXFactoryContract,
+    'isSubscribed',
+    [account, fundAddress]
+  )
+
+  const [isManager, setIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!isFundByAccountLoading) {
+    if (!accountFundLoading) {
       setState()
     }
     async function setState() {
-      if (fundByAccount && fundAddress && fundByAccount[0].toUpperCase() === fundAddress.toUpperCase()) {
+      if (accountFund && fundAddress && accountFund[0].toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
       }
     }
-  }, [isFundByAccountLoading, fundByAccount, fundAddress, investorAddress, account])
+  }, [accountFundLoading, accountFund, fundAddress, account])
 
-  const { loading: isInvestorLoading, result: isSubscribed } = useSingleCallResult(XXXFactoryContract, 'isSubscribed', [
-    investorAddress,
-    fundAddress,
-  ])
-  const [isInvestor, setIsInvestor] = useState<boolean>(false)
-  const [isInvestorAccount, setIsInvestorAccount] = useState<boolean>(false)
+  const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
   useEffect(() => {
-    if (!isInvestorLoading) {
+    if (!investorFundLoading) {
       setState()
     }
     async function setState() {
-      if (isSubscribed && isSubscribed[0] === true) {
-        setIsInvestorAccount(true)
-        if (account && investorAddress && account.toUpperCase() === investorAddress.toUpperCase()) {
-          setIsInvestor(true)
-        }
+      if (investorFund && fundAddress && investorFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+        setIsManagerAccount(true)
       }
     }
-  }, [isInvestorLoading, isSubscribed, account, investorAddress])
+  }, [investorFundLoading, investorFund, fundAddress, investorAddress])
+
+  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isAccountSubscribedLoading) {
+      setState()
+    }
+    async function setState() {
+      if (
+        accountFund &&
+        fundAddress &&
+        accountFund[0].toUpperCase() !== fundAddress.toUpperCase() &&
+        isAccountSubscribed &&
+        isAccountSubscribed[0] === true
+      ) {
+        setIsInvestor(true)
+      }
+    }
+  }, [accountFund, fundAddress, isAccountSubscribedLoading, isAccountSubscribed])
+
+  const [isInvestorAccount, setIsInvestorAccount] = useState<boolean>(false)
+  useEffect(() => {
+    if (!investorFundLoading) {
+      setState()
+    }
+    async function setState() {
+      if (investorFund && fundAddress && investorFund[0].toUpperCase() !== fundAddress.toUpperCase()) {
+        setIsInvestorAccount(true)
+      }
+    }
+  }, [investorFund, fundAddress, investorFundLoading])
+
+  console.log(isManager, isManagerAccount, isInvestor, isInvestorAccount)
 
   const investorData = useInvestorData(fundAddress, investorAddress).data
   console.log(investorData)
   // const chartData = useFundChartData(fundAddress)
-  // const transactions = useFundTransactions(fundAddress)
+  const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -200,6 +256,95 @@ export default function FundAccount() {
   //   }
   // }, [chartData])
 
+  const menuItems1 = [
+    {
+      content: (
+        <MenuItem>
+          <Trans>Deposit</Trans>
+          <PlusCircle size={16} />
+        </MenuItem>
+      ),
+      link: `/deposit/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+    {
+      content: (
+        <MenuItem>
+          <Trans>Withdraw</Trans>
+          <BookOpen size={16} />
+        </MenuItem>
+      ),
+      link: `/withdraw/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+    {
+      content: (
+        <MenuItem>
+          <Trans>Add Liquidity</Trans>
+          <BookOpen size={16} />
+        </MenuItem>
+      ),
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+    {
+      content: (
+        <MenuItem>
+          <Trans>Remove Liquidity</Trans>
+          <BookOpen size={16} />
+        </MenuItem>
+      ),
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+  ]
+
+  const menuItems2 = [
+    {
+      content: (
+        <MenuItem>
+          <Trans>Add Liquidity</Trans>
+          <BookOpen size={16} />
+        </MenuItem>
+      ),
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+    {
+      content: (
+        <MenuItem>
+          <Trans>Remove Liquidity</Trans>
+          <BookOpen size={16} />
+        </MenuItem>
+      ),
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+  ]
+
+  const menuItems3 = [
+    {
+      content: (
+        <MenuItem>
+          <Trans>Withdraw</Trans>
+          <PlusCircle size={16} />
+        </MenuItem>
+      ),
+      link: `/withdraw/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+    {
+      content: (
+        <MenuItem>
+          <Trans>Remove Liquidity</Trans>
+          <BookOpen size={16} />
+        </MenuItem>
+      ),
+      link: `/swap/${fundAddress}/${investorAddress}`,
+      external: false,
+    },
+  ]
+
   const Buttons = () =>
     !account ? (
       <ButtonPrimary $borderRadius="12px" padding={'12px'}>
@@ -207,30 +352,86 @@ export default function FundAccount() {
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
-    ) : (isManager || isInvestor) && fundAddress ? (
-      <ButtonPrimary
-        $borderRadius="12px"
-        padding={'12px'}
-        onClick={() => {
-          return
-        }}
-      >
-        <ThemedText.DeprecatedMain mb="4px">
-          <Trans>My Account</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+    ) : isManager && isManagerAccount ? (
+      <AutoRow gap="4px">
+        <ButtonPrimary
+          $borderRadius="12px"
+          padding={'12px'}
+          onClick={() => {
+            navigate(`/swap/${fundAddress}/${investorAddress}`)
+          }}
+        >
+          <ThemedText.DeprecatedMain mb="4px">
+            <Trans>Swap</Trans>
+          </ThemedText.DeprecatedMain>
+        </ButtonPrimary>
+        <Menu
+          menuItems={menuItems1}
+          flyoutAlignment={FlyoutAlignment.LEFT}
+          ToggleUI={(props: any) => (
+            <MoreOptionsButton {...props}>
+              <MoreOptionsText>
+                <Trans>More</Trans>
+                <ChevronDown size={15} />
+              </MoreOptionsText>
+            </MoreOptionsButton>
+          )}
+        />
+      </AutoRow>
+    ) : isManager && isInvestorAccount ? (
+      <AutoRow gap="4px">
+        <ButtonPrimary
+          $borderRadius="12px"
+          padding={'12px'}
+          onClick={() => {
+            navigate(`/swap/${fundAddress}/${investorAddress}`)
+          }}
+        >
+          <ThemedText.DeprecatedMain mb="4px">
+            <Trans>Swap</Trans>
+          </ThemedText.DeprecatedMain>
+        </ButtonPrimary>
+        <Menu
+          menuItems={menuItems2}
+          flyoutAlignment={FlyoutAlignment.LEFT}
+          ToggleUI={(props: any) => (
+            <MoreOptionsButton {...props}>
+              <MoreOptionsText>
+                <Trans>More</Trans>
+                <ChevronDown size={15} />
+              </MoreOptionsText>
+            </MoreOptionsButton>
+          )}
+        />
+      </AutoRow>
+    ) : isInvestor && isInvestorAccount ? (
+      <AutoRow gap="4px">
+        <ButtonPrimary
+          $borderRadius="12px"
+          padding={'12px'}
+          onClick={() => {
+            navigate(`/deposit/${fundAddress}/${investorAddress}`)
+          }}
+        >
+          <ThemedText.DeprecatedMain mb="4px">
+            <Trans>Deposit</Trans>
+          </ThemedText.DeprecatedMain>
+        </ButtonPrimary>
+        <Menu
+          menuItems={menuItems3}
+          flyoutAlignment={FlyoutAlignment.LEFT}
+          ToggleUI={(props: any) => (
+            <MoreOptionsButton {...props}>
+              <MoreOptionsText>
+                <Trans>More</Trans>
+                <ChevronDown size={15} />
+              </MoreOptionsText>
+            </MoreOptionsButton>
+          )}
+        />
+      </AutoRow>
     ) : (
-      <ButtonPrimary
-        $borderRadius="12px"
-        padding={'12px'}
-        onClick={() => {
-          return
-        }}
-      >
-        <ThemedText.DeprecatedMain mb="4px">
-          <Trans>Subscribe</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+      <></>
     )
 
   return (
@@ -414,9 +615,7 @@ export default function FundAccount() {
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {/* {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />} */}
-          </DarkGreyCard>
+          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
         </AutoColumn>
       ) : (
@@ -425,217 +624,3 @@ export default function FundAccount() {
     </PageWrapper>
   )
 }
-
-// import { Trans } from '@lingui/macro'
-// import { Percent } from '@uniswap/sdk-core'
-// import { useWeb3React } from '@web3-react/core'
-// import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
-// import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
-// import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-// import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-// import { useParams } from 'react-router-dom'
-// import { Text } from 'rebass'
-// import { useTheme } from 'styled-components/macro'
-
-// import { ButtonError, ButtonLight } from '../../components/Button'
-// import { BlueCard } from '../../components/Card'
-// import DoughnutChart from '../../components/Chart/DoughnutChart'
-// import LineChart from '../../components/Chart/LineChart'
-// import { AutoColumn } from '../../components/Column'
-// import { AddRemoveTabs } from '../../components/NavigationTabs'
-// import Row, { RowBetween } from '../../components/Row'
-// import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
-// import { useToggleWalletModal } from '../../state/application/hooks'
-// import { ThemedText } from '../../theme'
-// import {
-//   DynamicSection,
-//   PageWrapper,
-//   ResponsiveTwoColumns,
-//   RightContainer,
-//   ScrollablePage,
-//   StackedContainer,
-//   StackedItem,
-//   Wrapper,
-// } from './styled'
-
-// const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
-
-// export default function FundAccount() {
-//   const navBarFlag = useNavBarFlag()
-//   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-
-//   const { account, chainId, provider } = useWeb3React()
-//   const theme = useTheme()
-//   const { fund, investor } = useParams<{ fund: string; investor: string }>()
-
-//   function switchToMyAccount() {
-//     alert(1234)
-//     //navigate(`/add/${currencyIdB as string}/${currencyIdA as string}${feeAmount ? '/' + feeAmount : ''}`)
-//     //navigate(`/fund/:fundAddress/:account/`)
-//   }
-//   function switchToFundAccount() {
-//     alert(5678)
-//     //navigate(`/add/${currencyIdB as string}/${currencyIdA as string}${feeAmount ? '/' + feeAmount : ''}`)
-//     //navigate(`/fund/:fundAddress`)
-//   }
-
-//   const toggleWalletModal = useToggleWalletModal() // toggle wallet when disconnected
-
-//   const Buttons = () =>
-//     !account ? (
-//       <TraceEvent
-//         events={[Event.onClick]}
-//         name={EventName.CONNECT_WALLET_BUTTON_CLICKED}
-//         properties={{ received_swap_quote: false }}
-//         element={ElementName.CONNECT_WALLET_BUTTON}
-//       >
-//         <ButtonLight onClick={toggleWalletModal} $borderRadius="12px" padding={'12px'}>
-//           <Trans>Connect Wallet</Trans>
-//         </ButtonLight>
-//       </TraceEvent>
-//     ) : (
-//       <AutoColumn gap={'md'}>
-//         <ButtonError
-//           onClick={() => {
-//             return
-//           }}
-//           disabled={false}
-//         >
-//           <Text fontWeight={500}>
-//             <Trans>Preview</Trans>
-//           </Text>
-//         </ButtonError>
-//       </AutoColumn>
-//     )
-
-//   return (
-//     <>
-//       <ScrollablePage navBarFlag={navBarFlagEnabled}>
-//         <PageWrapper wide={true}>
-//           <AddRemoveTabs
-//             creating={false}
-//             adding={true}
-//             positionID={'test1234'}
-//             defaultSlippage={DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE}
-//             showBackLink={true}
-//           >
-//             <Row justifyContent="flex-end" style={{ width: 'fit-content', minWidth: 'fit-content' }}>
-//               <ToggleWrapper width="fit-content">
-//                 <ToggleElement
-//                   isActive={true}
-//                   fontSize="14px"
-//                   onClick={() => {
-//                     switchToMyAccount()
-//                   }}
-//                 >
-//                   <Trans>My Account</Trans>
-//                 </ToggleElement>
-//                 <ToggleElement
-//                   isActive={false}
-//                   fontSize="14px"
-//                   onClick={() => {
-//                     switchToFundAccount()
-//                   }}
-//                 >
-//                   <Trans>Fund</Trans>
-//                 </ToggleElement>
-//               </ToggleWrapper>
-//             </Row>
-//           </AddRemoveTabs>
-//           <Wrapper>
-//             <ResponsiveTwoColumns wide={true}>
-//               <AutoColumn gap="lg">
-//                 <RowBetween paddingBottom="20px">
-//                   <ThemedText.DeprecatedLabel>
-//                     <Trans>Select Pair</Trans>
-//                     <Wrapper>
-//                       <LineChart />
-//                     </Wrapper>
-//                   </ThemedText.DeprecatedLabel>
-//                 </RowBetween>
-//               </AutoColumn>
-//               <AutoColumn gap="lg">
-//                 <RowBetween paddingBottom="20px">
-//                   <ThemedText.DeprecatedLabel>
-//                     <Trans>Select Pair2</Trans>
-//                     <Wrapper>
-//                       <LineChart />
-//                     </Wrapper>
-//                   </ThemedText.DeprecatedLabel>
-//                 </RowBetween>
-//               </AutoColumn>
-//               {/* <div>
-//                 <DynamicSection disabled={false}>
-//                   <AutoColumn gap="md">
-//                     <ThemedText.DeprecatedLabel>
-//                       <Trans>Deposit Amounts</Trans>
-//                       <DoughnutChart />
-//                     </ThemedText.DeprecatedLabel>
-//                   </AutoColumn>
-//                 </DynamicSection>
-//               </div> */}
-//               <RightContainer gap="lg">
-//                 <DynamicSection gap="md" disabled={true}>
-//                   <AutoColumn gap="md">
-//                     <RowBetween>
-//                       <ThemedText.DeprecatedLabel>
-//                         <DoughnutChart />
-//                         <Trans>Set Starting Price</Trans>
-//                       </ThemedText.DeprecatedLabel>
-//                     </RowBetween>
-
-//                     <BlueCard
-//                       style={{
-//                         display: 'flex',
-//                         flexDirection: 'row',
-//                         alignItems: 'center',
-//                         padding: '1rem 1rem',
-//                       }}
-//                     >
-//                       <ThemedText.DeprecatedBody
-//                         fontSize={14}
-//                         style={{ fontWeight: 500 }}
-//                         textAlign="left"
-//                         color={theme.deprecated_primaryText1}
-//                       >
-//                         <Trans>
-//                           This pool must be initialized before you can add liquidity. To initialize, select a starting
-//                           price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will
-//                           be higher than usual due to the initialization transaction.
-//                         </Trans>
-//                       </ThemedText.DeprecatedBody>
-//                     </BlueCard>
-//                     <RowBetween
-//                       style={{ backgroundColor: theme.deprecated_bg1, padding: '12px', borderRadius: '12px' }}
-//                     >
-//                       <ThemedText.DeprecatedMain>
-//                         <Trans>Current Price:</Trans>
-//                       </ThemedText.DeprecatedMain>
-//                       <ThemedText.DeprecatedMain>{'-'}</ThemedText.DeprecatedMain>
-//                     </RowBetween>
-//                   </AutoColumn>
-//                 </DynamicSection>
-
-//                 <DynamicSection gap="md" disabled={true}>
-//                   <StackedContainer>
-//                     <StackedItem style={{ opacity: 1 }}>
-//                       <AutoColumn gap="md">
-//                         <RowBetween>
-//                           <ThemedText.DeprecatedLabel>
-//                             <Trans>Set Price Range</Trans>
-//                           </ThemedText.DeprecatedLabel>
-//                         </RowBetween>
-//                       </AutoColumn>
-//                     </StackedItem>
-//                   </StackedContainer>
-//                 </DynamicSection>
-//               </RightContainer>
-//               <Buttons />
-//             </ResponsiveTwoColumns>
-//           </Wrapper>
-//         </PageWrapper>
-//       </ScrollablePage>
-//       <SwitchLocaleLink />
-//     </>
-//   )
-// }

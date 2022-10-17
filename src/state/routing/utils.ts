@@ -75,6 +75,8 @@ export function transformRoutesToTrade<TTradeType extends TradeType>(
   blockNumber?: string | null,
   gasUseEstimateUSD?: CurrencyAmount<Token> | null
 ): InterfaceTrade<Currency, Currency, TTradeType> {
+  console.log('route:', route)
+
   return new InterfaceTrade({
     v2Routes:
       route

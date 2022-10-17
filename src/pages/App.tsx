@@ -156,12 +156,9 @@ export default function App() {
                   <Route path="account" element={<Account />} />
                   <Route path="fund/:fundAddress" element={<FundPage />} />
                   <Route path="fund/:fundAddress/:investorAddress" element={<FundAccount />} />
-                  <Route path="swap" element={<Swap />} />
-                  <Route path="deposit" element={<Deposit />} />
-                  <Route path="deposit/:fund/:tokenId" element={<Deposit />} />
-                  <Route path="withdraw" element={<Withdraw />} />
-                  <Route path="withdraw/:fund/:tokenId" element={<Withdraw />} />
-                  <Route path="swap/:fund/:currencyIdA/:currencyIdB" element={<Swap />} />
+                  <Route path="deposit/:fundAddress/:investorAddress" element={<Deposit />} />
+                  <Route path="withdraw/:fundAddress/:investorAddress" element={<Withdraw />} />
+                  <Route path="swap/:fundAddress/:investorAddress" element={<Swap />} />
                   <Route
                     path="vote/*"
                     element={
