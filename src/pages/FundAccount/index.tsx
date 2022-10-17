@@ -197,12 +197,10 @@ export default function FundAccount() {
     }
   }, [investorFund, fundAddress, investorFundLoading])
 
-  console.log(isManager, isManagerAccount, isInvestor, isInvestorAccount)
-
   const investorData = useInvestorData(fundAddress, investorAddress).data
-  console.log(investorData)
   // const chartData = useFundChartData(fundAddress)
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
+  console.log(transactions)
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()

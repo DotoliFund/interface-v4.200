@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 
 export const client = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/32291/fund/v0.0.28',
+  uri: 'https://api.studio.thegraph.com/query/32291/fund/v0.0.31',
   cache: new InMemoryCache({
     typePolicies: {
       Fund: {
@@ -24,7 +24,7 @@ export const client = new ApolloClient({
 })
 
 export const blockClient = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/32291/fund/v0.0.28',
+  uri: 'https://api.studio.thegraph.com/query/32291/fund/v0.0.31',
   cache: new InMemoryCache(),
   queryDeduplication: true,
   defaultOptions: {
