@@ -2,9 +2,9 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
-import LineChart from 'components/Chart/LineChart'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
+import LineChart from 'components/LineChart/alt'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import Percent from 'components/Percent'
@@ -608,7 +608,33 @@ export default function FundAccount() {
                   </ToggleElementFree>
                 </ToggleWrapper>
               </ToggleRow>
-              <LineChart />
+              <LineChart
+                data={[
+                  { name: 'a', value: [12, 30] },
+                  { name: 'b', value: [5, 13] },
+                  { name: 'c', value: [13, 31] },
+                  { name: 'd', value: [24, 53] },
+                ]}
+                height={220}
+                minHeight={332}
+                color={activeNetwork.primaryColor}
+                value={undefined}
+                label={undefined}
+                setValue={undefined}
+                setLabel={undefined}
+                topLeft={
+                  <AutoColumn gap="4px">
+                    <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
+                    <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                      {/* <MonoSpace>{tvlValue} </MonoSpace> */}
+                      <MonoSpace>1234 </MonoSpace>
+                    </ThemedText.DeprecatedLargeHeader>
+                    <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                      <MonoSpace>left label (UTC)</MonoSpace>
+                    </ThemedText.DeprecatedMain>
+                  </AutoColumn>
+                }
+              />
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
