@@ -19,7 +19,7 @@ import ERC1155_ABI from 'abis/erc1155.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
 import XXXFactoryJson from 'abis/XXXFactory.json'
-import XXXFund2Json from 'abis/XXXFactory.json'
+import XXXFund2Json from 'abis/XXXFund2.json'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
