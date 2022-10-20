@@ -99,6 +99,7 @@ export default function FundPage() {
   // const chartData = useFundChartData(fundAddress)
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
+  console.log(investors)
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -424,10 +425,10 @@ export default function FundPage() {
               <LineChart />
             </DarkGreyCard>
           </ContentLayout>
-          <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
-          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
           <DarkGreyCard>{investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
+          <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
+          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
         </AutoColumn>
       ) : (
         <Loader />

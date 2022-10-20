@@ -5,6 +5,7 @@ import Loader from 'components/Loader'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
@@ -76,6 +77,14 @@ const SortText = styled.button<{ active: boolean }>`
   }
 `
 
+const LinkWrapper = styled(Link)`
+  text-decoration: none;
+  :hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+`
+
 const SORT_FIELD = {
   amountUSD: 'amountUSD',
   timestamp: 'timestamp',
@@ -91,28 +100,30 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
   const theme = useTheme()
 
   return (
-    <ResponsiveGrid>
-      <Label end={1} fontWeight={400}>
-        {formatDollarAmount(investor.principalETH)}
-      </Label>
-      <Label end={1} fontWeight={400}>
-        <HoverInlineText text={`${formatAmount(abs0)}  token0Symbol`} maxCharacters={16} />
-      </Label>
-      <Label end={1} fontWeight={400}>
-        <HoverInlineText text={`${formatAmount(abs1)}  token1Symbol`} maxCharacters={16} />
-      </Label>
-      <Label end={1} fontWeight={400}>
-        <ExternalLink
-          href={getEtherscanLink(1, investor.manager, 'address', activeNetwork)}
-          style={{ color: color ?? theme.deprecated_blue1 }}
-        >
-          {shortenAddress(investor.investor)}
-        </ExternalLink>
-      </Label>
-      <Label end={1} fontWeight={400}>
-        {formatTime(investor.createdAtTimestamp.toString(), 8)}
-      </Label>
-    </ResponsiveGrid>
+    <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
+      <ResponsiveGrid>
+        <Label end={1} fontWeight={400}>
+          {formatDollarAmount(investor.principalETH)}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          <HoverInlineText text={`${formatAmount(abs0)}  token0Symbol`} maxCharacters={16} />
+        </Label>
+        <Label end={1} fontWeight={400}>
+          <HoverInlineText text={`${formatAmount(abs1)}  token1Symbol`} maxCharacters={16} />
+        </Label>
+        <Label end={1} fontWeight={400}>
+          <ExternalLink
+            href={getEtherscanLink(1, investor.manager, 'address', activeNetwork)}
+            style={{ color: color ?? theme.deprecated_blue1 }}
+          >
+            {shortenAddress(investor.investor)}
+          </ExternalLink>
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {formatTime(investor.createdAtTimestamp.toString(), 8)}
+        </Label>
+      </ResponsiveGrid>
+    </LinkWrapper>
   )
 }
 
