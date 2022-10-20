@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+//import { useCurrencyBalances } from 'lib/hooks/useCurrencyBalance'
+import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
@@ -11,7 +13,6 @@ import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
-import { useCurrencyBalances } from '../connection/hooks'
 import { AppState } from '../index'
 import { Field, replaceWithdrawState, selectCurrency, setRecipient, typeInput } from './actions'
 import { WithdrawState } from './reducer'
@@ -87,17 +88,12 @@ export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
   //   account ?? undefined,
   //   useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
   // )
-  const relevantTokenBalances = useCurrencyBalances(
+  const relevantTokenBalances = useInvestorCurrencyBalance(
     fundAddress ?? undefined,
-    useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
+    account,
+    inputCurrency?.wrapped.address ?? undefined
   )
-  // const { loading: accountFundLoading, result: [relevantTokenBalances] = [] } = useSingleCallResult(
-  //   XXXFund2Contract,
-  //   'getInvestorTokenAmount',
-  //   [account ?? undefined, inputCurrency?.wrapped.address]
-  // )
-  //CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(parseInt(relevantTokenBalances['_hex'], 16)))
-  //CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(relevantTokenBalances.toString()))
+  //const relevantTokenBalances = useInvestorCurrencyBalance(fundAddress, account, inputCurrencyId)
 
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),
@@ -106,7 +102,7 @@ export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
 
   const currencyBalances = useMemo(
     () => ({
-      [Field.INPUT]: relevantTokenBalances[0],
+      [Field.INPUT]: relevantTokenBalances,
     }),
     [relevantTokenBalances]
   )
