@@ -93,7 +93,6 @@ export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
     account,
     inputCurrency?.wrapped.address ?? undefined
   )
-  //const relevantTokenBalances = useInvestorCurrencyBalance(fundAddress, account, inputCurrencyId)
 
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),

@@ -24,7 +24,7 @@ export default function useInvestorCurrencyBalance(
     'getInvestorTokenAmount',
     [investor, token]
   )
-  if (!tokenBalancesLoading && inputCurrency) {
+  if (!tokenBalancesLoading && inputCurrency && tokenBalances) {
     return CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(tokenBalances.toString()))
   } else {
     return undefined

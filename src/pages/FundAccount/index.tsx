@@ -149,7 +149,7 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (accountFund && fundAddress && accountFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+      if (accountFund && fundAddress && accountFund.toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
       }
     }
@@ -190,7 +190,7 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorFund && fundAddress && investorFund[0].toUpperCase() !== fundAddress.toUpperCase()) {
+      if (investorFund && fundAddress && investorFund.toUpperCase() !== fundAddress.toUpperCase()) {
         setIsInvestorAccount(true)
       }
     }
@@ -340,7 +340,7 @@ export default function FundAccount() {
       external: false,
     },
   ]
-
+  console.log(isManager, isInvestor, isManagerAccount, isInvestorAccount)
   const Buttons = () =>
     !account ? (
       <ButtonPrimary $borderRadius="12px" padding={'12px'}>

@@ -189,7 +189,7 @@ function Web3StatusInner() {
   const {
     trade: { state: tradeState, trade },
     inputError: swapInputError,
-  } = useDerivedSwapInfo(account)
+  } = useDerivedSwapInfo()
   const validSwapQuote = getIsValidSwapQuote(trade, tradeState, swapInputError)
   const navbarFlag = useNavBarFlag()
   const toggleWalletDropdown = useToggleWalletDropdown()

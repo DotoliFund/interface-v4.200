@@ -207,7 +207,7 @@ export default function Swap() {
     parsedAmount,
     currencies,
     inputError: swapInputError,
-  } = useDerivedSwapInfo(fundAddress ?? undefined)
+  } = useDerivedSwapInfo()
 
   const {
     wrapType,
