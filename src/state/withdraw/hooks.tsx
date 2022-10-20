@@ -91,6 +91,13 @@ export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
     fundAddress ?? undefined,
     useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
   )
+  // const { loading: accountFundLoading, result: [relevantTokenBalances] = [] } = useSingleCallResult(
+  //   XXXFund2Contract,
+  //   'getInvestorTokenAmount',
+  //   [account ?? undefined, inputCurrency?.wrapped.address]
+  // )
+  //CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(parseInt(relevantTokenBalances['_hex'], 16)))
+  //CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(relevantTokenBalances.toString()))
 
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),

@@ -189,32 +189,35 @@ export default function FundPage() {
       })
   }
 
-  const { loading: isManagerLoading, result: myFund } = useSingleCallResult(XXXFactoryContract, 'getFundByManager', [
-    account ?? undefined,
-  ])
+  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
+    XXXFactoryContract,
+    'getFundByManager',
+    [account ?? undefined]
+  )
   const [isManager, setIsManager] = useState<boolean>(false)
   useEffect(() => {
     if (!isManagerLoading) {
       setState()
     }
     async function setState() {
-      if (myFund && fundAddress && myFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
       }
     }
   }, [isManagerLoading, myFund, fundAddress])
 
-  const { loading: isInvestorLoading, result: isSubscribed } = useSingleCallResult(XXXFactoryContract, 'isSubscribed', [
-    account,
-    fundAddress,
-  ])
+  const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
+    XXXFactoryContract,
+    'isSubscribed',
+    [account, fundAddress]
+  )
   const [isInvestor, setIsInvestor] = useState<boolean>(false)
   useEffect(() => {
     if (!isInvestorLoading) {
       setState()
     }
     async function setState() {
-      if (isSubscribed && isSubscribed[0] === true) {
+      if (isSubscribed) {
         setIsInvestor(true)
       }
     }

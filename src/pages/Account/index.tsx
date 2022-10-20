@@ -231,7 +231,7 @@ export default function Account() {
   //   })
   // }
 
-  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(
+  const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [account ?? undefined]
@@ -247,10 +247,10 @@ export default function Account() {
       setManagingFundInfoLoading(false)
     }
     async function getInfo() {
-      if (managingFund && managingFund[0] !== NULL_ADDRESS && provider && account) {
+      if (managingFund && managingFund !== NULL_ADDRESS && provider && account) {
         setManagingFundInfo([
           {
-            fund: managingFund[0],
+            fund: managingFund,
             investor: account,
           },
         ])
@@ -258,7 +258,7 @@ export default function Account() {
     }
   }, [managingFundLoading, managingFund, provider, account])
 
-  const { loading: investingFundsLoading, result: investingFunds } = useSingleCallResult(
+  const { loading: investingFundsLoading, result: [investingFunds] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'subscribedFunds',
     []
@@ -274,8 +274,8 @@ export default function Account() {
       setInvestingFundsInfoLoading(false)
     }
     async function getInfo() {
-      if (investingFunds && investingFunds[0].length > 0 && investingFunds[0] !== NULL_ADDRESS && provider && account) {
-        const investingFundList = investingFunds[0]
+      if (investingFunds && investingFunds.length > 0 && investingFunds !== NULL_ADDRESS && provider && account) {
+        const investingFundList = investingFunds
         const investingFundsInfoList: FundDetails[] = []
 
         for (let i = 0; i < investingFundList.length; i++) {
