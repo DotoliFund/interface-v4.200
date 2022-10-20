@@ -52,7 +52,7 @@ export default function Updater() {
   const {
     trade: { trade },
     allowedSlippage,
-  } = useDerivedSwapInfo(account)
+  } = useDerivedSwapInfo()
 
   const dispatch = useAppDispatch()
   const onCheck = useCallback(

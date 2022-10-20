@@ -92,7 +92,7 @@ export type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOption
 export type AddLiquidityOptions = MintOptions | IncreaseOptions
 
 export abstract class XXXFund2 {
-  public static INTERFACE: Interface = new Interface(IXXXFund2)
+  public static INTERFACE: Interface = new Interface(IXXXFund2.abi)
 
   public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     //const calldatas: string[] = []

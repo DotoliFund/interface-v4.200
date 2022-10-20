@@ -59,16 +59,17 @@ export default function Fund() {
     //navigate(`/fund/:fundAddress`)
   }
 
-  const { loading: managingFundLoading, result: managingFund } = useSingleCallResult(
+  const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
 
-  const { loading: isSubscribeLoading, result: isSubscribe } = useSingleCallResult(XXXFactoryContract, 'isSubscribed', [
-    account ?? undefined,
-    fundAddress ?? undefined,
-  ])
+  const { loading: isSubscribeLoading, result: [isSubscribe] = [] } = useSingleCallResult(
+    XXXFactoryContract,
+    'isSubscribed',
+    [account ?? undefined, fundAddress ?? undefined]
+  )
 
   async function onSubscribe() {
     if (!chainId || !provider || !account || !fundAddress) return
@@ -124,7 +125,7 @@ export default function Fund() {
           </Text>
         </ButtonError>
       </AutoColumn>
-    ) : managingFund?.at(0).toUpperCase() === fundAddress?.toUpperCase() && !isSubscribe?.at(0) ? (
+    ) : managingFund?.at(0).toUpperCase() === fundAddress?.toUpperCase() && !isSubscribe ? (
       <AutoColumn gap={'md'}>
         <ButtonError
           onClick={() => {
@@ -137,7 +138,7 @@ export default function Fund() {
           </Text>
         </ButtonError>
       </AutoColumn>
-    ) : managingFund?.at(0).toUpperCase() !== fundAddress?.toUpperCase() && isSubscribe?.at(0) ? (
+    ) : managingFund.toUpperCase() !== fundAddress?.toUpperCase() && isSubscribe ? (
       <AutoColumn gap={'md'}>
         <ButtonError
           onClick={() => {
@@ -150,7 +151,7 @@ export default function Fund() {
           </Text>
         </ButtonError>
       </AutoColumn>
-    ) : managingFund?.at(0).toUpperCase() !== fundAddress?.toUpperCase() && !isSubscribe?.at(0) ? (
+    ) : managingFund.toUpperCase() !== fundAddress?.toUpperCase() && !isSubscribe ? (
       <AutoColumn gap={'md'}>
         <ButtonError
           onClick={() => {

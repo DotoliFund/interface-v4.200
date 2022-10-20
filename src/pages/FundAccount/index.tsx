@@ -127,17 +127,17 @@ export default function FundAccount() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
-  const { loading: accountFundLoading, result: accountFund } = useSingleCallResult(
+  const { loading: accountFundLoading, result: [accountFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
-  const { loading: investorFundLoading, result: investorFund } = useSingleCallResult(
+  const { loading: investorFundLoading, result: [investorFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [investorAddress ?? undefined]
   )
-  const { loading: isAccountSubscribedLoading, result: isAccountSubscribed } = useSingleCallResult(
+  const { loading: isAccountSubscribedLoading, result: [isAccountSubscribed] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'isSubscribed',
     [account, fundAddress]
@@ -149,7 +149,7 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (accountFund && fundAddress && accountFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+      if (accountFund && fundAddress && accountFund.toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
       }
     }
@@ -161,7 +161,7 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorFund && fundAddress && investorFund[0].toUpperCase() === fundAddress.toUpperCase()) {
+      if (investorFund && fundAddress && investorFund.toUpperCase() === fundAddress.toUpperCase()) {
         setIsManagerAccount(true)
       }
     }
@@ -176,9 +176,8 @@ export default function FundAccount() {
       if (
         accountFund &&
         fundAddress &&
-        accountFund[0].toUpperCase() !== fundAddress.toUpperCase() &&
-        isAccountSubscribed &&
-        isAccountSubscribed[0] === true
+        accountFund.toUpperCase() !== fundAddress.toUpperCase() &&
+        isAccountSubscribed
       ) {
         setIsInvestor(true)
       }
@@ -191,7 +190,7 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorFund && fundAddress && investorFund[0].toUpperCase() !== fundAddress.toUpperCase()) {
+      if (investorFund && fundAddress && investorFund.toUpperCase() !== fundAddress.toUpperCase()) {
         setIsInvestorAccount(true)
       }
     }
@@ -341,7 +340,7 @@ export default function FundAccount() {
       external: false,
     },
   ]
-
+  console.log(isManager, isInvestor, isManagerAccount, isInvestorAccount)
   const Buttons = () =>
     !account ? (
       <ButtonPrimary $borderRadius="12px" padding={'12px'}>

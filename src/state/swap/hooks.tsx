@@ -3,9 +3,11 @@ import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 import { useBestTrade } from 'hooks/useBestTrade'
+import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
@@ -15,7 +17,6 @@ import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
-import { useCurrencyBalances } from '../connection/hooks'
 import { AppState } from '../index'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
@@ -76,7 +77,7 @@ const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 }
 
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(fundAddress: string | undefined): {
+export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
@@ -87,6 +88,9 @@ export function useDerivedSwapInfo(fundAddress: string | undefined): {
   }
   allowedSlippage: Percent
 } {
+  const params = useParams()
+  const fundAddress = params.fundAddress
+  const investorAddress = params.investorAddress
   const { account } = useWeb3React()
 
   const {
@@ -102,9 +106,15 @@ export function useDerivedSwapInfo(fundAddress: string | undefined): {
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
-  const relevantTokenBalances = useCurrencyBalances(
+  const inputTokenBalances = useInvestorCurrencyBalance(
     fundAddress ?? undefined,
-    useMemo(() => [inputCurrency ?? undefined, outputCurrency ?? undefined], [inputCurrency, outputCurrency])
+    investorAddress,
+    inputCurrency?.wrapped.address ?? undefined
+  )
+  const outputTokenBalances = useInvestorCurrencyBalance(
+    fundAddress ?? undefined,
+    investorAddress,
+    outputCurrency?.wrapped.address ?? undefined
   )
 
   const isExactIn: boolean = independentField === Field.INPUT
@@ -121,10 +131,10 @@ export function useDerivedSwapInfo(fundAddress: string | undefined): {
 
   const currencyBalances = useMemo(
     () => ({
-      [Field.INPUT]: relevantTokenBalances[0],
-      [Field.OUTPUT]: relevantTokenBalances[1],
+      [Field.INPUT]: inputTokenBalances,
+      [Field.OUTPUT]: outputTokenBalances,
     }),
-    [relevantTokenBalances]
+    [inputTokenBalances, outputTokenBalances]
   )
 
   const currencies: { [field in Field]?: Currency | null } = useMemo(

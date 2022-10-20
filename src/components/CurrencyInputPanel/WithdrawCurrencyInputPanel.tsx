@@ -8,6 +8,7 @@ import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
 import { isSupportedChain } from 'constants/chains'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
+import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
@@ -17,7 +18,6 @@ import styled, { useTheme } from 'styled-components/macro'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
-import { useCurrencyBalance } from '../../state/connection/hooks'
 import { ThemedText } from '../../theme'
 import { ButtonGray } from '../Button'
 import CurrencyLogo from '../CurrencyLogo'
@@ -273,7 +273,11 @@ export default function WithdrawCurrencyInputPanel({
   const { account, chainId } = useWeb3React()
   const redesignFlag = useRedesignFlag()
   const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
-  const selectedCurrencyBalance = useCurrencyBalance(fundAddress ?? undefined, currency ?? undefined)
+  const selectedCurrencyBalance = useInvestorCurrencyBalance(
+    fundAddress ?? undefined,
+    account,
+    currency?.wrapped.address ?? undefined
+  )
   const theme = useTheme()
   const { pathname } = useLocation()
   const isAddLiquidityPage = pathname.includes('/add') && !pathname.includes('/add/v2')
