@@ -340,7 +340,7 @@ export abstract class XXXFund2 {
 
   public static swapCallParameters(
     fundAddress: string,
-    investor: string,
+    investorAddress: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -349,7 +349,7 @@ export abstract class XXXFund2 {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = XXXFund2.encodeSwaps(fundAddress, investor, trades, options)
+    const { params } = XXXFund2.encodeSwaps(fundAddress, investorAddress, trades, options)
     console.log(params.length)
     console.log(params[0])
     console.log(params)
