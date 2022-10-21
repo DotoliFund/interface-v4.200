@@ -11,6 +11,7 @@ export const TOP_FUNDS = () => {
         createdAtTimestamp
         createdAtBlockNumber
         manager
+        investorCount
         principalETH
         principalUSD
         volumeETH
@@ -19,7 +20,8 @@ export const TOP_FUNDS = () => {
         profitUSD
         profitRatioETH
         profitRatioUSD
-        investorCount
+        feeVolumeETH
+        feeVolumeUSD
       }
     }
     `
@@ -65,6 +67,7 @@ export function useTopFunds(): {
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
           createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),
           manager: fundFields.manager,
+          investorCount: parseInt(fundFields.investorCount),
           principalETH: parseFloat(fundFields.principalETH),
           principalUSD: parseFloat(fundFields.principalUSD),
           volumeETH: parseFloat(fundFields.volumeETH),
@@ -73,7 +76,8 @@ export function useTopFunds(): {
           profitUSD: parseFloat(fundFields.profitUSD),
           profitRatioETH: parseFloat(fundFields.profitRatioETH),
           profitRatioUSD: parseFloat(fundFields.profitRatioUSD),
-          investorCount: parseInt(fundFields.investorCount),
+          feeVolumeETH: parseFloat(fundFields.feeVolumeETH),
+          feeVolumeUSD: parseFloat(fundFields.feeVolumeUSD),
         }
         return fundData
       })

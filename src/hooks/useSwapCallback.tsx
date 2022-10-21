@@ -15,6 +15,7 @@ import useTransactionDeadline from './useTransactionDeadline'
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
   fundAddress: string | undefined,
+  investorAddress: string | undefined,
   trade: Trade<Currency, Currency, TradeType> | undefined, // trade to execute, required
   allowedSlippage: Percent, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
@@ -34,6 +35,7 @@ export function useSwapCallback(
     error,
   } = useLibSwapCallBack({
     fundAddress,
+    investorAddress,
     trade,
     allowedSlippage,
     recipientAddressOrName: recipient,

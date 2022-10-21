@@ -16,20 +16,16 @@ interface SwapCall {
 
 export function useSwapCallArguments(
   fundAddress: string | undefined,
+  investorAddress: string | undefined,
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent
 ): SwapCall[] {
   const { account, chainId, provider } = useWeb3React()
 
   return useMemo(() => {
-    if (!fundAddress || !trade || !provider || !account || !chainId) return []
+    if (!fundAddress || !investorAddress || !trade || !provider || !account || !chainId) return []
 
-    //const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
-    const swapRouterAddress = '0x39f90436eBD4A08f5Fa7674257b198632599E5F5'
-
-    if (!swapRouterAddress) return []
-
-    const { value, calldata } = XXXFund2.swapCallParameters(fundAddress, account, trade, {
+    const { value, calldata } = XXXFund2.swapCallParameters(fundAddress, investorAddress, trade, {
       slippageTolerance: allowedSlippage,
     })
 
@@ -40,5 +36,5 @@ export function useSwapCallArguments(
         value,
       },
     ]
-  }, [fundAddress, account, allowedSlippage, chainId, provider, trade])
+  }, [fundAddress, investorAddress, account, allowedSlippage, chainId, provider, trade])
 }

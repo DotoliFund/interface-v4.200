@@ -95,28 +95,12 @@ export abstract class XXXFund2 {
   public static INTERFACE: Interface = new Interface(IXXXFund2.abi)
 
   public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    //const calldatas: string[] = []
-    //const deadline = toHex(JSBI.BigInt(fund.deadline))
-    // console.log(_amount)
-    // console.log(_amount.quotient)
-    // console.log(toHex(_amount.quotient))
-    // console.log(_amount.toExact())
-    // console.log(_amount.toFixed())
-    // console.log(_amount.toSignificant(6))
     console.log('amount.currency.name : ' + amount.currency.name)
     console.log('amount.currency.symbol : ' + amount.currency.symbol)
     console.log('token : ' + token)
     console.log('amount.quotient toHex(): ' + toHex(amount.quotient))
     console.log('amount.quotient : ' + amount.quotient)
-    // calldatas.push(
-    //   XXXFund2.INTERFACE.encodeFunctionData('deposit', [
-    //     investor,
-    //     token,
-    //     toHex(amount.quotient),
-    //     //amount.quotient.toString(),
-    //     //deadline: deadline
-    //   ])
-    // )
+
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [
       token,
       toHex(amount.quotient),
@@ -133,34 +117,12 @@ export abstract class XXXFund2 {
   }
 
   public static withdrawCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    //const deadline = toHex(JSBI.BigInt(fund.deadline))
-
-    // console.log(_amount)
-    // console.log(_amount.quotient)
-    // console.log(toHex(_amount.quotient))
-    // console.log(_amount.toExact())
-    // console.log(_amount.toFixed())
-    // console.log(_amount.toSignificant(6))
-
     console.log('amount.quotient : ' + toHex(amount.quotient))
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('withdraw', [
       token,
       toHex(amount.quotient),
       //deadline: deadline
     ])
-
-    // calldatas.push(
-    //     XXXFactory.INTERFACE.encodeFunctionData('createFund', [
-    //     {
-    //       manager: manager,
-    //       //token: fund.token,
-    //       token: '0xEAE906dC299ccd9Cd94584377d0F96Ce144c942f',
-    //       amount: 1
-    //       //amount: toHex(_amount.quotient),
-    //       //deadline: deadline
-    //     }
-    //   ])
-    // )
 
     const value: string = toHex(0)
 

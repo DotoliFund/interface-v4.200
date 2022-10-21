@@ -13,9 +13,9 @@ import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
+import { useInvestorChartData } from 'data/FundAccount/chartData'
 import { useInvestorData } from 'data/FundAccount/investorData'
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
-// import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useSingleCallResult } from 'lib/hooks/multicall'
@@ -197,8 +197,9 @@ export default function FundAccount() {
   }, [investorFund, fundAddress, investorFundLoading])
 
   const investorData = useInvestorData(fundAddress, investorAddress).data
-  // const chartData = useFundChartData(fundAddress)
+  const chartData = useInvestorChartData(fundAddress, investorAddress).data
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
+  console.log(111, chartData)
 
   const [view, setView] = useState(ChartView.VOL)
   const [latestValue, setLatestValue] = useState<number | undefined>()
@@ -340,7 +341,7 @@ export default function FundAccount() {
       external: false,
     },
   ]
-  console.log(isManager, isInvestor, isManagerAccount, isInvestorAccount)
+
   const Buttons = () =>
     !account ? (
       <ButtonPrimary $borderRadius="12px" padding={'12px'}>

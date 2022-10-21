@@ -1,30 +1,34 @@
 import { useQuery } from '@apollo/client'
+import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { InvestorSnapshot, InvestorSnapshotFields } from 'types/fund'
 
-export const INVESTOR_CHART = (fund: string, investor: string) => {
-  const queryString = `
-    query investorChartData {
-      investorSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: {fund: ${fund}, investor: ${investor}}, subgraphError: allow) {
-        id
-        timestamp
-        fund
-        manager
-        investor
-        principalUSD
-        principalETH
-        volumeUSD
-        volumeETH
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-      }
+const INVESTOR_CHART = gql`
+  query investorChartData($fund: String!, $investor: String!) {
+    investorSnapshots(
+      first: 100
+      orderBy: timestamp
+      orderDirection: asc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
+      id
+      timestamp
+      fund
+      manager
+      investor
+      principalETH
+      principalUSD
+      volumeETH
+      volumeUSD
+      profitETH
+      profitUSD
+      profitRatioETH
+      profitRatioUSD
     }
-    `
-  return gql(queryString)
-}
+  }
+`
 
 interface InvestorSnapshotResponse {
   investorSnapshots: InvestorSnapshotFields[]
@@ -34,17 +38,24 @@ interface InvestorSnapshotResponse {
  * Fetch investor chart data
  */
 export function useInvestorChartData(
-  fund: string,
-  investor: string
+  fund: string | undefined,
+  investor: string | undefined
 ): {
   loading: boolean
   error: boolean
   data: InvestorSnapshot[]
 } {
+  if (!fund) {
+    fund = NULL_ADDRESS
+  }
+  if (!investor) {
+    investor = NULL_ADDRESS
+  }
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<InvestorSnapshotResponse>(INVESTOR_CHART(fund, investor), {
+  const { loading, error, data } = useQuery<InvestorSnapshotResponse>(INVESTOR_CHART, {
+    variables: { fund, investor },
     client: dataClient,
   })
 
@@ -69,10 +80,10 @@ export function useInvestorChartData(
           fund: investorSnapshotFields.fund,
           manager: investorSnapshotFields.manager,
           investor: investorSnapshotFields.investor,
-          principalUSD: parseFloat(investorSnapshotFields.principalUSD),
           principalETH: parseFloat(investorSnapshotFields.principalETH),
-          volumeUSD: parseFloat(investorSnapshotFields.volumeUSD),
+          principalUSD: parseFloat(investorSnapshotFields.principalUSD),
           volumeETH: parseFloat(investorSnapshotFields.volumeETH),
+          volumeUSD: parseFloat(investorSnapshotFields.volumeUSD),
           profitETH: parseFloat(investorSnapshotFields.profitETH),
           profitUSD: parseFloat(investorSnapshotFields.profitUSD),
           profitRatioETH: parseFloat(investorSnapshotFields.profitRatioETH),

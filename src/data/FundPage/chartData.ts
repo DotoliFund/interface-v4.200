@@ -10,15 +10,18 @@ export const FUND_CHART = (fund: string) => {
         id
         timestamp
         fund
-        principalUSD
+        manager
+        investorCount
         principalETH
-        volumeUSD
+        principalUSD
         volumeETH
+        volumeUSD
         profitETH
         profitUSD
         profitRatioETH
         profitRatioUSD
-        investorCount
+        feeVolumeETH
+        feeVolumeUSD
       }
     }
     `
@@ -63,15 +66,18 @@ export function useFundChartData(fund: string): {
           id: fundSnapshotFields.id,
           timestamp: parseFloat(fundSnapshotFields.timestamp),
           fund: fundSnapshotFields.fund,
-          principalUSD: parseFloat(fundSnapshotFields.principalUSD),
+          manager: fundSnapshotFields.manager,
+          investorCount: parseFloat(fundSnapshotFields.investorCount),
           principalETH: parseFloat(fundSnapshotFields.principalETH),
-          volumeUSD: parseFloat(fundSnapshotFields.volumeUSD),
+          principalUSD: parseFloat(fundSnapshotFields.principalUSD),
           volumeETH: parseFloat(fundSnapshotFields.volumeETH),
+          volumeUSD: parseFloat(fundSnapshotFields.volumeUSD),
           profitETH: parseFloat(fundSnapshotFields.profitETH),
           profitUSD: parseFloat(fundSnapshotFields.profitUSD),
           profitRatioETH: parseFloat(fundSnapshotFields.profitRatioETH),
           profitRatioUSD: parseFloat(fundSnapshotFields.profitRatioUSD),
-          investorCount: parseFloat(fundSnapshotFields.investorCount),
+          feeVolumeETH: parseFloat(fundSnapshotFields.feeVolumeETH),
+          feeVolumeUSD: parseFloat(fundSnapshotFields.feeVolumeUSD),
         }
         return fundSnapshotData
       })

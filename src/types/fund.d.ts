@@ -1,25 +1,6 @@
-// import { BigNumber } from '@ethersproject/bignumber'
-
-// export interface FundDetails {
-//   nonce: BigNumber
-//   tokenId: BigNumber
-//   operator: string
-//   token0: string
-//   token1: string
-//   fee: number
-//   tickLower: number
-//   tickUpper: number
-//   liquidity: BigNumber
-//   feeGrowthInside0LastX128: BigNumber
-//   feeGrowthInside1LastX128: BigNumber
-//   tokensOwed0: BigNumber
-//   tokensOwed1: BigNumber
-// }
-
 export interface FundDetails {
   fund: string
   investor: string
-  //tokens: string[]
 }
 
 export interface Fund {
@@ -27,6 +8,7 @@ export interface Fund {
   createdAtTimestamp: number
   createdAtBlockNumber: number
   manager: string
+  investorCount: number
   principalETH: number
   principalUSD: number
   volumeETH: number
@@ -35,7 +17,8 @@ export interface Fund {
   profitUSD: number
   profitRatioETH: number
   profitRatioUSD: number
-  investorCount: number
+  feeVolumeETH: number
+  feeVolumeUSD: number
 }
 
 export interface FundFields {
@@ -43,6 +26,7 @@ export interface FundFields {
   createdAtTimestamp: string
   createdAtBlockNumber: string
   manager: string
+  investorCount: string
   principalETH: string
   principalUSD: string
   volumeETH: string
@@ -51,7 +35,8 @@ export interface FundFields {
   profitUSD: string
   profitRatioETH: string
   profitRatioUSD: string
-  investorCount: string
+  feeVolumeETH: string
+  feeVolumeUSD: string
 }
 
 export interface Investor {
@@ -92,30 +77,36 @@ export interface FundSnapshot {
   id: string
   timestamp: number
   fund: string
-  principalUSD: number
+  manager: string
+  investorCount: number
   principalETH: number
-  volumeUSD: number
+  principalUSD: number
   volumeETH: number
+  volumeUSD: number
   profitETH: number
   profitUSD: number
   profitRatioETH: number
   profitRatioUSD: number
-  investorCount: number
+  feeVolumeETH: number
+  feeVolumeUSD: number
 }
 
 export interface FundSnapshotFields {
   id: string
   timestamp: string
   fund: string
-  principalUSD: string
+  manager: string
+  investorCount: string
   principalETH: string
-  volumeUSD: string
+  principalUSD: string
   volumeETH: string
+  volumeUSD: string
   profitETH: string
   profitUSD: string
   profitRatioETH: string
   profitRatioUSD: string
-  investorCount: string
+  feeVolumeETH: string
+  feeVolumeUSD: string
 }
 
 export interface InvestorSnapshot {
@@ -124,10 +115,10 @@ export interface InvestorSnapshot {
   fund: string
   manager: string
   investor: string
-  principalUSD: number
   principalETH: number
-  volumeUSD: number
+  principalUSD: number
   volumeETH: number
+  volumeUSD: number
   profitETH: number
   profitUSD: number
   profitRatioETH: number
@@ -140,10 +131,10 @@ export interface InvestorSnapshotFields {
   fund: string
   manager: string
   investor: string
-  principalUSD: string
   principalETH: string
-  volumeUSD: string
+  principalUSD: string
   volumeETH: string
+  volumeUSD: string
   profitETH: string
   profitUSD: string
   profitRatioETH: string
