@@ -350,9 +350,6 @@ export abstract class XXXFund2 {
     const value = toHex(0)
 
     const { params } = XXXFund2.encodeSwaps(fundAddress, investorAddress, trades, options)
-    console.log(params.length)
-    console.log(params[0])
-    console.log(params)
 
     return {
       calldata: XXXFund2.INTERFACE.encodeFunctionData('swap', [params]),
