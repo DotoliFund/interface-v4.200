@@ -2,10 +2,10 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
-import LineChart from 'components/Chart/LineChart'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import InvestorTable from 'components/funds/InvestorTable'
+import LineChart from 'components/LineChart/alt'
 import Loader from 'components/Loader'
 import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
@@ -14,7 +14,7 @@ import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
 import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
-// import { useFundChartData, useTopFunds, useFundTransactions } from 'state/funds/hooks'
+import { useFundChartData } from 'data/FundPage/chartData'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
 import { useFundTransactions } from 'data/FundPage/transactions'
@@ -33,6 +33,7 @@ import { StyledInternalLink, ThemedText } from 'theme'
 import { ExternalLink as StyledExternalLink } from 'theme/components'
 import { getEtherscanLink } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
@@ -72,9 +73,9 @@ const ToggleRow = styled(RowBetween)`
 `
 
 enum ChartView {
-  VOL,
-  PRICE,
-  DENSITY,
+  VOL_ETH,
+  VOL_USD,
+  TOKENS,
   FEES,
 }
 
@@ -94,64 +95,89 @@ export default function FundPage() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
+  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
+    XXXFactoryContract,
+    'getFundByManager',
+    [account ?? undefined]
+  )
+  const [isManager, setIsManager] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isManagerLoading) {
+      setState()
+    }
+    async function setState() {
+      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
+        setIsManager(true)
+      }
+    }
+  }, [isManagerLoading, myFund, fundAddress])
+
+  const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
+    XXXFactoryContract,
+    'isSubscribed',
+    [account, fundAddress]
+  )
+  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isInvestorLoading) {
+      setState()
+    }
+    async function setState() {
+      if (isSubscribed) {
+        setIsInvestor(true)
+      }
+    }
+  }, [isInvestorLoading, isSubscribed, myFund])
+
   // token data
   const fundData = useFundData(fundAddress).data
-  // const chartData = useFundChartData(fundAddress)
+  const chartData = useFundChartData(fundAddress).data
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
   console.log(investors)
 
-  const [view, setView] = useState(ChartView.VOL)
+  const formattedVolumeETHData = useMemo(() => {
+    if (chartData) {
+      return chartData.map((data) => {
+        return {
+          time: unixToDate(data.timestamp),
+          value: [data.volumeETH, data.principalETH],
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
+
+  const formattedVolumeUSDData = useMemo(() => {
+    if (chartData) {
+      return chartData.map((data) => {
+        return {
+          time: unixToDate(data.timestamp),
+          value: [data.volumeUSD, data.principalUSD],
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
+
+  const formattedTokensData = useMemo(() => {
+    if (chartData) {
+      return chartData.map((data) => {
+        return {
+          time: unixToDate(data.timestamp),
+          value: data.volumeUSD,
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
+
+  const [view, setView] = useState(ChartView.VOL_ETH)
   const [latestValue, setLatestValue] = useState<number | undefined>()
   const [valueLabel, setValueLabel] = useState<string | undefined>()
-
-  const formattedTvlData = useMemo(() => {
-    return []
-  }, [])
-  // const formattedTvlData = useMemo(() => {
-  //   if (chartData) {
-  //     return chartData.map((day) => {
-  //       return {
-  //         time: unixToDate(day.date),
-  //         value: day.totalValueLockedUSD,
-  //       }
-  //     })
-  //   } else {
-  //     return []
-  //   }
-  // }, [chartData])
-
-  const formattedVolumeData = useMemo(() => {
-    return []
-  }, [])
-  // const formattedVolumeData = useMemo(() => {
-  //   if (chartData) {
-  //     return chartData.map((day) => {
-  //       return {
-  //         time: unixToDate(day.date),
-  //         value: day.volumeUSD,
-  //       }
-  //     })
-  //   } else {
-  //     return []
-  //   }
-  // }, [chartData])
-
-  const formattedFeesUSD = useMemo(() => {
-    return []
-  }, [])
-  // const formattedFeesUSD = useMemo(() => {
-  //   if (chartData) {
-  //     return chartData.map((day) => {
-  //       return {
-  //         time: unixToDate(day.date),
-  //         value: day.feesUSD,
-  //       }
-  //     })
-  //   } else {
-  //     return []
-  //   }
-  // }, [chartData])
 
   function onAccount(fund: string, account: string) {
     navigate('/fund')
@@ -189,40 +215,6 @@ export default function FundPage() {
         }
       })
   }
-
-  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
-    XXXFactoryContract,
-    'getFundByManager',
-    [account ?? undefined]
-  )
-  const [isManager, setIsManager] = useState<boolean>(false)
-  useEffect(() => {
-    if (!isManagerLoading) {
-      setState()
-    }
-    async function setState() {
-      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
-        setIsManager(true)
-      }
-    }
-  }, [isManagerLoading, myFund, fundAddress])
-
-  const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
-    XXXFactoryContract,
-    'isSubscribed',
-    [account, fundAddress]
-  )
-  const [isInvestor, setIsInvestor] = useState<boolean>(false)
-  useEffect(() => {
-    if (!isInvestorLoading) {
-      setState()
-    }
-    async function setState() {
-      if (isSubscribed) {
-        setIsInvestor(true)
-      }
-    }
-  }, [isInvestorLoading, isSubscribed, myFund])
 
   const Buttons = () =>
     !account ? (
@@ -384,7 +376,7 @@ export default function FundPage() {
                     <MonoSpace>
                       {latestValue
                         ? formatDollarAmount(latestValue)
-                        : view === ChartView.VOL
+                        : view === ChartView.VOL_ETH
                         ? // ? formatDollarAmount(formattedVolumeData[formattedVolumeData.length - 1]?.value)
                           // : view === ChartView.DENSITY
                           ''
@@ -398,31 +390,148 @@ export default function FundPage() {
                 </AutoColumn>
                 <ToggleWrapper width="240px">
                   <ToggleElementFree
-                    isActive={view === ChartView.VOL}
+                    isActive={view === ChartView.VOL_ETH}
                     fontSize="12px"
-                    onClick={() => (view === ChartView.VOL ? setView(ChartView.DENSITY) : setView(ChartView.VOL))}
+                    onClick={() => (view === ChartView.VOL_ETH ? {} : setView(ChartView.VOL_ETH))}
                   >
-                    Volume
+                    VolumeETH
                   </ToggleElementFree>
                   {activeNetwork === ArbitrumNetworkInfo ? null : (
                     <ToggleElementFree
-                      isActive={view === ChartView.DENSITY}
+                      isActive={view === ChartView.VOL_USD}
                       fontSize="12px"
-                      onClick={() => (view === ChartView.DENSITY ? setView(ChartView.VOL) : setView(ChartView.DENSITY))}
+                      onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                     >
-                      Liquidity
+                      VolumeUSD
                     </ToggleElementFree>
                   )}
                   <ToggleElementFree
+                    isActive={view === ChartView.TOKENS}
+                    fontSize="12px"
+                    onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
+                  >
+                    Tokens
+                  </ToggleElementFree>
+                  <ToggleElementFree
                     isActive={view === ChartView.FEES}
                     fontSize="12px"
-                    onClick={() => (view === ChartView.FEES ? setView(ChartView.VOL) : setView(ChartView.FEES))}
+                    onClick={() => (view === ChartView.FEES ? {} : setView(ChartView.FEES))}
                   >
                     Fees
                   </ToggleElementFree>
                 </ToggleWrapper>
               </ToggleRow>
-              <LineChart />
+              {view === ChartView.VOL_ETH ? (
+                <LineChart
+                  // data={[
+                  //   { name: 'a', value: [12, 30] },
+                  //   { name: 'b', value: [5, 13] },
+                  //   { name: 'c', value: [13, 31] },
+                  //   { name: 'd', value: [24, 53] },
+                  //   { name: 'e', value: [40, 43] },
+                  //   { name: 'f', value: [54, 36] },
+                  //   { name: 'g', value: [64, 26] },
+                  // ]}
+                  data={formattedVolumeETHData}
+                  height={220}
+                  minHeight={332}
+                  color={activeNetwork.primaryColor}
+                  value={undefined}
+                  label={undefined}
+                  setValue={undefined}
+                  setLabel={undefined}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
+                        <MonoSpace>1234 </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        <MonoSpace>left label (UTC)</MonoSpace>
+                      </ThemedText.DeprecatedMain>
+                    </AutoColumn>
+                  }
+                ></LineChart>
+              ) : view === ChartView.VOL_USD ? (
+                <LineChart
+                  // data={[
+                  //   { name: 'a', value: [12, 30] },
+                  //   { name: 'b', value: [5, 13] },
+                  //   { name: 'c', value: [13, 31] },
+                  //   { name: 'd', value: [24, 53] },
+                  //   { name: 'e', value: [40, 43] },
+                  //   { name: 'f', value: [54, 36] },
+                  //   { name: 'g', value: [64, 26] },
+                  // ]}
+                  data={formattedVolumeUSDData}
+                  height={220}
+                  minHeight={332}
+                  color={activeNetwork.primaryColor}
+                  value={undefined}
+                  label={undefined}
+                  setValue={undefined}
+                  setLabel={undefined}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
+                        <MonoSpace>1234 </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        <MonoSpace>left label (UTC)</MonoSpace>
+                      </ThemedText.DeprecatedMain>
+                    </AutoColumn>
+                  }
+                ></LineChart>
+              ) : view === ChartView.TOKENS ? (
+                <LineChart
+                  data={formattedVolumeETHData}
+                  height={220}
+                  minHeight={332}
+                  color={activeNetwork.primaryColor}
+                  value={undefined}
+                  label={undefined}
+                  setValue={undefined}
+                  setLabel={undefined}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
+                        <MonoSpace>1234 </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        <MonoSpace>left label (UTC)</MonoSpace>
+                      </ThemedText.DeprecatedMain>
+                    </AutoColumn>
+                  }
+                ></LineChart>
+              ) : (
+                <LineChart
+                  data={formattedVolumeUSDData}
+                  height={220}
+                  minHeight={332}
+                  color={activeNetwork.primaryColor}
+                  value={undefined}
+                  label={undefined}
+                  setValue={undefined}
+                  setLabel={undefined}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
+                        <MonoSpace>1234 </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        <MonoSpace>left label (UTC)</MonoSpace>
+                      </ThemedText.DeprecatedMain>
+                    </AutoColumn>
+                  }
+                ></LineChart>
+              )}
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>

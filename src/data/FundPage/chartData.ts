@@ -1,32 +1,30 @@
 import { useQuery } from '@apollo/client'
+import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { FundSnapshot, FundSnapshotFields } from 'types/fund'
 
-export const FUND_CHART = (fund: string) => {
-  const queryString = `
-    query fundChartData {
-      fundSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: {fund: ${fund}}, subgraphError: allow) {
-        id
-        timestamp
-        fund
-        manager
-        investorCount
-        principalETH
-        principalUSD
-        volumeETH
-        volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
-        feeVolumeETH
-        feeVolumeUSD
-      }
+const FUND_CHART = gql`
+  query fundChartData($fund: String!) {
+    fundSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: { fund: $fund }, subgraphError: allow) {
+      id
+      timestamp
+      fund
+      manager
+      investorCount
+      principalETH
+      principalUSD
+      volumeETH
+      volumeUSD
+      profitETH
+      profitUSD
+      profitRatioETH
+      profitRatioUSD
+      feeVolumeETH
+      feeVolumeUSD
     }
-    `
-  return gql(queryString)
-}
+  }
+`
 
 interface FundSnapshotResponse {
   fundSnapshots: FundSnapshotFields[]
@@ -35,15 +33,19 @@ interface FundSnapshotResponse {
 /**
  * Fetch fund chart data
  */
-export function useFundChartData(fund: string): {
+export function useFundChartData(fund: string | undefined): {
   loading: boolean
   error: boolean
   data: FundSnapshot[]
 } {
+  if (!fund) {
+    fund = NULL_ADDRESS
+  }
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundSnapshotResponse>(FUND_CHART(fund), {
+  const { loading, error, data } = useQuery<FundSnapshotResponse>(FUND_CHART, {
+    variables: { fund },
     client: dataClient,
   })
 
