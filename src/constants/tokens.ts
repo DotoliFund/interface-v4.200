@@ -2,6 +2,7 @@ import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core
 import invariant from 'tiny-invariant'
 
 import { UNI_ADDRESS } from './addresses'
+import { XXX_ADDRESS } from './addresses'
 import { SupportedChainId } from './chains'
 
 export const USDC_MAINNET = new Token(
@@ -342,6 +343,14 @@ export const UNI: { [chainId: number]: Token } = {
   [SupportedChainId.ROPSTEN]: new Token(SupportedChainId.ROPSTEN, UNI_ADDRESS[3], 18, 'UNI', 'Uniswap'),
   [SupportedChainId.GOERLI]: new Token(SupportedChainId.GOERLI, UNI_ADDRESS[5], 18, 'UNI', 'Uniswap'),
   [SupportedChainId.KOVAN]: new Token(SupportedChainId.KOVAN, UNI_ADDRESS[42], 18, 'UNI', 'Uniswap'),
+}
+
+export const XXX: { [chainId: number]: Token } = {
+  [SupportedChainId.MAINNET]: new Token(SupportedChainId.MAINNET, XXX_ADDRESS[1], 18, 'XXX', 'XXXFund'),
+  [SupportedChainId.RINKEBY]: new Token(SupportedChainId.RINKEBY, XXX_ADDRESS[4], 18, 'XXX', 'XXXFund'),
+  [SupportedChainId.ROPSTEN]: new Token(SupportedChainId.ROPSTEN, XXX_ADDRESS[3], 18, 'XXX', 'XXXFund'),
+  [SupportedChainId.GOERLI]: new Token(SupportedChainId.GOERLI, XXX_ADDRESS[5], 18, 'XXX', 'XXXFund'),
+  [SupportedChainId.KOVAN]: new Token(SupportedChainId.KOVAN, XXX_ADDRESS[42], 18, 'XXX', 'XXXFund'),
 }
 
 export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } = {

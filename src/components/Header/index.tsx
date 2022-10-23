@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import SearchSmall from 'components/Search'
 import { getChainInfoOrDefault } from 'constants/chainInfo'
-import { SupportedChainId } from 'constants/chains'
 import { useTokensFlag } from 'featureFlags/flags/tokens'
 import { darken } from 'polished'
 import { NavLink, useLocation } from 'react-router-dom'
@@ -300,12 +299,12 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/fund'}>
           <Trans>Fund</Trans>
         </StyledNavLink>
-
-        {(!chainId || chainId === SupportedChainId.MAINNET) && (
-          <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
-            <Trans>Vote</Trans>
-          </StyledNavLink>
-        )}
+        <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
+          <Trans>Vote</Trans>
+        </StyledNavLink>
+        <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
+          <Trans>Staking</Trans>
+        </StyledNavLink>
       </HeaderLinks>
 
       <HeaderControls>

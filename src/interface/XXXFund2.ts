@@ -1,9 +1,9 @@
 import { Interface } from '@ethersproject/abi'
 import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
-import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, Percent, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund2 from 'abis/XXXFund2.json'
-import { NULL_ADDRESS, XXXToken_ADDRESS } from 'constants/addresses'
+import { NULL_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
@@ -11,41 +11,6 @@ import invariant from 'tiny-invariant'
 import { MethodParameters, toHex } from './utils/calldata'
 
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
-const token_address = XXXToken_ADDRESS
-
-export interface MintSpecificOptions {
-  /**
-   * The account that should receive the minted NFT.
-   */
-  recipient: string
-
-  /**
-   * When the transaction expires, in epoch seconds.
-   */
-  deadline: BigintIsh
-}
-
-export interface IncreaseSpecificOptions {
-  /**
-   * Indicates the ID of the position to increase liquidity for.
-   */
-  tokenId: BigintIsh
-}
-
-/**
- * Options for producing the calldata to add liquidity.
- */
-export interface CommonAddLiquidityOptions {
-  /**
-   * When the transaction expires, in epoch seconds.
-   */
-  deadline: BigintIsh
-
-  /**
-   * Whether to spend ether. If true, one of the pool tokens must be WETH, by default false
-   */
-  useNative?: NativeCurrency
-}
 
 enum V3TradeType {
   EXACT_INPUT,
@@ -85,11 +50,6 @@ export interface SwapOptions {
    */
   slippageTolerance: Percent
 }
-
-export type MintOptions = CommonAddLiquidityOptions & MintSpecificOptions
-export type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOptions
-
-export type AddLiquidityOptions = MintOptions | IncreaseOptions
 
 export abstract class XXXFund2 {
   public static INTERFACE: Interface = new Interface(IXXXFund2.abi)

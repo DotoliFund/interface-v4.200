@@ -15,6 +15,7 @@ import FundAccount from 'pages/FundAccount'
 import FundPage from 'pages/FundPage'
 import Main from 'pages/Main'
 import Overview from 'pages/Overview'
+import Staking from 'pages/Staking'
 import Swap from 'pages/Swap'
 import Withdraw from 'pages/Withdraw'
 import { lazy, Suspense, useEffect } from 'react'
@@ -168,7 +169,7 @@ export default function App() {
                     }
                   />
                   <Route path="create-proposal" element={<Navigate to="/vote/create-proposal" replace />} />
-                  <Route path="earn" element={<Swap />} />
+                  <Route path="staking" element={<Staking />} />
 
                   <Route path="*" element={<Overview />} />
                 </Routes>
