@@ -12,14 +12,15 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
 import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
+import { Label } from 'components/Text'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { XXX_ADDRESS } from 'constants/addresses'
+import { XXX_ADDRESS, XXXSTAKING2_ADDRESS } from 'constants/addresses'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { XXXToken } from 'interface/XXXToken'
-import JSBI from 'jsbi'
+import { XXXStaking2 } from 'interface/XXXStaking2'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
@@ -94,10 +95,7 @@ export default function Staking() {
 
   const currency = useCurrency(chainId ? XXX_ADDRESS[chainId] : undefined)
 
-  const parsedAmount = useMemo(
-    () => (xxx ? CurrencyAmount.fromRawAmount(xxx, JSBI.BigInt(typedValue ?? 0)) : undefined),
-    [xxx, typedValue]
-  )
+  const parsedAmount = useMemo(() => (xxx ? tryParseCurrencyAmount(typedValue, xxx) : undefined), [xxx, typedValue])
 
   const formattedAmounts = useMemo(() => typedValue, [typedValue])
 
@@ -107,7 +105,10 @@ export default function Staking() {
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmount?.equalTo(maxInputAmount))
 
-  const [approvalState, approveCallback] = useApproveCallback(parsedAmount, chainId ? XXX_ADDRESS[chainId] : undefined)
+  const [approvalState, approveCallback] = useApproveCallback(
+    parsedAmount,
+    chainId ? XXXSTAKING2_ADDRESS[chainId] : undefined
+  )
 
   const handleApprove = useCallback(async () => {
     await approveCallback()
@@ -130,15 +131,13 @@ export default function Staking() {
     approvalState === ApprovalState.PENDING ||
     (approvalSubmitted && approvalState === ApprovalState.APPROVED)
 
-  const tokenAddress = currency?.wrapped.address
-
   async function onStake() {
     if (!chainId || !provider || !account) return
-    if (!currency || currency || !tokenAddress) return
+    if (!currency || !parsedAmount) return
 
-    const { calldata, value } = XXXToken.stakeCallParameters(currency)
+    const { calldata, value } = XXXStaking2.stakeCallParameters(parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: XXX_ADDRESS[chainId],
+      to: XXXSTAKING2_ADDRESS[chainId],
       data: calldata,
       value,
     }
@@ -182,6 +181,10 @@ export default function Staking() {
         <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
           <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
             <AutoColumn gap={'0px'}>
+              <Label>unStakingBalance:{stakingInfo?.unStakingBalance.quotient.toString()}</Label>
+              <Label>earnedAmount:{stakingInfo?.earnedAmount.quotient.toString()}</Label>
+              <Label>stakedAmount:{stakingInfo?.stakedAmount.quotient.toString()}</Label>
+              <Label>totalStakedAmount:{stakingInfo?.totalStakedAmount.quotient.toString()}</Label>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
@@ -267,7 +270,7 @@ export default function Staking() {
                             error={true}
                           >
                             <Text fontSize={16} fontWeight={500}>
-                              <Trans>Deposit</Trans>
+                              <Trans>Stake</Trans>
                             </Text>
                           </ButtonError>
                         </AutoColumn>
@@ -288,7 +291,7 @@ export default function Staking() {
                           }
                         }}
                         id="swap-button"
-                        disabled={true}
+                        disabled={false}
                         error={true}
                       >
                         <Text fontSize={20} fontWeight={500}>

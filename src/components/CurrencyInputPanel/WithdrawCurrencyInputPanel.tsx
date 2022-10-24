@@ -390,7 +390,7 @@ export default function WithdrawCurrencyInputPanel({
                       renderBalance ? (
                         renderBalance(selectedCurrencyBalance)
                       ) : (
-                        <Trans>Balance: {formatCurrencyAmount(selectedCurrencyBalance, 4)}</Trans>
+                        <Trans>Balance: {formatCurrencyAmount(selectedCurrencyBalance, currency.decimals)}</Trans>
                       )
                     ) : null}
                   </ThemedText.DeprecatedBody>

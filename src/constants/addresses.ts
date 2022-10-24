@@ -11,6 +11,17 @@ export const UNI_ADDRESS: AddressMap = constructSameAddressMap('0x1f9840a85d5aF5
 export const V2_FACTORY_ADDRESSES: AddressMap = constructSameAddressMap(V2_FACTORY_ADDRESS)
 export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D')
 
+//goerli testnet
+export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+export const XXX_ADDRESS: AddressMap = {
+  ...constructSameAddressMap('0xf4D222c2137c8B07085145bc3113149Cd889a71D', [SupportedChainId.GOERLI]),
+}
+export const XXXSTAKING2_ADDRESS: AddressMap = {
+  ...constructSameAddressMap('0x45fe0820f8680CA5D5AF2849682b454e22C85497', [SupportedChainId.GOERLI]),
+}
+export const XXXFACTORY_ADDRESSES = '0xa84E34c94E94CCa62dD78A02c5F72E51CBa30210'
+export const XXXFUND2_ADDRESSES = '0x205015D326Def2Fc958fa50D982aAefb5a5F8B90'
+
 // celo v3 addresses
 const CELO_V3_CORE_FACTORY_ADDRESSES = '0xAfE208a311B21f13EF87E33A90049fC17A7acDEc'
 const CELO_ROUTER_ADDRESS = '0x5615CDAb10dc425a742d643d949a7F474C01abc4'
@@ -70,12 +81,6 @@ export const SWAP_ROUTER_ADDRESSES: AddressMap = {
   [SupportedChainId.CELO]: CELO_ROUTER_ADDRESS,
   [SupportedChainId.CELO_ALFAJORES]: CELO_ROUTER_ADDRESS,
 }
-
-//goerli testnet
-export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
-export const XXX_ADDRESS: AddressMap = constructSameAddressMap('0xDf26E13ebF6BD0648BF348006B5F54C062C56633')
-export const XXXFACTORY_ADDRESSES = '0xCF297C062890f5Bb5d3Bc75985068b254c25a92C'
-export const XXXFUND2_ADDRESSES = '0xE4ca216BB5587f97761196322a8ac0D1340700Cd'
 
 /**
  * The oldest V0 governance address

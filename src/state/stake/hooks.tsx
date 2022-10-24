@@ -1,7 +1,7 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { XXX_ADDRESS } from 'constants/addresses'
-import { useXXXTokenContract } from 'hooks/useContract'
+import { useTokenContract, useXXXStaking2Contract } from 'hooks/useContract'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
@@ -32,18 +32,18 @@ export interface StakingInfo {
 // gets the staking info from the network for the active chain id
 export function useStakingInfo(): StakingInfo | undefined {
   const { chainId, account } = useWeb3React()
-  const XXXTokenContract = useXXXTokenContract()
-
+  const XXXStaking2Contract = useXXXStaking2Contract()
+  const tokenContract = useTokenContract(chainId ? XXX_ADDRESS[chainId] : undefined)
   const xxx = chainId ? XXX[chainId] : undefined
 
   // get all the info from the staking rewards contracts
-  const balance = useSingleCallResult(XXXTokenContract, 'balanceOf')
-  const earnedAmounts = useSingleCallResult(XXXTokenContract, 'earned')
-  const totalSupplies = useSingleCallResult(XXXTokenContract, 'totalSupply')
+  const balance = useSingleCallResult(tokenContract, 'balanceOf', [account])
+  const earnedAmounts = useSingleCallResult(XXXStaking2Contract, 'earned', [account])
+  const totalSupplies = useSingleCallResult(tokenContract, 'totalSupply')
   // tokens per second, constants
-  const rewardRates = useSingleCallResult(XXXTokenContract, 'REWARD_RATE')
-  const stakedAmount = useSingleCallResult(XXXTokenContract, 's_balances', [account])
-  const totalStakedAmount = useSingleCallResult(XXXTokenContract, 's_totalSupply')
+  const rewardRates = useSingleCallResult(XXXStaking2Contract, 'REWARD_RATE')
+  const stakedAmount = useSingleCallResult(XXXStaking2Contract, 's_balances', [account])
+  const totalStakedAmount = useSingleCallResult(XXXStaking2Contract, 's_totalSupply')
 
   if (!chainId || !xxx) return undefined
 
@@ -77,10 +77,16 @@ export function useStakingInfo(): StakingInfo | undefined {
       totalStakedAmount: CurrencyAmount<Token>,
       totalRewardRate: CurrencyAmount<Token>
     ): CurrencyAmount<Token> => {
+      console.log(stakedAmount)
+      console.log(totalRewardRate.quotient.toString())
+      console.log(stakedAmount.toString())
       return CurrencyAmount.fromRawAmount(
         xxx,
-        JSBI.greaterThan(totalStakedAmount.quotient, JSBI.BigInt(0))
-          ? JSBI.divide(JSBI.multiply(totalRewardRate.quotient, stakedAmount.quotient), totalStakedAmount.quotient)
+        JSBI.greaterThan(JSBI.BigInt(totalStakedAmount.toString()), JSBI.BigInt(0))
+          ? JSBI.divide(
+              JSBI.multiply(JSBI.BigInt(totalRewardRate.quotient.toString()), JSBI.BigInt(stakedAmount.toString())),
+              JSBI.BigInt(totalStakedAmount.toString())
+            )
           : JSBI.BigInt(0)
       )
     }
