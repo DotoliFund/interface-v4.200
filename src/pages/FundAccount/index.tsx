@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { ButtonGray, ButtonPrimary } from 'components/Button'
+import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -8,6 +8,7 @@ import LineChart from 'components/LineChart/alt'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import Percent from 'components/Percent'
+import PositionList from 'components/PositionList'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
@@ -18,21 +19,24 @@ import { useInvestorData } from 'data/FundAccount/investorData'
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
+import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { PageWrapper, ThemedBackground } from 'pages/styled'
 import React, { useEffect, useMemo, useState } from 'react'
-import { BookOpen, Download, ExternalLink, PlusCircle } from 'react-feather'
-import { ChevronDown } from 'react-feather'
-import { useParams } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { BookOpen, ChevronDown, Download, ExternalLink, Inbox, PlusCircle } from 'react-feather'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
-import styled, { useTheme } from 'styled-components/macro'
+import { useUserHideClosedPositions } from 'state/user/hooks'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { ExternalLink as StyledExternalLink } from 'theme/components'
+import { PositionDetails } from 'types/position'
 import { getEtherscanLink } from 'utils'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
+
+import { LoadingRows } from './styled'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -104,6 +108,83 @@ const MenuItem = styled.div`
   font-weight: 500;
 `
 
+const TitleRow = styled(RowBetween)`
+  color: ${({ theme }) => theme.deprecated_text2};
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+  `};
+`
+const ButtonRow = styled(RowFixed)`
+  & > *:not(:last-child) {
+    margin-left: 8px;
+  }
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  `};
+`
+
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const InboxIcon = styled(Inbox)`
+  ${IconStyle}
+`
+
+const ErrorContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  max-width: 300px;
+  min-height: 25vh;
+`
+
+const ResponsiveButtonPrimary = styled(ButtonPrimary)`
+  border-radius: 12px;
+  padding: 6px 8px;
+  width: fit-content;
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+    flex: 1 1 auto;
+    width: 100%;
+  `};
+`
+
+const MainContentWrapper = styled.main`
+  background-color: ${({ theme }) => theme.deprecated_bg0};
+  padding: 8px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+`
+
+function PositionsLoadingPlaceholder() {
+  return (
+    <LoadingRows>
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+    </LoadingRows>
+  )
+}
+
 enum ChartView {
   VOL_ETH,
   VOL_USD,
@@ -114,10 +195,11 @@ export default function FundAccount() {
   const params = useParams()
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
+  const navigate = useNavigate()
   const XXXFactoryContract = useXXXFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
-  const navigate = useNavigate()
+  const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -242,6 +324,18 @@ export default function FundAccount() {
   const [view, setView] = useState(ChartView.VOL_ETH)
   const [latestValue, setLatestValue] = useState<number | undefined>()
   const [valueLabel, setValueLabel] = useState<string | undefined>()
+
+  const { positions, loading: positionsLoading } = useV3Positions(account)
+
+  const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
+    (acc, p) => {
+      acc[p.liquidity?.isZero() ? 1 : 0].push(p)
+      return acc
+    },
+    [[], []]
+  ) ?? [[], []]
+
+  const filteredPositions = [...openPositions, ...(userHideClosedPositions ? [] : closedPositions)]
 
   const menuItems1 = [
     {
@@ -688,6 +782,43 @@ export default function FundAccount() {
               )}
             </DarkGreyCard>
           </ContentLayout>
+          <TitleRow padding={'0'}>
+            <ThemedText.DeprecatedMain fontSize="24px">Positions</ThemedText.DeprecatedMain>
+
+            <ButtonRow>
+              <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to="/add/ETH">
+                + <Trans>New Position</Trans>
+              </ResponsiveButtonPrimary>
+            </ButtonRow>
+          </TitleRow>
+          <MainContentWrapper>
+            {positionsLoading ? (
+              <PositionsLoadingPlaceholder />
+            ) : filteredPositions && closedPositions && filteredPositions.length > 0 ? (
+              <PositionList
+                positions={filteredPositions}
+                setUserHideClosedPositions={setUserHideClosedPositions}
+                userHideClosedPositions={userHideClosedPositions}
+              />
+            ) : (
+              <ErrorContainer>
+                <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                  <InboxIcon strokeWidth={1} />
+                  <div>
+                    <Trans>Your active V3 liquidity positions will appear here.</Trans>
+                  </div>
+                </ThemedText.DeprecatedBody>
+                {account && closedPositions.length > 0 && (
+                  <ButtonText
+                    style={{ marginTop: '.5rem' }}
+                    onClick={() => setUserHideClosedPositions(!userHideClosedPositions)}
+                  >
+                    <Trans>Show closed positions</Trans>
+                  </ButtonText>
+                )}
+              </ErrorContainer>
+            )}
+          </MainContentWrapper>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
           <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
         </AutoColumn>

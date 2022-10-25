@@ -18,6 +18,7 @@ import {
   addSerializedToken,
   removeSerializedToken,
   updateHideClosedFunds,
+  updateHideClosedPositions,
   updateShowSurveyPopup,
   updateShowTokensPromoBanner,
   updateUserClientSideRouter,
@@ -364,4 +365,19 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
     return Object.keys(keyed).map((key) => keyed[key])
   }, [combinedList])
+}
+
+export function useUserHideClosedPositions(): [boolean, (newHideClosedPositions: boolean) => void] {
+  const dispatch = useAppDispatch()
+
+  const hideClosedPositions = useAppSelector((state) => state.user.userHideClosedPositions)
+
+  const setHideClosedPositions = useCallback(
+    (newHideClosedPositions: boolean) => {
+      dispatch(updateHideClosedPositions({ userHideClosedPositions: newHideClosedPositions }))
+    },
+    [dispatch]
+  )
+
+  return [hideClosedPositions, setHideClosedPositions]
 }

@@ -1,5 +1,6 @@
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import { LoadingRows as BaseLoadingRows } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
 import { BodyWrapper } from 'pages/AppBody'
 import styled from 'styled-components/macro'
@@ -129,4 +130,21 @@ export const HideMedium = styled.div`
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
     display: block;
   `};
+`
+
+export const LoadingRows = styled(BaseLoadingRows)`
+  padding-top: 48px;
+  min-width: 75%;
+  max-width: 960px;
+  grid-column-gap: 0.5em;
+  grid-row-gap: 0.8em;
+  grid-template-columns: repeat(3, 1fr);
+
+  & > div:nth-child(4n + 1) {
+    grid-column: 1 / 3;
+  }
+  & > div:nth-child(4n) {
+    grid-column: 3 / 4;
+    margin-bottom: 2em;
+  }
 `

@@ -15,6 +15,7 @@ import application from './application/reducer'
 import funds from './funds/reducer'
 import { updateVersion } from './global/actions'
 import lists from './lists/reducer'
+import mintV3 from './mint/v3/reducer'
 import { routingApi } from './routing/slice'
 import wallets from './wallets/reducer'
 
@@ -29,6 +30,7 @@ export const store = configureStore({
     create,
     user,
     funds,
+    mintV3,
     connection,
     transactions,
     lists,

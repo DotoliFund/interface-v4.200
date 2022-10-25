@@ -32,6 +32,7 @@ import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 import { XXX } from '../../constants/tokens'
@@ -249,10 +250,20 @@ export default function Staking() {
         <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
           <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
             <AutoColumn gap={'0px'}>
-              <Label>unStakingBalance:{stakingInfo?.unStakingBalance.quotient.toString()}</Label>
-              <Label>earnedAmount:{stakingInfo?.earnedAmount.quotient.toString()}</Label>
-              <Label>stakedAmount:{stakingInfo?.stakedAmount.quotient.toString()}</Label>
-              <Label>totalStakedAmount:{stakingInfo?.totalStakedAmount.quotient.toString()}</Label>
+              <Label>
+                unStakingBalance:
+                {formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)}
+              </Label>
+              <Label>
+                earnedAmount:{formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)}
+              </Label>
+              <Label>
+                stakedAmount:{formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)}
+              </Label>
+              <Label>
+                totalStakedAmount:
+                {formatCurrencyAmount(stakingInfo?.totalStakedAmount, xxx?.decimals ? xxx?.decimals : 18)}
+              </Label>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
