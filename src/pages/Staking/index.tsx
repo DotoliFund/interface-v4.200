@@ -165,6 +165,74 @@ export default function Staking() {
       })
   }
 
+  async function onClaimReward() {
+    if (!chainId || !provider || !account) return
+
+    const { calldata, value } = XXXStaking2.claimRewardCallParameters()
+
+    const txn: { to: string; data: string; value: string } = {
+      to: XXXSTAKING2_ADDRESS[chainId],
+      data: calldata,
+      value,
+    }
+    provider
+      .getSigner()
+      .estimateGas(txn)
+      .then((estimate) => {
+        const newTxn = {
+          ...txn,
+          gasLimit: calculateGasMargin(estimate),
+        }
+        return provider
+          .getSigner()
+          .sendTransaction(newTxn)
+          .then((response) => {
+            console.log(response)
+          })
+      })
+      .catch((error) => {
+        //setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) {
+          console.error(error)
+        }
+      })
+  }
+
+  async function onWithdraw() {
+    if (!chainId || !provider || !account) return
+    if (!currency || !parsedAmount) return
+
+    const { calldata, value } = XXXStaking2.withdrawCallParameters(parsedAmount)
+    const txn: { to: string; data: string; value: string } = {
+      to: XXXSTAKING2_ADDRESS[chainId],
+      data: calldata,
+      value,
+    }
+    provider
+      .getSigner()
+      .estimateGas(txn)
+      .then((estimate) => {
+        const newTxn = {
+          ...txn,
+          gasLimit: calculateGasMargin(estimate),
+        }
+        return provider
+          .getSigner()
+          .sendTransaction(newTxn)
+          .then((response) => {
+            console.log(response)
+          })
+      })
+      .catch((error) => {
+        //setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) {
+          console.error(error)
+        }
+      })
+  }
+
   const handleMaxInput = useCallback(() => {
     maxInputAmount && setTypedValue(maxInputAmount.toExact())
     sendEvent({
@@ -300,6 +368,22 @@ export default function Staking() {
                       </ButtonError>
                     )}
                   </div>
+                  <ButtonLight
+                    onClick={() => {
+                      onClaimReward()
+                    }}
+                    redesignFlag={redesignFlagEnabled}
+                  >
+                    <Trans>Claim Reward</Trans>
+                  </ButtonLight>
+                  <ButtonLight
+                    onClick={() => {
+                      onWithdraw()
+                    }}
+                    redesignFlag={redesignFlagEnabled}
+                  >
+                    <Trans>Withdraw</Trans>
+                  </ButtonLight>
                 </AutoColumn>
               </BottomWrapper>
             </AutoColumn>

@@ -302,7 +302,7 @@ export default function Header() {
         <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
           <Trans>Vote</Trans>
         </StyledNavLink>
-        <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
+        <StyledNavLink id={`vote-nav-link`} to={'/staking'}>
           <Trans>Staking</Trans>
         </StyledNavLink>
       </HeaderLinks>

@@ -77,9 +77,6 @@ export function useStakingInfo(): StakingInfo | undefined {
       totalStakedAmount: CurrencyAmount<Token>,
       totalRewardRate: CurrencyAmount<Token>
     ): CurrencyAmount<Token> => {
-      console.log(stakedAmount)
-      console.log(totalRewardRate.quotient.toString())
-      console.log(stakedAmount.toString())
       return CurrencyAmount.fromRawAmount(
         xxx,
         JSBI.greaterThan(JSBI.BigInt(totalStakedAmount.toString()), JSBI.BigInt(0))
