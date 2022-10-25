@@ -15,3 +15,7 @@ interface Window {
   }
   web3?: Record<string, unknown>
 }
+
+declare module 'babel-plugin-relay/macro' {
+  export { graphql as default } from 'react-relay'
+}

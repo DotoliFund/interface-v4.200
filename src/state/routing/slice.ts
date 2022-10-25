@@ -1,8 +1,7 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Protocol } from '@uniswap/router-sdk'
 import { AlphaRouter, ChainId } from '@uniswap/smart-order-router'
-import { RPC_URLS } from 'constants/networks'
+import { RPC_PROVIDERS } from 'constants/providers'
 import { getClientSideQuote, toSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import ms from 'ms.macro'
 import qs from 'qs'
@@ -22,7 +21,7 @@ function getRouter(chainId: ChainId): AlphaRouter {
 
   const supportedChainId = toSupportedChainId(chainId)
   if (supportedChainId) {
-    const provider = new JsonRpcProvider(RPC_URLS[supportedChainId])
+    const provider = RPC_PROVIDERS[supportedChainId]
     const router = new AlphaRouter({ chainId, provider })
     routers.set(chainId, router)
     return router
@@ -33,16 +32,16 @@ function getRouter(chainId: ChainId): AlphaRouter {
 
 // routing API quote params: https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/schema/quote-schema.ts
 const API_QUERY_PARAMS = {
-  protocols: 'v3',
+  protocols: 'v2,v3,mixed',
 }
 const CLIENT_PARAMS = {
-  protocols: [Protocol.V3],
+  protocols: [Protocol.V2, Protocol.V3, Protocol.MIXED],
 }
 // Price queries are tuned down to minimize the required RPCs to respond to them.
 // TODO(zzmp): This will be used after testing router caching.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PRICE_PARAMS = {
-  protocols: [Protocol.V3],
+  protocols: [Protocol.V2, Protocol.V3],
   v2PoolSelection: {
     topN: 2,
     topNDirectSwaps: 1,

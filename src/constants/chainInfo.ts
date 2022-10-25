@@ -1,6 +1,5 @@
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
-import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
 import polygonCircleLogoUrl from 'assets/images/polygonCircle.png'
 import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'assets/svg/arbitrum_logo.svg'
 import celoLogo from 'assets/svg/celo_logo.svg'
@@ -92,7 +91,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Kovan',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Kovan Ether', symbol: 'kovETH', decimals: 18 },
-    color: colorsDark.chain_69,
+    color: colorsDark.chain_420,
   },
   [SupportedChainId.GOERLI]: {
     networkType: NetworkType.L1,
@@ -114,27 +113,28 @@ const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/optimism/',
     label: 'Optimism',
     logoUrl: optimismLogoUrl,
-    circleLogoUrl: optimismCircleLogoUrl,
+    // Optimism perfers same icon for both
+    circleLogoUrl: optimismLogoUrl,
     statusPage: 'https://optimism.io/status',
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     color: colorsDark.chain_10,
     backgroundColor: colorsDark.chain_10_background,
   },
-  [SupportedChainId.OPTIMISTIC_KOVAN]: {
+  [SupportedChainId.OPTIMISM_GOERLI]: {
     networkType: NetworkType.L2,
     blockWaitMsBeforeWarning: ms`25m`,
     bridge: 'https://app.optimism.io/bridge',
     defaultListUrl: OPTIMISM_LIST,
     docs: 'https://optimism.io/',
-    explorer: 'https://optimistic.etherscan.io/',
+    explorer: 'https://goerli-optimism.etherscan.io/',
     infoLink: 'https://info.uniswap.org/#/optimism/',
-    label: 'Optimistic Kovan',
+    label: 'Optimism Görli',
     logoUrl: optimismLogoUrl,
     statusPage: 'https://optimism.io/status',
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
-    nativeCurrency: { name: 'Optimistic Kovan Ether', symbol: 'kovOpETH', decimals: 18 },
-    color: colorsDark.chain_69,
+    nativeCurrency: { name: 'Optimism Goerli Ether', symbol: 'görOpETH', decimals: 18 },
+    color: colorsDark.chain_420,
   },
   [SupportedChainId.ARBITRUM_ONE]: {
     networkType: NetworkType.L2,

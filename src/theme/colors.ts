@@ -215,6 +215,7 @@ export interface Palette {
   chain_10: Color
   chain_137: Color
   chain_42: Color
+  chain_420: Color
   chain_69: Color
   chain_42161: Color
   chain_421611: Color
@@ -275,6 +276,7 @@ export const colorsLight: Palette = {
   chain_10: colors.networkOptimism,
   chain_137: colors.networkPolygon,
   chain_42: colors.networkArbitrum,
+  chain_420: colors.networkOptimism,
   chain_69: colors.networkOptimism,
   chain_42161: colors.networkEthereum,
   chain_421611: colors.networkEthereum,
@@ -337,6 +339,7 @@ export const colorsDark: Palette = {
   chain_10: colors.networkOptimism,
   chain_137: colors.networkPolygon,
   chain_42: colors.networkArbitrum,
+  chain_420: colors.networkEthereum,
   chain_69: colors.networkEthereum,
   chain_42161: colors.networkEthereum,
   chain_421611: colors.networkEthereum,

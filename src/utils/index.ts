@@ -20,7 +20,7 @@ const ETHERSCAN_PREFIXES: { [chainId: number]: string } = {
   [SupportedChainId.GOERLI]: 'goerli.',
   [SupportedChainId.KOVAN]: 'kovan.',
   [SupportedChainId.OPTIMISM]: 'optimistic.',
-  [SupportedChainId.OPTIMISTIC_KOVAN]: 'kovan-optimistic.',
+  [SupportedChainId.OPTIMISM_GOERLI]: 'goerli-optimistic.',
 }
 
 // returns the checksummed address if the address is valid, otherwise returns false
