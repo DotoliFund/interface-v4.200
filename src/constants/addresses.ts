@@ -14,10 +14,10 @@ export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d56
 //goerli testnet
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const XXX_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0xf4D222c2137c8B07085145bc3113149Cd889a71D', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0x82f1458FC0811EC80D60E7FDD56976570740aC9D', [SupportedChainId.GOERLI]),
 }
 export const XXXSTAKING2_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x45fe0820f8680CA5D5AF2849682b454e22C85497', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0x81A0E41f9c1129aEa3C22BA63C5599d610329FC4', [SupportedChainId.GOERLI]),
 }
 export const XXXFACTORY_ADDRESSES = '0xa84E34c94E94CCa62dD78A02c5F72E51CBa30210'
 export const XXXFUND2_ADDRESSES = '0x205015D326Def2Fc958fa50D982aAefb5a5F8B90'
