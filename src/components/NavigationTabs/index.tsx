@@ -96,7 +96,13 @@ export function AddRemoveTabs({
           fontSize={20}
           style={{ flex: '1', margin: 'auto', textAlign: children ? 'start' : 'center' }}
         >
-          {creating ? <Trans>Create a pair</Trans> : adding ? <Trans>Fund</Trans> : <Trans>Remove Liquidity</Trans>}
+          {creating ? (
+            <Trans>Create a pair</Trans>
+          ) : adding ? (
+            <Trans>Add Liquidity</Trans>
+          ) : (
+            <Trans>Remove Liquidity</Trans>
+          )}
         </ThemedText.DeprecatedMediumHeader>
         <Box style={{ marginRight: '.5rem' }}>{children}</Box>
         <SettingsTab placeholderSlippage={defaultSlippage} />
