@@ -8,6 +8,10 @@
 /src/locales/**/en-US.po
 /src/locales/**/pseudo.po
 
+# generated graphql types
+__generated__/
+schema.graphql
+
 package-lock.json
 
 cypress/videos
