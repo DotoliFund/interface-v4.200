@@ -163,15 +163,15 @@ export default function App() {
                   <Route path="pool/:tokenId" element={<PositionPage />} />
                   <Route path="add" element={<RedirectDuplicateTokenIds />}>
                     {/* this is workaround since react-router-dom v6 doesn't support optional parameters any more */}
-                    <Route path="/:fundAddress/:currencyIdA" />
-                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB" />
-                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB/:feeAmount" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount" />
                   </Route>
                   <Route path="increase" element={<AddLiquidity />}>
-                    <Route path="/:fundAddress/:currencyIdA" />
-                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB" />
-                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB/:feeAmount" />
-                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount" />
+                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
                   </Route>
                   <Route path="remove/:fundAddress/:tokenId" element={<RemoveLiquidityV3 />} />
                   <Route

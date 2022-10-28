@@ -5,6 +5,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { FeeAmount, NonfungiblePositionManager } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
+import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/InvestorCurrencyInputPanel'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCallback, useEffect, useState } from 'react'
@@ -22,7 +23,6 @@ import { useTheme } from 'styled-components/macro'
 import { ButtonError, ButtonLight, ButtonPrimary, ButtonText, ButtonYellow } from '../../components/Button'
 import { BlueCard, OutlineCard, YellowCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import FeeSelector from '../../components/FeeSelector'
 import HoverInlineText from '../../components/HoverInlineText'
 import LiquidityChartRangeInput from '../../components/LiquidityChartRangeInput'
@@ -77,12 +77,14 @@ export default function AddLiquidity() {
   const navigate = useNavigate()
   const {
     fundAddress,
+    investorAddress,
     currencyIdA,
     currencyIdB,
     feeAmount: feeAmountFromUrl,
     tokenId,
   } = useParams<{
     fundAddress?: string
+    investorAddress?: string
     currencyIdA?: string
     currencyIdB?: string
     feeAmount?: string
@@ -242,6 +244,10 @@ export default function AddLiquidity() {
     }
 
     if (fundAddress && position && account && deadline) {
+      console.log(22222, position)
+      console.log(33333, tokenId)
+      console.log(44444, allowedSlippage)
+      console.log(55555, deadline)
       const useNative = baseCurrency.isNative ? baseCurrency : quoteCurrency.isNative ? quoteCurrency : undefined
       const { calldata, value } =
         hasExistingPosition && tokenId
@@ -342,33 +348,33 @@ export default function AddLiquidity() {
     (currencyANew: Currency) => {
       const [idA, idB] = handleCurrencySelect(currencyANew, currencyIdB)
       if (idB === undefined) {
-        navigate(`/add/${idA}`)
+        navigate(`/add/${fundAddress}/${investorAddress}/${idA}`)
       } else {
-        navigate(`/add/${idA}/${idB}`)
+        navigate(`/add/${fundAddress}/${investorAddress}/${idA}/${idB}`)
       }
     },
-    [handleCurrencySelect, currencyIdB, navigate]
+    [fundAddress, investorAddress, handleCurrencySelect, currencyIdB, navigate]
   )
 
   const handleCurrencyBSelect = useCallback(
     (currencyBNew: Currency) => {
       const [idB, idA] = handleCurrencySelect(currencyBNew, currencyIdA)
       if (idA === undefined) {
-        navigate(`/add/${idB}`)
+        navigate(`/add/${fundAddress}/${investorAddress}/${idB}`)
       } else {
-        navigate(`/add/${idA}/${idB}`)
+        navigate(`/add/${fundAddress}/${investorAddress}/${idA}/${idB}`)
       }
     },
-    [handleCurrencySelect, currencyIdA, navigate]
+    [fundAddress, investorAddress, handleCurrencySelect, currencyIdA, navigate]
   )
 
   const handleFeePoolSelect = useCallback(
     (newFeeAmount: FeeAmount) => {
       onLeftRangeInput('')
       onRightRangeInput('')
-      navigate(`/add/${currencyIdA}/${currencyIdB}/${newFeeAmount}`)
+      navigate(`/add/${fundAddress}/${investorAddress}/${currencyIdA}/${currencyIdB}/${newFeeAmount}`)
     },
-    [currencyIdA, currencyIdB, navigate, onLeftRangeInput, onRightRangeInput]
+    [fundAddress, investorAddress, currencyIdA, currencyIdB, navigate, onLeftRangeInput, onRightRangeInput]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -540,7 +546,9 @@ export default function AddLiquidity() {
                         onFieldAInput(formattedAmounts[Field.CURRENCY_B] ?? '')
                       }
                       navigate(
-                        `/add/${currencyIdB as string}/${currencyIdA as string}${feeAmount ? '/' + feeAmount : ''}`
+                        `/add/${fundAddress}/${investorAddress}/${currencyIdB as string}/${currencyIdA as string}${
+                          feeAmount ? '/' + feeAmount : ''
+                        }`
                       )
                     }}
                   />
@@ -619,7 +627,7 @@ export default function AddLiquidity() {
                       {hasExistingPosition ? <Trans>Add more liquidity</Trans> : <Trans>Deposit Amounts</Trans>}
                     </ThemedText.DeprecatedLabel>
 
-                    <CurrencyInputPanel
+                    <InvestorCurrencyInputPanel
                       value={formattedAmounts[Field.CURRENCY_A]}
                       onUserInput={onFieldAInput}
                       onMax={() => {
@@ -633,7 +641,7 @@ export default function AddLiquidity() {
                       locked={depositADisabled}
                     />
 
-                    <CurrencyInputPanel
+                    <InvestorCurrencyInputPanel
                       value={formattedAmounts[Field.CURRENCY_B]}
                       onUserInput={onFieldBInput}
                       onMax={() => {

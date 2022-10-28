@@ -195,6 +195,7 @@ export default function FundAccount() {
   const params = useParams()
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
+  const newPositionLink = '/add/' + fundAddress + '/' + investorAddress + '/ETH'
   const navigate = useNavigate()
   const XXXFactoryContract = useXXXFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
@@ -325,7 +326,7 @@ export default function FundAccount() {
   const [latestValue, setLatestValue] = useState<number | undefined>()
   const [valueLabel, setValueLabel] = useState<string | undefined>()
 
-  const { positions, loading: positionsLoading } = useV3Positions(account)
+  const { positions, loading: positionsLoading } = useV3Positions(fundAddress, investorAddress)
 
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
     (acc, p) => {
@@ -786,7 +787,7 @@ export default function FundAccount() {
             <ThemedText.DeprecatedMain fontSize="24px">Positions</ThemedText.DeprecatedMain>
 
             <ButtonRow>
-              <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to="/add/ETH">
+              <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to={newPositionLink}>
                 + <Trans>New Position</Trans>
               </ResponsiveButtonPrimary>
             </ButtonRow>

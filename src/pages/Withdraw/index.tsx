@@ -7,7 +7,7 @@ import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import WithdrawCurrencyInputPanel from 'components/CurrencyInputPanel/WithdrawCurrencyInputPanel'
+import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/InvestorCurrencyInputPanel'
 import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
@@ -324,7 +324,7 @@ export default function Withdraw() {
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                    <WithdrawCurrencyInputPanel
+                    <InvestorCurrencyInputPanel
                       label={<Trans>Withdraw123</Trans>}
                       value={formattedAmounts[Field.INPUT]}
                       showMaxButton={showMaxButton}

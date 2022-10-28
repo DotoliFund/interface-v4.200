@@ -222,7 +222,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean; redesig
   font-feature-settings: ${({ redesignFlag }) => redesignFlag && 'pnum on, lnum on'};
 `
 
-interface SwapCurrencyInputPanelProps {
+interface InvestorCurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -245,7 +245,7 @@ interface SwapCurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function SwapCurrencyInputPanel({
+export default function InvestorCurrencyInputPanel({
   value,
   onUserInput,
   onMax,
@@ -266,7 +266,7 @@ export default function SwapCurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: SwapCurrencyInputPanelProps) {
+}: InvestorCurrencyInputPanelProps) {
   const params = useParams()
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress

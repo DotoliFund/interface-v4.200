@@ -1,8 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { NULL_ADDRESS } from 'constants/addresses'
 import { CallStateResult, useSingleCallResult, useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
 import { PositionDetails } from 'types/position'
 
+import { useXXXFund2Contract } from './useContract'
 import { useV3NFTPositionManagerContract } from './useContract'
 
 interface UseV3PositionsResults {
@@ -62,44 +64,31 @@ export function useV3PositionFromTokenId(tokenId: BigNumber | undefined): UseV3P
   }
 }
 
-export function useV3Positions(account: string | null | undefined): UseV3PositionsResults {
-  const positionManager = useV3NFTPositionManagerContract()
+export function useV3Positions(
+  fund: string | null | undefined,
+  investor: string | null | undefined
+): UseV3PositionsResults {
+  const XXXFund2Contract = useXXXFund2Contract(fund ?? NULL_ADDRESS)
 
-  const { loading: balanceLoading, result: balanceResult } = useSingleCallResult(positionManager, 'balanceOf', [
-    account ?? undefined,
-  ])
+  const { loading: tokenIdResultsLoading, result: [tokenIdResults] = [] } = useSingleCallResult(
+    XXXFund2Contract,
+    'getPositionTokenIds',
+    [investor ?? undefined]
+  )
 
-  // we don't expect any account balance to ever exceed the bounds of max safe int
-  const accountBalance: number | undefined = balanceResult?.[0]?.toNumber()
-
-  const tokenIdsArgs = useMemo(() => {
-    if (accountBalance && account) {
-      const tokenRequests = []
-      for (let i = 0; i < accountBalance; i++) {
-        tokenRequests.push([account, i])
-      }
-      return tokenRequests
-    }
-    return []
-  }, [account, accountBalance])
-
-  const tokenIdResults = useSingleContractMultipleData(positionManager, 'tokenOfOwnerByIndex', tokenIdsArgs)
-  const someTokenIdsLoading = useMemo(() => tokenIdResults.some(({ loading }) => loading), [tokenIdResults])
+  console.log(111, tokenIdResults)
 
   const tokenIds = useMemo(() => {
-    if (account) {
-      return tokenIdResults
-        .map(({ result }) => result)
-        .filter((result): result is CallStateResult => !!result)
-        .map((result) => BigNumber.from(result[0]))
+    if (tokenIdResults) {
+      return tokenIdResults.map((result: number) => BigNumber.from(result))
     }
     return []
-  }, [account, tokenIdResults])
+  }, [tokenIdResults])
 
   const { positions, loading: positionsLoading } = useV3PositionsFromTokenIds(tokenIds)
 
   return {
-    loading: someTokenIdsLoading || balanceLoading || positionsLoading,
+    loading: tokenIdResultsLoading || positionsLoading,
     positions,
   }
 }
