@@ -1,33 +1,28 @@
 import { Interface } from '@ethersproject/abi'
 import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
-import { encodeRouteToPath, Trade as V3Trade } from '@uniswap/v3-sdk'
+import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, Percent, TradeType } from '@uniswap/sdk-core'
+import { encodeRouteToPath, Position, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund2 from 'abis/XXXFund2.json'
 import { NULL_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
-//import { Trade } from '@uniswap/router-sdk'
 import { MethodParameters, toHex } from './utils/calldata'
 
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
 
-enum V3TradeType {
-  EXACT_INPUT,
-  EXACT_OUTPUT,
-}
-
-enum V3SwapType {
-  SINGLE_HOP,
-  MULTI_HOP,
+enum SwapType {
+  EXACT_INPUT_SINGLE_HOP,
+  EXACT_INPUT_MULTI_HOP,
+  EXACT_OUTPUT_SINGLE_HOP,
+  EXACT_OUTPUT_MULTI_HOP,
 }
 
 /**
- * V3TradeParams for producing the arguments to send calls to the router.
+ * SwapParams for producing the arguments to send calls to the router.
  */
-export interface V3TradeParams {
-  tradeType: V3TradeType
-  swapType: V3SwapType
+export interface SwapParams {
+  swapType: SwapType
   investor: string
   tokenIn: string
   tokenOut: string
@@ -41,6 +36,46 @@ export interface V3TradeParams {
   path: string
 }
 
+export interface MintPositionParams {
+  investor: string
+  token0: string
+  token1: string
+  fee: number
+  tickLower: number
+  tickUpper: number
+  amount0Desired: string
+  amount1Desired: string
+  amount0Min: string
+  amount1Min: string
+  deadline: string
+}
+
+export interface IncreaseLiquidityParams {
+  investor: string
+  tokenId: string
+  amount0Desired: string
+  amount1Desired: string
+  amount0Min: string
+  amount1Min: string
+  deadline: string
+}
+
+export interface CollectFeeParams {
+  investor: string
+  tokenId: string
+  amount0Max: string
+  amount1Max: string
+}
+
+export interface DecreaseLiquidityParams {
+  investor: string
+  tokenId: string
+  liquidity: string
+  amount0Min: string
+  amount1Min: string
+  deadline: string
+}
+
 /**
  * Options for producing the arguments to send calls to the router.
  */
@@ -49,6 +84,128 @@ export interface SwapOptions {
    * How much the execution price is allowed to move unfavorably from the trade execution price.
    */
   slippageTolerance: Percent
+}
+
+export interface MintSpecificOptions {
+  /**
+   * The account that should receive the minted NFT.
+   */
+  recipient: string
+
+  /**
+   * Creates pool if not initialized before mint.
+   */
+  createPool?: boolean
+}
+
+export interface IncreaseSpecificOptions {
+  /**
+   * Indicates the ID of the position to increase liquidity for.
+   */
+  tokenId: BigintIsh
+}
+
+/**
+ * Options for producing the calldata to add liquidity.
+ */
+export interface CommonAddLiquidityOptions {
+  /**
+   * How much the pool price is allowed to move.
+   */
+  slippageTolerance: Percent
+
+  /**
+   * When the transaction expires, in epoch seconds.
+   */
+  deadline: BigintIsh
+
+  /**
+   * Whether to spend ether. If true, one of the pool tokens must be WETH, by default false
+   */
+  useNative?: NativeCurrency
+}
+
+export type MintOptions = CommonAddLiquidityOptions & MintSpecificOptions
+export type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOptions
+
+export type AddLiquidityOptions = MintOptions | IncreaseOptions
+
+const ZERO = JSBI.BigInt(0)
+const ONE = JSBI.BigInt(1)
+
+// type guard
+function isMint(options: AddLiquidityOptions): options is MintOptions {
+  return Object.keys(options).some((k) => k === 'recipient')
+}
+
+export interface CollectOptions {
+  /**
+   * Indicates the ID of the position to collect for.
+   */
+  tokenId: BigintIsh
+
+  /**
+   * Expected value of tokensOwed0, including as-of-yet-unaccounted-for fees/liquidity value to be burned
+   */
+  expectedCurrencyOwed0: CurrencyAmount<Currency>
+
+  /**
+   * Expected value of tokensOwed1, including as-of-yet-unaccounted-for fees/liquidity value to be burned
+   */
+  expectedCurrencyOwed1: CurrencyAmount<Currency>
+
+  /**
+   * The account that should receive the tokens.
+   */
+  recipient: string
+}
+
+export interface NFTPermitOptions {
+  v: 0 | 1 | 27 | 28
+  r: string
+  s: string
+  deadline: BigintIsh
+  spender: string
+}
+
+/**
+ * Options for producing the calldata to exit a position.
+ */
+export interface RemoveLiquidityOptions {
+  /**
+   * The ID of the token to exit
+   */
+  tokenId: BigintIsh
+
+  /**
+   * The percentage of position liquidity to exit.
+   */
+  liquidityPercentage: Percent
+
+  /**
+   * How much the pool price is allowed to move.
+   */
+  slippageTolerance: Percent
+
+  /**
+   * When the transaction expires, in epoch seconds.
+   */
+  deadline: BigintIsh
+
+  /**
+   * Whether the NFT should be burned if the entire position is being exited, by default false.
+   */
+  burnToken?: boolean
+
+  /**
+   * The optional permit of the token ID being exited, in case the exit transaction is being sent by an account that does not own the NFT
+   */
+  permit?: NFTPermitOptions
+
+  /**
+   * Parameters to be passed on to collect
+   */
+  collectOptions: Omit<CollectOptions, 'tokenId'>
 }
 
 export abstract class XXXFund2 {
@@ -103,8 +260,8 @@ export abstract class XXXFund2 {
     investor: string,
     trade: V3Trade<Currency, Currency, TradeType>,
     options: SwapOptions
-  ): V3TradeParams[] {
-    const params: V3TradeParams[] = []
+  ): SwapParams[] {
+    const params: SwapParams[] = []
 
     for (const { route, inputAmount, outputAmount } of trade.swaps) {
       const amountIn: string = toHex(trade.maximumAmountIn(options.slippageTolerance, inputAmount).quotient)
@@ -119,8 +276,7 @@ export abstract class XXXFund2 {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
           //exactInputSingleParams
           params.push({
-            tradeType: V3TradeType.EXACT_INPUT,
-            swapType: V3SwapType.SINGLE_HOP,
+            swapType: SwapType.EXACT_INPUT_SINGLE_HOP,
             investor,
             tokenIn: route.tokenPath[0].address,
             tokenOut: route.tokenPath[1].address,
@@ -136,8 +292,7 @@ export abstract class XXXFund2 {
         } else {
           //exactOutputSingleParams
           params.push({
-            tradeType: V3TradeType.EXACT_OUTPUT,
-            swapType: V3SwapType.SINGLE_HOP,
+            swapType: SwapType.EXACT_OUTPUT_SINGLE_HOP,
             investor,
             tokenIn: route.tokenPath[0].address,
             tokenOut: route.tokenPath[1].address,
@@ -157,8 +312,7 @@ export abstract class XXXFund2 {
         if (trade.tradeType === TradeType.EXACT_INPUT) {
           //exactInputParams
           params.push({
-            tradeType: V3TradeType.EXACT_INPUT,
-            swapType: V3SwapType.MULTI_HOP,
+            swapType: SwapType.EXACT_INPUT_MULTI_HOP,
             investor,
             tokenIn: NULL_ADDRESS,
             tokenOut: NULL_ADDRESS,
@@ -174,8 +328,7 @@ export abstract class XXXFund2 {
         } else {
           //exactOutputParams
           params.push({
-            tradeType: V3TradeType.EXACT_OUTPUT,
-            swapType: V3SwapType.MULTI_HOP,
+            swapType: SwapType.EXACT_OUTPUT_MULTI_HOP,
             investor,
             tokenIn: NULL_ADDRESS,
             tokenOut: NULL_ADDRESS,
@@ -210,7 +363,7 @@ export abstract class XXXFund2 {
       | V3Trade<Currency, Currency, TradeType>[],
     options: SwapOptions
   ): {
-    params: V3TradeParams[]
+    params: SwapParams[]
   } {
     // If dealing with an instance of the aggregated Trade object, unbundle it to individual trade objects.
     if (trades instanceof Trade) {
@@ -242,8 +395,6 @@ export abstract class XXXFund2 {
       trades = [trades]
     }
 
-    const numberOfTrades = trades.reduce((numberOfTrades, trade) => numberOfTrades + trade.swaps.length, 0)
-
     const sampleTrade = trades[0]
 
     // All trades should have the same starting/ending currency and trade type
@@ -260,10 +411,7 @@ export abstract class XXXFund2 {
       'TRADE_TYPE_DIFF'
     )
 
-    const params: V3TradeParams[] = []
-
-    const inputIsNative = sampleTrade.inputAmount.currency.isNative
-    const outputIsNative = sampleTrade.outputAmount.currency.isNative
+    const params: SwapParams[] = []
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
@@ -274,24 +422,6 @@ export abstract class XXXFund2 {
         throw new Error('Unsupported trade object')
       }
     }
-
-    const ZERO_IN: CurrencyAmount<Currency> = CurrencyAmount.fromRawAmount(sampleTrade.inputAmount.currency, 0)
-    const ZERO_OUT: CurrencyAmount<Currency> = CurrencyAmount.fromRawAmount(sampleTrade.outputAmount.currency, 0)
-
-    const minimumAmountOut: CurrencyAmount<Currency> = trades.reduce(
-      (sum, trade) => sum.add(trade.minimumAmountOut(options.slippageTolerance)),
-      ZERO_OUT
-    )
-
-    const quoteAmountOut: CurrencyAmount<Currency> = trades.reduce(
-      (sum, trade) => sum.add(trade.outputAmount),
-      ZERO_OUT
-    )
-
-    const totalAmountIn: CurrencyAmount<Currency> = trades.reduce(
-      (sum, trade) => sum.add(trade.maximumAmountIn(options.slippageTolerance)),
-      ZERO_IN
-    )
 
     return {
       params,
@@ -314,6 +444,121 @@ export abstract class XXXFund2 {
     return {
       calldata: XXXFund2.INTERFACE.encodeFunctionData('swap', [params]),
       value,
+    }
+  }
+
+  public static addLiquidityCallParameters(
+    investorAddress: string,
+    position: Position,
+    options: AddLiquidityOptions
+  ): MethodParameters {
+    invariant(JSBI.greaterThan(position.liquidity, ZERO), 'ZERO_LIQUIDITY')
+
+    // get amounts
+    const { amount0: amount0Desired, amount1: amount1Desired } = position.mintAmounts
+
+    // adjust for slippage
+    const minimumAmounts = position.mintAmountsWithSlippage(options.slippageTolerance)
+    const amount0Min = toHex(minimumAmounts.amount0)
+    const amount1Min = toHex(minimumAmounts.amount1)
+
+    const deadline = toHex(options.deadline)
+
+    // mint
+    if (isMint(options)) {
+      const params: MintPositionParams[] = []
+      params.push({
+        investor: investorAddress,
+        token0: position.pool.token0.address,
+        token1: position.pool.token1.address,
+        fee: position.pool.fee,
+        tickLower: position.tickLower,
+        tickUpper: position.tickUpper,
+        amount0Desired: toHex(amount0Desired),
+        amount1Desired: toHex(amount1Desired),
+        amount0Min,
+        amount1Min,
+        deadline,
+      })
+
+      return {
+        calldata: XXXFund2.INTERFACE.encodeFunctionData('mintNewPosition', [params]),
+        value: toHex(0),
+      }
+    } else {
+      // increase
+      const params: IncreaseLiquidityParams[] = []
+      params.push({
+        investor: investorAddress,
+        tokenId: toHex(options.tokenId),
+        amount0Desired: toHex(amount0Desired),
+        amount1Desired: toHex(amount1Desired),
+        amount0Min,
+        amount1Min,
+        deadline,
+      })
+
+      return {
+        calldata: XXXFund2.INTERFACE.encodeFunctionData('increaseLiquidity', [params]),
+        value: toHex(0),
+      }
+    }
+  }
+
+  public static collectFeeCallParameters(investorAddress: string, options: CollectOptions): MethodParameters {
+    const tokenId = toHex(options.tokenId)
+
+    // collect
+    const params: CollectFeeParams[] = []
+    params.push({
+      investor: investorAddress,
+      tokenId,
+      amount0Max: MaxUint128,
+      amount1Max: MaxUint128,
+    })
+
+    return {
+      calldata: XXXFund2.INTERFACE.encodeFunctionData('collectAllFees', [params]),
+      value: toHex(0),
+    }
+  }
+
+  public static decreaseLiquidityCallParameters(
+    investorAddress: string,
+    position: Position,
+    options: RemoveLiquidityOptions
+  ): MethodParameters {
+    const deadline = toHex(options.deadline)
+    const tokenId = toHex(options.tokenId)
+
+    // construct a partial position with a percentage of liquidity
+    const partialPosition = new Position({
+      pool: position.pool,
+      liquidity: options.liquidityPercentage.multiply(position.liquidity).quotient,
+      tickLower: position.tickLower,
+      tickUpper: position.tickUpper,
+    })
+    invariant(JSBI.greaterThan(partialPosition.liquidity, ZERO), 'ZERO_LIQUIDITY')
+
+    // slippage-adjusted underlying amounts
+    const { amount0: amount0Min, amount1: amount1Min } = partialPosition.burnAmountsWithSlippage(
+      options.slippageTolerance
+    )
+
+    // remove liquidity
+    const params: DecreaseLiquidityParams[] = []
+    params.push({
+      investor: investorAddress,
+      tokenId,
+      liquidity: toHex(partialPosition.liquidity),
+      amount0Min: toHex(amount0Min),
+      amount1Min: toHex(amount1Min),
+      deadline,
+    })
+
+    return {
+      calldata: XXXFund2.INTERFACE.encodeFunctionData('decreaseLiquidity', [params]),
+      value: toHex(0),
     }
   }
 }

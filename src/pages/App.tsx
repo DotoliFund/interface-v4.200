@@ -33,11 +33,10 @@ import Polling from '../components/Header/Polling'
 import Popups from '../components/Popups'
 import { useIsExpertMode } from '../state/user/hooks'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
+import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
-// import Pool from './Pool'
-// import { PositionPage } from './Pool/PositionPage'
-// import PoolV2 from './Pool/v2'
-// import PoolFinder from './PoolFinder'
+import { PositionPage } from './Pool/PositionPage'
+import RemoveLiquidityV3 from './RemoveLiquidity/V3'
 
 const Vote = lazy(() => import('pages/Swap'))
 
@@ -161,12 +160,20 @@ export default function App() {
                   <Route path="deposit/:fundAddress/:investorAddress" element={<Deposit />} />
                   <Route path="withdraw/:fundAddress/:investorAddress" element={<Withdraw />} />
                   <Route path="swap/:fundAddress/:investorAddress" element={<Swap />} />
+                  <Route path="pool/:tokenId" element={<PositionPage />} />
                   <Route path="add" element={<RedirectDuplicateTokenIds />}>
                     {/* this is workaround since react-router-dom v6 doesn't support optional parameters any more */}
-                    <Route path=":currencyIdA" />
-                    <Route path=":currencyIdA/:currencyIdB" />
-                    <Route path=":currencyIdA/:currencyIdB/:feeAmount" />
+                    <Route path="/:fundAddress/:currencyIdA" />
+                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB" />
+                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB/:feeAmount" />
                   </Route>
+                  <Route path="increase" element={<AddLiquidity />}>
+                    <Route path="/:fundAddress/:currencyIdA" />
+                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB" />
+                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB/:feeAmount" />
+                    <Route path="/:fundAddress/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
+                  </Route>
+                  <Route path="remove/:fundAddress/:tokenId" element={<RemoveLiquidityV3 />} />
                   <Route
                     path="vote/*"
                     element={

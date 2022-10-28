@@ -246,7 +246,7 @@
               "type": "bytes"
             }
           ],
-          "internalType": "struct IXXXFund2.V3TradeParams[]",
+          "internalType": "struct IXXXFund2.[]",
           "name": "trades",
           "type": "tuple[]"
         }

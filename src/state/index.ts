@@ -12,6 +12,7 @@ import withdraw from 'state/withdraw/reducer'
 import { isTestEnv } from 'utils/env'
 
 import application from './application/reducer'
+import burnV3 from './burn/v3/reducer'
 import funds from './funds/reducer'
 import { updateVersion } from './global/actions'
 import lists from './lists/reducer'
@@ -31,6 +32,7 @@ export const store = configureStore({
     user,
     funds,
     mintV3,
+    burnV3,
     connection,
     transactions,
     lists,
