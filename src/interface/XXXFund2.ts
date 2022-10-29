@@ -1,6 +1,6 @@
 import { Interface } from '@ethersproject/abi'
 import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
-import { BigintIsh, Currency, CurrencyAmount, NativeCurrency, Percent, TradeType } from '@uniswap/sdk-core'
+import { BigintIsh, Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Position, Trade as V3Trade } from '@uniswap/v3-sdk'
 import IXXXFund2 from 'abis/XXXFund2.json'
 import { NULL_ADDRESS } from 'constants/addresses'
@@ -88,11 +88,6 @@ export interface SwapOptions {
 
 export interface MintSpecificOptions {
   /**
-   * The account that should receive the minted NFT.
-   */
-  recipient: string
-
-  /**
    * Creates pool if not initialized before mint.
    */
   createPool?: boolean
@@ -118,11 +113,6 @@ export interface CommonAddLiquidityOptions {
    * When the transaction expires, in epoch seconds.
    */
   deadline: BigintIsh
-
-  /**
-   * Whether to spend ether. If true, one of the pool tokens must be WETH, by default false
-   */
-  useNative?: NativeCurrency
 }
 
 export type MintOptions = CommonAddLiquidityOptions & MintSpecificOptions
@@ -135,7 +125,7 @@ const ONE = JSBI.BigInt(1)
 
 // type guard
 function isMint(options: AddLiquidityOptions): options is MintOptions {
-  return Object.keys(options).some((k) => k === 'recipient')
+  return Object.keys(options).some((k) => k === 'createPool')
 }
 
 export interface CollectOptions {
@@ -466,8 +456,7 @@ export abstract class XXXFund2 {
 
     // mint
     if (isMint(options)) {
-      const params: MintPositionParams[] = []
-      params.push({
+      const params: MintPositionParams = {
         investor: investorAddress,
         token0: position.pool.token0.address,
         token1: position.pool.token1.address,
@@ -479,7 +468,9 @@ export abstract class XXXFund2 {
         amount0Min,
         amount1Min,
         deadline,
-      })
+      }
+
+      console.log(params)
 
       return {
         calldata: XXXFund2.INTERFACE.encodeFunctionData('mintNewPosition', [params]),

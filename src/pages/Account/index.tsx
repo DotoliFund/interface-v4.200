@@ -210,26 +210,7 @@ export default function Account() {
   const toggleWalletModal = useToggleWalletModal()
   const XXXFactoryContract = useXXXFactoryContract()
   const theme = useTheme()
-  //const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
   const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
-
-  //const { positions, loading: positionsLoading } = useV3Positions(account)
-  //const { funds, loading: fundsLoading } = useFunds(account)
-  //const { funds: managingFund, loading: managingFundLoading } = useManagingFund(account)
-  //const { funds: investingFunds, loading: investingFundsLoading } = useInvestingFunds(account)
-  // const managingFund: FundDetails[] = []
-  // const managingFundLoading = false
-  // const investingFunds: FundDetails[] = []
-  // const investingFundsLoading = false
-
-  // console.log('loading', managingFundLoading)
-  // console.log('result', managingFund)
-  // const fund0: FundDetails[] = []
-  // if (managingFund && managingFund?.length > 0) {
-  //   fund0.push({
-  //     token0: managingFund[0],
-  //   })
-  // }
 
   const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
@@ -289,9 +270,6 @@ export default function Account() {
       }
     }
   }, [investingFundsLoading, investingFunds, provider, account])
-
-  console.log('managingFund', managingFund)
-  console.log('investingFunds', investingFunds)
 
   const menuItems = [
     {

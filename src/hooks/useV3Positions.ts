@@ -76,8 +76,6 @@ export function useV3Positions(
     [investor ?? undefined]
   )
 
-  console.log(111, tokenIdResults)
-
   const tokenIds = useMemo(() => {
     if (tokenIdResults) {
       return tokenIdResults.map((result: number) => BigNumber.from(result))

@@ -2,12 +2,13 @@ import { BigNumber } from '@ethersproject/bignumber'
 import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { FeeAmount, NonfungiblePositionManager } from '@uniswap/v3-sdk'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/InvestorCurrencyInputPanel'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { XXXFund2 } from 'interface/XXXFund2'
 import { useCallback, useEffect, useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -37,7 +38,6 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from '../../co
 import { ZERO_PERCENT } from '../../constants/misc'
 import { WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
-import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useArgentWalletContract } from '../../hooks/useArgentWalletContract'
 import { useV3NFTPositionManagerContract } from '../../hooks/useContract'
 import { useDerivedPositionInfo } from '../../hooks/useDerivedPositionInfo'
@@ -57,7 +57,6 @@ import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { Review } from './Review'
 import {
   CurrencyDropdown,
-  Dots,
   DynamicSection,
   HideMedium,
   MediumOnly,
@@ -142,6 +141,8 @@ export default function AddLiquidity() {
     invertPrice,
     ticksAtLimit,
   } = useV3DerivedMintInfo(
+    fundAddress ?? undefined,
+    investorAddress ?? undefined,
     baseCurrency ?? undefined,
     quoteCurrency ?? undefined,
     feeAmount,
@@ -222,16 +223,6 @@ export default function AddLiquidity() {
 
   const argentWalletContract = useArgentWalletContract()
 
-  // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useApproveCallback(
-    argentWalletContract ? undefined : parsedAmounts[Field.CURRENCY_A],
-    chainId ? fundAddress : undefined
-  )
-  const [approvalB, approveBCallback] = useApproveCallback(
-    argentWalletContract ? undefined : parsedAmounts[Field.CURRENCY_B],
-    chainId ? fundAddress : undefined
-  )
-
   const allowedSlippage = useUserSlippageToleranceWithDefault(
     outOfRange ? ZERO_PERCENT : DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE
   )
@@ -243,25 +234,21 @@ export default function AddLiquidity() {
       return
     }
 
-    if (fundAddress && position && account && deadline) {
+    if (fundAddress && investorAddress && position && account && deadline) {
       console.log(22222, position)
       console.log(33333, tokenId)
-      console.log(44444, allowedSlippage)
-      console.log(55555, deadline)
-      const useNative = baseCurrency.isNative ? baseCurrency : quoteCurrency.isNative ? quoteCurrency : undefined
+      console.log(44444, allowedSlippage.quotient.toString())
+      console.log(55555, deadline.toString())
+      console.log(55555, noLiquidity)
       const { calldata, value } =
         hasExistingPosition && tokenId
-          ? NonfungiblePositionManager.addCallParameters(position, {
-              tokenId,
+          ? XXXFund2.addLiquidityCallParameters(investorAddress, position, {
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
-              useNative,
             })
-          : NonfungiblePositionManager.addCallParameters(position, {
+          : XXXFund2.addLiquidityCallParameters(investorAddress, position, {
               slippageTolerance: allowedSlippage,
-              recipient: account,
               deadline: deadline.toString(),
-              useNative,
               createPool: noLiquidity,
             })
 
@@ -405,12 +392,6 @@ export default function AddLiquidity() {
   const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper, getSetFullRange } =
     useRangeHopCallbacks(baseCurrency ?? undefined, quoteCurrency ?? undefined, feeAmount, tickLower, tickUpper, pool)
 
-  // we need an existence check on parsed amounts for single-asset deposits
-  const showApprovalA =
-    !argentWalletContract && approvalA !== ApprovalState.APPROVED && !!parsedAmounts[Field.CURRENCY_A]
-  const showApprovalB =
-    !argentWalletContract && approvalB !== ApprovalState.APPROVED && !!parsedAmounts[Field.CURRENCY_B]
-
   const pendingText = `Supplying ${!depositADisabled ? parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) : ''} ${
     !depositADisabled ? currencies[Field.CURRENCY_A]?.symbol : ''
   } ${!outOfRange ? 'and' : ''} ${!depositBDisabled ? parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) : ''} ${
@@ -430,53 +411,11 @@ export default function AddLiquidity() {
       </ButtonLight>
     ) : (
       <AutoColumn gap={'md'}>
-        {(approvalA === ApprovalState.NOT_APPROVED ||
-          approvalA === ApprovalState.PENDING ||
-          approvalB === ApprovalState.NOT_APPROVED ||
-          approvalB === ApprovalState.PENDING) &&
-          isValid && (
-            <RowBetween>
-              {showApprovalA && (
-                <ButtonPrimary
-                  onClick={approveACallback}
-                  disabled={approvalA === ApprovalState.PENDING}
-                  width={showApprovalB ? '48%' : '100%'}
-                >
-                  {approvalA === ApprovalState.PENDING ? (
-                    <Dots>
-                      <Trans>Approving {currencies[Field.CURRENCY_A]?.symbol}</Trans>
-                    </Dots>
-                  ) : (
-                    <Trans>Approve {currencies[Field.CURRENCY_A]?.symbol}</Trans>
-                  )}
-                </ButtonPrimary>
-              )}
-              {showApprovalB && (
-                <ButtonPrimary
-                  onClick={approveBCallback}
-                  disabled={approvalB === ApprovalState.PENDING}
-                  width={showApprovalA ? '48%' : '100%'}
-                >
-                  {approvalB === ApprovalState.PENDING ? (
-                    <Dots>
-                      <Trans>Approving {currencies[Field.CURRENCY_B]?.symbol}</Trans>
-                    </Dots>
-                  ) : (
-                    <Trans>Approve {currencies[Field.CURRENCY_B]?.symbol}</Trans>
-                  )}
-                </ButtonPrimary>
-              )}
-            </RowBetween>
-          )}
         <ButtonError
           onClick={() => {
             expertMode ? onAdd() : setShowConfirm(true)
           }}
-          disabled={
-            !isValid ||
-            (!argentWalletContract && approvalA !== ApprovalState.APPROVED && !depositADisabled) ||
-            (!argentWalletContract && approvalB !== ApprovalState.APPROVED && !depositBDisabled)
-          }
+          disabled={!isValid || depositADisabled || depositBDisabled}
           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
         >
           <Text fontWeight={500}>{errorMessage ? errorMessage : <Trans>Preview</Trans>}</Text>

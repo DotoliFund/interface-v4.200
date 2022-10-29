@@ -12,6 +12,7 @@ import {
   tickToPrice,
 } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
+import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import { usePool } from 'hooks/usePools'
 import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -23,7 +24,6 @@ import { replaceURLParam } from 'utils/routes'
 
 import { BIG_INT_ZERO } from '../../../constants/misc'
 import { PoolState } from '../../../hooks/usePools'
-import { useCurrencyBalances } from '../../connection/hooks'
 import { AppState } from '../../index'
 import {
   Bound,
@@ -99,6 +99,8 @@ export function useV3MintActionHandlers(noLiquidity: boolean | undefined): {
 }
 
 export function useV3DerivedMintInfo(
+  fundAddress?: string,
+  investorAddress?: string,
   currencyA?: Currency,
   currencyB?: Currency,
   feeAmount?: FeeAmount,
@@ -157,19 +159,20 @@ export function useV3DerivedMintInfo(
   )
 
   //TODO : use this
-  // const selectedCurrencyBalance = useInvestorCurrencyBalance(
-  //   fundAddress ?? undefined,
-  //   investorAddress,
-  //   currency?.wrapped.address ?? undefined
-  // )
-  // balances
-  const balances = useCurrencyBalances(
-    account ?? undefined,
-    useMemo(() => [currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]], [currencies])
+  const balances_A = useInvestorCurrencyBalance(
+    fundAddress ?? undefined,
+    investorAddress,
+    currencies[Field.CURRENCY_A]?.wrapped.address ?? undefined
   )
+  const balances_B = useInvestorCurrencyBalance(
+    fundAddress ?? undefined,
+    investorAddress,
+    currencies[Field.CURRENCY_B]?.wrapped.address ?? undefined
+  )
+
   const currencyBalances: { [field in Field]?: CurrencyAmount<Currency> } = {
-    [Field.CURRENCY_A]: balances[0],
-    [Field.CURRENCY_B]: balances[1],
+    [Field.CURRENCY_A]: balances_A,
+    [Field.CURRENCY_B]: balances_B,
   }
 
   // pool
@@ -459,15 +462,10 @@ export function useV3DerivedMintInfo(
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
 
   if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
-    console.log(1)
-    console.log(currencyAAmount.quotient.toString())
-    console.log(currencyBalances?.[Field.CURRENCY_A]?.quotient.toString())
     errorMessage = <Trans>Insufficient {currencies[Field.CURRENCY_A]?.symbol} balance</Trans>
   }
 
   if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
-    console.log(2)
-
     errorMessage = <Trans>Insufficient {currencies[Field.CURRENCY_B]?.symbol} balance</Trans>
   }
 

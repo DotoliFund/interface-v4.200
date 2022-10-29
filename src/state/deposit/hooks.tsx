@@ -131,15 +131,15 @@ export function useDerivedDepositInfo(): {
       }
     }
 
-    // // compare input balance to max input based on version
-    // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)]
+    // compare input balance to max input based on version
+    const [balanceIn] = [currencyBalances[Field.INPUT]]
 
-    // if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    //   inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
-    // }
+    if (parsedAmount && balanceIn?.lessThan(parsedAmount)) {
+      inputError = <Trans>Insufficient {parsedAmount.currency.symbol} balance</Trans>
+    }
 
     return inputError
-  }, [account, currencies, parsedAmount, to])
+  }, [currencyBalances, account, currencies, parsedAmount, to])
 
   return useMemo(
     () => ({
