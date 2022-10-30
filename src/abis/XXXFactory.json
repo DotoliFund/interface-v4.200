@@ -1,13 +1,7 @@
 {
   "abi": [
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "priceOracle",
-          "type": "address"
-        }
-      ],
+      "inputs": [],
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
@@ -104,30 +98,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "weth",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "usd",
-          "type": "address"
-        }
-      ],
-      "name": "getETHPriceInUSD",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
           "name": "",
           "type": "address"
         }
@@ -157,64 +127,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint128",
-          "name": "amountIn",
-          "type": "uint128"
-        },
-        {
-          "internalType": "address",
-          "name": "weth",
-          "type": "address"
-        }
-      ],
-      "name": "getPriceETH",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint128",
-          "name": "amountIn",
-          "type": "uint128"
-        },
-        {
-          "internalType": "address",
-          "name": "usd",
-          "type": "address"
-        }
-      ],
-      "name": "getPriceUSD",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "getSwapRouterAddress",
       "outputs": [
@@ -222,30 +134,6 @@
           "internalType": "address",
           "name": "",
           "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "usd",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "weth",
-          "type": "address"
-        }
-      ],
-      "name": "getUSDPriceInETH",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -302,19 +190,6 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "oracle",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
         }
       ],
       "stateMutability": "view",

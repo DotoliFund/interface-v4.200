@@ -470,16 +470,13 @@ export abstract class XXXFund2 {
         deadline,
       }
 
-      console.log(params)
-
       return {
         calldata: XXXFund2.INTERFACE.encodeFunctionData('mintNewPosition', [params]),
         value: toHex(0),
       }
     } else {
       // increase
-      const params: IncreaseLiquidityParams[] = []
-      params.push({
+      const params: IncreaseLiquidityParams = {
         investor: investorAddress,
         tokenId: toHex(options.tokenId),
         amount0Desired: toHex(amount0Desired),
@@ -487,8 +484,8 @@ export abstract class XXXFund2 {
         amount0Min,
         amount1Min,
         deadline,
-      })
-
+      }
+      console.log(params)
       return {
         calldata: XXXFund2.INTERFACE.encodeFunctionData('increaseLiquidity', [params]),
         value: toHex(0),
@@ -500,13 +497,12 @@ export abstract class XXXFund2 {
     const tokenId = toHex(options.tokenId)
 
     // collect
-    const params: CollectFeeParams[] = []
-    params.push({
+    const params: CollectFeeParams = {
       investor: investorAddress,
       tokenId,
       amount0Max: MaxUint128,
       amount1Max: MaxUint128,
-    })
+    }
 
     return {
       calldata: XXXFund2.INTERFACE.encodeFunctionData('collectAllFees', [params]),
@@ -537,15 +533,14 @@ export abstract class XXXFund2 {
     )
 
     // remove liquidity
-    const params: DecreaseLiquidityParams[] = []
-    params.push({
+    const params: DecreaseLiquidityParams = {
       investor: investorAddress,
       tokenId,
       liquidity: toHex(partialPosition.liquidity),
       amount0Min: toHex(amount0Min),
       amount1Min: toHex(amount1Min),
       deadline,
-    })
+    }
 
     return {
       calldata: XXXFund2.INTERFACE.encodeFunctionData('decreaseLiquidity', [params]),

@@ -18,7 +18,6 @@ export default function useInvestorCurrencyBalance(
   const XXXFund2Contract = useXXXFund2Contract(fund)
   const inputCurrency = useCurrency(token)
 
-  //console.log(fund)
   const { loading: tokenBalancesLoading, result: [tokenBalances] = [] } = useSingleCallResult(
     XXXFund2Contract,
     'getInvestorTokenAmount',

@@ -12,7 +12,11 @@ interface UseV3PositionsResults {
   positions: PositionDetails[] | undefined
 }
 
-function useV3PositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseV3PositionsResults {
+function useV3PositionsFromTokenIds(
+  fund: string,
+  investor: string,
+  tokenIds: BigNumber[] | undefined
+): UseV3PositionsResults {
   const positionManager = useV3NFTPositionManagerContract()
   const inputs = useMemo(() => (tokenIds ? tokenIds.map((tokenId) => [BigNumber.from(tokenId)]) : []), [tokenIds])
   const results = useSingleContractMultipleData(positionManager, 'positions', inputs)
@@ -26,6 +30,8 @@ function useV3PositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseV3Pos
         const tokenId = tokenIds[i]
         const result = call.result as CallStateResult
         return {
+          fund,
+          investor,
           tokenId,
           fee: result.fee,
           feeGrowthInside0LastX128: result.feeGrowthInside0LastX128,
@@ -43,7 +49,7 @@ function useV3PositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseV3Pos
       })
     }
     return undefined
-  }, [loading, error, results, tokenIds])
+  }, [fund, investor, loading, error, results, tokenIds])
 
   return {
     loading,
@@ -56,8 +62,12 @@ interface UseV3PositionResults {
   position: PositionDetails | undefined
 }
 
-export function useV3PositionFromTokenId(tokenId: BigNumber | undefined): UseV3PositionResults {
-  const position = useV3PositionsFromTokenIds(tokenId ? [tokenId] : undefined)
+export function useV3PositionFromTokenId(
+  fund: string,
+  investor: string,
+  tokenId: BigNumber | undefined
+): UseV3PositionResults {
+  const position = useV3PositionsFromTokenIds(fund, investor, tokenId ? [tokenId] : undefined)
   return {
     loading: position.loading,
     position: position.positions?.[0],
@@ -83,7 +93,11 @@ export function useV3Positions(
     return []
   }, [tokenIdResults])
 
-  const { positions, loading: positionsLoading } = useV3PositionsFromTokenIds(tokenIds)
+  const { positions, loading: positionsLoading } = useV3PositionsFromTokenIds(
+    fund ?? NULL_ADDRESS,
+    investor ?? NULL_ADDRESS,
+    tokenIds
+  )
 
   return {
     loading: tokenIdResultsLoading || positionsLoading,

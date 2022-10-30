@@ -1,6 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 export interface PositionDetails {
+  fund: string
+  investor: string
   nonce: BigNumber
   tokenId: BigNumber
   operator: string

@@ -458,7 +458,7 @@ export default function Deposit() {
                         error={isValid}
                       >
                         <Text fontSize={20} fontWeight={500}>
-                          {swapInputError ? swapInputError : <Trans>Swap</Trans>}
+                          {swapInputError ? swapInputError : <Trans>Deposit</Trans>}
                         </Text>
                       </ButtonError>
                     )}

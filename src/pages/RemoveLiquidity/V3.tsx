@@ -18,6 +18,7 @@ import { AddRemoveTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import Slider from 'components/Slider'
 import Toggle from 'components/Toggle'
+import { NULL_ADDRESS } from 'constants/addresses'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
 import useDebouncedChangeHandler from 'hooks/useDebouncedChangeHandler'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
@@ -44,8 +45,9 @@ const DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE = new Percent(5, 100)
 
 // redirect invalid tokenIds
 export default function RemoveLiquidityV3() {
-  const { fundAddress, tokenId } = useParams<{
+  const { fundAddress, investorAddress, tokenId } = useParams<{
     fundAddress: string
+    investorAddress: string
     tokenId: string
   }>()
   const location = useLocation()
@@ -61,14 +63,22 @@ export default function RemoveLiquidityV3() {
     return <Navigate to={{ ...location, pathname: '/pool' }} replace />
   }
 
-  if (!fundAddress) {
+  if (!fundAddress || !investorAddress) {
     return <Navigate to={{ ...location, pathname: '/fund' }} replace />
   }
 
-  return <Remove fundAddress={fundAddress} tokenId={parsedTokenId} />
+  return <Remove fundAddress={fundAddress} investorAddress={investorAddress} tokenId={parsedTokenId} />
 }
-function Remove({ fundAddress, tokenId }: { fundAddress: string; tokenId: BigNumber }) {
-  const { position } = useV3PositionFromTokenId(tokenId)
+function Remove({
+  fundAddress,
+  investorAddress,
+  tokenId,
+}: {
+  fundAddress: string
+  investorAddress: string
+  tokenId: BigNumber
+}) {
+  const { position } = useV3PositionFromTokenId(fundAddress ?? NULL_ADDRESS, investorAddress ?? NULL_ADDRESS, tokenId)
   const theme = useTheme()
   const { account, chainId, provider } = useWeb3React()
 

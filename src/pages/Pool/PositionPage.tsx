@@ -16,8 +16,10 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { Dots } from 'components/swap/styleds'
 import Toggle from 'components/Toggle'
 import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+import { NULL_ADDRESS } from 'constants/addresses'
 import { useToken } from 'hooks/Tokens'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
+import { useXXXFactoryContract } from 'hooks/useContract'
 import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
 import { PoolState, usePool } from 'hooks/usePools'
 import useStablecoinPrice from 'hooks/useStablecoinPrice'
@@ -25,7 +27,7 @@ import { useV3PositionFees } from 'hooks/useV3PositionFees'
 import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Bound } from 'state/mint/v3/actions'
 import { useIsTransactionPending, useTransactionAdder } from 'state/transactions/hooks'
@@ -323,14 +325,28 @@ const useInverter = ({
 }
 
 export function PositionPage() {
-  const { tokenId: tokenIdFromUrl } = useParams<{ tokenId?: string }>()
+  const {
+    fundAddress: fund,
+    investorAddress: investor,
+    tokenId: tokenIdFromUrl,
+  } = useParams<{
+    fundAddress?: string
+    investorAddress?: string
+    tokenId?: string
+  }>()
   const { chainId, account, provider } = useWeb3React()
   const theme = useTheme()
 
+  const XXXFactoryContract = useXXXFactoryContract()
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined
-  const { loading, position: positionDetails } = useV3PositionFromTokenId(parsedTokenId)
+  const { loading, position: positionDetails } = useV3PositionFromTokenId(
+    fund ?? NULL_ADDRESS,
+    investor ?? NULL_ADDRESS,
+    parsedTokenId
+  )
 
   const {
+    fund: fundAddress,
     token0: token0Address,
     token1: token1Address,
     fee: feeAmount,
@@ -508,8 +524,22 @@ export function PositionPage() {
     provider,
   ])
 
-  const owner = useSingleCallResult(!!tokenId ? positionManager : null, 'ownerOf', [tokenId]).result?.[0]
-  const ownsNFT = owner === account || positionDetails?.operator === account
+  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
+    XXXFactoryContract,
+    'getFundByManager',
+    [account ?? undefined]
+  )
+  const [isManager, setIsManager] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isManagerLoading) {
+      setState()
+    }
+    async function setState() {
+      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
+        setIsManager(true)
+      }
+    }
+  }, [isManagerLoading, myFund, fundAddress])
 
   const feeValueUpper = inverted ? feeValue0 : feeValue1
   const feeValueLower = inverted ? feeValue1 : feeValue0
@@ -555,7 +585,7 @@ export function PositionPage() {
   }
 
   const showCollectAsWeth = Boolean(
-    ownsNFT &&
+    isManager &&
       (feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0)) &&
       currency0 &&
       currency1 &&
@@ -619,12 +649,14 @@ export function PositionPage() {
                 </Badge>
                 <RangeBadge removed={removed} inRange={inRange} />
               </RowFixed>
-              {ownsNFT && (
+              {isManager && (
                 <RowFixed>
                   {currency0 && currency1 && feeAmount && tokenId ? (
                     <ButtonGray
                       as={Link}
-                      to={`/increase/${currencyId(currency0)}/${currencyId(currency1)}/${feeAmount}/${tokenId}`}
+                      to={`/increase/${fundAddress}/${investor}/${currencyId(currency0)}/${currencyId(
+                        currency1
+                      )}/${feeAmount}/${tokenId}`}
                       width="fit-content"
                       padding="6px 8px"
                       $borderRadius="12px"
@@ -636,7 +668,7 @@ export function PositionPage() {
                   {tokenId && !removed ? (
                     <ResponsiveButtonPrimary
                       as={Link}
-                      to={`/remove/${tokenId}`}
+                      to={`/remove/${fundAddress}/${investor}/${tokenId}`}
                       width="fit-content"
                       padding="6px 8px"
                       $borderRadius="12px"
@@ -665,11 +697,11 @@ export function PositionPage() {
                 <div style={{ marginRight: 12 }}>
                   <NFT image={metadata.result.image} height={400} />
                 </div>
-                {typeof chainId === 'number' && owner && !ownsNFT ? (
+                {/* {typeof chainId === 'number' && owner && !ownsNFT ? (
                   <ExternalLink href={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)}>
                     <Trans>Owner</Trans>
                   </ExternalLink>
-                ) : null}
+                ) : null} */}
               </DarkCard>
             ) : (
               <DarkCard
@@ -762,7 +794,8 @@ export function PositionPage() {
                           </ThemedText.DeprecatedLargeHeader>
                         )}
                       </AutoColumn>
-                      {ownsNFT && (feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) || !!collectMigrationHash) ? (
+                      {isManager &&
+                      (feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) || !!collectMigrationHash) ? (
                         <ButtonConfirmed
                           disabled={collecting || !!collectMigrationHash}
                           confirmed={!!collectMigrationHash && !isCollectPending}

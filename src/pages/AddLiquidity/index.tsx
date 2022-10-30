@@ -7,6 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/InvestorCurrencyInputPanel'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
+import { NULL_ADDRESS } from 'constants/addresses'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { XXXFund2 } from 'interface/XXXFund2'
 import { useCallback, useEffect, useState } from 'react'
@@ -100,6 +101,8 @@ export default function AddLiquidity() {
 
   // check for existing position if tokenId in url
   const { position: existingPositionDetails, loading: positionLoading } = useV3PositionFromTokenId(
+    fundAddress ?? NULL_ADDRESS,
+    investorAddress ?? NULL_ADDRESS,
     tokenId ? BigNumber.from(tokenId) : undefined
   )
   const hasExistingPosition = !!existingPositionDetails && !positionLoading
@@ -235,14 +238,10 @@ export default function AddLiquidity() {
     }
 
     if (fundAddress && investorAddress && position && account && deadline) {
-      console.log(22222, position)
-      console.log(33333, tokenId)
-      console.log(44444, allowedSlippage.quotient.toString())
-      console.log(55555, deadline.toString())
-      console.log(55555, noLiquidity)
       const { calldata, value } =
         hasExistingPosition && tokenId
           ? XXXFund2.addLiquidityCallParameters(investorAddress, position, {
+              tokenId,
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
             })

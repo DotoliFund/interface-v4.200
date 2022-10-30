@@ -160,7 +160,7 @@ export default function App() {
                   <Route path="deposit/:fundAddress/:investorAddress" element={<Deposit />} />
                   <Route path="withdraw/:fundAddress/:investorAddress" element={<Withdraw />} />
                   <Route path="swap/:fundAddress/:investorAddress" element={<Swap />} />
-                  <Route path="pool/:tokenId" element={<PositionPage />} />
+                  <Route path="pool/:fundAddress/:investorAddress/:tokenId" element={<PositionPage />} />
                   <Route path="add" element={<RedirectDuplicateTokenIds />}>
                     {/* this is workaround since react-router-dom v6 doesn't support optional parameters any more */}
                     <Route path=":fundAddress/:investorAddress/:currencyIdA" />
@@ -173,7 +173,7 @@ export default function App() {
                     <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount" />
                     <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
                   </Route>
-                  <Route path="remove/:fundAddress/:tokenId" element={<RemoveLiquidityV3 />} />
+                  <Route path="remove/:fundAddress/:investorAddress/:tokenId" element={<RemoveLiquidityV3 />} />
                   <Route
                     path="vote/*"
                     element={

@@ -187,6 +187,8 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 
 export default function PositionListItem({ positionDetails }: PositionListItemProps) {
   const {
+    fund: fundAddress,
+    investor: investorAddress,
     token0: token0Address,
     token1: token1Address,
     fee: feeAmount,
@@ -222,7 +224,7 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
   // check if price is within range
   const outOfRange: boolean = pool ? pool.tickCurrent < tickLower || pool.tickCurrent >= tickUpper : false
 
-  const positionSummaryLink = '/pool/' + positionDetails.tokenId
+  const positionSummaryLink = '/pool/' + fundAddress + '/' + investorAddress + '/' + positionDetails.tokenId
 
   const removed = liquidity?.eq(0)
 
