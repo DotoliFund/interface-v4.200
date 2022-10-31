@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Fraction, Percent, Price, Token } from '@uniswap/sdk-core'
-import { NonfungiblePositionManager, Pool, Position } from '@uniswap/v3-sdk'
+import { Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Badge from 'components/Badge'
@@ -25,6 +25,7 @@ import { PoolState, usePool } from 'hooks/usePools'
 import useStablecoinPrice from 'hooks/useStablecoinPrice'
 import { useV3PositionFees } from 'hooks/useV3PositionFees'
 import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
+import { XXXFund2 } from 'interface/XXXFund2'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -455,23 +456,23 @@ export function PositionPage() {
       !positionManager ||
       !account ||
       !tokenId ||
-      !provider
+      !provider ||
+      !fund ||
+      !investor
     )
       return
 
     setCollecting(true)
 
-    // we fall back to expecting 0 fees in case the fetch fails, which is safe in the
-    // vast majority of cases
-    const { calldata, value } = NonfungiblePositionManager.collectCallParameters({
+    const { calldata, value } = XXXFund2.collectFeeCallParameters(investor, {
       tokenId: tokenId.toString(),
       expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(currency0ForFeeCollectionPurposes, 0),
       expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(currency1ForFeeCollectionPurposes, 0),
-      recipient: account,
+      recipient: fund,
     })
 
     const txn = {
-      to: positionManager.address,
+      to: fund,
       data: calldata,
       value,
     }
@@ -512,6 +513,8 @@ export function PositionPage() {
         console.error(error)
       })
   }, [
+    fund,
+    investor,
     chainId,
     feeValue0,
     feeValue1,

@@ -5,10 +5,9 @@ import AddressInputPanel from 'components/AddressInputPanel'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/InvestorCurrencyInputPanel'
-import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
 import { ArrowWrapper, PageWrapper, SwapWrapper } from 'components/swap/styleds'
@@ -16,20 +15,18 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import TokenWarningModal from 'components/TokenWarningModal'
-import { MouseoverTooltip } from 'components/Tooltip'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useTokenContract } from 'hooks/useContract'
 import useENSAddress from 'hooks/useENSAddress'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { XXXFund2 } from 'interface/XXXFund2'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
-import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
+import { ArrowDown } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -200,29 +197,6 @@ export default function Withdraw() {
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], fundAddress)
-
-  const handleApprove = useCallback(async () => {
-    await approveCallback()
-  }, [approveCallback])
-
-  // check if user has gone through approval process, used to show two step buttons, reset on token change
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-
-  // mark when a user has submitted an approval, reset onTokenSelection for input field
-  useEffect(() => {
-    if (approvalState === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
-    }
-  }, [approvalState, approvalSubmitted])
-
-  // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-  // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    approvalState === ApprovalState.NOT_APPROVED ||
-    approvalState === ApprovalState.PENDING ||
-    (approvalSubmitted && approvalState === ApprovalState.APPROVED)
-
   const currency = currencies[Field.INPUT]
   const tokenAddress = currency?.wrapped.address
   const tokenContract = useTokenContract(tokenAddress)
@@ -266,7 +240,6 @@ export default function Withdraw() {
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
-      setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(inputCurrency)
     },
     [onCurrencySelection]
@@ -279,8 +252,6 @@ export default function Withdraw() {
       action: 'Max',
     })
   }, [maxInputAmount, onUserInput])
-
-  const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
 
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
@@ -382,70 +353,6 @@ export default function Withdraw() {
                       <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
                         <Trans>Connect Wallet</Trans>
                       </ButtonLight>
-                    ) : showApproveFlow ? (
-                      <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                        <AutoColumn style={{ width: '100%' }} gap="12px">
-                          <ButtonConfirmed
-                            onClick={handleApprove}
-                            disabled={approveTokenButtonDisabled}
-                            width="100%"
-                            altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                            confirmed={approvalState === ApprovalState.APPROVED}
-                          >
-                            <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                              <span style={{ display: 'flex', alignItems: 'center' }}>
-                                {/* we need to shorten this string on mobile */}
-                                {approvalState === ApprovalState.APPROVED ? (
-                                  <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
-                                ) : (
-                                  <Trans>
-                                    Allow the Uniswap Protocol to use your {currencies[Field.INPUT]?.symbol}
-                                  </Trans>
-                                )}
-                              </span>
-                              {approvalState === ApprovalState.PENDING ? (
-                                <Loader stroke="white" />
-                              ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                                <CheckCircle size="20" color={theme.deprecated_green1} />
-                              ) : (
-                                <MouseoverTooltip
-                                  text={
-                                    <Trans>
-                                      You must give the Uniswap smart contracts permission to use your{' '}
-                                      {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
-                                    </Trans>
-                                  }
-                                >
-                                  <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                                </MouseoverTooltip>
-                              )}
-                            </AutoRow>
-                          </ButtonConfirmed>
-                          <ButtonError
-                            onClick={() => {
-                              if (isExpertMode) {
-                                //handleSwap()
-                              } else {
-                                onWithdraw()
-                                // setWithdrawState({
-                                //   attemptingTxn: false,
-                                //   swapErrorMessage: undefined,
-                                //   showConfirm: true,
-                                //   txHash: undefined,
-                                // })
-                              }
-                            }}
-                            width="100%"
-                            id="swap-button"
-                            disabled={!isValid || approvalState !== ApprovalState.APPROVED}
-                            error={isValid}
-                          >
-                            <Text fontSize={16} fontWeight={500}>
-                              <Trans>Withdraw</Trans>
-                            </Text>
-                          </ButtonError>
-                        </AutoColumn>
-                      </AutoRow>
                     ) : (
                       <ButtonError
                         onClick={() => {
@@ -466,7 +373,7 @@ export default function Withdraw() {
                         error={isValid}
                       >
                         <Text fontSize={20} fontWeight={500}>
-                          {swapInputError ? swapInputError : <Trans>Swap</Trans>}
+                          {swapInputError ? swapInputError : <Trans>Withdraw</Trans>}
                         </Text>
                       </ButtonError>
                     )}
