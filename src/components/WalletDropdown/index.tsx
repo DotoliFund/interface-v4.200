@@ -11,7 +11,6 @@ import { TransactionHistoryMenu } from './TransactionMenu'
 const WalletWrapper = styled.div`
   border-radius: 12px;
   width: 320px;
-  max-height: 376px;
   display: flex;
   flex-direction: column;
   font-size: 16px;
@@ -37,8 +36,8 @@ export enum MenuState {
 }
 
 const WalletDropdownWrapper = styled.div`
-  position: absolute;
-  top: 65px;
+  position: fixed;
+  top: 72px;
   right: 20px;
   z-index: ${Z_INDEX.dropdown};
 

@@ -21,7 +21,6 @@ import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
-import { PageWrapper, ThemedBackground } from 'pages/styled'
 import React, { useEffect, useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Download, ExternalLink, Inbox, PlusCircle } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -37,6 +36,24 @@ import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 import { LoadingRows } from './styled'
+
+const PageWrapper = styled.div`
+  width: 90%;
+`
+
+const ThemedBackground = styled.div<{ backgroundColor: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  max-width: 100vw !important;
+  height: 200vh;
+  mix-blend-mode: color;
+  background: ${({ backgroundColor }) =>
+    `radial-gradient(50% 50% at 50% 50%, ${backgroundColor} 0%, rgba(255, 255, 255, 0) 100%)`};
+  transform: translateY(-176vh);
+`
 
 const ContentLayout = styled.div`
   display: grid;
