@@ -284,7 +284,7 @@ export function TransactionErrorContent({ message, onDismiss }: { message: React
           <Text fontWeight={600} fontSize={16}>
             <Trans>Error</Trans>
           </Text>
-          <CloseIcon onClick={onDismiss} redesignFlag={true} />
+          <CloseIcon onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.accentCritical} style={{ strokeWidth: 1 }} size={90} />
