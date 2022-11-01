@@ -9,6 +9,7 @@ export interface ThemeColors {
   backgroundBackdrop: Color
   backgroundSurface: Color
   backgroundModule: Color
+  backgroundFloating: Color
   backgroundInteractive: Color
   backgroundOutline: Color
   backgroundScrim: Color
@@ -48,17 +49,17 @@ export interface ThemeColors {
   chain_10: Color
   chain_137: Color
   chain_42: Color
-  chain_69: Color
+  chain_420: Color
   chain_42161: Color
   chain_421611: Color
   chain_80001: Color
 
-  blue200: Color
   shallowShadow: Color
   deepShadow: Color
   hoverState: Color
   hoverDefault: Color
   stateOverlayHover: Color
+  stateOverlayPressed: Color
 }
 
 export interface Colors {
@@ -145,9 +146,9 @@ declare module 'styled-components/macro' {
     }
     transition: {
       duration: {
-        slow: number
-        medium: number
-        fast: number
+        slow: string
+        medium: string
+        fast: string
       }
       timing: {
         ease: string
@@ -155,6 +156,10 @@ declare module 'styled-components/macro' {
         out: string
         inOut: string
       }
+    }
+    opacity: {
+      hover: number
+      click: number
     }
     // css snippets
     flexColumnNoWrap: FlattenSimpleInterpolation
