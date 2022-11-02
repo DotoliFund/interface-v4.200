@@ -17,7 +17,7 @@ import styled, { useTheme } from 'styled-components/macro'
 
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 import { ExternalLink, ThemedText } from '../../theme'
-import { CardNoise } from '../earn/styled'
+import { CardNoise } from '../claim/styled'
 import Menu from '../Menu'
 import Row, { RowBetween } from '../Row'
 import { Dots } from '../swap/styleds'

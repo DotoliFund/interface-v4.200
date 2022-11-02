@@ -1,33 +1,23 @@
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import TokenListLogo from 'assets/svg/tokenlist.svg'
-import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
-import { LightGreyCard } from 'components/Card'
-import Column, { AutoColumn } from 'components/Column'
-import CurrencyLogo from 'components/CurrencyLogo'
-import Loader from 'components/Loader'
-import QuestionHelper from 'components/QuestionHelper'
-import Row, { RowBetween, RowFixed } from 'components/Row'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
-import { MouseoverTooltip } from 'components/Tooltip'
 import { checkWarning } from 'constants/tokenSafety'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { TokenSafetyVariant, useTokenSafetyFlag } from 'featureFlags/flags/tokenSafety'
-import { useIsUserAddedToken } from 'hooks/Tokens'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import { XOctagon } from 'react-feather'
 import { Check } from 'react-feather'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
-import { useCurrencyBalance } from 'state/connection/hooks'
-import { useCombinedActiveList } from 'state/lists/hooks'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
-import styled, { useTheme } from 'styled-components/macro'
-import { ThemedText } from 'theme'
-import { isTokenOnList } from 'utils'
+import styled from 'styled-components/macro'
 
-import ImportRow from '../ImportRow'
+import { useIsUserAddedToken } from '../../../hooks/Tokens'
+import { useCurrencyBalance } from '../../../state/connection/hooks'
+import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
+import { ThemedText } from '../../../theme'
+import Column, { AutoColumn } from '../../Column'
+import CurrencyLogo from '../../CurrencyLogo'
+import Loader from '../../Loader'
+import Row, { RowFixed } from '../../Row'
+import { MouseoverTooltip } from '../../Tooltip'
 import { LoadingRows, MenuItem } from '../styleds'
 
 function currencyKey(currency: Currency): string {
@@ -69,13 +59,12 @@ const Tag = styled.div`
   margin-right: 4px;
 `
 
-const FixedContentRow = styled.div`
-  padding: 4px 20px;
-  height: 56px;
-  display: grid;
-  grid-gap: 16px;
-  align-items: center;
+export const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
+  margin-left: 0.3em;
+  width: 1em;
+  height: 1em;
 `
+
 function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
 }
@@ -83,10 +72,6 @@ function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
 const TagContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-`
-
-const TokenListLogoWrapper = styled.img`
-  height: 20px;
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
@@ -118,7 +103,7 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
-function CurrencyRow({
+export function CurrencyRow({
   currency,
   onSelect,
   isSelected,
@@ -131,117 +116,75 @@ function CurrencyRow({
   onSelect: (hasWarning: boolean) => void
   isSelected: boolean
   otherSelected: boolean
-  style: CSSProperties
+  style?: CSSProperties
   showCurrencyAmount?: boolean
   eventProperties: Record<string, unknown>
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const selectedTokenList = useCombinedActiveList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency.isToken ? currency : undefined)
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
   const warning = currency.isNative ? null : checkWarning(currency.address)
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
-  const tokenSafetyFlag = useTokenSafetyFlag()
+  const isBlockedToken = !!warning && !warning.canProceed
+  const blockedTokenOpacity = '0.6'
 
   // only show add or remove buttons if not on selected list
   return (
-    <TraceEvent
-      events={[Event.onClick, Event.onKeyPress]}
-      name={EventName.TOKEN_SELECTED}
-      properties={{ is_imported_by_user: customAdded, ...eventProperties }}
-      element={ElementName.TOKEN_SELECTOR_ROW}
+    <MenuItem
+      tabIndex={0}
+      style={style}
+      className={`token-item-${key}`}
+      onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect(!!warning) : null)}
+      onClick={() => (isSelected ? null : onSelect(!!warning))}
+      disabled={isSelected}
+      selected={otherSelected}
+      dim={isBlockedToken}
     >
-      <MenuItem
-        tabIndex={0}
-        redesignFlag={redesignFlagEnabled}
-        style={style}
-        className={`token-item-${key}`}
-        onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect(!!warning) : null)}
-        onClick={() => (isSelected ? null : onSelect(!!warning))}
-        disabled={isSelected}
-        selected={otherSelected}
-      >
-        <Column>
-          <CurrencyLogo currency={currency} size={'24px'} />
-        </Column>
-        <AutoColumn>
-          <Row>
-            <CurrencyName title={currency.name}>{currency.name}</CurrencyName>
-
-            {tokenSafetyFlag === TokenSafetyVariant.Enabled && <TokenSafetyIcon warning={warning} />}
-          </Row>
-          <ThemedText.DeprecatedDarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
-            {!currency.isNative && !isOnSelectedList && customAdded ? (
-              <Trans>{currency.symbol} • Added by user</Trans>
-            ) : (
-              currency.symbol
-            )}
-          </ThemedText.DeprecatedDarkGray>
-        </AutoColumn>
-        <Column>
+      <Column>
+        <CurrencyLogo
+          currency={currency}
+          size={'36px'}
+          style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}
+        />
+      </Column>
+      <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
+        <Row>
+          <CurrencyName title={currency.name}>{currency.name}</CurrencyName>
+          <TokenSafetyIcon warning={warning} />
+          {isBlockedToken && <BlockedTokenIcon />}
+        </Row>
+        <ThemedText.DeprecatedDarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
+          {currency.symbol}
+        </ThemedText.DeprecatedDarkGray>
+      </AutoColumn>
+      <Column>
+        <RowFixed style={{ justifySelf: 'flex-end' }}>
+          <TokenTags currency={currency} />
+        </RowFixed>
+      </Column>
+      {showCurrencyAmount ? (
+        <RowFixed style={{ justifySelf: 'flex-end' }}>
+          {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+          {isSelected && <CheckIcon />}
+        </RowFixed>
+      ) : (
+        isSelected && (
           <RowFixed style={{ justifySelf: 'flex-end' }}>
-            <TokenTags currency={currency} />
+            <CheckIcon />
           </RowFixed>
-        </Column>
-        {showCurrencyAmount ? (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-            {redesignFlagEnabled && isSelected && <CheckIcon />}
-          </RowFixed>
-        ) : (
-          redesignFlagEnabled &&
-          isSelected && (
-            <RowFixed style={{ justifySelf: 'flex-end' }}>
-              <CheckIcon />
-            </RowFixed>
-          )
-        )}
-      </MenuItem>
-    </TraceEvent>
-  )
-}
-
-const BREAK_LINE = 'BREAK'
-type BreakLine = typeof BREAK_LINE
-function isBreakLine(x: unknown): x is BreakLine {
-  return x === BREAK_LINE
-}
-
-function BreakLineComponent({ style }: { style: CSSProperties }) {
-  const theme = useTheme()
-  return (
-    <FixedContentRow style={style}>
-      <LightGreyCard padding="8px 12px" $borderRadius="8px">
-        <RowBetween>
-          <RowFixed>
-            <TokenListLogoWrapper src={TokenListLogo} />
-            <ThemedText.DeprecatedMain ml="6px" fontSize="12px" color={theme.deprecated_text1}>
-              <Trans>Expanded results from inactive Token Lists</Trans>
-            </ThemedText.DeprecatedMain>
-          </RowFixed>
-          <QuestionHelper
-            text={
-              <Trans>
-                Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.
-              </Trans>
-            }
-          />
-        </RowBetween>
-      </LightGreyCard>
-    </FixedContentRow>
+        )
+      )}
+    </MenuItem>
   )
 }
 
 interface TokenRowProps {
-  data: Array<Currency | BreakLine>
+  data: Array<Currency>
   index: number
   style: CSSProperties
 }
 
-const formatAnalyticsEventProperties = (
+export const formatAnalyticsEventProperties = (
   token: Token,
   index: number,
   data: any[],
@@ -260,6 +203,14 @@ const formatAnalyticsEventProperties = (
     : { search_token_address_input: isAddressSearch }),
 })
 
+const LoadingRow = () => (
+  <LoadingRows>
+    <div />
+    <div />
+    <div />
+  </LoadingRows>
+)
+
 export default function CurrencyList({
   height,
   currencies,
@@ -268,8 +219,6 @@ export default function CurrencyList({
   onCurrencySelect,
   otherCurrency,
   fixedListRef,
-  showImportView,
-  setImportToken,
   showCurrencyAmount,
   isLoading,
   searchQuery,
@@ -282,27 +231,21 @@ export default function CurrencyList({
   onCurrencySelect: (currency: Currency, hasWarning?: boolean) => void
   otherCurrency?: Currency | null
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  showImportView: () => void
-  setImportToken: (token: Token) => void
   showCurrencyAmount?: boolean
   isLoading: boolean
   searchQuery: string
   isAddressSearch: string | false
 }) {
-  const itemData: (Currency | BreakLine)[] = useMemo(() => {
+  const itemData: Currency[] = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
-      return [...currencies, BREAK_LINE, ...otherListTokens]
+      return [...currencies, ...otherListTokens]
     }
     return currencies
   }, [currencies, otherListTokens])
 
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
-      const row: Currency | BreakLine = data[index]
-
-      if (isBreakLine(row)) {
-        return <BreakLineComponent style={style} />
-      }
+      const row: Currency = data[index]
 
       const currency = row
 
@@ -312,20 +255,8 @@ export default function CurrencyList({
 
       const token = currency?.wrapped
 
-      const showImport = index > currencies.length
-
       if (isLoading) {
-        return (
-          <LoadingRows>
-            <div />
-            <div />
-            <div />
-          </LoadingRows>
-        )
-      } else if (showImport && token) {
-        return (
-          <ImportRow style={style} token={token} showImportView={showImportView} setImportToken={setImportToken} dim />
-        )
+        return LoadingRow()
       } else if (currency) {
         return (
           <CurrencyRow
@@ -342,27 +273,19 @@ export default function CurrencyList({
         return null
       }
     },
-    [
-      currencies.length,
-      onCurrencySelect,
-      otherCurrency,
-      selectedCurrency,
-      setImportToken,
-      showImportView,
-      showCurrencyAmount,
-      isLoading,
-      isAddressSearch,
-      searchQuery,
-    ]
+    [onCurrencySelect, otherCurrency, selectedCurrency, showCurrencyAmount, isLoading, isAddressSearch, searchQuery]
   )
 
   const itemKey = useCallback((index: number, data: typeof itemData) => {
     const currency = data[index]
-    if (isBreakLine(currency)) return BREAK_LINE
     return currencyKey(currency)
   }, [])
 
-  return (
+  return isLoading ? (
+    <FixedSizeList height={height} ref={fixedListRef as any} width="100%" itemData={[]} itemCount={10} itemSize={56}>
+      {LoadingRow}
+    </FixedSizeList>
+  ) : (
     <FixedSizeList
       height={height}
       ref={fixedListRef as any}

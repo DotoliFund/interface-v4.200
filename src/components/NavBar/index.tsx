@@ -1,16 +1,18 @@
 import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 import Web3Status from 'components/Web3Status'
-import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
+import { useNftFlag } from 'featureFlags/flags/nft'
+import { chainIdToBackendName } from 'graphql/data/util'
+import { Box } from 'nft/components/Box'
+import { Row } from 'nft/components/Flex'
+import { UniIcon } from 'nft/components/icons'
 import { ReactNode } from 'react'
 import { NavLink, NavLinkProps, useLocation } from 'react-router-dom'
 
-import { Box } from '../../nft/components/Box'
-import { Row } from '../../nft/components/Flex'
-import { UniIcon } from '../../nft/components/icons'
-import { ChainSwitcher } from './ChainSwitcher'
+import { ChainSelector } from './ChainSelector'
 import { MenuDropdown } from './MenuDropdown'
-import * as styles from './Navbar.css'
-import { SearchBar } from './SearchBar'
+// import { ShoppingBag } from './ShoppingBag'
+import * as styles from './style.css'
 
 interface MenuItemProps {
   href: string
@@ -35,6 +37,8 @@ const MenuItem = ({ href, id, isActive, children }: MenuItemProps) => {
 const PageTabs = () => {
   const { pathname } = useLocation()
   const nftFlag = useNftFlag()
+  const { chainId: connectedChainId } = useWeb3React()
+  const chainName = chainIdToBackendName(connectedChainId)
 
   const isPoolActive =
     pathname.startsWith('/pool') ||
@@ -45,17 +49,12 @@ const PageTabs = () => {
 
   return (
     <>
-      <MenuItem href="/swap" isActive={pathname.startsWith('/swap')}>
-        <Trans>Swap</Trans>
+      <MenuItem href="/swap" isActive={pathname.startsWith('/overview')}>
+        <Trans>Overview</Trans>
       </MenuItem>
-      <MenuItem href="/tokens" isActive={pathname.startsWith('/tokens')}>
-        <Trans>Tokens</Trans>
+      <MenuItem href={'/account'} isActive={pathname.startsWith('/account')}>
+        <Trans>My Account</Trans>
       </MenuItem>
-      {nftFlag === NftVariant.Enabled && (
-        <MenuItem href="/nfts" isActive={pathname.startsWith('/nfts')}>
-          <Trans>NFTs</Trans>
-        </MenuItem>
-      )}
       <MenuItem href="/pool" id={'pool-nav-link'} isActive={isPoolActive}>
         <Trans>Pool</Trans>
       </MenuItem>
@@ -64,6 +63,8 @@ const PageTabs = () => {
 }
 
 const Navbar = () => {
+  const { pathname } = useLocation()
+
   return (
     <>
       <nav className={styles.nav}>
@@ -73,25 +74,22 @@ const Navbar = () => {
               <UniIcon width="48" height="48" className={styles.logo} />
             </Box>
             <Box display={{ sm: 'flex', lg: 'none' }}>
-              <ChainSwitcher leftAlign={true} />
+              <ChainSelector leftAlign={true} />
             </Box>
             <Row gap="8" display={{ sm: 'none', lg: 'flex' }}>
               <PageTabs />
             </Row>
           </Box>
-          <Box className={styles.middleContainer}>
-            <SearchBar />
-          </Box>
+          <Box className={styles.middleContainer}>{/* <SearchBar /> */}</Box>
           <Box className={styles.rightSideContainer}>
             <Row gap="12">
-              <Box display={{ sm: 'flex', xl: 'none' }}>
-                <SearchBar />
-              </Box>
+              <Box display={{ sm: 'flex', xl: 'none' }}>{/* <SearchBar /> */}</Box>
               <Box display={{ sm: 'none', lg: 'flex' }}>
                 <MenuDropdown />
               </Box>
+              {/* {showShoppingBag && <ShoppingBag />} */}
               <Box display={{ sm: 'none', lg: 'flex' }}>
-                <ChainSwitcher />
+                <ChainSelector />
               </Box>
 
               <Web3Status />

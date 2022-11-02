@@ -29,30 +29,20 @@ import { HideSmall, ThemedText } from 'theme'
 import { FundDetails } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
-//import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
 
-const PageWrapper = styled(AutoColumn)<{ navBarFlag: boolean }>`
-  padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px')};
+const PageWrapper = styled(AutoColumn)`
   max-width: 870px;
   width: 100%;
-
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+  padding: 68px 12px 0px;
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     max-width: 800px;
+    padding: 0px 8px;
   `};
-
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     max-width: 500px;
   `};
-
-  @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
-    padding-top: ${({ navBarFlag }) => (navBarFlag ? '48px' : '0px')};
-  }
-
-  @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
-    padding-top: ${({ navBarFlag }) => (navBarFlag ? '20px' : '0px')};
-  }
 `
 const TitleRow = styled(RowBetween)`
   color: ${({ theme }) => theme.deprecated_text2};
@@ -66,7 +56,6 @@ const ButtonRow = styled(RowFixed)`
   & > *:not(:last-child) {
     margin-left: 8px;
   }
-
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     width: 100%;
     flex-direction: row;
@@ -81,7 +70,6 @@ const Menu = styled(NewMenu)`
     width: 49%;
     right: 0px;
   `};
-
   a {
     width: 100%;
   }
@@ -176,13 +164,13 @@ function WrongNetworkCard() {
   return (
     <>
       {tokensFlag === TokensVariant.Enabled && <TokensBanner />}
-      <PageWrapper navBarFlag={navBarFlagEnabled}>
+      <PageWrapper>
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
-            <TitleRow padding={'0'}>
-              <ThemedText.LargeHeader>
+            <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
+              <ThemedText.DeprecatedBody fontSize={'20px'}>
                 <Trans>My Funds</Trans>
-              </ThemedText.LargeHeader>
+              </ThemedText.DeprecatedBody>
             </TitleRow>
 
             <MainContentWrapper>
@@ -334,13 +322,13 @@ export default function Account() {
   return (
     <Trace page={PageName.POOL_PAGE} shouldLogImpression>
       <>
-        <PageWrapper navBarFlag={navBarFlagEnabled}>
+        <PageWrapper>
           <AutoColumn gap="lg" justify="center">
             <AutoColumn gap="lg" style={{ width: '100%' }}>
               <TitleRow padding={'0'}>
-                <ThemedText.LargeHeader>
-                  <Trans>My Account</Trans>
-                </ThemedText.LargeHeader>
+                <ThemedText.DeprecatedBody fontSize={'20px'}>
+                  <Trans>My Funds</Trans>
+                </ThemedText.DeprecatedBody>
                 <ButtonRow>
                   {
                     <Menu

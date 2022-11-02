@@ -18,10 +18,10 @@ import AddressInputPanel from '../AddressInputPanel'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Confetti from '../Confetti'
-import { Break, CardSection, DataCard } from '../earn/styled'
-import { CardBGImage, CardBGImageSmaller, CardNoise } from '../earn/styled'
 import Modal from '../Modal'
 import { RowBetween } from '../Row'
+import { Break, CardSection, DataCard } from './styled'
+import { CardBGImage, CardBGImageSmaller, CardNoise } from './styled'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

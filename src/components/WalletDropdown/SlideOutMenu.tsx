@@ -6,6 +6,7 @@ const Menu = styled.div`
   height: 100%;
   font-size: 16px;
   overflow: auto;
+  max-height: 450px;
 
   // Firefox scrollbar styling
   scrollbar-width: thin;
@@ -42,12 +43,12 @@ const ClearAll = styled.div`
   margin-bottom: auto;
 
   :hover {
-    opacity: 0.6;
+    opacity: ${({ theme }) => theme.opacity.hover};
     transition: ${({
       theme: {
         transition: { duration, timing },
       },
-    }) => `${duration.fast}ms opacity ${timing.in}`};
+    }) => `${duration.fast} opacity ${timing.in}`};
   }
 `
 
@@ -60,7 +61,7 @@ const StyledChevron = styled(ChevronLeft)`
       theme: {
         transition: { duration, timing },
       },
-    }) => `${duration.fast}ms color ${timing.in}`};
+    }) => `${duration.fast} color ${timing.in}`};
   }
 `
 
@@ -101,8 +102,8 @@ export const SlideOutMenu = ({
   <Menu>
     <BackSection>
       <BackSectionContainer>
-        <StyledChevron onClick={onClose} size={24} />
-        <Header>{title}</Header>
+        <StyledChevron data-testid="wallet-back" onClick={onClose} size={24} />
+        <Header data-testid="wallet-header">{title}</Header>
         {onClear && <ClearAll onClick={onClear}>Clear All</ClearAll>}
       </BackSectionContainer>
     </BackSection>
