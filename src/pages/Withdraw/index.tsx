@@ -274,8 +274,8 @@ export default function Withdraw() {
             onDismiss={handleDismissTokenWarning}
           />
         )}
-        <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
-          <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
+        <PageWrapper>
+          <SwapWrapper id="swap-page">
             {/* <SwapHeader allowedSlippage={undefined} />
             <ConfirmSwapModal
               isOpen={showConfirm}
@@ -319,7 +319,7 @@ export default function Withdraw() {
                     {recipient !== null ? (
                       <>
                         <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                          <ArrowWrapper clickable={false} redesignFlag={redesignFlagEnabled}>
+                          <ArrowWrapper clickable={false}>
                             <ArrowDown size="16" color={theme.deprecated_text2} />
                           </ArrowWrapper>
                           <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>

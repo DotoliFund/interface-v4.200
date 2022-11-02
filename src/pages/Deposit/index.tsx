@@ -321,8 +321,8 @@ export default function Deposit() {
             onDismiss={handleDismissTokenWarning}
           />
         )}
-        <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
-          <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
+        <PageWrapper>
+          <SwapWrapper id="swap-page">
             <AutoColumn gap={'0px'}>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
@@ -351,7 +351,7 @@ export default function Deposit() {
                     {recipient !== null ? (
                       <>
                         <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                          <ArrowWrapper clickable={false} redesignFlag={redesignFlagEnabled}>
+                          <ArrowWrapper clickable={false}>
                             <ArrowDown size="16" color={theme.deprecated_text2} />
                           </ArrowWrapper>
                           <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>

@@ -247,8 +247,8 @@ export default function Staking() {
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
       <>
-        <PageWrapper redesignFlag={redesignFlagEnabled} navBarFlag={navBarFlagEnabled}>
-          <SwapWrapper id="swap-page" redesignFlag={redesignFlagEnabled}>
+        <PageWrapper>
+          <SwapWrapper id="swap-page">
             <AutoColumn gap={'0px'}>
               <Label>
                 unStakingBalance:
