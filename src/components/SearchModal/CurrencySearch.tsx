@@ -2,10 +2,7 @@
 import { t, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { EventName, ModalName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useToggle from 'hooks/useToggle'
@@ -13,38 +10,27 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Edit } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 
-import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from '../../hooks/Tokens'
-import { ButtonText, CloseIcon, IconWrapper, ThemedText } from '../../theme'
+import { useActiveTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from '../../hooks/Tokens'
+import { CloseIcon, ThemedText } from '../../theme'
 import { isAddress } from '../../utils'
 import Column from '../Column'
-import Row, { RowBetween, RowFixed } from '../Row'
+import Row, { RowBetween } from '../Row'
 import CommonBases from './CommonBases'
+import { CurrencyRow, formatAnalyticsEventProperties } from './CurrencyList'
 import CurrencyList from './CurrencyList'
-import ImportRow from './ImportRow'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 
-const ContentWrapper = styled(Column)<{ redesignFlag?: boolean }>`
-  background-color: ${({ theme, redesignFlag }) => redesignFlag && theme.backgroundSurface};
+const ContentWrapper = styled(Column)`
+  background-color: ${({ theme }) => theme.backgroundSurface};
   width: 100%;
   flex: 1 1;
   position: relative;
-`
-
-const Footer = styled.div`
-  width: 100%;
-  border-radius: 20px;
-  padding: 20px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
-  border-top: 1px solid ${({ theme }) => theme.deprecated_bg2};
 `
 
 interface CurrencySearchProps {
@@ -56,9 +42,6 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   showCurrencyAmount?: boolean
   disableNonToken?: boolean
-  showManageView: () => void
-  showImportView: () => void
-  setImportToken: (token: Token) => void
 }
 
 export function CurrencySearch({
@@ -70,13 +53,7 @@ export function CurrencySearch({
   disableNonToken,
   onDismiss,
   isOpen,
-  showManageView,
-  showImportView,
-  setImportToken,
 }: CurrencySearchProps) {
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
-
   const { chainId } = useWeb3React()
   const theme = useTheme()
 
@@ -88,7 +65,8 @@ export function CurrencySearch({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
 
-  const allTokens = useAllTokens()
+  // Only display 'imported' tokens when the search filter has input
+  const defaultTokens = useActiveTokens(debouncedQuery.length > 0)
 
   // if they input an address, use it
   const isAddressSearch = isAddress(debouncedQuery)
@@ -108,32 +86,30 @@ export function CurrencySearch({
   }, [isAddressSearch])
 
   const filteredTokens: Token[] = useMemo(() => {
-    return Object.values(allTokens).filter(getTokenFilter(debouncedQuery))
-  }, [allTokens, debouncedQuery])
+    return Object.values(defaultTokens).filter(getTokenFilter(debouncedQuery))
+  }, [defaultTokens, debouncedQuery])
 
-  const [balances, balancesIsLoading] = useAllTokenBalances()
+  const [balances, balancesAreLoading] = useAllTokenBalances()
   const sortedTokens: Token[] = useMemo(
-    () => (!balancesIsLoading ? [...filteredTokens].sort(tokenComparator.bind(null, balances)) : []),
-    [balances, filteredTokens, balancesIsLoading]
+    () => (!balancesAreLoading ? [...filteredTokens].sort(tokenComparator.bind(null, balances)) : []),
+    [balances, filteredTokens, balancesAreLoading]
   )
+  const isLoading = Boolean(balancesAreLoading && !tokenLoaderTimerElapsed)
 
   const filteredSortedTokens = useSortTokensByQuery(debouncedQuery, sortedTokens)
 
   const native = useNativeCurrency()
+  const wrapped = native.wrapped
 
-  const filteredSortedTokensWithETH: Currency[] = useMemo(() => {
-    // Use Celo ERC20 Implementation and exclude the native asset
-    if (!native) {
-      return filteredSortedTokens
-    }
-
+  const searchCurrencies: Currency[] = useMemo(() => {
     const s = debouncedQuery.toLowerCase().trim()
-    if (native.symbol?.toLowerCase()?.indexOf(s) !== -1) {
-      // Always bump the native token to the top of the list.
-      return [native, ...filteredSortedTokens.filter((t) => !t.equals(native))]
-    }
-    return filteredSortedTokens
-  }, [debouncedQuery, native, filteredSortedTokens])
+
+    const tokens = filteredSortedTokens.filter((t) => !(t.equals(wrapped) || (disableNonToken && t.isNative)))
+    const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
+      (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
+    )
+    return [...natives, ...tokens]
+  }, [debouncedQuery, filteredSortedTokens, wrapped, disableNonToken, native])
 
   const handleCurrencySelect = useCallback(
     (currency: Currency, hasWarning?: boolean) => {
@@ -163,17 +139,17 @@ export function CurrencySearch({
         const s = debouncedQuery.toLowerCase().trim()
         if (s === native?.symbol?.toLowerCase()) {
           handleCurrencySelect(native)
-        } else if (filteredSortedTokensWithETH.length > 0) {
+        } else if (searchCurrencies.length > 0) {
           if (
-            filteredSortedTokensWithETH[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
-            filteredSortedTokensWithETH.length === 1
+            searchCurrencies[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+            searchCurrencies.length === 1
           ) {
-            handleCurrencySelect(filteredSortedTokensWithETH[0])
+            handleCurrencySelect(searchCurrencies[0])
           }
         }
       }
     },
-    [debouncedQuery, native, filteredSortedTokensWithETH, handleCurrencySelect]
+    [debouncedQuery, native, searchCurrencies, handleCurrencySelect]
   )
 
   // menu ui
@@ -195,93 +171,81 @@ export function CurrencySearch({
   }, [])
 
   return (
-    <ContentWrapper redesignFlag={redesignFlagEnabled}>
-      <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression>
-        <PaddedColumn gap="16px">
-          <RowBetween>
-            <Text fontWeight={500} fontSize={16}>
-              <Trans>Select a token</Trans>
-            </Text>
-            <CloseIcon onClick={onDismiss} />
-          </RowBetween>
-          <Row>
-            <SearchInput
-              type="text"
-              id="token-search-input"
-              placeholder={t`Search name or paste address`}
-              autoComplete="off"
-              redesignFlag={redesignFlagEnabled}
-              value={searchQuery}
-              ref={inputRef as RefObject<HTMLInputElement>}
-              onChange={handleInput}
-              onKeyDown={handleEnter}
-            />
-          </Row>
-          {showCommonBases && (
-            <CommonBases
-              chainId={chainId}
-              onSelect={handleCurrencySelect}
-              selectedCurrency={selectedCurrency}
-              searchQuery={searchQuery}
-              isAddressSearch={isAddressSearch}
-            />
-          )}
-        </PaddedColumn>
-        <Separator redesignFlag={redesignFlagEnabled} />
-        {searchToken && !searchTokenIsAdded ? (
-          <Column style={{ padding: '20px 0', height: '100%' }}>
-            <ImportRow token={searchToken} showImportView={showImportView} setImportToken={setImportToken} />
-          </Column>
-        ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 ? (
-          <div style={{ flex: '1' }}>
-            <AutoSizer disableWidth>
-              {({ height }) => (
-                <CurrencyList
-                  height={height}
-                  currencies={disableNonToken ? filteredSortedTokens : filteredSortedTokensWithETH}
-                  otherListTokens={filteredInactiveTokens}
-                  onCurrencySelect={handleCurrencySelect}
-                  otherCurrency={otherSelectedCurrency}
-                  selectedCurrency={selectedCurrency}
-                  fixedListRef={fixedList}
-                  showImportView={showImportView}
-                  setImportToken={setImportToken}
-                  showCurrencyAmount={showCurrencyAmount}
-                  isLoading={balancesIsLoading && !tokenLoaderTimerElapsed}
-                  searchQuery={searchQuery}
-                  isAddressSearch={isAddressSearch}
-                />
-              )}
-            </AutoSizer>
-          </div>
-        ) : (
-          <Column style={{ padding: '20px', height: '100%' }}>
-            <ThemedText.DeprecatedMain color={theme.deprecated_text3} textAlign="center" mb="20px">
-              <Trans>No results found.</Trans>
-            </ThemedText.DeprecatedMain>
-          </Column>
+    <ContentWrapper>
+      <PaddedColumn gap="16px">
+        <RowBetween>
+          <Text fontWeight={500} fontSize={16}>
+            <Trans>Select a token</Trans>
+          </Text>
+          <CloseIcon onClick={onDismiss} />
+        </RowBetween>
+        <Row>
+          <SearchInput
+            type="text"
+            id="token-search-input"
+            placeholder={t`Search name or paste address`}
+            autoComplete="off"
+            value={searchQuery}
+            ref={inputRef as RefObject<HTMLInputElement>}
+            onChange={handleInput}
+            onKeyDown={handleEnter}
+          />
+        </Row>
+        {showCommonBases && (
+          <CommonBases
+            chainId={chainId}
+            onSelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            searchQuery={searchQuery}
+            isAddressSearch={isAddressSearch}
+          />
         )}
-        {!redesignFlagEnabled && (
-          <Footer>
-            <Row justify="center">
-              <ButtonText
-                onClick={showManageView}
-                color={theme.deprecated_primary1}
-                className="list-token-manage-button"
-              >
-                <RowFixed>
-                  <IconWrapper size="16px" marginRight="6px" stroke={theme.deprecated_primaryText1}>
-                    <Edit />
-                  </IconWrapper>
-                  <ThemedText.DeprecatedMain color={theme.deprecated_primaryText1}>
-                    <Trans>Manage Token Lists</Trans>
-                  </ThemedText.DeprecatedMain>
-                </RowFixed>
-              </ButtonText>
-            </Row>
-          </Footer>
-        )}
-      </Trace>
+      </PaddedColumn>
+      <Separator />
+      {searchToken && !searchTokenIsAdded ? (
+        <Column style={{ padding: '20px 0', height: '100%' }}>
+          <CurrencyRow
+            currency={searchToken}
+            isSelected={Boolean(searchToken && selectedCurrency && selectedCurrency.equals(searchToken))}
+            onSelect={(hasWarning: boolean) => searchToken && handleCurrencySelect(searchToken, hasWarning)}
+            otherSelected={Boolean(searchToken && otherSelectedCurrency && otherSelectedCurrency.equals(searchToken))}
+            showCurrencyAmount={showCurrencyAmount}
+            eventProperties={formatAnalyticsEventProperties(
+              searchToken,
+              0,
+              [searchToken],
+              searchQuery,
+              isAddressSearch
+            )}
+          />
+        </Column>
+      ) : searchCurrencies?.length > 0 || filteredInactiveTokens?.length > 0 || isLoading ? (
+        <div style={{ flex: '1' }}>
+          <AutoSizer disableWidth>
+            {({ height }) => (
+              <CurrencyList
+                height={height}
+                currencies={searchCurrencies}
+                otherListTokens={filteredInactiveTokens}
+                onCurrencySelect={handleCurrencySelect}
+                otherCurrency={otherSelectedCurrency}
+                selectedCurrency={selectedCurrency}
+                fixedListRef={fixedList}
+                showCurrencyAmount={showCurrencyAmount}
+                isLoading={isLoading}
+                searchQuery={searchQuery}
+                isAddressSearch={isAddressSearch}
+              />
+            )}
+          </AutoSizer>
+        </div>
+      ) : (
+        <Column style={{ padding: '20px', height: '100%' }}>
+          <ThemedText.DeprecatedMain color={theme.deprecated_text3} textAlign="center" mb="20px">
+            <Trans>No results found.</Trans>
+          </ThemedText.DeprecatedMain>
+        </Column>
+      )}
     </ContentWrapper>
   )
 }
