@@ -8,7 +8,7 @@ export const nav = style([
     paddingX: '20',
     paddingY: '12',
     width: 'full',
-    height: '72',
+    height: '44',
     zIndex: '2',
     background: 'backgroundFloating',
   }),
