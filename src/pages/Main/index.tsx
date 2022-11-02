@@ -1,7 +1,5 @@
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { styled } from '@mui/system'
-import * as React from 'react'
+import { Trans } from '@lingui/macro'
+import styled from 'styled-components/macro'
 
 const MainWrapper = styled('div')({
   color: 'white',
@@ -16,43 +14,21 @@ const MainWrapper = styled('div')({
 export default function Main() {
   return (
     <MainWrapper>
-      <Box sx={{ width: '100%', maxWidth: 500 }}>
-        <Typography variant="h1" component="div" gutterBottom>
-          h1. Heading
-        </Typography>
-        <Typography variant="h2" gutterBottom component="div">
-          h2. Heading
-        </Typography>
-        <Typography variant="h3" gutterBottom component="div">
-          h3. Heading
-        </Typography>
-        <Typography variant="h4" gutterBottom component="div">
-          h4. Heading
-        </Typography>
-        <Typography variant="h5" gutterBottom component="div">
-          h5. Heading
-        </Typography>
-        <Typography variant="h6" gutterBottom component="div">
-          h6. Heading
-        </Typography>
+      <div>
+        <Trans>h1. Heading</Trans>
+        <Trans>h2. Heading</Trans>
+        <Trans>h3. Heading</Trans>
+        <Trans>h4. Heading</Trans>
+        <Trans>h5. Heading</Trans>
+        <Trans>h6. Heading</Trans>
 
-        <Box style={{ width: 200 }} component="div" sx={{ whiteSpace: 'nowrap' }}>
-          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-        </Box>
-        <Box style={{ width: 200 }} component="div" sx={{ whiteSpace: 'normal' }}>
-          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-        </Box>
+        <div style={{ width: 200 }}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</div>
+        <div style={{ width: 200 }}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</div>
 
-        <Typography variant="button" display="block" gutterBottom>
-          button text
-        </Typography>
-        <Typography variant="caption" display="block" gutterBottom>
-          caption text
-        </Typography>
-        <Typography variant="overline" display="block" gutterBottom>
-          overline text
-        </Typography>
-      </Box>
+        <Trans>button text</Trans>
+        <Trans>caption text</Trans>
+        <Trans>overline text</Trans>
+      </div>
     </MainWrapper>
   )
 }

@@ -448,13 +448,12 @@ export default function TransactionConfirmationModal({
 }: ConfirmationModalProps) {
   const { chainId } = useWeb3React()
   const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 
   if (!chainId) return null
 
   // confirmation screen
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} redesignFlag={redesignFlagEnabled}>
+    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
       {isL2ChainId(chainId) && (hash || attemptingTxn) ? (
         <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
       ) : attemptingTxn ? (

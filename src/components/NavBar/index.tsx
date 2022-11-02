@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import Web3Status from 'components/Web3Status'
-import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
+import { useNftFlag } from 'featureFlags/flags/nft'
 import { chainIdToBackendName } from 'graphql/data/util'
 import { Box } from 'nft/components/Box'
 import { Row } from 'nft/components/Flex'
@@ -49,17 +49,12 @@ const PageTabs = () => {
 
   return (
     <>
-      <MenuItem href="/swap" isActive={pathname.startsWith('/swap')}>
-        <Trans>Swap</Trans>
+      <MenuItem href="/swap" isActive={pathname.startsWith('/overview')}>
+        <Trans>Overview</Trans>
       </MenuItem>
-      <MenuItem href={`/tokens/${chainName.toLowerCase()}`} isActive={pathname.startsWith('/tokens')}>
-        <Trans>Tokens</Trans>
+      <MenuItem href={'/account'} isActive={pathname.startsWith('/account')}>
+        <Trans>My Account</Trans>
       </MenuItem>
-      {nftFlag === NftVariant.Enabled && (
-        <MenuItem href="/nfts" isActive={pathname.startsWith('/nfts')}>
-          <Trans>NFTs</Trans>
-        </MenuItem>
-      )}
       <MenuItem href="/pool" id={'pool-nav-link'} isActive={isPoolActive}>
         <Trans>Pool</Trans>
       </MenuItem>

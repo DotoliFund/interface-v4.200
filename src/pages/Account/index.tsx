@@ -35,6 +35,7 @@ import { LoadingRows } from './styleds'
 const PageWrapper = styled(AutoColumn)`
   max-width: 870px;
   width: 100%;
+  padding: 68px 12px 0px;
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     max-width: 800px;
     padding: 0px 8px;
@@ -324,7 +325,7 @@ export default function Account() {
         <PageWrapper>
           <AutoColumn gap="lg" justify="center">
             <AutoColumn gap="lg" style={{ width: '100%' }}>
-              <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
+              <TitleRow padding={'0'}>
                 <ThemedText.DeprecatedBody fontSize={'20px'}>
                   <Trans>My Funds</Trans>
                 </ThemedText.DeprecatedBody>

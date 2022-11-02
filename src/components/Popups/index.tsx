@@ -6,7 +6,6 @@ import { MEDIA_WIDTHS } from 'theme'
 import { useActivePopups } from '../../state/application/hooks'
 import { useURLWarningVisible } from '../../state/user/hooks'
 import { AutoColumn } from '../Column'
-import ClaimPopup from './ClaimPopup'
 import PopupItem from './PopupItem'
 
 const MobilePopupWrapper = styled.div<{ height: string | number }>`
@@ -41,7 +40,7 @@ const StopOverflowQuery = `@media screen and (min-width: ${MEDIA_WIDTHS.deprecat
 
 const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: boolean }>`
   position: fixed;
-  top: ${({ extraPadding }) => (extraPadding ? '64px' : '56px')};
+  top: ${({ extraPadding }) => (extraPadding ? '72px' : '64px')};
   right: 1rem;
   max-width: 355px !important;
   width: 100%;
@@ -52,7 +51,7 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: 
   `};
 
   ${StopOverflowQuery} {
-    top: ${({ extraPadding, xlPadding }) => (xlPadding ? '64px' : extraPadding ? '64px' : '56px')};
+    top: ${({ extraPadding, xlPadding }) => (xlPadding ? '72px' : extraPadding ? '72px' : '64px')};
   }
 `
 
@@ -69,7 +68,6 @@ export default function Popups() {
   return (
     <>
       <FixedPopupColumn gap="20px" extraPadding={urlWarningActive} xlPadding={isNotOnMainnet}>
-        <ClaimPopup />
         {activePopups.map((item) => (
           <PopupItem key={item.key} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
         ))}
