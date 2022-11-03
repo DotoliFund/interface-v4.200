@@ -60,7 +60,7 @@ export interface IncreaseLiquidityParams {
   deadline: string
 }
 
-export interface CollectFeeParams {
+export interface CollectPositionFeeParams {
   investor: string
   tokenId: string
   amount0Max: string
@@ -493,11 +493,11 @@ export abstract class XXXFund2 {
     }
   }
 
-  public static collectFeeCallParameters(investorAddress: string, options: CollectOptions): MethodParameters {
+  public static collectPositionFeeCallParameters(investorAddress: string, options: CollectOptions): MethodParameters {
     const tokenId = toHex(options.tokenId)
 
     // collect
-    const params: CollectFeeParams = {
+    const params: CollectPositionFeeParams = {
       investor: investorAddress,
       tokenId,
       amount0Max: MaxUint128,
@@ -505,7 +505,7 @@ export abstract class XXXFund2 {
     }
 
     return {
-      calldata: XXXFund2.INTERFACE.encodeFunctionData('collectAllFees', [params]),
+      calldata: XXXFund2.INTERFACE.encodeFunctionData('collectPositionFee', [params]),
       value: toHex(0),
     }
   }

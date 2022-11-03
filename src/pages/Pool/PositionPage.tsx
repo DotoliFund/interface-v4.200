@@ -464,7 +464,7 @@ export function PositionPage() {
 
     setCollecting(true)
 
-    const { calldata, value } = XXXFund2.collectFeeCallParameters(investor, {
+    const { calldata, value } = XXXFund2.collectPositionFeeCallParameters(investor, {
       tokenId: tokenId.toString(),
       expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(currency0ForFeeCollectionPurposes, 0),
       expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(currency1ForFeeCollectionPurposes, 0),
