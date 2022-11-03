@@ -30,7 +30,7 @@ import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { ExternalLink as StyledExternalLink } from 'theme/components'
-import { getEtherscanLink } from 'utils'
+import { getEtherscanLink, shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
@@ -268,7 +268,9 @@ export default function FundPage() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{` ${fundData.address} / ${fundData.manager} `}</ThemedText.DeprecatedLabel>
+              <ThemedText.DeprecatedLabel>{` ${shortenAddress(fundData.address)} / ${shortenAddress(
+                fundData.manager
+              )} `}</ThemedText.DeprecatedLabel>
             </AutoRow>
             <RowFixed gap="10px" align="center">
               address ? (

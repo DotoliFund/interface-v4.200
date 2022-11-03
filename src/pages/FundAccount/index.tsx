@@ -30,7 +30,7 @@ import styled, { css, useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { ExternalLink as StyledExternalLink } from 'theme/components'
 import { PositionDetails } from 'types/position'
-import { getEtherscanLink } from 'utils'
+import { getEtherscanLink, shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
@@ -547,7 +547,9 @@ export default function FundAccount() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{` ${investorData.investor} / ${investorData.manager} `}</ThemedText.DeprecatedLabel>
+              <ThemedText.DeprecatedLabel>{` ${shortenAddress(investorData.investor)} / ${shortenAddress(
+                investorData.manager
+              )} `}</ThemedText.DeprecatedLabel>
             </AutoRow>
             <RowFixed gap="10px" align="center">
               address ? (
