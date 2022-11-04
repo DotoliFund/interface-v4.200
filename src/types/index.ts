@@ -1,23 +1,37 @@
 export enum TransactionType {
   SWAP,
-  MINT,
-  BURN,
   DEPOSIT,
   WITHDRAW,
-  ADD_LIQUIDITY,
-  REMOVE_LIQUIDITY,
-  SUBSCRIBE,
 }
 
-export type Transaction = {
+export enum LiquidityTransactionType {
+  MINT,
+  ADD,
+  REMOVE,
+}
+
+export interface Transaction {
   type: TransactionType
   hash: string
   timestamp: string
   sender: string
-  token0Address: string
-  token1Address: string
-  amountToken0: number
-  amountToken1: number
+  token0: string
+  token1: string
+  amount0: number
+  amount1: number
+  amountETH: number
+  amountUSD: number
+}
+
+export interface LiquidityTransaction {
+  type: LiquidityTransactionType
+  hash: string
+  timestamp: string
+  sender: string
+  token0: string
+  token1: string
+  amount0: number
+  amount1: number
   amountETH: number
   amountUSD: number
 }

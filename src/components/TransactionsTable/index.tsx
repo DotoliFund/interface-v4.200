@@ -87,8 +87,8 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ transaction, color }: { transaction: Transaction; color?: string }) => {
-  const abs0 = Math.abs(transaction.amountToken0)
-  const abs1 = Math.abs(transaction.amountToken1)
+  const abs0 = Math.abs(transaction.amount0)
+  const abs1 = Math.abs(transaction.amount1)
   const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
 
@@ -96,21 +96,23 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
     <ResponsiveGrid>
       <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
-          {transaction.type === TransactionType.MINT
-            ? `Add token0Symbol and token0Symbol`
-            : transaction.type === TransactionType.SWAP
-            ? `Swap inputTokenSymbol for outputTokenSymbol`
-            : `Remove token0Symbol and token1Symbol`}
+          {transaction.type === TransactionType.SWAP
+            ? `Swap token0 to token1`
+            : transaction.type === TransactionType.DEPOSIT
+            ? `Deposit token0`
+            : transaction.type === TransactionType.WITHDRAW
+            ? `Withdraw token0`
+            : `Error`}
         </Label>
       </ExternalLink>
       <Label end={1} fontWeight={400}>
         {formatDollarAmount(transaction.amountUSD)}
       </Label>
       <Label end={1} fontWeight={400}>
-        <HoverInlineText text={`${formatAmount(abs0)}  token0Symbol`} maxCharacters={16} />
+        <HoverInlineText text={`${formatAmount(abs0)}`} maxCharacters={16} />
       </Label>
       <Label end={1} fontWeight={400}>
-        <HoverInlineText text={`${formatAmount(abs1)}  token1Symbol`} maxCharacters={16} />
+        <HoverInlineText text={`${formatAmount(abs1)}`} maxCharacters={16} />
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
@@ -216,23 +218,23 @@ export default function TransactionTable({
               }}
               active={txFilter === TransactionType.SWAP}
             >
-              Swaps
+              Swap
             </SortText>
             <SortText
               onClick={() => {
-                setTxFilter(TransactionType.MINT)
+                setTxFilter(TransactionType.DEPOSIT)
               }}
-              active={txFilter === TransactionType.MINT}
+              active={txFilter === TransactionType.DEPOSIT}
             >
-              Adds
+              Deposit
             </SortText>
             <SortText
               onClick={() => {
-                setTxFilter(TransactionType.BURN)
+                setTxFilter(TransactionType.WITHDRAW)
               }}
-              active={txFilter === TransactionType.BURN}
+              active={txFilter === TransactionType.WITHDRAW}
             >
-              Removes
+              Withdraw
             </SortText>
           </RowFixed>
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>

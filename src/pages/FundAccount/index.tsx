@@ -3,7 +3,6 @@ import { useWeb3React } from '@web3-react/core'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import CurrencyLogo from 'components/CurrencyLogo'
 import LineChart from 'components/LineChart/alt'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
@@ -13,27 +12,28 @@ import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
+import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
 import { useInvestorChartData } from 'data/FundAccount/chartData'
 import { useInvestorData } from 'data/FundAccount/investorData'
+import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityTransactions'
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import React, { useEffect, useMemo, useState } from 'react'
-import { BookOpen, ChevronDown, Download, ExternalLink, Inbox, PlusCircle } from 'react-feather'
+import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useUserHideClosedPositions } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
-import { ExternalLink as StyledExternalLink } from 'theme/components'
 import { PositionDetails } from 'types/position'
-import { getEtherscanLink, shortenAddress } from 'utils'
+import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
-import { formatAmount, formatDollarAmount } from 'utils/numbers'
+import { formatDollarAmount } from 'utils/numbers'
 
 import { LoadingRows } from './styled'
 
@@ -299,6 +299,7 @@ export default function FundAccount() {
   const investorData = useInvestorData(fundAddress, investorAddress).data
   const chartData = useInvestorChartData(fundAddress, investorAddress).data
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
+  const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
   const formattedVolumeETHData = useMemo(() => {
     if (chartData) {
@@ -446,15 +447,16 @@ export default function FundAccount() {
 
   const Buttons = () =>
     !account ? (
-      <ButtonPrimary $borderRadius="12px" padding={'12px'}>
+      <ButtonPrimary $borderRadius="12px" mr="12px" padding={'12px'}>
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
     ) : isManager && isManagerAccount ? (
-      <AutoRow gap="4px">
+      <>
         <ButtonPrimary
           $borderRadius="12px"
+          mr="12px"
           padding={'12px'}
           onClick={() => {
             navigate(`/swap/${fundAddress}/${investorAddress}`)
@@ -476,11 +478,12 @@ export default function FundAccount() {
             </MoreOptionsButton>
           )}
         />
-      </AutoRow>
+      </>
     ) : isManager && isInvestorAccount ? (
-      <AutoRow gap="4px">
+      <>
         <ButtonPrimary
           $borderRadius="12px"
+          mr="12px"
           padding={'12px'}
           onClick={() => {
             navigate(`/swap/${fundAddress}/${investorAddress}`)
@@ -502,11 +505,12 @@ export default function FundAccount() {
             </MoreOptionsButton>
           )}
         />
-      </AutoRow>
+      </>
     ) : isInvestor && isInvestorAccount ? (
-      <AutoRow gap="4px">
+      <>
         <ButtonPrimary
           $borderRadius="12px"
+          mr="12px"
           padding={'12px'}
           onClick={() => {
             navigate(`/deposit/${fundAddress}/${investorAddress}`)
@@ -528,7 +532,7 @@ export default function FundAccount() {
             </MoreOptionsButton>
           )}
         />
-      </AutoRow>
+      </>
     ) : (
       <></>
     )
@@ -547,73 +551,20 @@ export default function FundAccount() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{` ${shortenAddress(investorData.investor)} / ${shortenAddress(
-                investorData.manager
-              )} `}</ThemedText.DeprecatedLabel>
+              <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.investor)}`}</ThemedText.DeprecatedLabel>
+              <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
+              <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.manager)}`}</ThemedText.DeprecatedLabel>
             </AutoRow>
-            <RowFixed gap="10px" align="center">
-              address ? (
-              <StyledExternalLink href={getEtherscanLink(1, fundAddress, 'address', activeNetwork)}>
-                <ExternalLink stroke={theme.deprecated_text2} size={'17px'} style={{ marginLeft: '12px' }} />
-              </StyledExternalLink>
-              ) : (<></>)
-            </RowFixed>
           </RowBetween>
           <ResponsiveRow align="flex-end">
-            <AutoColumn gap="lg">
-              <RowFixed>
-                <ThemedText.DeprecatedLabel
-                  ml="8px"
-                  mr="8px"
-                  fontSize="24px"
-                >{` ${investorData.id} / ${investorData.fund} `}</ThemedText.DeprecatedLabel>
-                {activeNetwork === EthereumNetworkInfo ? null : <></>}
-              </RowFixed>
-              <ResponsiveRow>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + investorData.createdAtTimestamp}>
-                  <TokenButton>
-                    <RowFixed>
-                      <ThemedText.DeprecatedLabel
-                        fontSize="16px"
-                        ml="4px"
-                        style={{ whiteSpace: 'nowrap' }}
-                        width={'fit-content'}
-                      ></ThemedText.DeprecatedLabel>
-                    </RowFixed>
-                  </TokenButton>
-                </StyledInternalLink>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + investorData.fund}>
-                  <TokenButton ml="10px">
-                    <RowFixed>
-                      <CurrencyLogo size={'20px'} />
-                      <ThemedText.DeprecatedLabel
-                        fontSize="16px"
-                        ml="4px"
-                        style={{ whiteSpace: 'nowrap' }}
-                        width={'fit-content'}
-                      ></ThemedText.DeprecatedLabel>
-                    </RowFixed>
-                  </TokenButton>
-                </StyledInternalLink>
-              </ResponsiveRow>
-            </AutoColumn>
+            <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`${shortenAddress(
+              investorData.investor
+            )}`}</ThemedText.DeprecatedLabel>
+            {activeNetwork === EthereumNetworkInfo ? null : <></>}
+
             {activeNetwork !== EthereumNetworkInfo ? null : (
               <RowFixed>
-                {/* <StyledExternalLink
-                  href={`https://app.uniswap.org/#/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
-                > */}
-                <ButtonGray width="170px" mr="12px" style={{ height: '44px' }}>
-                  <RowBetween>
-                    <Download size={24} />
-                    <div style={{ display: 'flex', alignItems: 'center' }}>Add Liquidity</div>
-                  </RowBetween>
-                </ButtonGray>
-                {/* </StyledExternalLink> */}
-                {/* <StyledExternalLink
-                  href={`https://app.uniswap.org/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}`}
-                > */}
                 <Buttons />
-                {/* </StyledExternalLink> */}
               </RowFixed>
             )}
           </ResponsiveRow>
@@ -622,28 +573,13 @@ export default function FundAccount() {
               <AutoColumn gap="lg">
                 <GreyCard padding="16px">
                   <AutoColumn gap="md">
-                    <ThemedText.DeprecatedMain>Total Tokens Locked</ThemedText.DeprecatedMain>
+                    <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
                     <RowBetween>
                       <RowFixed>
-                        <CurrencyLogo size={'20px'} />
                         <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {investorData.manager}
+                          {shortenAddress(investorData.manager)}
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
-                      <ThemedText.DeprecatedLabel fontSize="14px">
-                        {formatAmount(investorData.volumeETH)}
-                      </ThemedText.DeprecatedLabel>
-                    </RowBetween>
-                    <RowBetween>
-                      <RowFixed>
-                        <CurrencyLogo size={'20px'} />
-                        <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {investorData.investor}
-                        </ThemedText.DeprecatedLabel>
-                      </RowFixed>
-                      <ThemedText.DeprecatedLabel fontSize="14px">
-                        {formatAmount(investorData.volumeUSD)}
-                      </ThemedText.DeprecatedLabel>
                     </RowBetween>
                   </AutoColumn>
                 </GreyCard>
@@ -841,6 +777,10 @@ export default function FundAccount() {
           </MainContentWrapper>
           <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
           <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
+          <ThemedText.DeprecatedMain fontSize="24px">Liquidity Transactions</ThemedText.DeprecatedMain>
+          <DarkGreyCard>
+            {liquidityTransactions ? <LiquidityTransactionTable transactions={liquidityTransactions} /> : <Loader />}
+          </DarkGreyCard>
         </AutoColumn>
       ) : (
         <Loader />

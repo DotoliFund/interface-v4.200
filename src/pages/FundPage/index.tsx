@@ -1,9 +1,8 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { ButtonGray, ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import CurrencyLogo from 'components/CurrencyLogo'
 import InvestorTable from 'components/funds/InvestorTable'
 import LineChart from 'components/LineChart/alt'
 import Loader from 'components/Loader'
@@ -23,18 +22,16 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Download, ExternalLink } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
-import { ExternalLink as StyledExternalLink } from 'theme/components'
-import { getEtherscanLink, shortenAddress } from 'utils'
+import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
-import { formatAmount, formatDollarAmount } from 'utils/numbers'
+import { formatDollarAmount } from 'utils/numbers'
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -268,73 +265,21 @@ export default function FundPage() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{` ${shortenAddress(fundData.address)} / ${shortenAddress(
-                fundData.manager
-              )} `}</ThemedText.DeprecatedLabel>
+              <ThemedText.DeprecatedLabel>{`${shortenAddress(fundData.address)}`}</ThemedText.DeprecatedLabel>
             </AutoRow>
-            <RowFixed gap="10px" align="center">
-              address ? (
-              <StyledExternalLink href={getEtherscanLink(1, fundAddress, 'address', activeNetwork)}>
-                <ExternalLink stroke={theme.deprecated_text2} size={'17px'} style={{ marginLeft: '12px' }} />
-              </StyledExternalLink>
-              ) : (<></>)
-            </RowFixed>
           </RowBetween>
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>
-                <ThemedText.DeprecatedLabel
-                  ml="8px"
-                  mr="8px"
-                  fontSize="24px"
-                >{` ${fundData.investorCount} / ${fundData.createdAtBlockNumber} `}</ThemedText.DeprecatedLabel>
+                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`${shortenAddress(
+                  fundData.address
+                )} `}</ThemedText.DeprecatedLabel>
                 {activeNetwork === EthereumNetworkInfo ? null : <></>}
               </RowFixed>
-              <ResponsiveRow>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + fundData.createdAtTimestamp}>
-                  <TokenButton>
-                    <RowFixed>
-                      <ThemedText.DeprecatedLabel
-                        fontSize="16px"
-                        ml="4px"
-                        style={{ whiteSpace: 'nowrap' }}
-                        width={'fit-content'}
-                      ></ThemedText.DeprecatedLabel>
-                    </RowFixed>
-                  </TokenButton>
-                </StyledInternalLink>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + fundData.address}>
-                  <TokenButton ml="10px">
-                    <RowFixed>
-                      <CurrencyLogo size={'20px'} />
-                      <ThemedText.DeprecatedLabel
-                        fontSize="16px"
-                        ml="4px"
-                        style={{ whiteSpace: 'nowrap' }}
-                        width={'fit-content'}
-                      ></ThemedText.DeprecatedLabel>
-                    </RowFixed>
-                  </TokenButton>
-                </StyledInternalLink>
-              </ResponsiveRow>
             </AutoColumn>
             {activeNetwork !== EthereumNetworkInfo ? null : (
               <RowFixed>
-                {/* <StyledExternalLink
-                  href={`https://app.uniswap.org/#/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
-                > */}
-                <ButtonGray width="170px" mr="12px" style={{ height: '44px' }}>
-                  <RowBetween>
-                    <Download size={24} />
-                    <div style={{ display: 'flex', alignItems: 'center' }}>Add Liquidity</div>
-                  </RowBetween>
-                </ButtonGray>
-                {/* </StyledExternalLink> */}
-                {/* <StyledExternalLink
-                  href={`https://app.uniswap.org/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}`}
-                > */}
                 <Buttons />
-                {/* </StyledExternalLink> */}
               </RowFixed>
             )}
           </ResponsiveRow>
@@ -343,28 +288,13 @@ export default function FundPage() {
               <AutoColumn gap="lg">
                 <GreyCard padding="16px">
                   <AutoColumn gap="md">
-                    <ThemedText.DeprecatedMain>Total Tokens Locked</ThemedText.DeprecatedMain>
+                    <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
                     <RowBetween>
                       <RowFixed>
-                        <CurrencyLogo size={'20px'} />
                         <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {fundData.manager}
+                          {shortenAddress(fundData.manager)}
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
-                      <ThemedText.DeprecatedLabel fontSize="14px">
-                        {formatAmount(fundData.volumeETH)}
-                      </ThemedText.DeprecatedLabel>
-                    </RowBetween>
-                    <RowBetween>
-                      <RowFixed>
-                        <CurrencyLogo size={'20px'} />
-                        <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {fundData.address}
-                        </ThemedText.DeprecatedLabel>
-                      </RowFixed>
-                      <ThemedText.DeprecatedLabel fontSize="14px">
-                        {formatAmount(fundData.volumeUSD)}
-                      </ThemedText.DeprecatedLabel>
                     </RowBetween>
                   </AutoColumn>
                 </GreyCard>

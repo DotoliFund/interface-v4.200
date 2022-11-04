@@ -2,35 +2,59 @@ import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Transaction, TransactionType } from 'types'
+import { LiquidityTransaction, LiquidityTransactionType } from 'types'
 
-const FUND_TRANSACTIONS = gql`
-  query transactions($fund: Bytes!) {
-    deposits(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+const FUND_ACCOUNT_TRANSACTIONS = gql`
+  query transactions($fund: Bytes!, $investor: Bytes!) {
+    mintNewPositions(
+      first: 100
+      orderBy: timestamp
+      orderDirection: desc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
       timestamp
       transaction {
         id
       }
       fund
+      manager
       investor
-      token
-      amount
+      token0
+      token1
+      amount0
+      amount1
       amountETH
       amountUSD
     }
-    withdraws(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+    increaseLiquidities(
+      first: 100
+      orderBy: timestamp
+      orderDirection: desc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
       timestamp
       transaction {
         id
       }
       fund
+      manager
       investor
-      token
-      amount
+      token0
+      token1
+      amount0
+      amount1
       amountETH
       amountUSD
     }
-    swaps(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+    collectPositionFees(
+      first: 100
+      orderBy: timestamp
+      orderDirection: desc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
       timestamp
       transaction {
         id
@@ -48,34 +72,40 @@ const FUND_TRANSACTIONS = gql`
   }
 `
 
-interface FundTransactionResults {
-  deposits: {
+interface InvestorTransactionResults {
+  mintNewPositions: {
     id: string
     transaction: {
       id: string
     }
     timestamp: string
     fund: string
+    manager: string
     investor: string
-    token: string
-    amount: string
+    token0: string
+    token1: string
+    amount0: string
+    amount1: string
     amountETH: string
     amountUSD: string
   }[]
-  withdraws: {
+  increaseLiquidities: {
     id: string
     transaction: {
       id: string
     }
     timestamp: string
     fund: string
+    manager: string
     investor: string
-    token: string
-    amount: string
+    token0: string
+    token1: string
+    amount0: string
+    amount1: string
     amountETH: string
     amountUSD: string
   }[]
-  swaps: {
+  collectPositionFees: {
     id: string
     transaction: {
       id: string
@@ -96,19 +126,26 @@ interface FundTransactionResults {
 /**
  * Fetch ManagerData
  */
-export function useFundTransactions(fund: string | undefined): {
+export function useFundAccountLiquidityTransactions(
+  fund: string | undefined,
+  investor: string | undefined
+): {
   loading: boolean
   error: boolean
-  data: Transaction[] | undefined
+  data: LiquidityTransaction[] | undefined
 } {
   if (!fund) {
     fund = NULL_ADDRESS
   }
+  if (!investor) {
+    investor = NULL_ADDRESS
+  }
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FundTransactionResults>(FUND_TRANSACTIONS, {
-    variables: { fund },
+  const id = fund.toUpperCase() + '-' + investor.toUpperCase()
+  const { loading, error, data } = useQuery<InvestorTransactionResults>(FUND_ACCOUNT_TRANSACTIONS, {
+    variables: { fund, investor },
     client: dataClient,
   })
 
@@ -124,44 +161,10 @@ export function useFundTransactions(fund: string | undefined): {
     }
   }
 
-  const deposits = data
-    ? data.deposits.map((m) => {
+  const mintNewPositions = data
+    ? data.mintNewPositions.map((m) => {
         return {
-          type: TransactionType.DEPOSIT,
-          hash: m.transaction.id,
-          timestamp: m.timestamp,
-          sender: m.investor,
-          token0: m.token,
-          token1: NULL_ADDRESS,
-          amount0: parseFloat(m.amount),
-          amount1: 0,
-          amountETH: parseFloat(m.amountETH),
-          amountUSD: parseFloat(m.amountUSD),
-        }
-      })
-    : []
-
-  const withdraws = data
-    ? data.withdraws.map((m) => {
-        return {
-          type: TransactionType.WITHDRAW,
-          hash: m.transaction.id,
-          timestamp: m.timestamp,
-          sender: m.investor,
-          token0: m.token,
-          token1: NULL_ADDRESS,
-          amount0: parseFloat(m.amount),
-          amount1: 0,
-          amountETH: parseFloat(m.amountETH),
-          amountUSD: parseFloat(m.amountUSD),
-        }
-      })
-    : []
-
-  const swaps = data
-    ? data.swaps.map((m) => {
-        return {
-          type: TransactionType.SWAP,
+          type: LiquidityTransactionType.MINT,
           hash: m.transaction.id,
           timestamp: m.timestamp,
           sender: m.manager,
@@ -175,5 +178,43 @@ export function useFundTransactions(fund: string | undefined): {
       })
     : []
 
-  return { data: [...deposits, ...withdraws, ...swaps], error: false, loading: false }
+  const increaseLiquidities = data
+    ? data.increaseLiquidities.map((m) => {
+        return {
+          type: LiquidityTransactionType.ADD,
+          hash: m.transaction.id,
+          timestamp: m.timestamp,
+          sender: m.manager,
+          token0: m.token0,
+          token1: m.token1,
+          amount0: parseFloat(m.amount0),
+          amount1: parseFloat(m.amount1),
+          amountETH: parseFloat(m.amountETH),
+          amountUSD: parseFloat(m.amountUSD),
+        }
+      })
+    : []
+
+  const collectPositionFees = data
+    ? data.collectPositionFees.map((m) => {
+        return {
+          type: LiquidityTransactionType.REMOVE,
+          hash: m.transaction.id,
+          timestamp: m.timestamp,
+          sender: m.manager,
+          token0: m.token0,
+          token1: m.token1,
+          amount0: parseFloat(m.amount0),
+          amount1: parseFloat(m.amount1),
+          amountETH: parseFloat(m.amountETH),
+          amountUSD: parseFloat(m.amountUSD),
+        }
+      })
+    : []
+
+  return {
+    data: [...mintNewPositions, ...increaseLiquidities, ...collectPositionFees],
+    error: false,
+    loading: false,
+  }
 }

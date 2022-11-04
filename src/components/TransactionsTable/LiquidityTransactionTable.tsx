@@ -1,17 +1,19 @@
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
+import HoverInlineText from 'components/HoverInlineText'
 import Loader from 'components/Loader'
+import { RowFixed } from 'components/Row'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
+import { OptimismNetworkInfo } from 'constants/networks'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
-import { Investor } from 'types/fund'
+import { LiquidityTransaction, LiquidityTransactionType } from 'types'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -76,14 +78,6 @@ const SortText = styled.button<{ active: boolean }>`
   }
 `
 
-const LinkWrapper = styled(Link)`
-  text-decoration: none;
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
-`
-
 const SORT_FIELD = {
   amountUSD: 'amountUSD',
   timestamp: 'timestamp',
@@ -92,46 +86,55 @@ const SORT_FIELD = {
   amountToken1: 'amountToken1',
 }
 
-const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
-  const abs0 = Math.abs(investor.profitRatioETH)
-  const abs1 = Math.abs(investor.principalUSD)
+const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; color?: string }) => {
+  const abs0 = Math.abs(transaction.amount0)
+  const abs1 = Math.abs(transaction.amount1)
   const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
 
   return (
-    <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
-      <ResponsiveGrid>
-        <Label end={1} fontWeight={400}>
-          <ExternalLink
-            href={getEtherscanLink(1, investor.manager, 'address', activeNetwork)}
-            style={{ color: color ?? theme.deprecated_blue1 }}
-          >
-            {shortenAddress(investor.investor)}
-          </ExternalLink>
+    <ResponsiveGrid>
+      <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
+        <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
+          {transaction.type === LiquidityTransactionType.MINT
+            ? `Mint token0 and token1`
+            : transaction.type === LiquidityTransactionType.ADD
+            ? `Add token0 and token1`
+            : transaction.type === LiquidityTransactionType.REMOVE
+            ? `Remove token0 and token1`
+            : `Error`}
         </Label>
-        <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalETH)}
-        </Label>
-        <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalETH)}
-        </Label>
-        <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalETH)}
-        </Label>
-        <Label end={1} fontWeight={400}>
-          {formatTime(investor.createdAtTimestamp.toString(), 8)}
-        </Label>
-      </ResponsiveGrid>
-    </LinkWrapper>
+      </ExternalLink>
+      <Label end={1} fontWeight={400}>
+        {formatDollarAmount(transaction.amountUSD)}
+      </Label>
+      <Label end={1} fontWeight={400}>
+        <HoverInlineText text={`${formatAmount(abs0)}`} maxCharacters={16} />
+      </Label>
+      <Label end={1} fontWeight={400}>
+        <HoverInlineText text={`${formatAmount(abs1)}`} maxCharacters={16} />
+      </Label>
+      <Label end={1} fontWeight={400}>
+        <ExternalLink
+          href={getEtherscanLink(1, transaction.sender, 'address', activeNetwork)}
+          style={{ color: color ?? theme.deprecated_blue1 }}
+        >
+          {shortenAddress(transaction.sender)}
+        </ExternalLink>
+      </Label>
+      <Label end={1} fontWeight={400}>
+        {formatTime(transaction.timestamp, activeNetwork === OptimismNetworkInfo ? 8 : 0)}
+      </Label>
+    </ResponsiveGrid>
   )
 }
 
-export default function InvestorTable({
-  investors,
+export default function LiquidityTransactionTable({
+  transactions,
   maxItems = 10,
   color,
 }: {
-  investors: Investor[]
+  transactions: LiquidityTransaction[]
   maxItems?: number
   color?: string
 }) {
@@ -148,28 +151,34 @@ export default function InvestorTable({
 
   useEffect(() => {
     let extraPages = 1
-    if (investors.length % maxItems === 0) {
+    if (transactions.length % maxItems === 0) {
       extraPages = 0
     }
-    setMaxPage(Math.floor(investors.length / maxItems) + extraPages)
-  }, [maxItems, investors])
+    setMaxPage(Math.floor(transactions.length / maxItems) + extraPages)
+  }, [maxItems, transactions])
 
-  const sortedInvestors = useMemo(() => {
-    return investors
-      ? investors
+  // filter on txn type
+  const [txFilter, setTxFilter] = useState<LiquidityTransactionType | undefined>(undefined)
+
+  const sortedTransactions = useMemo(() => {
+    return transactions
+      ? transactions
           .slice()
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof Investor] > b[sortField as keyof Investor]
+              return a[sortField as keyof LiquidityTransaction] > b[sortField as keyof LiquidityTransaction]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {
               return -1
             }
           })
+          .filter((x) => {
+            return txFilter === undefined || x.type === txFilter
+          })
           .slice(maxItems * (page - 1), page * maxItems)
       : []
-  }, [investors, maxItems, page, sortField, sortDirection])
+  }, [transactions, maxItems, page, sortField, sortDirection, txFilter])
 
   const handleSort = useCallback(
     (newField: string) => {
@@ -186,7 +195,7 @@ export default function InvestorTable({
     [sortDirection, sortField]
   )
 
-  if (!investors) {
+  if (!transactions) {
     return <Loader />
   }
 
@@ -194,17 +203,51 @@ export default function InvestorTable({
     <Wrapper>
       <AutoColumn gap="16px">
         <ResponsiveGrid>
-          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)} end={1}>
-            Invetsor {arrow(SORT_FIELD.sender)}
+          <RowFixed>
+            <SortText
+              onClick={() => {
+                setTxFilter(undefined)
+              }}
+              active={txFilter === undefined}
+            >
+              All
+            </SortText>
+            <SortText
+              onClick={() => {
+                setTxFilter(LiquidityTransactionType.MINT)
+              }}
+              active={txFilter === LiquidityTransactionType.MINT}
+            >
+              Mint
+            </SortText>
+            <SortText
+              onClick={() => {
+                setTxFilter(LiquidityTransactionType.ADD)
+              }}
+              active={txFilter === LiquidityTransactionType.ADD}
+            >
+              Add
+            </SortText>
+            <SortText
+              onClick={() => {
+                setTxFilter(LiquidityTransactionType.REMOVE)
+              }}
+              active={txFilter === LiquidityTransactionType.REMOVE}
+            >
+              Remove
+            </SortText>
+          </RowFixed>
+          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
+            Total Value {arrow(SORT_FIELD.amountUSD)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            TVL {arrow(SORT_FIELD.amountToken0)}
+            Token Amount {arrow(SORT_FIELD.amountToken0)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            Principal {arrow(SORT_FIELD.amountToken1)}
+            Token Amount {arrow(SORT_FIELD.amountToken1)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.amountUSD)}>
-            Profit {arrow(SORT_FIELD.amountUSD)}
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.sender)}>
+            Account {arrow(SORT_FIELD.sender)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             Time {arrow(SORT_FIELD.timestamp)}
@@ -212,18 +255,20 @@ export default function InvestorTable({
         </ResponsiveGrid>
         <Break />
 
-        {sortedInvestors.map((t, i) => {
+        {sortedTransactions.map((t, i) => {
           if (t) {
             return (
               <React.Fragment key={i}>
-                <DataRow investor={t} color={color} />
+                <DataRow transaction={t} color={color} />
                 <Break />
               </React.Fragment>
             )
           }
           return null
         })}
-        {sortedInvestors.length === 0 ? <ThemedText.DeprecatedMain>No Investors</ThemedText.DeprecatedMain> : undefined}
+        {sortedTransactions.length === 0 ? (
+          <ThemedText.DeprecatedMain>No Transactions</ThemedText.DeprecatedMain>
+        ) : undefined}
         <PageButtons>
           <div
             onClick={() => {
