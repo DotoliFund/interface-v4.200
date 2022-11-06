@@ -186,7 +186,7 @@ export function useFundAccountTransactions(
   const swaps = data
     ? data.swaps.map((m) => {
         return {
-          type: TransactionType.WITHDRAW,
+          type: TransactionType.SWAP,
           hash: m.transaction.id,
           timestamp: m.timestamp,
           sender: m.manager,

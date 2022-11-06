@@ -97,11 +97,11 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
       <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === LiquidityTransactionType.MINT
-            ? `Mint token0 and token1`
+            ? `Mint ${transaction.token0} and ${transaction.token1}`
             : transaction.type === LiquidityTransactionType.ADD
-            ? `Add token0 and token1`
+            ? `Add ${transaction.token0} and ${transaction.token1}`
             : transaction.type === LiquidityTransactionType.REMOVE
-            ? `Remove token0 and token1`
+            ? `Remove ${transaction.token0} and ${transaction.token1}`
             : `Error`}
         </Label>
       </ExternalLink>

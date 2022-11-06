@@ -181,16 +181,8 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 }
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
-  //const { token0: token0Address, token1: token1Address, fee: feeAmount, liquidity, tickLower, tickUpper } = fundDetails
   const { fund: fundAddress, investor: investorAddress } = fundDetails
   const { account } = useWeb3React()
-
-  // console.log('fundAddress :', fundAddress)
-  // console.log('investorAddress :', investorAddress)
-  // console.log('tokens :', tokens)
-
-  // const token0 = useToken(tokens[0])
-  // const token1 = useToken(tokens[1])
 
   const fundLink = '/fund/' + fundAddress + '/' + account
 

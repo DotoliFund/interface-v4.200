@@ -48,7 +48,7 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       amountETH
       amountUSD
     }
-    collectPositionFees(
+    decreaseLiquidities(
       first: 100
       orderBy: timestamp
       orderDirection: desc
@@ -105,7 +105,7 @@ interface InvestorTransactionResults {
     amountETH: string
     amountUSD: string
   }[]
-  collectPositionFees: {
+  decreaseLiquidities: {
     id: string
     transaction: {
       id: string
@@ -195,8 +195,8 @@ export function useFundAccountLiquidityTransactions(
       })
     : []
 
-  const collectPositionFees = data
-    ? data.collectPositionFees.map((m) => {
+  const decreaseLiquidities = data
+    ? data.decreaseLiquidities.map((m) => {
         return {
           type: LiquidityTransactionType.REMOVE,
           hash: m.transaction.id,
@@ -213,7 +213,7 @@ export function useFundAccountLiquidityTransactions(
     : []
 
   return {
-    data: [...mintNewPositions, ...increaseLiquidities, ...collectPositionFees],
+    data: [...mintNewPositions, ...increaseLiquidities, ...decreaseLiquidities],
     error: false,
     loading: false,
   }

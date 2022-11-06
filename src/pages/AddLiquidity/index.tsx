@@ -28,7 +28,7 @@ import { AutoColumn } from '../../components/Column'
 import FeeSelector from '../../components/FeeSelector'
 import HoverInlineText from '../../components/HoverInlineText'
 import LiquidityChartRangeInput from '../../components/LiquidityChartRangeInput'
-import { AddRemoveTabs } from '../../components/NavigationTabs'
+import { NavigationsTabs } from '../../components/NavigationTabs'
 import { PositionPreview } from '../../components/PositionPreview'
 import RangeSelector from '../../components/RangeSelector'
 import PresetsButtons from '../../components/RangeSelector/PresetsButtons'
@@ -457,12 +457,12 @@ export default function AddLiquidity() {
           pendingText={pendingText}
         />
         <PageWrapper wide={!hasExistingPosition}>
-          <AddRemoveTabs
-            creating={false}
+          <NavigationsTabs
             adding={true}
-            positionID={tokenId}
             defaultSlippage={DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE}
-            showBackLink={!hasExistingPosition}
+            fundAddress={fundAddress}
+            investorAddress={investorAddress}
+            tokenId={tokenId}
           >
             {!hasExistingPosition && (
               <Row justifyContent="flex-end" style={{ width: 'fit-content', minWidth: 'fit-content' }}>
@@ -493,7 +493,7 @@ export default function AddLiquidity() {
                 ) : null}
               </Row>
             )}
-          </AddRemoveTabs>
+          </NavigationsTabs>
           <Wrapper>
             <ResponsiveTwoColumns wide={!hasExistingPosition}>
               <AutoColumn gap="lg">

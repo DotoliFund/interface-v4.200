@@ -13,7 +13,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import FormattedCurrencyAmount from 'components/FormattedCurrencyAmount'
 import Loader from 'components/Loader'
-import { AddRemoveTabs } from 'components/NavigationTabs'
+import { NavigationsTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import Slider from 'components/Slider'
 import Toggle from 'components/Toggle'
@@ -126,12 +126,12 @@ function Remove({
       !positionSDK ||
       !liquidityPercentage ||
       !provider ||
-      !fundAddress
+      !investorAddress
     ) {
       return
     }
 
-    const { calldata, value } = XXXFund2.decreaseLiquidityCallParameters(fundAddress, positionSDK, {
+    const { calldata, value } = XXXFund2.decreaseLiquidityCallParameters(investorAddress, positionSDK, {
       tokenId: tokenId.toString(),
       liquidityPercentage,
       slippageTolerance: allowedSlippage,
@@ -184,6 +184,7 @@ function Remove({
       })
   }, [
     fundAddress,
+    investorAddress,
     positionManager,
     liquidityValue0,
     liquidityValue1,
@@ -308,10 +309,10 @@ function Remove({
         pendingText={pendingText}
       />
       <AppBody>
-        <AddRemoveTabs
-          creating={false}
+        <NavigationsTabs
           adding={false}
-          positionID={tokenId.toString()}
+          fundAddress={fundAddress}
+          investorAddress={investorAddress}
           defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}
         />
         <Wrapper>
