@@ -22,6 +22,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       investor
       token0
       token1
+      token0Symbol
+      token1Symbol
       amount0
       amount1
       amountETH
@@ -43,6 +45,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       investor
       token0
       token1
+      token0Symbol
+      token1Symbol
       amount0
       amount1
       amountETH
@@ -64,6 +68,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       investor
       token0
       token1
+      token0Symbol
+      token1Symbol
       amount0
       amount1
       amountETH
@@ -84,6 +90,8 @@ interface InvestorTransactionResults {
     investor: string
     token0: string
     token1: string
+    token0Symbol: string
+    token1Symbol: string
     amount0: string
     amount1: string
     amountETH: string
@@ -100,6 +108,8 @@ interface InvestorTransactionResults {
     investor: string
     token0: string
     token1: string
+    token0Symbol: string
+    token1Symbol: string
     amount0: string
     amount1: string
     amountETH: string
@@ -116,6 +126,8 @@ interface InvestorTransactionResults {
     investor: string
     token0: string
     token1: string
+    token0Symbol: string
+    token1Symbol: string
     amount0: string
     amount1: string
     amountETH: string
@@ -170,6 +182,8 @@ export function useFundAccountLiquidityTransactions(
           sender: m.manager,
           token0: m.token0,
           token1: m.token1,
+          token0Symbol: m.token0Symbol,
+          token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
           amountETH: parseFloat(m.amountETH),
@@ -187,6 +201,8 @@ export function useFundAccountLiquidityTransactions(
           sender: m.manager,
           token0: m.token0,
           token1: m.token1,
+          token0Symbol: m.token0Symbol,
+          token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
           amountETH: parseFloat(m.amountETH),
@@ -204,6 +220,8 @@ export function useFundAccountLiquidityTransactions(
           sender: m.manager,
           token0: m.token0,
           token1: m.token1,
+          token0Symbol: m.token0Symbol,
+          token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
           amountETH: parseFloat(m.amountETH),

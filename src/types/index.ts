@@ -17,6 +17,8 @@ export interface Transaction {
   sender: string
   token0: string
   token1: string
+  token0Symbol: string
+  token1Symbol: string
   amount0: number
   amount1: number
   amountETH: number
@@ -30,6 +32,8 @@ export interface LiquidityTransaction {
   sender: string
   token0: string
   token1: string
+  token0Symbol: string
+  token1Symbol: string
   amount0: number
   amount1: number
   amountETH: number

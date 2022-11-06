@@ -14,6 +14,7 @@ const FUND_TRANSACTIONS = gql`
       fund
       investor
       token
+      tokenSymbol
       amount
       amountETH
       amountUSD
@@ -26,6 +27,7 @@ const FUND_TRANSACTIONS = gql`
       fund
       investor
       token
+      tokenSymbol
       amount
       amountETH
       amountUSD
@@ -40,6 +42,8 @@ const FUND_TRANSACTIONS = gql`
       investor
       token0
       token1
+      token0Symbol
+      token1Symbol
       amount0
       amount1
       amountETH
@@ -58,6 +62,7 @@ interface FundTransactionResults {
     fund: string
     investor: string
     token: string
+    tokenSymbol: string
     amount: string
     amountETH: string
     amountUSD: string
@@ -71,6 +76,7 @@ interface FundTransactionResults {
     fund: string
     investor: string
     token: string
+    tokenSymbol: string
     amount: string
     amountETH: string
     amountUSD: string
@@ -86,6 +92,8 @@ interface FundTransactionResults {
     investor: string
     token0: string
     token1: string
+    token0Symbol: string
+    token1Symbol: string
     amount0: string
     amount1: string
     amountETH: string
@@ -133,6 +141,8 @@ export function useFundTransactions(fund: string | undefined): {
           sender: m.investor,
           token0: m.token,
           token1: NULL_ADDRESS,
+          token0Symbol: m.tokenSymbol,
+          token1Symbol: '',
           amount0: parseFloat(m.amount),
           amount1: 0,
           amountETH: parseFloat(m.amountETH),
@@ -150,6 +160,8 @@ export function useFundTransactions(fund: string | undefined): {
           sender: m.investor,
           token0: m.token,
           token1: NULL_ADDRESS,
+          token0Symbol: m.tokenSymbol,
+          token1Symbol: '',
           amount0: parseFloat(m.amount),
           amount1: 0,
           amountETH: parseFloat(m.amountETH),
@@ -167,6 +179,8 @@ export function useFundTransactions(fund: string | undefined): {
           sender: m.manager,
           token0: m.token0,
           token1: m.token1,
+          token0Symbol: m.token0Symbol,
+          token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
           amountETH: parseFloat(m.amountETH),

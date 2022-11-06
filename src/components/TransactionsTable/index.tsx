@@ -97,11 +97,11 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === TransactionType.SWAP
-            ? `Swap ${transaction.token0} to ${transaction.token1}`
+            ? `Swap ${transaction.token0Symbol} to ${transaction.token1Symbol}`
             : transaction.type === TransactionType.DEPOSIT
-            ? `Deposit ${transaction.token0}`
+            ? `Deposit ${transaction.token0Symbol}`
             : transaction.type === TransactionType.WITHDRAW
-            ? `Withdraw ${transaction.token0}`
+            ? `Withdraw ${transaction.token0Symbol}`
             : `Error`}
         </Label>
       </ExternalLink>
