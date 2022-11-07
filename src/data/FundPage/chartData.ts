@@ -5,7 +5,7 @@ import { useClients } from 'state/application/hooks'
 import { FundSnapshot, FundSnapshotFields } from 'types/fund'
 
 const FUND_CHART = gql`
-  query fundChartData($fund: String!) {
+  query fundChartData($fund: Bytes!) {
     fundSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: { fund: $fund }, subgraphError: allow) {
       id
       timestamp

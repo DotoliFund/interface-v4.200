@@ -8,6 +8,7 @@ const FUND_DATA = gql`
   query fund($fund: Bytes!) {
     fund(id: $fund, subgraphError: allow) {
       id
+      address
       createdAtTimestamp
       createdAtBlockNumber
       manager
@@ -63,7 +64,7 @@ export function useFundData(fund: string | undefined): {
 
   const formatted: Fund | undefined = data
     ? {
-        address: data.fund.id,
+        address: data.fund.address,
         createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
         createdAtBlockNumber: parseFloat(data.fund.createdAtBlockNumber),
         manager: data.fund.manager,

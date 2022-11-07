@@ -202,12 +202,6 @@ export abstract class XXXFund2 {
   public static INTERFACE: Interface = new Interface(IXXXFund2.abi)
 
   public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    console.log('amount.currency.name : ' + amount.currency.name)
-    console.log('amount.currency.symbol : ' + amount.currency.symbol)
-    console.log('token : ' + token)
-    console.log('amount.quotient toHex(): ' + toHex(amount.quotient))
-    console.log('amount.quotient : ' + amount.quotient)
-
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [
       token,
       toHex(amount.quotient),
@@ -224,7 +218,6 @@ export abstract class XXXFund2 {
   }
 
   public static withdrawCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    console.log('amount.quotient : ' + toHex(amount.quotient))
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('withdraw', [
       token,
       toHex(amount.quotient),
@@ -485,7 +478,6 @@ export abstract class XXXFund2 {
         amount1Min,
         deadline,
       }
-      console.log(params)
       return {
         calldata: XXXFund2.INTERFACE.encodeFunctionData('increaseLiquidity', [params]),
         value: toHex(0),

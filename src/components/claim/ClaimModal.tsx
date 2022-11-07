@@ -18,9 +18,9 @@ import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Confetti from '../Confetti'
-import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from './styled'
 import Modal from '../Modal'
 import { RowBetween } from '../Row'
+import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from './styled'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

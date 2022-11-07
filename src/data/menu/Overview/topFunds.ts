@@ -8,6 +8,7 @@ export const FUNDS_BULK = () => {
     query funds {
       funds(orderBy: profitETH, orderDirection: desc, subgraphError: allow) {
         id
+        address
         createdAtTimestamp
         createdAtBlockNumber
         manager
@@ -63,7 +64,7 @@ export function useTopFunds(): {
     ? data.funds.map((value, index) => {
         const fundFields = data.funds[index]
         const fundData: Fund = {
-          address: fundFields.id,
+          address: fundFields.address,
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
           createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),
           manager: fundFields.manager,

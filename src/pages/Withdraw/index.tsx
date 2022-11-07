@@ -205,7 +205,6 @@ export default function Withdraw() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress) return
 
-    console.log(0)
     const { calldata, value } = XXXFund2.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: fundAddress,

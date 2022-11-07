@@ -249,7 +249,6 @@ export default function Deposit() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
 
-    console.log(tokenAddress)
     const { calldata, value } = XXXFund2.depositCallParameters(tokenAddress, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: fundAddress,

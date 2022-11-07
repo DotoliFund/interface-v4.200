@@ -1,19 +1,17 @@
 import { Trans } from '@lingui/macro'
-import { Percent, Price, Token } from '@uniswap/sdk-core'
+import { Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import Badge from 'components/Badge'
-import RangeBadge from 'components/Badge/RangeBadge'
 import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
-//import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
+import { useFundData } from 'data/FundPage/fundData'
 import { Link } from 'react-router-dom'
-//import { Bound } from 'state/mint/v3/actions'
 import styled from 'styled-components/macro'
-import { HideSmall, MEDIA_WIDTHS, SmallOnly } from 'theme'
+import { MEDIA_WIDTHS } from 'theme'
 import { FundDetails } from 'types/fund'
+import { shortenAddress } from 'utils'
 
-//import { formatTickPrice } from 'utils/formatTickPrice'
 import { DAI, USDC_MAINNET, USDT, WBTC, WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 
 const LinkRow = styled(Link)`
@@ -183,58 +181,49 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 export default function FundListItem({ fundDetails }: FundListItemProps) {
   const { fund: fundAddress, investor: investorAddress } = fundDetails
   const { account } = useWeb3React()
-
+  const fundData = useFundData(fundAddress.toUpperCase()).data
   const fundLink = '/fund/' + fundAddress + '/' + account
 
   return (
     <LinkRow to={fundLink}>
       <RowBetween>
         <PrimaryPositionIdData>
-          {/* <DoubleCurrencyLogo currency0={currencyBase} currency1={currencyQuote} size={18} margin /> */}
-          <DataText>
-            {/* &nbsp;{currencyQuote?.symbol}&nbsp;/&nbsp;{currencyBase?.symbol} */}
-            test12345
-          </DataText>
+          <DataText>{fundData ? shortenAddress(fundData.address) : ''}</DataText>
           &nbsp;
           <Badge>
             <BadgeText>
-              <Trans>{new Percent(123, 1_000_000).toSignificant()}%</Trans>
+              <Trans>{fundData?.profitRatioUSD}%</Trans>
             </BadgeText>
           </Badge>
         </PrimaryPositionIdData>
-        {/* <RangeBadge removed={removed} inRange={!outOfRange} /> */}
-        <RangeBadge removed={true} inRange={true} />
       </RowBetween>
 
-      {true ? (
+      {fundData ? (
         <RangeLineItem>
           <RangeText>
             <ExtentsText>
-              <Trans>Min: </Trans>
+              <Trans>TVL: </Trans>
             </ExtentsText>
-            <Trans>
-              {/* {tokens[0][0]} */}
-              ddddddddddddddddd
-              {/* {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
-              per <HoverInlineText text={currencyBase?.symbol ?? ''} /> */}
-            </Trans>
-          </RangeText>{' '}
-          <HideSmall>
-            <DoubleArrow>⟷</DoubleArrow>{' '}
-          </HideSmall>
-          <SmallOnly>
-            <DoubleArrow>⟷</DoubleArrow>{' '}
-          </SmallOnly>
+            <Trans>{fundData.volumeUSD}</Trans>
+          </RangeText>
           <RangeText>
             <ExtentsText>
-              <Trans>Max:</Trans>
+              <Trans>Principal:</Trans>
             </ExtentsText>
-            <Trans>
-              {/* {tokens[0][1]} */}
-              hhhhhhhhhhhhhhhhhhh
-              {/* {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
-              per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} /> */}
-            </Trans>
+            <Trans>{fundData.principalUSD}</Trans>
+          </RangeText>
+          <RangeText>
+            <RangeText>
+              <ExtentsText>
+                <Trans>Profit:</Trans>
+              </ExtentsText>
+              <Trans>{fundData.profitUSD}</Trans>
+            </RangeText>
+            <RangeText></RangeText>
+            <ExtentsText>
+              <Trans>Investors:</Trans>
+            </ExtentsText>
+            <Trans>{fundData.investorCount}</Trans>
           </RangeText>
         </RangeLineItem>
       ) : (

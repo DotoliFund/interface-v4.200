@@ -586,20 +586,21 @@ export default function FundAccount() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(investorData.principalETH)}
+                    {formatDollarAmount(investorData.volumeUSD)}
                   </ThemedText.DeprecatedLabel>
                   <Percent value={investorData.profitRatioETH} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>Volume 24h</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(investorData.volumeUSD)}
+                    {formatDollarAmount(investorData.principalUSD)}
                   </ThemedText.DeprecatedLabel>
                   <Percent value={investorData.profitRatioUSD} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>24h Fees</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
+                  {investorData.principalUSD}%
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>

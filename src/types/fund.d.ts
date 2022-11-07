@@ -23,6 +23,7 @@ export interface Fund {
 
 export interface FundFields {
   id: string
+  address: string
   createdAtTimestamp: string
   createdAtBlockNumber: string
   manager: string

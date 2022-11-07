@@ -144,11 +144,10 @@ export default function FundPage() {
   }, [isInvestorLoading, isSubscribed, myFund])
 
   // token data
-  const fundData = useFundData(fundAddress).data
+  const fundData = useFundData(fundAddress?.toUpperCase()).data
   const chartData = useFundChartData(fundAddress).data
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
-  console.log(investors)
 
   const formattedVolumeETHData = useMemo(() => {
     if (chartData) {
@@ -301,20 +300,20 @@ export default function FundPage() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(fundData.principalETH)}
+                    {formatDollarAmount(fundData.volumeUSD)}
                   </ThemedText.DeprecatedLabel>
                   <Percent value={fundData.profitRatioETH} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>Volume 24h</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(fundData.volumeUSD)}
+                    {formatDollarAmount(fundData.principalUSD)}
                   </ThemedText.DeprecatedLabel>
                   <Percent value={fundData.profitRatioUSD} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>24h Fees</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
+                  <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedLabel fontSize="24px">{fundData.profitRatioUSD}%</ThemedText.DeprecatedLabel>
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>
