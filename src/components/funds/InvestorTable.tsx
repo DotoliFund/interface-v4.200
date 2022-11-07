@@ -85,11 +85,12 @@ const LinkWrapper = styled(Link)`
 `
 
 const SORT_FIELD = {
-  amountUSD: 'amountUSD',
-  timestamp: 'timestamp',
-  sender: 'sender',
-  amountToken0: 'amountToken0',
-  amountToken1: 'amountToken1',
+  investor: 'Investor',
+  tvl: 'TVL',
+  principal: 'Principal',
+  profit: 'Profit',
+  profitRatio: 'Ratio',
+  timestamp: 'Time',
 }
 
 const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
@@ -110,13 +111,16 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           </ExternalLink>
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalETH)}
+          {formatDollarAmount(investor.volumeUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalETH)}
+          {formatDollarAmount(investor.principalUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalETH)}
+          {formatDollarAmount(investor.profitUSD)}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {investor.profitRatioUSD}
         </Label>
         <Label end={1} fontWeight={400}>
           {formatTime(investor.createdAtTimestamp.toString(), 8)}
@@ -194,17 +198,20 @@ export default function InvestorTable({
     <Wrapper>
       <AutoColumn gap="16px">
         <ResponsiveGrid>
-          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)} end={1}>
-            Invetsor {arrow(SORT_FIELD.sender)}
+          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)} end={1}>
+            Invetsor {arrow(SORT_FIELD.investor)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            TVL {arrow(SORT_FIELD.amountToken0)}
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.tvl)}>
+            TVL {arrow(SORT_FIELD.tvl)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            Principal {arrow(SORT_FIELD.amountToken1)}
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.principal)}>
+            Principal {arrow(SORT_FIELD.principal)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.amountUSD)}>
-            Profit {arrow(SORT_FIELD.amountUSD)}
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profit)}>
+            Profit {arrow(SORT_FIELD.profit)}
+          </ClickableText>
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatio)}>
+            Ratio {arrow(SORT_FIELD.profitRatio)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             Time {arrow(SORT_FIELD.timestamp)}

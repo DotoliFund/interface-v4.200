@@ -88,7 +88,7 @@ const SORT_FIELD = {
 
 const DataRow = ({ transaction, color }: { transaction: Transaction; color?: string }) => {
   const abs0 = Math.abs(transaction.amount0)
-  const abs1 = Math.abs(transaction.amount1)
+  const abs1 = Math.abs(transaction.amount1) > 0 ? Math.abs(transaction.amount1) : undefined
   const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
 
