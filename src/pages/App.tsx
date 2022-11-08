@@ -11,7 +11,7 @@ import Account from 'pages/Account'
 import Deposit from 'pages/Deposit'
 import FundAccount from 'pages/FundAccount'
 import FundPage from 'pages/FundPage'
-import Main from 'pages/Main'
+import Home from 'pages/Home'
 import Overview from 'pages/Overview'
 import Staking from 'pages/Staking'
 import Swap from 'pages/Swap'
@@ -149,7 +149,8 @@ export default function App() {
             <Suspense fallback={<Loader />}>
               {isLoaded ? (
                 <Routes>
-                  <Route path="/" element={<Main />} />
+                  <Route path="/" element={<Home />} />
+                  <Route path="home" element={<Home />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="account" element={<Account />} />
                   <Route path="fund/:fundAddress" element={<FundPage />} />

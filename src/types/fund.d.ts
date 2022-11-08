@@ -74,6 +74,24 @@ export interface InvestorFields {
   profitRatioUSD: string
 }
 
+export interface XXXFund2Snapshot {
+  id: string
+  timestamp: number
+  fundCount: number
+  investorCount: number
+  totalVolumeETH: number
+  totalVolumeUSD: number
+}
+
+export interface XXXFund2SnapshotFields {
+  id: string
+  timestamp: string
+  fundCount: string
+  investorCount: string
+  totalVolumeETH: string
+  totalVolumeUSD: string
+}
+
 export interface FundSnapshot {
   id: string
   timestamp: number

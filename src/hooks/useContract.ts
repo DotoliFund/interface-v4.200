@@ -157,7 +157,7 @@ export function useXXXFactoryContract(withSignerIfPossible?: boolean): XXXFactor
   return useContract<XXXFactory>(XXXFACTORY_ADDRESSES, XXXFactoryABI, withSignerIfPossible)
 }
 
-export function useXXXFund2Contract(fundAddress: string, withSignerIfPossible?: boolean): XXXFund2 | null {
+export function useXXXFund2Contract(fundAddress: string | undefined, withSignerIfPossible?: boolean): XXXFund2 | null {
   return useContract<XXXFund2>(fundAddress, XXXFund2ABI, withSignerIfPossible)
 }
 

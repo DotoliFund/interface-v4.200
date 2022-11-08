@@ -1,21 +1,18 @@
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import DoubleCurrencyLogo from 'components/DoubleLogo'
 import Loader from 'components/Loader'
 import { LoadingRows } from 'components/Loader/styled'
-import { RowFixed } from 'components/Row'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components/macro'
-import { Color } from 'theme/styled'
+import { ThemedText } from 'theme'
 import { Fund } from 'types/fund'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
 `
 
-export const PageButtons = styled.div`
+const PageButtons = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -24,7 +21,7 @@ export const PageButtons = styled.div`
   margin-bottom: 0.5em;
 `
 
-export const Arrow = styled.div<{ faded: boolean }>`
+const Arrow = styled.div<{ faded: boolean }>`
   color: ${({ theme }) => theme.deprecated_primary1};
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 20px;
@@ -34,27 +31,35 @@ export const Arrow = styled.div<{ faded: boolean }>`
   }
 `
 
-export const Break = styled.div`
+const Break = styled.div`
   height: 1px;
   background-color: ${({ theme }) => theme.deprecated_bg1};
   width: 100%;
 `
 
-const ClickableText = styled(Text)`
-  :hover {
-    cursor: pointer;
+// responsive text
+const Label = styled(ThemedText.DeprecatedLabel)<{ end?: number }>`
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+  justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+  @media screen and (max-width: 640px) {
+    font-size: 14px;
   }
-  color: ${({ theme }) => theme.deprecated_primary1};
 `
 
-const Label = styled.div<{ color: Color }>`
-  padding: 4px 4px;
-  font-size: 12px;
-  background-color: ${({ color }) => color + '1F'};
-  border-radius: 8px;
-  color: ${({ color }) => color};
-  display: inline-flex;
-  align-items: center;
+const ClickableText = styled(Label)`
+  text-align: end;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+  user-select: none;
+  @media screen and (max-width: 640px) {
+    font-size: 12px;
+  }
 `
 
 const ResponsiveGrid = styled.div`
@@ -95,39 +100,23 @@ const LinkWrapper = styled(Link)`
 `
 
 const SORT_FIELD = {
-  feeTier: 'feeTier',
+  fund: 'fund',
+  manager: 'manager',
   volumeUSD: 'volumeUSD',
-  tvlUSD: 'tvlUSD',
-  volumeUSDWeek: 'volumeUSDWeek',
+  principalUSD: 'principalUSD',
+  profitRatioUSD: 'profitRatioUSD',
+  investorCount: 'investorCount',
 }
 
 const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
   return (
-    //<LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
     <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>
-        <Label color="textPrimary">{index + 1}</Label>
-        <Label color="textPrimary">
-          <RowFixed>
-            {/* <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} /> */}
-            <DoubleCurrencyLogo />
-            {/* <TYPE.label ml="8px"> */}
-            {fundData.address}
-            {/* </TYPE.label> */}
-          </RowFixed>
-        </Label>
-        <Label color="textPrimary">
-          {/* {formatDollarAmount(poolData.tvlUSD)} */}
-          {fundData.manager}
-        </Label>
-        <Label color="textPrimary">
-          {/* {formatDollarAmount(poolData.volumeUSD)} */}
-          {fundData.volumeETH}
-        </Label>
-        <Label color="textPrimary">
-          {/* {formatDollarAmount(poolData.volumeUSDWeek)} */}
-          {fundData.volumeUSD}
-        </Label>
+        <Label fontWeight={400}>{index + 1}</Label>
+        <Label fontWeight={400}>{fundData.address}</Label>
+        <Label fontWeight={400}>{fundData.volumeUSD.toFixed(2)}</Label>
+        <Label fontWeight={400}>{fundData.principalUSD.toFixed(2)}</Label>
+        <Label fontWeight={400}>{fundData.profitRatioUSD}</Label>
       </ResponsiveGrid>
     </LinkWrapper>
   )
@@ -140,7 +129,7 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
   const theme = useTheme()
 
   // for sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
+  const [sortField, setSortField] = useState(SORT_FIELD.volumeUSD)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
@@ -196,17 +185,17 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
         <AutoColumn gap="16px">
           <ResponsiveGrid>
             <Label color={theme.deprecated_text2}>#</Label>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.feeTier)}>
-              Fund {arrow(SORT_FIELD.feeTier)}
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
+              Fund {arrow(SORT_FIELD.fund)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
-              Manager {arrow(SORT_FIELD.tvlUSD)}
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+              Volume USD {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
-              Volume 24H {arrow(SORT_FIELD.volumeUSD)}
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+              Principal {arrow(SORT_FIELD.principalUSD)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volumeUSDWeek)}>
-              Volume 7D {arrow(SORT_FIELD.volumeUSDWeek)}
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
+              Ratio {arrow(SORT_FIELD.profitRatioUSD)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />

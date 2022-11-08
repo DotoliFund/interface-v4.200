@@ -1,4 +1,4 @@
-import { useTopFunds } from 'data/menu/Overview/topFunds'
+import { useTopFunds } from 'data/Overview/topFunds'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { useActiveNetworkVersion } from 'state/application/hooks'

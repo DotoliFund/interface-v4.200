@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { Dialog } from '@reach/dialog'
 import { useState } from 'react'
-export default function Main() {
+export default function Home() {
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)

@@ -49,14 +49,17 @@ const PageTabs = () => {
 
   return (
     <>
-      <MenuItem href="/swap" isActive={pathname.startsWith('/overview')}>
+      <MenuItem href="/home" isActive={pathname.startsWith('/home')}>
+        <Trans>Home</Trans>
+      </MenuItem>
+      <MenuItem href="/overview" isActive={pathname.startsWith('/overview')}>
         <Trans>Overview</Trans>
       </MenuItem>
       <MenuItem href={'/account'} isActive={pathname.startsWith('/account')}>
         <Trans>My Account</Trans>
       </MenuItem>
-      <MenuItem href="/pool" id={'pool-nav-link'} isActive={isPoolActive}>
-        <Trans>Pool</Trans>
+      <MenuItem href="/staking">
+        <Trans>Staking</Trans>
       </MenuItem>
     </>
   )

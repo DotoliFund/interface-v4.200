@@ -1,77 +1,140 @@
-import { Trans } from '@lingui/macro'
+import { AutoColumn } from 'components/Column'
 import FundTable from 'components/funds/FundTable'
-import { Suspense } from 'react'
+import LineChart from 'components/LineChart/alt'
+import Row from 'components/Row'
+import { MonoSpace } from 'components/shared'
+import { useXXXFund2ChartData } from 'data/Overview/chartData'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useFundListData } from 'state/funds/hooks'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
+import { unixToDate } from 'utils/date'
 
-const MEDIUM_MEDIA_BREAKPOINT = '720px'
-const MAX_WIDTH_MEDIA_BREAKPOINT = '960px'
+const RowBetween = styled(Row)`
+  justify-content: space-between;
+`
 
-const ExploreContainer = styled.div`
-  width: 100%;
-  min-width: 320px;
-  padding: 68px 12px 0px;
-  @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
-    padding-top: 48px;
-  }
-  @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
-    padding-top: 20px;
-  }
-`
-export const TitleContainer = styled.div`
-  margin-bottom: 32px;
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-`
-const FiltersContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  height: 40px;
-  @media only screen and (max-width: ${MEDIUM_MEDIA_BREAKPOINT}) {
-    order: 2;
-  }
-`
-const SearchContainer = styled(FiltersContainer)`
-  width: 100%;
-  margin-left: 8px;
-  @media only screen and (max-width: ${MEDIUM_MEDIA_BREAKPOINT}) {
-    margin: 0px;
-    order: 1;
-  }
-`
-const FiltersWrapper = styled.div`
-  display: flex;
-  max-width: ${MAX_WIDTH_MEDIA_BREAKPOINT};
-  margin: 0 auto;
-  margin-bottom: 20px;
-  @media only screen and (max-width: ${MEDIUM_MEDIA_BREAKPOINT}) {
+const ResponsiveRow = styled(RowBetween)`
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     flex-direction: column;
-    gap: 8px;
-  }
+    row-gap: 1rem;
+  `};
 `
 
-export default function Overview() {
+const PageWrapper = styled.div`
+  width: 90%;
+`
+
+const ThemedBackgroundGlobal = styled.div<{ backgroundColor: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  max-width: 100vw !important;
+  height: 200vh;
+  mix-blend-mode: color;
+  background: ${({ backgroundColor }) =>
+    `radial-gradient(50% 50% at 50% 50%, ${backgroundColor} 0%, rgba(255, 255, 255, 0) 100%)`};
+  transform: translateY(-150vh);
+`
+
+const ChartWrapper = styled.div`
+  width: 49%;
+
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+    width: 100%;
+  `};
+`
+
+export default function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  const theme = useTheme()
+
+  const [activeNetwork] = useActiveNetworkVersion()
+
+  const [volumeHover, setVolumeHover] = useState<number | undefined>()
+  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
+  const [leftLabel, setLeftLabel] = useState<string | undefined>()
+
   const fundListData = useFundListData()
+  const chartData = useXXXFund2ChartData().data
+
+  const formattedTvlData = useMemo(() => {
+    if (chartData) {
+      return chartData.map((day) => {
+        return {
+          time: unixToDate(day.timestamp),
+          value: day.totalVolumeUSD,
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
 
   return (
-    <div>
-      <ExploreContainer>
-        <TitleContainer>
-          <ThemedText.LargeHeader>
-            <Trans>Top tokens on Uniswap</Trans>
-          </ThemedText.LargeHeader>{' '}
-        </TitleContainer>
-        <FiltersWrapper>
-          <FiltersContainer></FiltersContainer>
-          <SearchContainer></SearchContainer>
-        </FiltersWrapper>
-      </ExploreContainer>
-      <Suspense>
+    <PageWrapper>
+      <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
+      <AutoColumn gap="16px">
+        <ThemedText.DeprecatedMain>Uniswap Overview</ThemedText.DeprecatedMain>
+        <ResponsiveRow>
+          <ChartWrapper>
+            <LineChart
+              data={formattedTvlData}
+              height={220}
+              minHeight={332}
+              color={activeNetwork.primaryColor}
+              value={liquidityHover}
+              label={leftLabel}
+              setValue={setLiquidityHover}
+              setLabel={setLeftLabel}
+              topLeft={
+                <AutoColumn gap="4px">
+                  <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
+                  <ThemedText.LargeHeader fontSize="32px">
+                    <MonoSpace>{1234} </MonoSpace>
+                  </ThemedText.LargeHeader>
+                  <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                    {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
+                  </ThemedText.DeprecatedMain>
+                </AutoColumn>
+              }
+            />
+          </ChartWrapper>
+          <ChartWrapper>
+            <LineChart
+              data={formattedTvlData}
+              height={220}
+              minHeight={332}
+              color={activeNetwork.primaryColor}
+              value={liquidityHover}
+              label={leftLabel}
+              setValue={setLiquidityHover}
+              setLabel={setLeftLabel}
+              topLeft={
+                <AutoColumn gap="4px">
+                  <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
+                  <ThemedText.LargeHeader fontSize="32px">
+                    <MonoSpace>{3456} </MonoSpace>
+                  </ThemedText.LargeHeader>
+                  <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                    {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
+                  </ThemedText.DeprecatedMain>
+                </AutoColumn>
+              }
+            />
+          </ChartWrapper>
+        </ResponsiveRow>
+        <RowBetween>
+          <ThemedText.DeprecatedMain>Top Funds</ThemedText.DeprecatedMain>
+        </RowBetween>
         <FundTable fundDatas={fundListData.data} />
-      </Suspense>
-    </div>
+      </AutoColumn>
+    </PageWrapper>
   )
 }
