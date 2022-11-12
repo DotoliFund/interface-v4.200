@@ -52,6 +52,29 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       amountETH
       amountUSD
     }
+    collectPositionFees(
+      first: 100
+      orderBy: timestamp
+      orderDirection: desc
+      where: { fund: $fund, investor: $investor }
+      subgraphError: allow
+    ) {
+      timestamp
+      transaction {
+        id
+      }
+      fund
+      manager
+      investor
+      token0
+      token1
+      token0Symbol
+      token1Symbol
+      amount0
+      amount1
+      amountETH
+      amountUSD
+    }
     decreaseLiquidities(
       first: 100
       orderBy: timestamp
@@ -98,6 +121,24 @@ interface InvestorTransactionResults {
     amountUSD: string
   }[]
   increaseLiquidities: {
+    id: string
+    transaction: {
+      id: string
+    }
+    timestamp: string
+    fund: string
+    manager: string
+    investor: string
+    token0: string
+    token1: string
+    token0Symbol: string
+    token1Symbol: string
+    amount0: string
+    amount1: string
+    amountETH: string
+    amountUSD: string
+  }[]
+  collectPositionFees: {
     id: string
     transaction: {
       id: string
@@ -211,6 +252,25 @@ export function useFundAccountLiquidityTransactions(
       })
     : []
 
+  const collectPositionFees = data
+    ? data.collectPositionFees.map((m) => {
+        return {
+          type: LiquidityTransactionType.COLLECT,
+          hash: m.transaction.id,
+          timestamp: m.timestamp,
+          sender: m.manager,
+          token0: m.token0,
+          token1: m.token1,
+          token0Symbol: m.token0Symbol,
+          token1Symbol: m.token1Symbol,
+          amount0: parseFloat(m.amount0),
+          amount1: parseFloat(m.amount1),
+          amountETH: parseFloat(m.amountETH),
+          amountUSD: parseFloat(m.amountUSD),
+        }
+      })
+    : []
+
   const decreaseLiquidities = data
     ? data.decreaseLiquidities.map((m) => {
         return {
@@ -231,7 +291,7 @@ export function useFundAccountLiquidityTransactions(
     : []
 
   return {
-    data: [...mintNewPositions, ...increaseLiquidities, ...decreaseLiquidities],
+    data: [...mintNewPositions, ...increaseLiquidities, ...collectPositionFees, ...decreaseLiquidities],
     error: false,
     loading: false,
   }

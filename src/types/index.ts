@@ -7,6 +7,7 @@ export enum TransactionType {
 export enum LiquidityTransactionType {
   MINT,
   ADD,
+  COLLECT,
   REMOVE,
 }
 

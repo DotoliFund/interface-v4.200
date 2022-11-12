@@ -100,6 +100,8 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
             ? `Mint ${transaction.token0Symbol} and ${transaction.token1Symbol}`
             : transaction.type === LiquidityTransactionType.ADD
             ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
+            : transaction.type === LiquidityTransactionType.COLLECT
+            ? `Collect ${transaction.token0Symbol} and ${transaction.token1Symbol}`
             : transaction.type === LiquidityTransactionType.REMOVE
             ? `Remove ${transaction.token0Symbol} and ${transaction.token1Symbol}`
             : `Error`}
