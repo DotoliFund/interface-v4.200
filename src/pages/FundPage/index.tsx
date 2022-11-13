@@ -4,7 +4,7 @@ import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import InvestorTable from 'components/funds/InvestorTable'
-import LineChart from 'components/LineChart/alt'
+import LineChart from 'components/LineChart/chart1'
 import Loader from 'components/Loader'
 import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
@@ -149,12 +149,13 @@ export default function FundPage() {
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
 
-  const formattedVolumeETHData = useMemo(() => {
+  const formattedVolumeETH = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
           time: unixToDate(data.timestamp),
-          value: [data.volumeETH, data.principalETH],
+          volume: data.volumeETH,
+          principal: data.principalETH,
         }
       })
     } else {
@@ -162,12 +163,13 @@ export default function FundPage() {
     }
   }, [chartData])
 
-  const formattedVolumeUSDData = useMemo(() => {
+  const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
           time: unixToDate(data.timestamp),
-          value: [data.volumeUSD, data.principalUSD],
+          volume: data.volumeUSD,
+          principal: data.principalUSD,
         }
       })
     } else {
@@ -175,7 +177,7 @@ export default function FundPage() {
     }
   }, [chartData])
 
-  const formattedTokensData = useMemo(() => {
+  const formattedTokens = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
@@ -371,16 +373,7 @@ export default function FundPage() {
               </ToggleRow>
               {view === ChartView.VOL_ETH ? (
                 <LineChart
-                  // data={[
-                  //   { name: 'a', value: [12, 30] },
-                  //   { name: 'b', value: [5, 13] },
-                  //   { name: 'c', value: [13, 31] },
-                  //   { name: 'd', value: [24, 53] },
-                  //   { name: 'e', value: [40, 43] },
-                  //   { name: 'f', value: [54, 36] },
-                  //   { name: 'g', value: [64, 26] },
-                  // ]}
-                  data={formattedVolumeETHData}
+                  data={formattedVolumeETH}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -392,27 +385,19 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
+                        <MonoSpace>
+                          {formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
+                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(5)
+                            : 0}
+                          {' ETH'}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></LineChart>
               ) : view === ChartView.VOL_USD ? (
                 <LineChart
-                  // data={[
-                  //   { name: 'a', value: [12, 30] },
-                  //   { name: 'b', value: [5, 13] },
-                  //   { name: 'c', value: [13, 31] },
-                  //   { name: 'd', value: [24, 53] },
-                  //   { name: 'e', value: [40, 43] },
-                  //   { name: 'f', value: [54, 36] },
-                  //   { name: 'g', value: [64, 26] },
-                  // ]}
-                  data={formattedVolumeUSDData}
+                  data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -424,18 +409,19 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
+                        <MonoSpace>
+                          {'$ '}
+                          {formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(5)
+                            : 0}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></LineChart>
               ) : view === ChartView.TOKENS ? (
                 <LineChart
-                  data={formattedVolumeETHData}
+                  data={formattedVolumeETH}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -447,18 +433,19 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
+                        <MonoSpace>
+                          {formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
+                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(5)
+                            : 0}
+                          {' ETH'}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></LineChart>
               ) : (
                 <LineChart
-                  data={formattedVolumeUSDData}
+                  data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -470,12 +457,13 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
+                        <MonoSpace>
+                          {'$ '}
+                          {formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(5)
+                            : 0}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></LineChart>

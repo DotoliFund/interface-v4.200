@@ -77,6 +77,19 @@ export default function Home() {
     }
   }, [chartData])
 
+  const formattedCountData = useMemo(() => {
+    if (chartData) {
+      return chartData.map((day) => {
+        return {
+          time: unixToDate(day.timestamp),
+          value: day.investorCount,
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
+
   return (
     <PageWrapper>
       <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
@@ -97,7 +110,9 @@ export default function Home() {
                 <AutoColumn gap="4px">
                   <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
-                    <MonoSpace>{1234} </MonoSpace>
+                    <MonoSpace>
+                      {formattedTvlData.length > 0 ? formattedTvlData[formattedTvlData.length - 1].value : 0}{' '}
+                    </MonoSpace>
                   </ThemedText.LargeHeader>
                   <ThemedText.DeprecatedMain fontSize="12px" height="14px">
                     {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
@@ -108,7 +123,7 @@ export default function Home() {
           </ChartWrapper>
           <ChartWrapper>
             <LineChart
-              data={formattedTvlData}
+              data={formattedCountData}
               height={220}
               minHeight={332}
               color={activeNetwork.primaryColor}
@@ -118,9 +133,11 @@ export default function Home() {
               setLabel={setLeftLabel}
               topLeft={
                 <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
+                  <ThemedText.MediumHeader fontSize="16px">Investors</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
-                    <MonoSpace>{3456} </MonoSpace>
+                    <MonoSpace>
+                      {formattedCountData.length > 0 ? formattedCountData[formattedCountData.length - 1].value : 0}{' '}
+                    </MonoSpace>
                   </ThemedText.LargeHeader>
                   <ThemedText.DeprecatedMain fontSize="12px" height="14px">
                     {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}

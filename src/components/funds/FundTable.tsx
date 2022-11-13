@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { Fund } from 'types/fund'
+import { shortenAddress } from 'utils'
+import { unixToDate } from 'utils/date'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -67,24 +69,24 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 20px 3.5fr repeat(3, 1fr);
+  grid-template-columns: 20px 3.5fr repeat(6, 1fr);
 
   @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1.5fr repeat(2, 1fr);
+    grid-template-columns: 20px 1.5fr repeat(4, 1fr);
     & :nth-child(3) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
-    grid-template-columns: 20px 1.5fr repeat(1, 1fr);
+    grid-template-columns: 20px 1.5fr repeat(3, 1fr);
     & :nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 480px) {
-    grid-template-columns: 2.5fr repeat(1, 1fr);
+    grid-template-columns: 2.5fr repeat(2, 1fr);
     > *:nth-child(1) {
       display: none;
     }
@@ -113,10 +115,22 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
     <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{index + 1}</Label>
-        <Label fontWeight={400}>{fundData.address}</Label>
-        <Label fontWeight={400}>{fundData.volumeUSD.toFixed(2)}</Label>
-        <Label fontWeight={400}>{fundData.principalUSD.toFixed(2)}</Label>
-        <Label fontWeight={400}>{fundData.profitRatioUSD}</Label>
+        <Label fontWeight={400}>{shortenAddress(fundData.address)}</Label>
+        <Label end={1} fontWeight={400}>
+          {fundData.volumeUSD.toFixed(3)}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {fundData.principalUSD.toFixed(3)}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {fundData.profitRatioUSD}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {fundData.investorCount}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {unixToDate(fundData.createdAtTimestamp)}
+        </Label>
       </ResponsiveGrid>
     </LinkWrapper>
   )
@@ -188,14 +202,20 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
               Fund {arrow(SORT_FIELD.fund)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume USD {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Principal {arrow(SORT_FIELD.principalUSD)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
               Ratio {arrow(SORT_FIELD.profitRatioUSD)}
+            </ClickableText>
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
+              Investors {arrow(SORT_FIELD.profitRatioUSD)}
+            </ClickableText>
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
+              Created {arrow(SORT_FIELD.profitRatioUSD)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />

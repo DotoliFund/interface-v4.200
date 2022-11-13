@@ -112,7 +112,8 @@ const Chart = ({
                 return `${value}`
               }}
             />
-            <Area dataKey="value" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
+            <Area dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
+            <Area dataKey="principal" type="monotone" stroke={color2} fill="url(#gradient)" strokeWidth={2} />
           </AreaChart>
         </ResponsiveContainer>
       )}

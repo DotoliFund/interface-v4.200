@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import LineChart from 'components/LineChart/alt'
+import LineChart from 'components/LineChart/chart1'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import Percent from 'components/Percent'
@@ -306,7 +306,8 @@ export default function FundAccount() {
       return chartData.map((data) => {
         return {
           time: unixToDate(data.timestamp),
-          value: [data.volumeETH, data.principalETH],
+          volume: data.volumeETH,
+          principal: data.principalETH,
         }
       })
     } else {
@@ -319,7 +320,8 @@ export default function FundAccount() {
       return chartData.map((data) => {
         return {
           time: unixToDate(data.timestamp),
-          value: [data.volumeUSD, data.principalUSD],
+          volume: data.volumeUSD,
+          principal: data.principalUSD,
         }
       })
     } else {
@@ -675,9 +677,6 @@ export default function FundAccount() {
                         {/* <MonoSpace>{tvlValue} </MonoSpace> */}
                         <MonoSpace>1234 </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></LineChart>
