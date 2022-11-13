@@ -6,7 +6,6 @@ import { AutoColumn } from 'components/Column'
 import InvestorTable from 'components/funds/InvestorTable'
 import LineChart from 'components/LineChart/chart1'
 import Loader from 'components/Loader'
-import Percent from 'components/Percent'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
@@ -304,18 +303,17 @@ export default function FundPage() {
                   <ThemedText.DeprecatedLabel fontSize="24px">
                     {formatDollarAmount(fundData.volumeUSD)}
                   </ThemedText.DeprecatedLabel>
-                  <Percent value={fundData.profitRatioETH} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
                     {formatDollarAmount(fundData.principalUSD)}
                   </ThemedText.DeprecatedLabel>
-                  <Percent value={fundData.profitRatioUSD} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px">{fundData.profitRatioUSD}%</ThemedText.DeprecatedLabel>
+                  <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
+                  {((fundData.volumeUSD / fundData.principalUSD) * 100).toFixed(2)}%
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>

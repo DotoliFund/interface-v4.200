@@ -6,7 +6,6 @@ import { AutoColumn } from 'components/Column'
 import LineChart from 'components/LineChart/chart1'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
-import Percent from 'components/Percent'
 import PositionList from 'components/PositionList'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
@@ -301,7 +300,7 @@ export default function FundAccount() {
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
   const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
-  const formattedVolumeETHData = useMemo(() => {
+  const formattedVolumeETH = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
@@ -315,7 +314,7 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const formattedVolumeUSDData = useMemo(() => {
+  const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
@@ -590,19 +589,17 @@ export default function FundAccount() {
                   <ThemedText.DeprecatedLabel fontSize="24px">
                     {formatDollarAmount(investorData.volumeUSD)}
                   </ThemedText.DeprecatedLabel>
-                  <Percent value={investorData.profitRatioETH} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
                     {formatDollarAmount(investorData.principalUSD)}
                   </ThemedText.DeprecatedLabel>
-                  <Percent value={investorData.profitRatioUSD} />
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {investorData.principalUSD}%
+                  {((investorData.volumeUSD / investorData.principalUSD) * 100).toFixed(2)}%
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>
@@ -662,7 +659,7 @@ export default function FundAccount() {
                   //   { name: 'f', value: [54, 36] },
                   //   { name: 'g', value: [64, 26] },
                   // ]}
-                  data={formattedVolumeETHData}
+                  data={formattedVolumeETH}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -674,8 +671,12 @@ export default function FundAccount() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
+                        <MonoSpace>
+                          {formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
+                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(5)
+                            : 0}
+                          {' ETH'}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
@@ -691,7 +692,7 @@ export default function FundAccount() {
                   //   { name: 'f', value: [54, 36] },
                   //   { name: 'g', value: [64, 26] },
                   // ]}
-                  data={formattedVolumeUSDData}
+                  data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -703,8 +704,12 @@ export default function FundAccount() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
+                        <MonoSpace>
+                          {'$ '}
+                          {formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(5)
+                            : 0}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
                         <MonoSpace>left label (UTC)</MonoSpace>
@@ -729,9 +734,6 @@ export default function FundAccount() {
                         {/* <MonoSpace>{tvlValue} </MonoSpace> */}
                         <MonoSpace>1234 </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></LineChart>

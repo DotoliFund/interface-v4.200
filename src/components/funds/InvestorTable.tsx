@@ -32,30 +32,18 @@ const ResponsiveGrid = styled.div`
   }
 
   @media screen and (max-width: 800px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 1.5fr repeat(4, 1fr);
     & > *:nth-child(5) {
-      display: none;
-    }
-    & > *:nth-child(3) {
-      display: none;
-    }
-    & > *:nth-child(4) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
-    grid-template-columns: 1.5fr repeat(1, 1fr);
+    grid-template-columns: 1.5fr repeat(3, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
-    & > *:nth-child(3) {
-      display: none;
-    }
     & > *:nth-child(4) {
-      display: none;
-    }
-    & > *:nth-child(2) {
       display: none;
     }
   }
@@ -102,7 +90,7 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
   return (
     <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
       <ResponsiveGrid>
-        <Label end={1} fontWeight={400}>
+        <Label fontWeight={400}>
           <ExternalLink
             href={getEtherscanLink(1, investor.manager, 'address', activeNetwork)}
             style={{ color: color ?? theme.deprecated_blue1 }}
@@ -198,7 +186,7 @@ export default function InvestorTable({
     <Wrapper>
       <AutoColumn gap="16px">
         <ResponsiveGrid>
-          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)} end={1}>
+          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)}>
             Invetsor {arrow(SORT_FIELD.investor)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.tvl)}>
