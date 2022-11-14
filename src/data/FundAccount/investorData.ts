@@ -9,17 +9,15 @@ const INVESTOR_DATA = gql`
     investor(id: $id, subgraphError: allow) {
       id
       createdAtTimestamp
-      createdAtBlockNumber
       fund
       manager
       investor
-      principalETH
       principalUSD
       volumeETH
       volumeUSD
-      profitETH
+      tokens
+      tokensVolumeUSD
       profitUSD
-      profitRatioETH
       profitRatioUSD
     }
   }
@@ -71,18 +69,18 @@ export function useInvestorData(
     ? {
         id: data.investor.id,
         createdAtTimestamp: parseFloat(data.investor.createdAtTimestamp),
-        createdAtBlockNumber: parseFloat(data.investor.createdAtBlockNumber),
         fund: data.investor.fund,
         manager: data.investor.manager,
         investor: data.investor.investor,
-        principalETH: parseFloat(data.investor.principalETH),
         principalUSD: parseFloat(data.investor.principalUSD),
         volumeETH: parseFloat(data.investor.volumeETH),
         volumeUSD: parseFloat(data.investor.volumeUSD),
-        profitETH: parseFloat(data.investor.profitETH),
+        tokens: data.investor.tokens,
+        tokensVolumeUSD: data.investor.tokensVolumeUSD.map((value, index) => {
+          return parseFloat(value)
+        }),
         profitUSD: parseFloat(data.investor.profitUSD),
-        profitRatioETH: parseFloat(data.investor.profitRatioETH),
-        profitRatioUSD: parseFloat(data.investor.profitRatioUSD),
+        profitRatio: parseFloat(data.investor.profitRatio),
       }
     : undefined
 

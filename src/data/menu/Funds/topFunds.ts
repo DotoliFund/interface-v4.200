@@ -10,19 +10,17 @@ export const TOP_FUNDS = () => {
         id
         address
         createdAtTimestamp
-        createdAtBlockNumber
         manager
         investorCount
-        principalETH
         principalUSD
         volumeETH
         volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
         feeVolumeETH
         feeVolumeUSD
+        tokens
+        tokensVolumeUSD
+        profitUSD
+        profitRatio
       }
     }
     `

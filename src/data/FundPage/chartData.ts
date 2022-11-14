@@ -12,16 +12,13 @@ const FUND_CHART = gql`
       fund
       manager
       investorCount
-      principalETH
       principalUSD
       volumeETH
       volumeUSD
-      profitETH
-      profitUSD
-      profitRatioETH
-      profitRatioUSD
       feeVolumeETH
       feeVolumeUSD
+      tokens
+      tokensVolumeUSD
     }
   }
 `

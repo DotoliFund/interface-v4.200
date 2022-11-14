@@ -10,19 +10,17 @@ export const FUNDS_BULK = () => {
         id
         address
         createdAtTimestamp
-        createdAtBlockNumber
         manager
         investorCount
-        principalETH
         principalUSD
         volumeETH
         volumeUSD
-        profitETH
-        profitUSD
-        profitRatioETH
-        profitRatioUSD
         feeVolumeETH
         feeVolumeUSD
+        tokens
+        tokensVolumeUSD
+        profitUSD
+        profitRatio
       }
     }
     `
