@@ -64,19 +64,19 @@ export function useTopFunds(): {
         const fundData: Fund = {
           address: fundFields.address,
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(fundFields.createdAtBlockNumber),
           manager: fundFields.manager,
           investorCount: parseInt(fundFields.investorCount),
-          principalETH: parseFloat(fundFields.principalETH),
           principalUSD: parseFloat(fundFields.principalUSD),
           volumeETH: parseFloat(fundFields.volumeETH),
           volumeUSD: parseFloat(fundFields.volumeUSD),
-          profitETH: parseFloat(fundFields.profitETH),
-          profitUSD: parseFloat(fundFields.profitUSD),
-          profitRatioETH: parseFloat(fundFields.profitRatioETH),
-          profitRatioUSD: parseFloat(fundFields.profitRatioUSD),
           feeVolumeETH: parseFloat(fundFields.feeVolumeETH),
           feeVolumeUSD: parseFloat(fundFields.feeVolumeUSD),
+          tokens: fundFields.tokens,
+          tokensVolumeUSD: fundFields.tokensVolumeUSD.map((value) => {
+            return parseFloat(value)
+          }),
+          profitUSD: parseFloat(fundFields.profitUSD),
+          profitRatio: parseFloat(fundFields.profitRatio),
         }
         return fundData
       })

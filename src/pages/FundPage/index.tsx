@@ -154,7 +154,7 @@ export default function FundPage() {
         return {
           time: unixToDate(data.timestamp),
           volume: data.volumeETH,
-          principal: data.principalETH,
+          principal: data.principalUSD,
         }
       })
     } else {

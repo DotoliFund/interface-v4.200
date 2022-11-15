@@ -192,7 +192,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
           &nbsp;
           <Badge>
             <BadgeText>
-              <Trans>{fundData?.profitRatioUSD}%</Trans>
+              <Trans>{fundData?.profitRatio}%</Trans>
             </BadgeText>
           </Badge>
         </PrimaryPositionIdData>

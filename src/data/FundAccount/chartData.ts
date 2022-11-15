@@ -81,7 +81,7 @@ export function useInvestorChartData(
           volumeETH: parseFloat(investorSnapshotFields.volumeETH),
           volumeUSD: parseFloat(investorSnapshotFields.volumeUSD),
           tokens: investorSnapshotFields.tokens,
-          tokensVolumeUSD: investorSnapshotFields.tokensVolumeUSD.map((value, index) => {
+          tokensVolumeUSD: investorSnapshotFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),
         }

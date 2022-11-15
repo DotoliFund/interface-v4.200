@@ -82,7 +82,7 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
-  const abs0 = Math.abs(investor.profitRatioETH)
+  const abs0 = Math.abs(investor.profitRatio)
   const abs1 = Math.abs(investor.principalUSD)
   const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
@@ -108,7 +108,7 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           {formatDollarAmount(investor.profitUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {investor.profitRatioUSD}
+          {investor.profitRatio}
         </Label>
         <Label end={1} fontWeight={400}>
           {formatTime(investor.createdAtTimestamp.toString(), 8)}

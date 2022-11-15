@@ -64,19 +64,19 @@ export function useFundData(fund: string | undefined): {
     ? {
         address: data.fund.address,
         createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
-        createdAtBlockNumber: parseFloat(data.fund.createdAtBlockNumber),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),
-        principalETH: parseFloat(data.fund.principalETH),
         principalUSD: parseFloat(data.fund.principalUSD),
         volumeETH: parseFloat(data.fund.volumeETH),
         volumeUSD: parseFloat(data.fund.volumeUSD),
-        profitETH: parseFloat(data.fund.profitETH),
-        profitUSD: parseFloat(data.fund.profitUSD),
-        profitRatioETH: parseFloat(data.fund.profitRatioETH),
-        profitRatioUSD: parseFloat(data.fund.profitRatioUSD),
         feeVolumeETH: parseFloat(data.fund.feeVolumeETH),
         feeVolumeUSD: parseFloat(data.fund.feeVolumeUSD),
+        tokens: data.fund.tokens,
+        tokensVolumeUSD: data.fund.tokensVolumeUSD.map((value) => {
+          return parseFloat(value)
+        }),
+        profitUSD: parseFloat(data.fund.profitUSD),
+        profitRatio: parseFloat(data.fund.profitRatio),
       }
     : undefined
 

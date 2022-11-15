@@ -67,16 +67,15 @@ export function useFundChartData(fund: string | undefined): {
           fund: fundSnapshotFields.fund,
           manager: fundSnapshotFields.manager,
           investorCount: parseFloat(fundSnapshotFields.investorCount),
-          principalETH: parseFloat(fundSnapshotFields.principalETH),
           principalUSD: parseFloat(fundSnapshotFields.principalUSD),
           volumeETH: parseFloat(fundSnapshotFields.volumeETH),
           volumeUSD: parseFloat(fundSnapshotFields.volumeUSD),
-          profitETH: parseFloat(fundSnapshotFields.profitETH),
-          profitUSD: parseFloat(fundSnapshotFields.profitUSD),
-          profitRatioETH: parseFloat(fundSnapshotFields.profitRatioETH),
-          profitRatioUSD: parseFloat(fundSnapshotFields.profitRatioUSD),
           feeVolumeETH: parseFloat(fundSnapshotFields.feeVolumeETH),
           feeVolumeUSD: parseFloat(fundSnapshotFields.feeVolumeUSD),
+          tokens: fundSnapshotFields.tokens,
+          tokensVolumeUSD: fundSnapshotFields.tokensVolumeUSD.map((value) => {
+            return parseFloat(value)
+          }),
         }
         return fundSnapshotData
       })

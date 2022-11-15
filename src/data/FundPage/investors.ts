@@ -6,21 +6,19 @@ import { Investor, InvestorFields } from 'types/fund'
 
 const FUND_INVESTORS = gql`
   query investors($fund: Bytes!) {
-    investors(first: 100, orderBy: principalETH, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+    investors(first: 100, orderBy: principalUSD, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
       id
       createdAtTimestamp
-      createdAtBlockNumber
       fund
       manager
       investor
-      principalETH
       principalUSD
       volumeETH
       volumeUSD
-      profitETH
+      tokens
+      tokensVolumeUSD
       profitUSD
-      profitRatioETH
-      profitRatioUSD
+      profitRatio
     }
   }
 `
@@ -66,18 +64,18 @@ export function useFundInvestors(fund: string | undefined): {
         const investorData: Investor = {
           id: investorDataFields.id,
           createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
-          createdAtBlockNumber: parseFloat(investorDataFields.createdAtBlockNumber),
           fund: investorDataFields.fund,
           manager: investorDataFields.manager,
           investor: investorDataFields.investor,
-          principalETH: parseFloat(investorDataFields.principalETH),
           principalUSD: parseFloat(investorDataFields.principalUSD),
           volumeETH: parseFloat(investorDataFields.volumeETH),
           volumeUSD: parseFloat(investorDataFields.volumeUSD),
-          profitETH: parseFloat(investorDataFields.profitETH),
+          tokens: investorDataFields.tokens,
+          tokensVolumeUSD: investorDataFields.tokensVolumeUSD.map((value) => {
+            return parseFloat(value)
+          }),
           profitUSD: parseFloat(investorDataFields.profitUSD),
-          profitRatioETH: parseFloat(investorDataFields.profitRatioETH),
-          profitRatioUSD: parseFloat(investorDataFields.profitRatioUSD),
+          profitRatio: parseFloat(investorDataFields.profitRatio),
         }
         return investorData
       })

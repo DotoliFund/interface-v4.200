@@ -306,7 +306,7 @@ export default function FundAccount() {
         return {
           time: unixToDate(data.timestamp),
           volume: data.volumeETH,
-          principal: data.principalETH,
+          principal: data.principalUSD,
         }
       })
     } else {
@@ -346,7 +346,6 @@ export default function FundAccount() {
   const [valueLabel, setValueLabel] = useState<string | undefined>()
 
   const { positions, loading: positionsLoading } = useV3Positions(fundAddress, investorAddress)
-
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
     (acc, p) => {
       acc[p.liquidity?.isZero() ? 1 : 0].push(p)

@@ -123,7 +123,7 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
           {fundData.principalUSD.toFixed(3)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {fundData.profitRatioUSD}
+          {fundData.profitRatio}
         </Label>
         <Label end={1} fontWeight={400}>
           {fundData.investorCount}
