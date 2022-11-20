@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import styled, { useTheme } from 'styled-components/macro'
 
 dayjs.extend(utc)
@@ -25,7 +25,7 @@ const Wrapper = styled(Card)`
   }
 `
 
-export type AreaChartProps = {
+export type LineChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined
@@ -55,17 +55,66 @@ const Chart = ({
   bottomRight,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: AreaChartProps) => {
+}: LineChartProps) => {
   const theme = useTheme()
   const parsedValue = value
+  const series: any = []
 
+  data.map((value, index) => {
+    const time = value.time
+    const tokens = value.tokens
+    const tokensVolumeUSD = value.tokensVolumeUSD
+
+    tokens.map((token: any, index: any) => {
+      const i = series.findIndex((element: any) => element.token === token)
+      if (i >= 0) {
+        series[i].data.push({
+          time,
+          value: tokensVolumeUSD[index],
+        })
+      } else {
+        series.push({
+          token,
+          data: [{ time, value: tokensVolumeUSD[index] }],
+        })
+      }
+    })
+    console.log(1234, series)
+  })
+
+  // const series = [
+  //   {
+  //     token: 'Series 1',
+  //     data: [
+  //       { time: 'A', value: Math.random() },
+  //       { time: 'B', value: Math.random() },
+  //       { time: 'C', value: Math.random() },
+  //     ],
+  //   },
+  //   {
+  //     token: 'Series 2',
+  //     data: [
+  //       { time: 'B', value: Math.random() },
+  //       { time: 'C', value: Math.random() },
+  //       { time: 'D', value: Math.random() },
+  //     ],
+  //   },
+  //   {
+  //     token: 'Series 3',
+  //     data: [
+  //       { time: 'C', value: Math.random() },
+  //       { time: 'D', value: Math.random() },
+  //       { time: 'E', value: Math.random() },
+  //     ],
+  //   },
+  // ]
   return (
     <Wrapper minHeight={minHeight} {...rest}>
       <RowBetween>
         {topLeft ?? null}
         {topRight ?? null}
       </RowBetween>
-      {data?.length === 0 ? (
+      {series?.length === 0 ? (
         <LoadingRows>
           <div />
           <div />
@@ -73,10 +122,9 @@ const Chart = ({
         </LoadingRows>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
+          <LineChart
             width={500}
             height={300}
-            data={data}
             margin={{
               top: 5,
               right: 30,
@@ -101,6 +149,7 @@ const Chart = ({
               tickFormatter={(time) => dayjs(time).format('DD')}
               minTickGap={10}
             />
+            <YAxis dataKey="value" />
             <Tooltip
               wrapperStyle={{ backgroundColor: 'red' }}
               labelStyle={{ color: 'green' }}
@@ -112,9 +161,10 @@ const Chart = ({
                 return `${value}`
               }}
             />
-            <Area dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
-            <Area dataKey="principal" type="monotone" stroke={color2} fill="url(#gradient)" strokeWidth={2} />
-          </AreaChart>
+            {series.map((s: any) => (
+              <Line dataKey="value" data={s.data} name={s.token} key={s.token} />
+            ))}
+          </LineChart>
         </ResponsiveContainer>
       )}
       <RowBetween>

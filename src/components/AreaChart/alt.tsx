@@ -25,7 +25,7 @@ const Wrapper = styled(Card)`
   }
 `
 
-export type LineChartProps = {
+export type AreaChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined
@@ -55,7 +55,7 @@ const Chart = ({
   bottomRight,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: AreaChartProps) => {
   const theme = useTheme()
   const parsedValue = value
 

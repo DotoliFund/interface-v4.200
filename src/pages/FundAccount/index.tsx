@@ -1,9 +1,10 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import LineChart from 'components/AreaChart/chart1'
+import AreaChart from 'components/AreaChart/chart1'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
+import LineChart from 'components/LineChart'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import PositionList from 'components/PositionList'
@@ -333,7 +334,8 @@ export default function FundAccount() {
       return chartData.map((data) => {
         return {
           time: unixToDate(data.timestamp),
-          value: data.volumeUSD,
+          tokens: data.tokens,
+          tokensVolumeUSD: data.tokensVolumeUSD,
         }
       })
     } else {
@@ -648,7 +650,7 @@ export default function FundAccount() {
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_ETH ? (
-                <LineChart
+                <AreaChart
                   // data={[
                   //   { name: 'a', value: [12, 30] },
                   //   { name: 'b', value: [5, 13] },
@@ -679,9 +681,9 @@ export default function FundAccount() {
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
-                ></LineChart>
+                ></AreaChart>
               ) : view === ChartView.VOL_USD ? (
-                <LineChart
+                <AreaChart
                   // data={[
                   //   { name: 'a', value: [12, 30] },
                   //   { name: 'b', value: [5, 13] },
@@ -715,7 +717,7 @@ export default function FundAccount() {
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
-                ></LineChart>
+                ></AreaChart>
               ) : (
                 <LineChart
                   data={formattedTokensData}
