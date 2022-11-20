@@ -1,6 +1,6 @@
 import { AutoColumn } from 'components/Column'
 import FundTable from 'components/funds/FundTable'
-import LineChart from 'components/LineChart/alt'
+import LineChart from 'components/AreaChart/alt'
 import Row from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { useXXXFund2ChartData } from 'data/Overview/chartData'
