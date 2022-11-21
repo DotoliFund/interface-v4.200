@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import styled, { useTheme } from 'styled-components/macro'
 
 dayjs.extend(utc)
@@ -24,6 +24,22 @@ const Wrapper = styled(Card)`
     font-size: 1rem;
   }
 `
+
+const stroke = [
+  '#8884d3',
+  '#00884d2',
+  '#5884d1',
+  '#5884d0',
+  '#4884d9',
+  '#3884d8',
+  '#2884d7',
+  '#1884d6',
+  '#8784d5',
+  '#8684d4',
+  '#8584d3',
+  '#8484d2',
+  '#8384d1',
+]
 
 export type LineChartProps = {
   data: any[]
@@ -144,12 +160,12 @@ const Chart = ({
             </defs>
             <XAxis
               dataKey="time"
-              axisLine={false}
-              tickLine={false}
+              allowDuplicatedCategory={false}
               tickFormatter={(time) => dayjs(time).format('DD')}
               minTickGap={10}
             />
             <YAxis dataKey="value" />
+            <Legend />
             <Tooltip
               wrapperStyle={{ backgroundColor: 'red' }}
               labelStyle={{ color: 'green' }}
@@ -161,8 +177,8 @@ const Chart = ({
                 return `${value}`
               }}
             />
-            {series.map((s: any) => (
-              <Line dataKey="value" data={s.data} name={s.token} key={s.token} />
+            {series.map((s: any, i: any) => (
+              <Line dataKey="value" data={s.data} name={s.token} key={s.token} stroke={stroke[i]} />
             ))}
           </LineChart>
         </ResponsiveContainer>
