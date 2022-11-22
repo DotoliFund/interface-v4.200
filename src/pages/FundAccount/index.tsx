@@ -333,7 +333,7 @@ export default function FundAccount() {
     if (chartData) {
       return chartData.map((data) => {
         return {
-          time: unixToDate(data.timestamp),
+          time: data.timestamp,
           tokens: data.tokens,
           tokensVolumeUSD: data.tokensVolumeUSD,
         }

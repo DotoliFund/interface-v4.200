@@ -27,7 +27,7 @@ const Wrapper = styled(Card)`
 
 const stroke = [
   '#8884d3',
-  '#00884d2',
+  '#0884d2',
   '#5884d1',
   '#5884d0',
   '#4884d9',
@@ -95,35 +95,8 @@ const Chart = ({
         })
       }
     })
-    console.log(1234, series)
   })
 
-  // const series = [
-  //   {
-  //     token: 'Series 1',
-  //     data: [
-  //       { time: 'A', value: Math.random() },
-  //       { time: 'B', value: Math.random() },
-  //       { time: 'C', value: Math.random() },
-  //     ],
-  //   },
-  //   {
-  //     token: 'Series 2',
-  //     data: [
-  //       { time: 'B', value: Math.random() },
-  //       { time: 'C', value: Math.random() },
-  //       { time: 'D', value: Math.random() },
-  //     ],
-  //   },
-  //   {
-  //     token: 'Series 3',
-  //     data: [
-  //       { time: 'C', value: Math.random() },
-  //       { time: 'D', value: Math.random() },
-  //       { time: 'E', value: Math.random() },
-  //     ],
-  //   },
-  // ]
   return (
     <Wrapper minHeight={minHeight} {...rest}>
       <RowBetween>
@@ -160,6 +133,7 @@ const Chart = ({
             </defs>
             <XAxis
               dataKey="time"
+              type="category"
               allowDuplicatedCategory={false}
               tickFormatter={(time) => dayjs(time).format('DD')}
               minTickGap={10}
