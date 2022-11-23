@@ -335,6 +335,7 @@ export default function FundAccount() {
         return {
           time: data.timestamp,
           tokens: data.tokens,
+          symbols: data.symbols,
           tokensVolumeUSD: data.tokensVolumeUSD,
         }
       })

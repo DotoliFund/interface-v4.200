@@ -18,6 +18,7 @@ const FUND_CHART = gql`
       feeVolumeETH
       feeVolumeUSD
       tokens
+      symbols
       tokensVolumeUSD
     }
   }
@@ -73,6 +74,7 @@ export function useFundChartData(fund: string | undefined): {
           feeVolumeETH: parseFloat(fundSnapshotFields.feeVolumeETH),
           feeVolumeUSD: parseFloat(fundSnapshotFields.feeVolumeUSD),
           tokens: fundSnapshotFields.tokens,
+          symbols: fundSnapshotFields.symbols,
           tokensVolumeUSD: fundSnapshotFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),

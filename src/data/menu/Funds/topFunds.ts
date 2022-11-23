@@ -18,6 +18,7 @@ export const TOP_FUNDS = () => {
         feeVolumeETH
         feeVolumeUSD
         tokens
+        symbols
         tokensVolumeUSD
         profitUSD
         profitRatio
@@ -72,6 +73,7 @@ export function useTopFunds(): {
           feeVolumeETH: parseFloat(fundFields.feeVolumeETH),
           feeVolumeUSD: parseFloat(fundFields.feeVolumeUSD),
           tokens: fundFields.tokens,
+          symbols: fundFields.symbols,
           tokensVolumeUSD: fundFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),

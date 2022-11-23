@@ -22,6 +22,7 @@ const INVESTOR_CHART = gql`
       volumeETH
       volumeUSD
       tokens
+      symbols
       tokensVolumeUSD
     }
   }
@@ -81,6 +82,7 @@ export function useInvestorChartData(
           volumeETH: parseFloat(investorSnapshotFields.volumeETH),
           volumeUSD: parseFloat(investorSnapshotFields.volumeUSD),
           tokens: investorSnapshotFields.tokens,
+          symbols: investorSnapshotFields.symbols,
           tokensVolumeUSD: investorSnapshotFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),

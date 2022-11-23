@@ -18,6 +18,7 @@ const FUND_DATA = gql`
       feeVolumeETH
       feeVolumeUSD
       tokens
+      symbols
       tokensVolumeUSD
       profitUSD
       profitRatio
@@ -72,6 +73,7 @@ export function useFundData(fund: string | undefined): {
         feeVolumeETH: parseFloat(data.fund.feeVolumeETH),
         feeVolumeUSD: parseFloat(data.fund.feeVolumeUSD),
         tokens: data.fund.tokens,
+        symbols: data.fund.symbols,
         tokensVolumeUSD: data.fund.tokensVolumeUSD.map((value) => {
           return parseFloat(value)
         }),

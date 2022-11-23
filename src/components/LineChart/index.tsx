@@ -7,6 +7,7 @@ import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import styled, { useTheme } from 'styled-components/macro'
+import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
 
@@ -79,6 +80,7 @@ const Chart = ({
   data.map((value, index) => {
     const time = value.time
     const tokens = value.tokens
+    const symbols = value.symbols
     const tokensVolumeUSD = value.tokensVolumeUSD
 
     tokens.map((token: any, index: any) => {
@@ -92,6 +94,7 @@ const Chart = ({
         series.push({
           token,
           data: [{ time, value: tokensVolumeUSD[index] }],
+          symbol: symbols[index],
         })
       }
     })
@@ -135,7 +138,7 @@ const Chart = ({
               dataKey="time"
               type="category"
               allowDuplicatedCategory={false}
-              tickFormatter={(time) => dayjs(time).format('DD')}
+              tickFormatter={(time) => unixToDate(time)} //dayjs(time).format('DD')}
               minTickGap={10}
             />
             <YAxis dataKey="value" />
@@ -148,11 +151,11 @@ const Chart = ({
                 return `${value}`
               }}
               labelFormatter={function (value) {
-                return `${value}`
+                return `${unixToDate(value)}`
               }}
             />
             {series.map((s: any, i: any) => (
-              <Line dataKey="value" data={s.data} name={s.token} key={s.token} stroke={stroke[i]} />
+              <Line dataKey="value" data={s.data} name={s.symbol} key={s.token} stroke={stroke[i]} />
             ))}
           </LineChart>
         </ResponsiveContainer>

@@ -16,6 +16,7 @@ const FUND_INVESTORS = gql`
       volumeETH
       volumeUSD
       tokens
+      symbols
       tokensVolumeUSD
       profitUSD
       profitRatio
@@ -71,6 +72,7 @@ export function useFundInvestors(fund: string | undefined): {
           volumeETH: parseFloat(investorDataFields.volumeETH),
           volumeUSD: parseFloat(investorDataFields.volumeUSD),
           tokens: investorDataFields.tokens,
+          symbols: investorDataFields.symbols,
           tokensVolumeUSD: investorDataFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),
