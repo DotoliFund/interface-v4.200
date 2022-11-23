@@ -29,7 +29,7 @@ const Wrapper = styled(Card)`
 const stroke = [
   '#8884d3',
   '#0884d2',
-  '#5884d1',
+  '#4834d1',
   '#5884d0',
   '#4884d9',
   '#3884d8',

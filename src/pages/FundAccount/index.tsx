@@ -554,13 +554,19 @@ export default function FundAccount() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.investor)}`}</ThemedText.DeprecatedLabel>
+              <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund}>
+                <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.fund)}`}</ThemedText.DeprecatedLabel>
+              </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.manager)}`}</ThemedText.DeprecatedLabel>
+              <StyledInternalLink
+                to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund + '/' + investorData.investor}
+              >
+                <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.investor)}`}</ThemedText.DeprecatedLabel>
+              </StyledInternalLink>
             </AutoRow>
           </RowBetween>
           <ResponsiveRow align="flex-end">
-            <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`${shortenAddress(
+            <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`Investor : ${shortenAddress(
               investorData.investor
             )}`}</ThemedText.DeprecatedLabel>
             {activeNetwork === EthereumNetworkInfo ? null : <></>}
@@ -601,7 +607,10 @@ export default function FundAccount() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {((investorData.volumeUSD / investorData.principalUSD) * 100).toFixed(2)}%
+                  {(((investorData.volumeUSD - investorData.principalUSD) / investorData.principalUSD) * 100).toFixed(
+                    2
+                  )}
+                  %
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>
@@ -652,15 +661,6 @@ export default function FundAccount() {
               </ToggleRow>
               {view === ChartView.VOL_ETH ? (
                 <AreaChart
-                  // data={[
-                  //   { name: 'a', value: [12, 30] },
-                  //   { name: 'b', value: [5, 13] },
-                  //   { name: 'c', value: [13, 31] },
-                  //   { name: 'd', value: [24, 53] },
-                  //   { name: 'e', value: [40, 43] },
-                  //   { name: 'f', value: [54, 36] },
-                  //   { name: 'g', value: [64, 26] },
-                  // ]}
                   data={formattedVolumeETH}
                   height={220}
                   minHeight={332}
@@ -685,15 +685,6 @@ export default function FundAccount() {
                 ></AreaChart>
               ) : view === ChartView.VOL_USD ? (
                 <AreaChart
-                  // data={[
-                  //   { name: 'a', value: [12, 30] },
-                  //   { name: 'b', value: [5, 13] },
-                  //   { name: 'c', value: [13, 31] },
-                  //   { name: 'd', value: [24, 53] },
-                  //   { name: 'e', value: [40, 43] },
-                  //   { name: 'f', value: [54, 36] },
-                  //   { name: 'g', value: [64, 26] },
-                  // ]}
                   data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
@@ -713,9 +704,6 @@ export default function FundAccount() {
                             : 0}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        <MonoSpace>left label (UTC)</MonoSpace>
-                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 ></AreaChart>
@@ -731,11 +719,7 @@ export default function FundAccount() {
                   setLabel={undefined}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {/* <MonoSpace>{tvlValue} </MonoSpace> */}
-                        <MonoSpace>1234 </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Tokens</ThemedText.DeprecatedMediumHeader>
                     </AutoColumn>
                   }
                 ></LineChart>

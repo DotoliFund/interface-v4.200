@@ -1,10 +1,11 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import LineChart from 'components/AreaChart/chart1'
+import AreaChart from 'components/AreaChart/chart1'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import InvestorTable from 'components/funds/InvestorTable'
+import LineChart from 'components/LineChart'
 import Loader from 'components/Loader'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
@@ -176,12 +177,27 @@ export default function FundPage() {
     }
   }, [chartData])
 
-  const formattedTokens = useMemo(() => {
+  const formattedTokensData = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
-          time: unixToDate(data.timestamp),
-          value: data.volumeUSD,
+          time: data.timestamp,
+          tokens: data.tokens,
+          symbols: data.symbols,
+          tokensVolumeUSD: data.tokensVolumeUSD,
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
+
+  const formattedFeesData = useMemo(() => {
+    if (chartData) {
+      return chartData.map((data) => {
+        return {
+          time: data.timestamp,
+          feeVolumeUSD: data.feeVolumeUSD,
         }
       })
     } else {
@@ -265,13 +281,15 @@ export default function FundPage() {
                 <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <ThemedText.DeprecatedLabel>{`${shortenAddress(fundData.address)}`}</ThemedText.DeprecatedLabel>
+              <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + fundData.address}>
+                <ThemedText.DeprecatedLabel>{`${shortenAddress(fundData.address)}`}</ThemedText.DeprecatedLabel>
+              </StyledInternalLink>
             </AutoRow>
           </RowBetween>
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>
-                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`${shortenAddress(
+                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`Fund : ${shortenAddress(
                   fundData.address
                 )} `}</ThemedText.DeprecatedLabel>
                 {activeNetwork === EthereumNetworkInfo ? null : <></>}
@@ -313,7 +331,7 @@ export default function FundPage() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {((fundData.volumeUSD / fundData.principalUSD) * 100).toFixed(2)}%
+                  {(((fundData.volumeUSD - fundData.principalUSD) / fundData.principalUSD) * 100).toFixed(2)}%
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>
@@ -360,17 +378,21 @@ export default function FundPage() {
                   >
                     Tokens
                   </ToggleElementFree>
-                  <ToggleElementFree
-                    isActive={view === ChartView.FEES}
-                    fontSize="12px"
-                    onClick={() => (view === ChartView.FEES ? {} : setView(ChartView.FEES))}
-                  >
-                    Fees
-                  </ToggleElementFree>
+                  {isManager ? (
+                    <ToggleElementFree
+                      isActive={view === ChartView.FEES}
+                      fontSize="12px"
+                      onClick={() => (view === ChartView.FEES ? {} : setView(ChartView.FEES))}
+                    >
+                      Fees
+                    </ToggleElementFree>
+                  ) : (
+                    <></>
+                  )}
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_ETH ? (
-                <LineChart
+                <AreaChart
                   data={formattedVolumeETH}
                   height={220}
                   minHeight={332}
@@ -392,9 +414,9 @@ export default function FundPage() {
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
-                ></LineChart>
+                ></AreaChart>
               ) : view === ChartView.VOL_USD ? (
-                <LineChart
+                <AreaChart
                   data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
@@ -410,16 +432,16 @@ export default function FundPage() {
                         <MonoSpace>
                           {'$ '}
                           {formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
-                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(5)
+                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(2)
                             : 0}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
-                ></LineChart>
+                ></AreaChart>
               ) : view === ChartView.TOKENS ? (
                 <LineChart
-                  data={formattedVolumeETH}
+                  data={formattedTokensData}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -429,21 +451,13 @@ export default function FundPage() {
                   setLabel={undefined}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
-                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(5)
-                            : 0}
-                          {' ETH'}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Tokens</ThemedText.DeprecatedMediumHeader>
                     </AutoColumn>
                   }
                 ></LineChart>
-              ) : (
-                <LineChart
-                  data={formattedVolumeUSD}
+              ) : isManager && view === ChartView.FEES ? (
+                <AreaChart
+                  data={formattedFeesData}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
@@ -453,18 +467,20 @@ export default function FundPage() {
                   setLabel={undefined}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Fees</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
-                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(5)
+                          {formattedFeesData && formattedFeesData[formattedFeesData.length - 1]
+                            ? formattedFeesData[formattedFeesData.length - 1].feeVolumeUSD.toFixed(2)
                             : 0}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
-                ></LineChart>
+                ></AreaChart>
+              ) : (
+                <></>
               )}
             </DarkGreyCard>
           </ContentLayout>
