@@ -192,7 +192,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
           &nbsp;
           <Badge>
             <BadgeText>
-              <Trans>{fundData?.profitRatio}%</Trans>
+              <Trans>{fundData?.profitRatio.toFixed(2)}%</Trans>
             </BadgeText>
           </Badge>
         </PrimaryPositionIdData>
@@ -204,20 +204,20 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             <ExtentsText>
               <Trans>TVL: </Trans>
             </ExtentsText>
-            <Trans>{fundData.volumeUSD}</Trans>
+            <Trans>{fundData.volumeUSD.toFixed(2)}</Trans>
           </RangeText>
           <RangeText>
             <ExtentsText>
               <Trans>Principal:</Trans>
             </ExtentsText>
-            <Trans>{fundData.principalUSD}</Trans>
+            <Trans>{fundData.principalUSD.toFixed(2)}</Trans>
           </RangeText>
           <RangeText>
             <RangeText>
               <ExtentsText>
                 <Trans>Profit:</Trans>
               </ExtentsText>
-              <Trans>{fundData.profitUSD}</Trans>
+              <Trans>{fundData.profitUSD.toFixed(2)}</Trans>
             </RangeText>
             <RangeText></RangeText>
             <ExtentsText>

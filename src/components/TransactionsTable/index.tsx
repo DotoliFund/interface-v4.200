@@ -118,7 +118,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
-          href={getEtherscanLink(1, transaction.sender, 'address', activeNetwork)}
+          href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address', activeNetwork)}
           style={{ color: color ?? theme.deprecated_blue1 }}
         >
           {shortenAddress(transaction.sender)}

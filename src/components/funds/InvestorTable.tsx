@@ -99,10 +99,10 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           </ExternalLink>
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.volumeUSD)}
+          {formatDollarAmount(Number(investor.volumeUSD.toFixed(2)))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.principalUSD)}
+          {formatDollarAmount(Number(investor.principalUSD.toFixed(2)))}
         </Label>
         <Label end={1} fontWeight={400}>
           {investor.profitUSD > 0

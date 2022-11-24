@@ -1,3 +1,4 @@
+import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import HoverInlineText from 'components/HoverInlineText'
@@ -87,6 +88,7 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; color?: string }) => {
+  const { chainId } = useWeb3React()
   const abs0 = Math.abs(transaction.amount0)
   const abs1 = Math.abs(transaction.amount1)
   const [activeNetwork] = useActiveNetworkVersion()
@@ -94,7 +96,7 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
 
   return (
     <ResponsiveGrid>
-      <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
+      <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === LiquidityTransactionType.MINT
             ? `Mint ${transaction.token0Symbol} and ${transaction.token1Symbol}`
@@ -118,7 +120,7 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
-          href={getEtherscanLink(1, transaction.sender, 'address', activeNetwork)}
+          href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address', activeNetwork)}
           style={{ color: color ?? theme.deprecated_blue1 }}
         >
           {shortenAddress(transaction.sender)}
