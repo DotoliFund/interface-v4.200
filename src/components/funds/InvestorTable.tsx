@@ -105,10 +105,12 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           {formatDollarAmount(investor.principalUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(investor.profitUSD)}
+          {investor.profitUSD > 0
+            ? '$' + investor.profitUSD.toFixed(2).toString()
+            : '-$' + -investor.profitUSD.toFixed(2).toString()}
         </Label>
         <Label end={1} fontWeight={400}>
-          {investor.profitRatio}
+          {investor.profitRatio.toFixed(2)}%
         </Label>
         <Label end={1} fontWeight={400}>
           {formatTime(investor.createdAtTimestamp.toString(), 8)}

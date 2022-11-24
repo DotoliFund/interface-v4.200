@@ -607,10 +607,7 @@ export default function FundAccount() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {(((investorData.volumeUSD - investorData.principalUSD) / investorData.principalUSD) * 100).toFixed(
-                    2
-                  )}
-                  %
+                  {investorData.profitRatio.toFixed(2)}%
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>

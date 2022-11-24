@@ -19,7 +19,7 @@ export const formatDollarAmount = (num: number | undefined, digits = 2, round = 
 }
 
 // using a currency library here in case we want to add more in future
-export const formatAmount = (num: number | undefined, digits = 2) => {
+export const formatAmount = (num: number | undefined, digits = 3) => {
   if (num === 0) return '0'
   if (!num) return '-'
   if (num < 0.001) {

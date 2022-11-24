@@ -25,6 +25,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
@@ -100,6 +101,7 @@ export default function FundPage() {
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
   const navigate = useNavigate()
+  const toggleWalletModal = useToggleWalletModal()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -248,7 +250,12 @@ export default function FundPage() {
 
   const Buttons = () =>
     !account ? (
-      <ButtonPrimary $borderRadius="12px" padding={'12px'}>
+      <ButtonPrimary
+        $borderRadius="12px"
+        padding={'12px'}
+        data-testid="navbar-connect-wallet"
+        onClick={toggleWalletModal}
+      >
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
@@ -331,7 +338,7 @@ export default function FundPage() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {(((fundData.volumeUSD - fundData.principalUSD) / fundData.principalUSD) * 100).toFixed(2)}%
+                  {fundData.profitRatio.toFixed(2)}%
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>
