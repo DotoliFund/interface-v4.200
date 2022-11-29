@@ -30,6 +30,7 @@ import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+import { toHex } from 'interface/utils/calldata'
 import { XXXFund2 } from 'interface/XXXFund2'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
@@ -249,12 +250,22 @@ export default function Deposit() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
 
-    const { calldata, value } = XXXFund2.depositCallParameters(tokenAddress, parsedAmount)
-    const txn: { to: string; data: string; value: string } = {
-      to: fundAddress,
-      data: calldata,
-      value,
+    let txn = {}
+    if (currency?.isNative) {
+      txn = {
+        from: account,
+        to: fundAddress,
+        value: toHex(parsedAmount.quotient),
+      }
+    } else {
+      const { calldata, value } = XXXFund2.depositCallParameters(tokenAddress, parsedAmount)
+      txn = {
+        to: fundAddress,
+        data: calldata,
+        value,
+      }
     }
+
     provider
       .getSigner()
       .estimateGas(txn)
