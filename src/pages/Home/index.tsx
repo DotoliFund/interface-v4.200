@@ -1,38 +1,30 @@
-import { Trans } from '@lingui/macro'
-import { Dialog } from '@reach/dialog'
-import { useState } from 'react'
+import { lazy } from 'react'
+
+import { Container, ScrollToTop } from './common'
+
+const Contact = lazy(() => import('./components/ContactForm'))
+const MiddleBlock = lazy(() => import('./components/MiddleBlock'))
+const ContentBlock = lazy(() => import('./components/ContentBlock'))
+
 export default function Home() {
-  const [showDialog, setShowDialog] = useState(false)
-  const open = () => setShowDialog(true)
-  const close = () => setShowDialog(false)
-
   return (
-    <div>
-      <Trans>h1. Heading</Trans>
-      <Trans>h2. Heading</Trans>
-      <Trans>h3. Heading</Trans>
-      <Trans>h4. Heading</Trans>
-      <Trans>h5. Heading</Trans>
-      <Trans>h6. Heading</Trans>
-
-      <div style={{ width: 200 }}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</div>
-      <div style={{ width: 200 }}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</div>
-
-      <Trans>button text</Trans>
-      <Trans>caption text</Trans>
-      <Trans>overline text</Trans>
-
-      <div>
-        <button onClick={open}>Open Dialog</button>
-
-        <Dialog isOpen={showDialog} onDismiss={close}>
-          <button className="close-button" onClick={close}>
-            <Trans>Close</Trans>
-            <span aria-hidden>×</span>
-          </button>
-          <p>Hello there. I am a dialog</p>
-        </Dialog>
-      </div>
-    </div>
+    <Container>
+      <ScrollToTop />
+      <ContentBlock
+        type="right"
+        title={'Landing page template for developers & startups'}
+        content={
+          'Beautifully designed templates using React.js, ant design and styled-components! Save weeks of time and build your landing page in minutes.'
+        }
+        button={'button'}
+        icon="developer.svg"
+        id="intro"
+      />
+      <MiddleBlock title={'title'} content={'text'} button={'button'} />
+      <ContentBlock type="left" title={'title'} content={'text'} section={'section'} icon="graphs.svg" id="about" />
+      <ContentBlock type="right" title={'title'} content={'text'} icon="product-launch.svg" id="mission" />
+      <ContentBlock type="left" title={'title'} content={'text'} icon="waving.svg" id="product" />
+      <Contact title={'title'} content={'text'} id="contact" />
+    </Container>
   )
 }

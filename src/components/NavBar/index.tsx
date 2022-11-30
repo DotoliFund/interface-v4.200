@@ -61,6 +61,9 @@ const PageTabs = () => {
       <MenuItem href="/staking">
         <Trans>Staking</Trans>
       </MenuItem>
+      <MenuItem href="/vote">
+        <Trans>Vote</Trans>
+      </MenuItem>
     </>
   )
 }
