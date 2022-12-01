@@ -36,7 +36,7 @@ import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
 import { PositionPage } from './Pool/PositionPage'
 import RemoveLiquidityV3 from './RemoveLiquidity/V3'
 
-const Vote = lazy(() => import('pages/Vote'))
+const Vote = lazy(() => import('pages/Swap'))
 
 const AppWrapper = styled.div`
   display: flex;
