@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 dayjs.extend(utc)
 
@@ -31,8 +31,8 @@ export type AreaChartProps = {
   color2?: string | undefined
   height?: number | undefined
   minHeight?: number
-  setValue?: Dispatch<SetStateAction<number | undefined>> // used for value on hover
-  setLabel?: Dispatch<SetStateAction<string | undefined>> // used for label of valye
+  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
+  setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of valye
   value?: number
   label?: string
   topLeft?: ReactNode | undefined
@@ -56,8 +56,19 @@ const Chart = ({
   minHeight = DEFAULT_HEIGHT,
   ...rest
 }: AreaChartProps) => {
-  const theme = useTheme()
-  const parsedValue = value
+  const CustomTooltip = (active: any) => {
+    if (active && active.payload.length > 0) {
+      console.log('label', active.label)
+      console.log('value', active.payload[0].value)
+    }
+    if (active.payload && active.payload.length) {
+      setLabel(active.label)
+      setValue(active.payload[0].value)
+      return <></>
+    }
+
+    return null
+  }
 
   return (
     <Wrapper minHeight={minHeight} {...rest}>
@@ -111,6 +122,7 @@ const Chart = ({
               labelFormatter={function (value) {
                 return `${value}`
               }}
+              content={<CustomTooltip />}
             />
             <Area dataKey="value" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
           </AreaChart>

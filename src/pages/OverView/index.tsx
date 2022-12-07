@@ -10,6 +10,7 @@ import { useFundListData } from 'state/funds/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { unixToDate } from 'utils/date'
+import { formatDollarAmount } from 'utils/numbers'
 
 const RowBetween = styled(Row)`
   justify-content: space-between;
@@ -90,6 +91,13 @@ export default function Home() {
     }
   }, [chartData])
 
+  const tvlValue = useMemo(() => {
+    if (liquidityHover) {
+      return formatDollarAmount(liquidityHover, 2, true)
+    }
+    return formatDollarAmount(0, 2, true)
+  }, [liquidityHover])
+
   return (
     <PageWrapper>
       <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
@@ -110,9 +118,7 @@ export default function Home() {
                 <AutoColumn gap="4px">
                   <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
-                    <MonoSpace>
-                      {formattedTvlData.length > 0 ? formattedTvlData[formattedTvlData.length - 1].value : 0}{' '}
-                    </MonoSpace>
+                    <MonoSpace>{tvlValue} </MonoSpace>
                   </ThemedText.LargeHeader>
                   <ThemedText.DeprecatedMain fontSize="12px" height="14px">
                     {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
