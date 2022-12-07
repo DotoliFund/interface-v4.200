@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 dayjs.extend(utc)
 
@@ -31,8 +31,8 @@ export type AreaChartProps = {
   color2?: string | undefined
   height?: number | undefined
   minHeight?: number
-  setValue?: Dispatch<SetStateAction<number | undefined>> // used for value on hover
-  setLabel?: Dispatch<SetStateAction<string | undefined>> // used for label of valye
+  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
+  setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of valye
   value?: number
   label?: string
   topLeft?: ReactNode | undefined
@@ -56,8 +56,13 @@ const Chart = ({
   minHeight = DEFAULT_HEIGHT,
   ...rest
 }: AreaChartProps) => {
-  const theme = useTheme()
-  const parsedValue = value
+  const CustomTooltip = (active: any) => {
+    if (active.payload && active.payload.length) {
+      setLabel(active.label)
+      setValue(active.payload[0].value)
+    }
+    return null
+  }
 
   return (
     <Wrapper minHeight={minHeight} {...rest}>
@@ -101,19 +106,8 @@ const Chart = ({
               tickFormatter={(time) => dayjs(time).format('DD')}
               minTickGap={10}
             />
-            <Tooltip
-              wrapperStyle={{ backgroundColor: 'red' }}
-              labelStyle={{ color: 'green' }}
-              itemStyle={{ color: 'cyan' }}
-              formatter={function (value, name) {
-                return `${value}`
-              }}
-              labelFormatter={function (value) {
-                return `${value}`
-              }}
-            />
-            <Area dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
-            <Area dataKey="principal" type="monotone" stroke={color2} fill="url(#gradient)" strokeWidth={2} />
+            <Tooltip content={<CustomTooltip />} />
+            <Area dataKey="value" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
           </AreaChart>
         </ResponsiveContainer>
       )}

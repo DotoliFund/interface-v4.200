@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import AreaChart from 'components/AreaChart/chart1'
+import AreaChart from 'components/AreaChart'
+import MultiAreaChart from 'components/AreaChart/principal'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -199,7 +200,7 @@ export default function FundPage() {
       return chartData.map((data) => {
         return {
           time: data.timestamp,
-          feeVolumeUSD: data.feeVolumeUSD,
+          value: data.feeVolumeUSD,
         }
       })
     } else {
@@ -345,21 +346,8 @@ export default function FundPage() {
             <DarkGreyCard>
               <ToggleRow align="flex-start">
                 <AutoColumn>
-                  <ThemedText.DeprecatedLabel fontSize="24px" height="30px">
-                    <MonoSpace>
-                      {latestValue
-                        ? formatDollarAmount(latestValue)
-                        : view === ChartView.VOL_ETH
-                        ? // ? formatDollarAmount(formattedVolumeData[formattedVolumeData.length - 1]?.value)
-                          // : view === ChartView.DENSITY
-                          ''
-                        : // : formatDollarAmount(formattedTvlData[formattedTvlData.length - 1]?.value)}{' '}
-                          ''}
-                    </MonoSpace>
-                  </ThemedText.DeprecatedLabel>
-                  <ThemedText.DeprecatedMain height="20px" fontSize="12px">
-                    {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : ''}
-                  </ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedLabel fontSize="24px" height="20px"></ThemedText.DeprecatedLabel>
+                  <ThemedText.DeprecatedMain height="20px" fontSize="12px"></ThemedText.DeprecatedMain>
                 </AutoColumn>
                 <ToggleWrapper width="240px">
                   <ToggleElementFree
@@ -399,63 +387,73 @@ export default function FundPage() {
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_ETH ? (
-                <AreaChart
+                <MultiAreaChart
                   data={formattedVolumeETH}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={undefined}
-                  label={undefined}
-                  setValue={undefined}
-                  setLabel={undefined}
+                  value={latestValue}
+                  label={valueLabel}
+                  setValue={setLatestValue}
+                  setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
-                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(5)
+                          {latestValue
+                            ? latestValue.toFixed(4)
+                            : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(4)
                             : 0}
                           {' ETH'}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
+                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
-                ></AreaChart>
+                />
               ) : view === ChartView.VOL_USD ? (
-                <AreaChart
+                <MultiAreaChart
                   data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={undefined}
-                  label={undefined}
-                  setValue={undefined}
-                  setLabel={undefined}
+                  value={latestValue}
+                  label={valueLabel}
+                  setValue={setLatestValue}
+                  setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                          {latestValue
+                            ? latestValue.toFixed(2)
+                            : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
                             ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(2)
                             : 0}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
+                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
-                ></AreaChart>
+                />
               ) : view === ChartView.TOKENS ? (
                 <LineChart
                   data={formattedTokensData}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={undefined}
-                  label={undefined}
-                  setValue={undefined}
-                  setLabel={undefined}
+                  value={latestValue}
+                  label={valueLabel}
+                  setValue={setLatestValue}
+                  setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">Tokens</ThemedText.DeprecatedMediumHeader>
@@ -468,24 +466,29 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={undefined}
-                  label={undefined}
-                  setValue={undefined}
-                  setLabel={undefined}
+                  value={latestValue}
+                  label={valueLabel}
+                  setValue={setLatestValue}
+                  setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">Fees</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {formattedFeesData && formattedFeesData[formattedFeesData.length - 1]
-                            ? formattedFeesData[formattedFeesData.length - 1].feeVolumeUSD.toFixed(2)
+                          {latestValue
+                            ? latestValue.toFixed(2)
+                            : formattedFeesData && formattedFeesData[formattedFeesData.length - 1]
+                            ? formattedFeesData[formattedFeesData.length - 1].value.toFixed(2)
                             : 0}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
+                      </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
-                ></AreaChart>
+                />
               ) : (
                 <></>
               )}

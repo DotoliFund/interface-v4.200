@@ -57,16 +57,10 @@ const Chart = ({
   ...rest
 }: AreaChartProps) => {
   const CustomTooltip = (active: any) => {
-    if (active && active.payload.length > 0) {
-      console.log('label', active.label)
-      console.log('value', active.payload[0].value)
-    }
     if (active.payload && active.payload.length) {
       setLabel(active.label)
       setValue(active.payload[0].value)
-      return <></>
     }
-
     return null
   }
 
@@ -112,19 +106,9 @@ const Chart = ({
               tickFormatter={(time) => dayjs(time).format('DD')}
               minTickGap={10}
             />
-            <Tooltip
-              wrapperStyle={{ backgroundColor: 'red' }}
-              labelStyle={{ color: 'green' }}
-              itemStyle={{ color: 'cyan' }}
-              formatter={function (value, name) {
-                return `${value}`
-              }}
-              labelFormatter={function (value) {
-                return `${value}`
-              }}
-              content={<CustomTooltip />}
-            />
-            <Area dataKey="value" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
+            <Tooltip content={<CustomTooltip />} />
+            <Area dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
+            <Area dataKey="principal" type="monotone" stroke={color2} fill="url(#gradient)" strokeWidth={2} />
           </AreaChart>
         </ResponsiveContainer>
       )}

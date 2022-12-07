@@ -1,4 +1,4 @@
-import LineChart from 'components/AreaChart/alt'
+import AreaChart from 'components/AreaChart'
 import { AutoColumn } from 'components/Column'
 import FundTable from 'components/funds/FundTable'
 import Row from 'components/Row'
@@ -7,7 +7,7 @@ import { useXXXFund2ChartData } from 'data/Overview/chartData'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useFundListData } from 'state/funds/hooks'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
@@ -54,13 +54,12 @@ export default function Home() {
     window.scrollTo(0, 0)
   }, [])
 
-  const theme = useTheme()
-
   const [activeNetwork] = useActiveNetworkVersion()
 
-  const [volumeHover, setVolumeHover] = useState<number | undefined>()
   const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
-  const [leftLabel, setLeftLabel] = useState<string | undefined>()
+  const [liquidityLabel, setLiquidityLabel] = useState<string | undefined>()
+  const [investorCountHover, setInvestorCountHover] = useState<number | undefined>()
+  const [investorCountLabel, setInvestorCountLabel] = useState<string | undefined>()
 
   const fundListData = useFundListData()
   const chartData = useXXXFund2ChartData().data
@@ -105,15 +104,15 @@ export default function Home() {
         <ThemedText.DeprecatedMain>Uniswap Overview</ThemedText.DeprecatedMain>
         <ResponsiveRow>
           <ChartWrapper>
-            <LineChart
+            <AreaChart
               data={formattedTvlData}
               height={220}
               minHeight={332}
               color={activeNetwork.primaryColor}
               value={liquidityHover}
-              label={leftLabel}
+              label={liquidityLabel}
               setValue={setLiquidityHover}
-              setLabel={setLeftLabel}
+              setLabel={setLiquidityLabel}
               topLeft={
                 <AutoColumn gap="4px">
                   <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
@@ -121,32 +120,36 @@ export default function Home() {
                     <MonoSpace>{tvlValue} </MonoSpace>
                   </ThemedText.LargeHeader>
                   <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                    {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
+                    {liquidityLabel ? <MonoSpace>{liquidityLabel} (UTC)</MonoSpace> : null}
                   </ThemedText.DeprecatedMain>
                 </AutoColumn>
               }
             />
           </ChartWrapper>
           <ChartWrapper>
-            <LineChart
+            <AreaChart
               data={formattedCountData}
               height={220}
               minHeight={332}
               color={activeNetwork.primaryColor}
-              value={liquidityHover}
-              label={leftLabel}
-              setValue={setLiquidityHover}
-              setLabel={setLeftLabel}
+              value={investorCountHover}
+              label={investorCountLabel}
+              setValue={setInvestorCountHover}
+              setLabel={setInvestorCountLabel}
               topLeft={
                 <AutoColumn gap="4px">
                   <ThemedText.MediumHeader fontSize="16px">Investors</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
-                      {formattedCountData.length > 0 ? formattedCountData[formattedCountData.length - 1].value : 0}{' '}
+                      {investorCountHover
+                        ? investorCountHover
+                        : formattedCountData.length > 0
+                        ? formattedCountData[formattedCountData.length - 1].value
+                        : 0}{' '}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
                   <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                    {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
+                    {investorCountLabel ? <MonoSpace>{investorCountLabel} (UTC)</MonoSpace> : null}
                   </ThemedText.DeprecatedMain>
                 </AutoColumn>
               }
