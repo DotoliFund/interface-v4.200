@@ -34,7 +34,7 @@ import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
-import { formatAmount } from 'utils/numbers'
+import { formatDollarAmount } from 'utils/numbers'
 
 const PIE_HEIGHT = 340
 
@@ -95,9 +95,7 @@ const PieWrapper = styled(Card)`
 `
 
 enum ChartView {
-  VOL_ETH,
   VOL_USD,
-  TOKENS,
   FEES,
 }
 
@@ -157,30 +155,13 @@ export default function FundPage() {
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
 
-  const [view, setView] = useState(ChartView.VOL_ETH)
+  const [view, setView] = useState(ChartView.VOL_USD)
   const [valueLabel, setValueLabel] = useState<string | undefined>()
-  const [volumeETHHover, setVolumeETHHover] = useState<number | undefined>()
+  const [volumeHover, setVolumeHover] = useState<number | undefined>()
   const [principalHover, setPrincipalHover] = useState<number | undefined>()
   const [tokensHover, setTokensHover] = useState<string[] | undefined>()
   const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
   const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
-
-  const formattedVolumeETH = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data) => {
-        return {
-          time: unixToDate(data.timestamp),
-          volume: data.volumeETH,
-          principal: data.principalETH,
-          tokens: data.tokens,
-          symbols: data.symbols,
-          tokensVolume: data.tokensVolumeETH,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
@@ -189,6 +170,9 @@ export default function FundPage() {
           time: unixToDate(data.timestamp),
           volume: data.volumeUSD,
           principal: data.principalUSD,
+          tokens: data.tokens,
+          symbols: data.symbols,
+          tokensVolume: data.tokensVolumeUSD,
         }
       })
     } else {
@@ -211,31 +195,31 @@ export default function FundPage() {
   }, [chartData, tokensHover, symbolsHover, tokensVolumeUSDHover])
 
   const formattedLatestTokensData = useMemo(() => {
-    if (formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]) {
-      const latestVolumeETH = formattedVolumeETH[formattedVolumeETH.length - 1]
-      return latestVolumeETH.tokens.map((data, index) => {
+    if (formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]) {
+      const latestVolumeUSD = formattedVolumeUSD[formattedVolumeUSD.length - 1]
+      return latestVolumeUSD.tokens.map((data, index) => {
         return {
           token: data,
-          symbol: latestVolumeETH.symbols[index],
-          tokenVolume: latestVolumeETH.tokensVolume[index],
+          symbol: latestVolumeUSD.symbols[index],
+          tokenVolume: latestVolumeUSD.tokensVolume[index],
         }
       })
     } else {
       return []
     }
-  }, [formattedVolumeETH])
+  }, [formattedVolumeUSD])
 
   const latestVolumeData = useMemo(() => {
-    if (formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]) {
-      const latestVolumeETH = formattedVolumeETH[formattedVolumeETH.length - 1]
+    if (formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]) {
+      const latestVolumeUSD = formattedVolumeUSD[formattedVolumeUSD.length - 1]
       return {
-        volume: latestVolumeETH.volume,
-        principal: latestVolumeETH.principal,
+        volume: latestVolumeUSD.volume,
+        principal: latestVolumeUSD.principal,
       }
     } else {
       return undefined
     }
-  }, [formattedVolumeETH])
+  }, [formattedVolumeUSD])
 
   const formattedFeesData = useMemo(() => {
     if (chartData) {
@@ -365,22 +349,35 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
                       <ThemedText.DeprecatedLabel fontSize="24px">
-                        {formatAmount(volumeETHHover ? volumeETHHover : latestVolumeData ? latestVolumeData.volume : 0)}
+                        {formatDollarAmount(
+                          volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                        )}
                       </ThemedText.DeprecatedLabel>
                     </AutoColumn>
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
                       <ThemedText.DeprecatedLabel fontSize="24px">
-                        {formatAmount(
-                          principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
+                        {formatDollarAmount(
+                          principalHover !== undefined
+                            ? principalHover
+                            : latestVolumeData
+                            ? latestVolumeData.principal
+                            : 0
                         )}
                       </ThemedText.DeprecatedLabel>
                     </AutoColumn>
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
                       <ThemedText.DeprecatedLabel fontSize="24px">
-                        {volumeETHHover && principalHover && principalHover > 0
-                          ? ((volumeETHHover - principalHover) / principalHover).toFixed(2)
+                        {volumeHover !== undefined && principalHover !== undefined && principalHover > 0
+                          ? ((volumeHover - principalHover) / principalHover).toFixed(2)
+                          : principalHover === 0
+                          ? 0
+                          : latestVolumeData && latestVolumeData.principal > 0
+                          ? (
+                              (latestVolumeData.volume - latestVolumeData.principal) /
+                              latestVolumeData.principal
+                            ).toFixed(2)
                           : 0}
                         %
                       </ThemedText.DeprecatedLabel>
@@ -395,13 +392,6 @@ export default function FundPage() {
                   <ThemedText.DeprecatedMain paddingY="20px" fontSize="12px"></ThemedText.DeprecatedMain>
                 </AutoColumn>
                 <ToggleWrapper width="240px">
-                  <ToggleElementFree
-                    isActive={view === ChartView.VOL_ETH}
-                    fontSize="12px"
-                    onClick={() => (view === ChartView.VOL_ETH ? {} : setView(ChartView.VOL_ETH))}
-                  >
-                    VolumeETH
-                  </ToggleElementFree>
                   {activeNetwork === ArbitrumNetworkInfo ? null : (
                     <ToggleElementFree
                       isActive={view === ChartView.VOL_USD}
@@ -411,13 +401,6 @@ export default function FundPage() {
                       VolumeUSD
                     </ToggleElementFree>
                   )}
-                  <ToggleElementFree
-                    isActive={view === ChartView.TOKENS}
-                    fontSize="12px"
-                    onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
-                  >
-                    Tokens
-                  </ToggleElementFree>
                   {isManager ? (
                     <ToggleElementFree
                       isActive={view === ChartView.FEES}
@@ -431,48 +414,15 @@ export default function FundPage() {
                   )}
                 </ToggleWrapper>
               </ToggleRow>
-              {view === ChartView.VOL_ETH ? (
-                <MultiAreaChart
-                  data={formattedVolumeETH}
-                  height={220}
-                  minHeight={332}
-                  color={activeNetwork.primaryColor}
-                  value={volumeETHHover}
-                  label={valueLabel}
-                  setValue={setVolumeETHHover}
-                  setLabel={setValueLabel}
-                  setPrincipal={setPrincipalHover}
-                  setTokens={setTokensHover}
-                  setSymbols={setSymbolsHover}
-                  setTokensVolumeUSD={setTokensVolumeUSDHover}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {volumeETHHover
-                            ? volumeETHHover.toFixed(4)
-                            : formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
-                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(4)
-                            : 0}
-                          {' ETH'}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
-                      </ThemedText.DeprecatedMain>
-                    </AutoColumn>
-                  }
-                />
-              ) : view === ChartView.VOL_USD ? (
+              {view === ChartView.VOL_USD ? (
                 <MultiAreaChart
                   data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={volumeETHHover}
+                  value={volumeHover}
                   label={valueLabel}
-                  setValue={setVolumeETHHover}
+                  setValue={setVolumeHover}
                   setLabel={setValueLabel}
                   setPrincipal={setPrincipalHover}
                   setTokens={setTokensHover}
@@ -483,12 +433,13 @@ export default function FundPage() {
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {'$ '}
-                          {volumeETHHover
-                            ? volumeETHHover.toFixed(2)
-                            : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
-                            ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(2)
-                            : 0}
+                          {formatDollarAmount(
+                            volumeHover !== undefined
+                              ? volumeHover
+                              : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                              ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume
+                              : 0
+                          )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
@@ -503,9 +454,9 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={volumeETHHover}
+                  value={volumeHover}
                   label={valueLabel}
-                  setValue={setVolumeETHHover}
+                  setValue={setVolumeHover}
                   setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
@@ -513,8 +464,8 @@ export default function FundPage() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {volumeETHHover
-                            ? volumeETHHover.toFixed(2)
+                          {volumeHover
+                            ? volumeHover.toFixed(2)
                             : formattedFeesData && formattedFeesData[formattedFeesData.length - 1]
                             ? formattedFeesData[formattedFeesData.length - 1].value.toFixed(2)
                             : 0}
