@@ -8,6 +8,7 @@ export interface Fund {
   createdAtTimestamp: number
   manager: string
   investorCount: number
+  principalETH: number
   principalUSD: number
   volumeETH: number
   volumeUSD: number
@@ -15,7 +16,9 @@ export interface Fund {
   feeVolumeUSD: number
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
+  profitETH: number
   profitUSD: number
   profitRatio: number
 }
@@ -26,6 +29,7 @@ export interface FundFields {
   createdAtTimestamp: string
   manager: string
   investorCount: string
+  principalETH: string
   principalUSD: string
   volumeETH: string
   volumeUSD: string
@@ -33,7 +37,9 @@ export interface FundFields {
   feeVolumeUSD: string
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
+  profitETH: string
   profitUSD: string
   profitRatio: string
 }
@@ -44,12 +50,15 @@ export interface Investor {
   fund: string
   manager: string
   investor: string
+  principalETH: number
   principalUSD: number
   volumeETH: number
   volumeUSD: number
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
+  profitETH: number
   profitUSD: number
   profitRatio: number
 }
@@ -60,12 +69,15 @@ export interface InvestorFields {
   fund: string
   manager: string
   investor: string
+  principalETH: string
   principalUSD: string
   volumeETH: string
   volumeUSD: string
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
+  profitETH: string
   profitUSD: string
   profitRatio: string
 }
@@ -94,6 +106,7 @@ export interface FundSnapshot {
   fund: string
   manager: string
   investorCount: number
+  principalETH: number
   principalUSD: number
   volumeETH: number
   volumeUSD: number
@@ -101,6 +114,7 @@ export interface FundSnapshot {
   feeVolumeUSD: number
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
 }
 
@@ -110,6 +124,7 @@ export interface FundSnapshotFields {
   fund: string
   manager: string
   investorCount: string
+  principalETH: string
   principalUSD: string
   volumeETH: string
   volumeUSD: string
@@ -117,6 +132,7 @@ export interface FundSnapshotFields {
   feeVolumeUSD: string
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
 }
 
@@ -126,11 +142,13 @@ export interface InvestorSnapshot {
   fund: string
   manager: string
   investor: string
+  principalETH: number
   principalUSD: number
   volumeETH: number
   volumeUSD: number
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
 }
 
@@ -140,10 +158,12 @@ export interface InvestorSnapshotFields {
   fund: string
   manager: string
   investor: string
+  principalETH: string
   principalUSD: string
   volumeETH: string
   volumeUSD: string
   tokens: string[]
   symbols: string[]
+  tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
 }

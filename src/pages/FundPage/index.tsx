@@ -3,11 +3,12 @@ import { useWeb3React } from '@web3-react/core'
 import AreaChart from 'components/AreaChart'
 import MultiAreaChart from 'components/AreaChart/principal'
 import { ButtonPrimary } from 'components/Button'
-import { DarkGreyCard, GreyCard } from 'components/Card'
+import { DarkGreyCard } from 'components/Card'
+import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import InvestorTable from 'components/funds/InvestorTable'
-import LineChart from 'components/LineChart'
 import Loader from 'components/Loader'
+import PieChart from 'components/PieChart'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
@@ -22,18 +23,20 @@ import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount } from 'utils/numbers'
+
+const PIE_HEIGHT = 340
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -55,21 +58,12 @@ const ThemedBackground = styled.div<{ backgroundColor: string }>`
 
 const ContentLayout = styled.div`
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 360px 1fr;
   grid-gap: 1em;
 
   @media screen and (max-width: 800px) {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
-  }
-`
-
-const TokenButton = styled(GreyCard)`
-  padding: 8px 12px;
-  border-radius: 10px;
-  :hover {
-    cursor: pointer;
-    opacity: 0.6;
   }
 `
 
@@ -85,6 +79,18 @@ const ResponsiveRow = styled(RowBetween)`
 const ToggleRow = styled(RowBetween)`
   @media screen and (max-width: 600px) {
     flex-direction: column;
+  }
+`
+
+const PieWrapper = styled(Card)`
+  width: 100%;
+  height: ${PIE_HEIGHT}px;
+  padding: 1rem;
+  display: flex;
+  background-color: ${({ theme }) => theme.deprecated_bg0};
+  flex-direction: column;
+  > * {
+    font-size: 1rem;
   }
 `
 
@@ -110,7 +116,6 @@ export default function FundPage() {
 
   // theming
   const backgroundColor = useColor()
-  const theme = useTheme()
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
@@ -152,13 +157,24 @@ export default function FundPage() {
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
 
+  const [view, setView] = useState(ChartView.VOL_ETH)
+  const [valueLabel, setValueLabel] = useState<string | undefined>()
+  const [volumeETHHover, setVolumeETHHover] = useState<number | undefined>()
+  const [principalHover, setPrincipalHover] = useState<number | undefined>()
+  const [tokensHover, setTokensHover] = useState<string[] | undefined>()
+  const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
+  const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
+
   const formattedVolumeETH = useMemo(() => {
     if (chartData) {
       return chartData.map((data) => {
         return {
           time: unixToDate(data.timestamp),
           volume: data.volumeETH,
-          principal: data.principalUSD,
+          principal: data.principalETH,
+          tokens: data.tokens,
+          symbols: data.symbols,
+          tokensVolume: data.tokensVolumeETH,
         }
       })
     } else {
@@ -181,19 +197,45 @@ export default function FundPage() {
   }, [chartData])
 
   const formattedTokensData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data) => {
+    if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
+      return tokensHover.map((data, index) => {
         return {
-          time: data.timestamp,
-          tokens: data.tokens,
-          symbols: data.symbols,
-          tokensVolumeUSD: data.tokensVolumeUSD,
+          token: data,
+          symbol: symbolsHover[index],
+          tokenVolume: tokensVolumeUSDHover[index],
+        }
+      })
+    } else {
+      return undefined
+    }
+  }, [chartData, tokensHover, symbolsHover, tokensVolumeUSDHover])
+
+  const formattedLatestTokensData = useMemo(() => {
+    if (formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]) {
+      const latestVolumeETH = formattedVolumeETH[formattedVolumeETH.length - 1]
+      return latestVolumeETH.tokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: latestVolumeETH.symbols[index],
+          tokenVolume: latestVolumeETH.tokensVolume[index],
         }
       })
     } else {
       return []
     }
-  }, [chartData])
+  }, [formattedVolumeETH])
+
+  const latestVolumeData = useMemo(() => {
+    if (formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]) {
+      const latestVolumeETH = formattedVolumeETH[formattedVolumeETH.length - 1]
+      return {
+        volume: latestVolumeETH.volume,
+        principal: latestVolumeETH.principal,
+      }
+    } else {
+      return undefined
+    }
+  }, [formattedVolumeETH])
 
   const formattedFeesData = useMemo(() => {
     if (chartData) {
@@ -207,10 +249,6 @@ export default function FundPage() {
       return []
     }
   }, [chartData])
-
-  const [view, setView] = useState(ChartView.VOL_ETH)
-  const [latestValue, setLatestValue] = useState<number | undefined>()
-  const [valueLabel, setValueLabel] = useState<string | undefined>()
 
   function onAccount(fund: string, account: string) {
     navigate('/fund')
@@ -312,42 +350,49 @@ export default function FundPage() {
           <ContentLayout>
             <DarkGreyCard>
               <AutoColumn gap="lg">
-                <GreyCard padding="16px">
-                  <AutoColumn gap="md">
-                    <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
-                    <RowBetween>
-                      <RowFixed>
-                        <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {shortenAddress(fundData.manager)}
-                        </ThemedText.DeprecatedLabel>
-                      </RowFixed>
-                    </RowBetween>
-                  </AutoColumn>
-                </GreyCard>
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(fundData.volumeUSD)}
+                <AutoRow gap="md">
+                  <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
+                    {shortenAddress(fundData.manager)}
                   </ThemedText.DeprecatedLabel>
-                </AutoColumn>
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(fundData.principalUSD)}
-                  </ThemedText.DeprecatedLabel>
-                </AutoColumn>
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {fundData.profitRatio.toFixed(2)}%
-                </AutoColumn>
+                </AutoRow>
+                <PieWrapper>
+                  <PieChart
+                    data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
+                    color={activeNetwork.primaryColor}
+                  />
+                  <RowBetween mt="15px">
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel fontSize="24px">
+                        {formatAmount(volumeETHHover ? volumeETHHover : latestVolumeData ? latestVolumeData.volume : 0)}
+                      </ThemedText.DeprecatedLabel>
+                    </AutoColumn>
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel fontSize="24px">
+                        {formatAmount(
+                          principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
+                        )}
+                      </ThemedText.DeprecatedLabel>
+                    </AutoColumn>
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel fontSize="24px">
+                        {volumeETHHover && principalHover && principalHover > 0
+                          ? ((volumeETHHover - principalHover) / principalHover).toFixed(2)
+                          : 0}
+                        %
+                      </ThemedText.DeprecatedLabel>
+                    </AutoColumn>
+                  </RowBetween>
+                </PieWrapper>
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
               <ToggleRow align="flex-start">
                 <AutoColumn>
-                  <ThemedText.DeprecatedLabel fontSize="24px" height="20px"></ThemedText.DeprecatedLabel>
-                  <ThemedText.DeprecatedMain height="20px" fontSize="12px"></ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain paddingY="20px" fontSize="12px"></ThemedText.DeprecatedMain>
                 </AutoColumn>
                 <ToggleWrapper width="240px">
                   <ToggleElementFree
@@ -392,18 +437,22 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={latestValue}
+                  value={volumeETHHover}
                   label={valueLabel}
-                  setValue={setLatestValue}
+                  setValue={setVolumeETHHover}
                   setLabel={setValueLabel}
+                  setPrincipal={setPrincipalHover}
+                  setTokens={setTokensHover}
+                  setSymbols={setSymbolsHover}
+                  setTokensVolumeUSD={setTokensVolumeUSDHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {latestValue
-                            ? latestValue.toFixed(4)
-                            : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
+                          {volumeETHHover
+                            ? volumeETHHover.toFixed(4)
+                            : formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
                             ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(4)
                             : 0}
                           {' ETH'}
@@ -421,18 +470,22 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={latestValue}
+                  value={volumeETHHover}
                   label={valueLabel}
-                  setValue={setLatestValue}
+                  setValue={setVolumeETHHover}
                   setLabel={setValueLabel}
+                  setPrincipal={setPrincipalHover}
+                  setTokens={setTokensHover}
+                  setSymbols={setSymbolsHover}
+                  setTokensVolumeUSD={setTokensVolumeUSDHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {latestValue
-                            ? latestValue.toFixed(2)
+                          {volumeETHHover
+                            ? volumeETHHover.toFixed(2)
                             : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
                             ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(2)
                             : 0}
@@ -444,31 +497,15 @@ export default function FundPage() {
                     </AutoColumn>
                   }
                 />
-              ) : view === ChartView.TOKENS ? (
-                <LineChart
-                  data={formattedTokensData}
-                  height={220}
-                  minHeight={332}
-                  color={activeNetwork.primaryColor}
-                  value={latestValue}
-                  label={valueLabel}
-                  setValue={setLatestValue}
-                  setLabel={setValueLabel}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Tokens</ThemedText.DeprecatedMediumHeader>
-                    </AutoColumn>
-                  }
-                ></LineChart>
               ) : isManager && view === ChartView.FEES ? (
                 <AreaChart
                   data={formattedFeesData}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={latestValue}
+                  value={volumeETHHover}
                   label={valueLabel}
-                  setValue={setLatestValue}
+                  setValue={setVolumeETHHover}
                   setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
@@ -476,8 +513,8 @@ export default function FundPage() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {latestValue
-                            ? latestValue.toFixed(2)
+                          {volumeETHHover
+                            ? volumeETHHover.toFixed(2)
                             : formattedFeesData && formattedFeesData[formattedFeesData.length - 1]
                             ? formattedFeesData[formattedFeesData.length - 1].value.toFixed(2)
                             : 0}

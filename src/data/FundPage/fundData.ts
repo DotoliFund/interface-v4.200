@@ -12,6 +12,7 @@ const FUND_DATA = gql`
       createdAtTimestamp
       manager
       investorCount
+      principalETH
       principalUSD
       volumeETH
       volumeUSD
@@ -19,7 +20,9 @@ const FUND_DATA = gql`
       feeVolumeUSD
       tokens
       symbols
+      tokensVolumeETH
       tokensVolumeUSD
+      profitETH
       profitUSD
       profitRatio
     }
@@ -67,6 +70,7 @@ export function useFundData(fund: string | undefined): {
         createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),
+        principalETH: parseFloat(data.fund.principalETH),
         principalUSD: parseFloat(data.fund.principalUSD),
         volumeETH: parseFloat(data.fund.volumeETH),
         volumeUSD: parseFloat(data.fund.volumeUSD),
@@ -74,9 +78,13 @@ export function useFundData(fund: string | undefined): {
         feeVolumeUSD: parseFloat(data.fund.feeVolumeUSD),
         tokens: data.fund.tokens,
         symbols: data.fund.symbols,
+        tokensVolumeETH: data.fund.tokensVolumeETH.map((value) => {
+          return parseFloat(value)
+        }),
         tokensVolumeUSD: data.fund.tokensVolumeUSD.map((value) => {
           return parseFloat(value)
         }),
+        profitETH: parseFloat(data.fund.profitETH),
         profitUSD: parseFloat(data.fund.profitUSD),
         profitRatio: parseFloat(data.fund.profitRatio),
       }

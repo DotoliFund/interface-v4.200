@@ -32,7 +32,11 @@ export type AreaChartProps = {
   height?: number | undefined
   minHeight?: number
   setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
-  setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of valye
+  setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of value
+  setPrincipal: Dispatch<SetStateAction<number | undefined>> // used for label of value
+  setTokens: Dispatch<SetStateAction<string[] | undefined>> // used for value on hover
+  setSymbols: Dispatch<SetStateAction<string[] | undefined>> // used for value on hover
+  setTokensVolumeUSD: Dispatch<SetStateAction<number[] | undefined>> // used for value of hover
   value?: number
   label?: string
   topLeft?: ReactNode | undefined
@@ -49,6 +53,10 @@ const Chart = ({
   label,
   setValue,
   setLabel,
+  setPrincipal,
+  setTokens,
+  setSymbols,
+  setTokensVolumeUSD,
   topLeft,
   topRight,
   bottomLeft,
@@ -60,6 +68,10 @@ const Chart = ({
     if (active.payload && active.payload.length) {
       setLabel(active.label)
       setValue(active.payload[0].value)
+      setPrincipal(active.payload[0].payload.principal)
+      setTokens(active.payload[0].payload.tokens)
+      setSymbols(active.payload[0].payload.symbols)
+      setTokensVolumeUSD(active.payload[0].payload.tokensVolume)
     }
     return null
   }
@@ -91,6 +103,10 @@ const Chart = ({
             onMouseLeave={() => {
               setLabel && setLabel(undefined)
               setValue && setValue(undefined)
+              setPrincipal && setPrincipal(undefined)
+              setTokens && setTokens(undefined)
+              setSymbols && setSymbols(undefined)
+              setTokensVolumeUSD && setTokensVolumeUSD(undefined)
             }}
           >
             <defs>

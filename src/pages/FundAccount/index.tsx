@@ -348,6 +348,11 @@ export default function FundAccount() {
   const [latestValue, setLatestValue] = useState<number | undefined>()
   const [valueLabel, setValueLabel] = useState<string | undefined>()
 
+  const [principalHover, setPrincipalHover] = useState<number | undefined>()
+  const [tokensHover, setTokensHover] = useState<string[] | undefined>()
+  const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
+  const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
+
   const { positions, loading: positionsLoading } = useV3Positions(fundAddress, investorAddress)
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
     (acc, p) => {
@@ -595,7 +600,7 @@ export default function FundAccount() {
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(investorData.volumeUSD)}
+                    {formatDollarAmount(latestValue ? latestValue : 0)}
                   </ThemedText.DeprecatedLabel>
                 </AutoColumn>
                 <AutoColumn gap="4px">
@@ -606,8 +611,9 @@ export default function FundAccount() {
                 </AutoColumn>
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px"></ThemedText.DeprecatedLabel>
-                  {investorData.profitRatio.toFixed(2)}%
+                  <ThemedText.DeprecatedLabel fontSize="24px">
+                    {investorData.profitRatio.toFixed(2)}%
+                  </ThemedText.DeprecatedLabel>
                 </AutoColumn>
               </AutoColumn>
             </DarkGreyCard>
@@ -653,6 +659,10 @@ export default function FundAccount() {
                   label={valueLabel}
                   setValue={setLatestValue}
                   setLabel={setValueLabel}
+                  setPrincipal={setPrincipalHover}
+                  setTokens={setTokensHover}
+                  setSymbols={setSymbolsHover}
+                  setTokensVolumeUSD={setTokensVolumeUSDHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
@@ -682,6 +692,10 @@ export default function FundAccount() {
                   label={valueLabel}
                   setValue={setLatestValue}
                   setLabel={setValueLabel}
+                  setPrincipal={setPrincipalHover}
+                  setTokens={setTokensHover}
+                  setSymbols={setSymbolsHover}
+                  setTokensVolumeUSD={setTokensVolumeUSDHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>

@@ -12,12 +12,15 @@ const FUND_INVESTORS = gql`
       fund
       manager
       investor
+      principalETH
       principalUSD
       volumeETH
       volumeUSD
       tokens
       symbols
+      tokensVolumeETH
       tokensVolumeUSD
+      profitETH
       profitUSD
       profitRatio
     }
@@ -68,14 +71,19 @@ export function useFundInvestors(fund: string | undefined): {
           fund: investorDataFields.fund,
           manager: investorDataFields.manager,
           investor: investorDataFields.investor,
+          principalETH: parseFloat(investorDataFields.principalETH),
           principalUSD: parseFloat(investorDataFields.principalUSD),
           volumeETH: parseFloat(investorDataFields.volumeETH),
           volumeUSD: parseFloat(investorDataFields.volumeUSD),
           tokens: investorDataFields.tokens,
           symbols: investorDataFields.symbols,
+          tokensVolumeETH: investorDataFields.tokensVolumeETH.map((value) => {
+            return parseFloat(value)
+          }),
           tokensVolumeUSD: investorDataFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),
+          profitETH: parseFloat(investorDataFields.profitETH),
           profitUSD: parseFloat(investorDataFields.profitUSD),
           profitRatio: parseFloat(investorDataFields.profitRatio),
         }
