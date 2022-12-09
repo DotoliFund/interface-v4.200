@@ -2,6 +2,7 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import AreaChart from 'components/AreaChart'
 import MultiAreaChart from 'components/AreaChart/principal'
+import BarChart from 'components/BarChart'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import Card from 'components/Card'
@@ -14,7 +15,7 @@ import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
 import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
-import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
+import { EthereumNetworkInfo } from 'constants/networks'
 import { useFundChartData } from 'data/FundPage/chartData'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
@@ -96,6 +97,7 @@ const PieWrapper = styled(Card)`
 
 enum ChartView {
   VOL_USD,
+  TOKENS,
   FEES,
 }
 
@@ -156,12 +158,17 @@ export default function FundPage() {
   const investors = useFundInvestors(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
+  // Area chart hover
   const [dateHover, setDateHover] = useState<string | undefined>()
   const [volumeHover, setVolumeHover] = useState<number | undefined>()
   const [principalHover, setPrincipalHover] = useState<number | undefined>()
   const [tokensHover, setTokensHover] = useState<string[] | undefined>()
   const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
   const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
+  // Bar chart hover
+  const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
+  const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
+  const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
@@ -195,31 +202,30 @@ export default function FundPage() {
   }, [chartData, tokensHover, symbolsHover, tokensVolumeUSDHover])
 
   const formattedLatestTokensData = useMemo(() => {
-    if (formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]) {
-      const latestVolumeUSD = formattedVolumeUSD[formattedVolumeUSD.length - 1]
-      return latestVolumeUSD.tokens.map((data, index) => {
+    if (fundData) {
+      return fundData.tokens.map((data, index) => {
         return {
           token: data,
-          symbol: latestVolumeUSD.symbols[index],
-          tokenVolume: latestVolumeUSD.tokensVolume[index],
+          symbol: fundData.symbols[index],
+          amount: fundData.tokensAmount[index],
+          tokenVolume: fundData.tokensVolumeUSD[index],
         }
       })
     } else {
       return []
     }
-  }, [formattedVolumeUSD])
+  }, [fundData])
 
   const latestVolumeData = useMemo(() => {
-    if (formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]) {
-      const latestVolumeUSD = formattedVolumeUSD[formattedVolumeUSD.length - 1]
+    if (fundData) {
       return {
-        volume: latestVolumeUSD.volume,
-        principal: latestVolumeUSD.principal,
+        volume: fundData.volumeUSD,
+        principal: fundData.principalUSD,
       }
     } else {
       return undefined
     }
-  }, [formattedVolumeUSD])
+  }, [fundData])
 
   const formattedFeesData = useMemo(() => {
     if (chartData) {
@@ -392,15 +398,20 @@ export default function FundPage() {
                   <ThemedText.DeprecatedMain paddingY="20px" fontSize="12px"></ThemedText.DeprecatedMain>
                 </AutoColumn>
                 <ToggleWrapper width="240px">
-                  {activeNetwork === ArbitrumNetworkInfo ? null : (
-                    <ToggleElementFree
-                      isActive={view === ChartView.VOL_USD}
-                      fontSize="12px"
-                      onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
-                    >
-                      VolumeUSD
-                    </ToggleElementFree>
-                  )}
+                  <ToggleElementFree
+                    isActive={view === ChartView.VOL_USD}
+                    fontSize="12px"
+                    onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
+                  >
+                    VolumeUSD
+                  </ToggleElementFree>
+                  <ToggleElementFree
+                    isActive={view === ChartView.TOKENS}
+                    fontSize="12px"
+                    onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
+                  >
+                    Tokens
+                  </ToggleElementFree>
                   {isManager ? (
                     <ToggleElementFree
                       isActive={view === ChartView.FEES}
@@ -444,6 +455,36 @@ export default function FundPage() {
                       </ThemedText.DeprecatedLargeHeader>
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
                         {dateHover ? <MonoSpace>{dateHover} (UTC)</MonoSpace> : null}
+                      </ThemedText.DeprecatedMain>
+                    </AutoColumn>
+                  }
+                />
+              ) : view === ChartView.TOKENS ? (
+                <BarChart
+                  data={formattedLatestTokensData}
+                  height={220}
+                  minHeight={332}
+                  color={activeNetwork.primaryColor}
+                  label={tokenAddressHover}
+                  value={tokenVolumeHover}
+                  amount={tokenAmountHover}
+                  setLabel={setTokenAddressHover}
+                  setValue={setTokenVolumeHover}
+                  setAmount={setTokenAmountHover}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        <MonoSpace>
+                          {formatDollarAmount(tokenVolumeHover !== undefined ? tokenVolumeHover : 0)}
+                        </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>{' '}
+                      {tokenAmountHover}
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                        {tokenAddressHover ? <MonoSpace>{tokenAddressHover}</MonoSpace> : null}
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }

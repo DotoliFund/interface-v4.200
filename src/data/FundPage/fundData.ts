@@ -20,6 +20,7 @@ const FUND_DATA = gql`
       feeVolumeUSD
       tokens
       symbols
+      tokensAmount
       tokensVolumeETH
       tokensVolumeUSD
       profitETH
@@ -78,6 +79,9 @@ export function useFundData(fund: string | undefined): {
         feeVolumeUSD: parseFloat(data.fund.feeVolumeUSD),
         tokens: data.fund.tokens,
         symbols: data.fund.symbols,
+        tokensAmount: data.fund.tokensAmount.map((value) => {
+          return parseFloat(value)
+        }),
         tokensVolumeETH: data.fund.tokensVolumeETH.map((value) => {
           return parseFloat(value)
         }),

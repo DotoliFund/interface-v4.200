@@ -18,6 +18,7 @@ const FUND_INVESTORS = gql`
       volumeUSD
       tokens
       symbols
+      tokensAmount
       tokensVolumeETH
       tokensVolumeUSD
       profitETH
@@ -77,6 +78,9 @@ export function useFundInvestors(fund: string | undefined): {
           volumeUSD: parseFloat(investorDataFields.volumeUSD),
           tokens: investorDataFields.tokens,
           symbols: investorDataFields.symbols,
+          tokensAmount: investorDataFields.tokensAmount.map((value) => {
+            return parseFloat(value)
+          }),
           tokensVolumeETH: investorDataFields.tokensVolumeETH.map((value) => {
             return parseFloat(value)
           }),

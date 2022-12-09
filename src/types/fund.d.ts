@@ -16,6 +16,7 @@ export interface Fund {
   feeVolumeUSD: number
   tokens: string[]
   symbols: string[]
+  tokensAmount: number[]
   tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
   profitETH: number
@@ -37,6 +38,7 @@ export interface FundFields {
   feeVolumeUSD: string
   tokens: string[]
   symbols: string[]
+  tokensAmount: string[]
   tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
   profitETH: string
@@ -56,6 +58,7 @@ export interface Investor {
   volumeUSD: number
   tokens: string[]
   symbols: string[]
+  tokensAmount: number[]
   tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
   profitETH: number
@@ -75,6 +78,7 @@ export interface InvestorFields {
   volumeUSD: string
   tokens: string[]
   symbols: string[]
+  tokensAmount: string[]
   tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
   profitETH: string

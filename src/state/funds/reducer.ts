@@ -4,35 +4,6 @@ import { Fund } from 'types/fund'
 
 import { updateFundData } from './actions'
 
-export interface InvestorData {
-  id: string
-  createdAtTimestamp: number
-  createdAtBlockNumber: number
-  fund: string
-  investor: string
-  principalETH: number
-  principalUSD: number
-  volumeETH: number
-  volumeUSD: number
-  profitETH: number
-  profitUSD: number
-  profitRatioETH: number
-  profitRatioUSD: number
-}
-
-export interface InvestorSnapshotData {
-  id: string
-  timestamp: number
-  fund: string
-  investor: string
-  volumeUSD: number
-  volumeETH: number
-  principalUSD: number
-  principalETH: number
-  profitETH: number
-  profitUSD: number
-}
-
 export interface FundsState {
   // analytics data from
   byAddress: {
