@@ -389,6 +389,16 @@ export default function FundAccount() {
     }
   }, [investorData])
 
+  const ratio = useMemo(() => {
+    return volumeHover !== undefined && principalHover !== undefined && principalHover > 0
+      ? (((volumeHover - principalHover) / principalHover) * 100).toFixed(2)
+      : principalHover === 0
+      ? 0
+      : latestVolumeData && latestVolumeData.principal > 0
+      ? (((latestVolumeData.volume - latestVolumeData.principal) / latestVolumeData.principal) * 100).toFixed(2)
+      : 0
+  }, [volumeHover, principalHover, latestVolumeData])
+
   const menuItems1 = [
     {
       content: (
@@ -644,19 +654,17 @@ export default function FundAccount() {
                     </AutoColumn>
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel fontSize="24px">
-                        {volumeHover !== undefined && principalHover !== undefined && principalHover > 0
-                          ? ((volumeHover - principalHover) / principalHover).toFixed(2)
-                          : principalHover === 0
-                          ? 0
-                          : latestVolumeData && latestVolumeData.principal > 0
-                          ? (
-                              (latestVolumeData.volume - latestVolumeData.principal) /
-                              latestVolumeData.principal
-                            ).toFixed(2)
-                          : 0}
-                        %
-                      </ThemedText.DeprecatedLabel>
+                      {Number(ratio) === 0 ? (
+                        <ThemedText.DeprecatedLabel fontSize="24px">{ratio}%</ThemedText.DeprecatedLabel>
+                      ) : Number(ratio) > 0 ? (
+                        <ThemedText.DeprecatedLabel fontSize="24px" color={theme.deprecated_red3}>
+                          +{ratio}%
+                        </ThemedText.DeprecatedLabel>
+                      ) : (
+                        <ThemedText.DeprecatedLabel fontSize="24px" color={theme.deprecated_blue4}>
+                          -{ratio}%
+                        </ThemedText.DeprecatedLabel>
+                      )}
                     </AutoColumn>
                   </RowBetween>
                 </PieWrapper>

@@ -12,7 +12,6 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
 import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { Label } from 'components/Text'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { XXX_ADDRESS, XXXSTAKING2_ADDRESS } from 'constants/addresses'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
@@ -250,20 +249,21 @@ export default function Staking() {
         <PageWrapper>
           <SwapWrapper id="swap-page">
             <AutoColumn gap={'0px'}>
-              <Label>
-                unStakingBalance:
-                {formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)}
-              </Label>
-              <Label>
-                earnedAmount:{formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)}
-              </Label>
-              <Label>
-                stakedAmount:{formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)}
-              </Label>
-              <Label>
-                totalStakedAmount:
+              <div>
+                UnStaked :{' '}
+                {Number(
+                  formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)
+                ).toFixed(4)}
+              </div>
+              <div>
+                Earned :{' '}
+                {Number(formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)).toFixed(4)}
+              </div>
+              <div>Staked : {formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)}</div>
+              <div>
+                Total Staked :{' '}
                 {formatCurrencyAmount(stakingInfo?.totalStakedAmount, xxx?.decimals ? xxx?.decimals : 18)}
-              </Label>
+              </div>
               <div style={{ display: 'relative' }}>
                 <TopInputWrapper redesignFlag={redesignFlagEnabled}>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>

@@ -5,7 +5,6 @@ import Loader from 'components/Loader'
 import NavBar from 'components/NavBar'
 import TopLevelModals from 'components/TopLevelModals'
 import { useFeatureFlagsIsLoaded } from 'featureFlags'
-import { useNftFlag } from 'featureFlags/flags/nft'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Account from 'pages/Account'
 import Deposit from 'pages/Deposit'
@@ -16,11 +15,10 @@ import Overview from 'pages/Overview'
 import Staking from 'pages/Staking'
 import Swap from 'pages/Swap'
 import Withdraw from 'pages/Withdraw'
-import { lazy, Suspense, useEffect } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Suspense, useEffect } from 'react'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
 import styled from 'styled-components/macro'
-import { SpinnerSVG } from 'theme/components'
 import { Z_INDEX } from 'theme/zIndex'
 import { getBrowser } from 'utils/browser'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
@@ -35,8 +33,6 @@ import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
 import { PositionPage } from './Pool/PositionPage'
 import RemoveLiquidityV3 from './RemoveLiquidity/V3'
-
-const Vote = lazy(() => import('pages/Swap'))
 
 const AppWrapper = styled.div`
   display: flex;
@@ -84,23 +80,8 @@ function getCurrentPageFromLocation(locationPathname: string): PageName | undefi
   }
 }
 
-// this is the same svg defined in assets/images/blue-loader.svg
-// it is defined here because the remote asset may not have had time to load when this file is executing
-const LazyLoadSpinner = () => (
-  <SpinnerSVG width="94" height="94" viewBox="0 0 94 94" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M92 47C92 22.1472 71.8528 2 47 2C22.1472 2 2 22.1472 2 47C2 71.8528 22.1472 92 47 92"
-      stroke="#2172E5"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </SpinnerSVG>
-)
-
 export default function App() {
   const isLoaded = useFeatureFlagsIsLoaded()
-  const nftFlag = useNftFlag()
 
   const { pathname } = useLocation()
   const currentPage = getCurrentPageFromLocation(pathname)
@@ -172,15 +153,6 @@ export default function App() {
                     <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
                   </Route>
                   <Route path="remove/:fundAddress/:investorAddress/:tokenId" element={<RemoveLiquidityV3 />} />
-                  <Route
-                    path="vote/*"
-                    element={
-                      <Suspense fallback={<LazyLoadSpinner />}>
-                        <Vote />
-                      </Suspense>
-                    }
-                  />
-                  <Route path="create-proposal" element={<Navigate to="/vote/create-proposal" replace />} />
                   <Route path="staking" element={<Staking />} />
 
                   <Route path="*" element={<Overview />} />

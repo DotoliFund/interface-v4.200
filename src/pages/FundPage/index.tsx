@@ -29,7 +29,7 @@ import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -116,6 +116,7 @@ export default function FundPage() {
 
   // theming
   const backgroundColor = useColor()
+  const theme = useTheme()
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
@@ -226,6 +227,16 @@ export default function FundPage() {
       return undefined
     }
   }, [fundData])
+
+  const ratio = useMemo(() => {
+    return volumeHover !== undefined && principalHover !== undefined && principalHover > 0
+      ? (((volumeHover - principalHover) / principalHover) * 100).toFixed(2)
+      : principalHover === 0
+      ? 0
+      : latestVolumeData && latestVolumeData.principal > 0
+      ? (((latestVolumeData.volume - latestVolumeData.principal) / latestVolumeData.principal) * 100).toFixed(2)
+      : 0
+  }, [volumeHover, principalHover, latestVolumeData])
 
   const formattedFeesData = useMemo(() => {
     if (chartData) {
@@ -374,19 +385,17 @@ export default function FundPage() {
                     </AutoColumn>
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel fontSize="24px">
-                        {volumeHover !== undefined && principalHover !== undefined && principalHover > 0
-                          ? ((volumeHover - principalHover) / principalHover).toFixed(2)
-                          : principalHover === 0
-                          ? 0
-                          : latestVolumeData && latestVolumeData.principal > 0
-                          ? (
-                              (latestVolumeData.volume - latestVolumeData.principal) /
-                              latestVolumeData.principal
-                            ).toFixed(2)
-                          : 0}
-                        %
-                      </ThemedText.DeprecatedLabel>
+                      {Number(ratio) === 0 ? (
+                        <ThemedText.DeprecatedLabel fontSize="24px">{ratio}%</ThemedText.DeprecatedLabel>
+                      ) : Number(ratio) > 0 ? (
+                        <ThemedText.DeprecatedLabel fontSize="24px" color={theme.deprecated_red3}>
+                          +{ratio}%
+                        </ThemedText.DeprecatedLabel>
+                      ) : (
+                        <ThemedText.DeprecatedLabel fontSize="24px" color={theme.deprecated_blue4}>
+                          -{ratio}%
+                        </ThemedText.DeprecatedLabel>
+                      )}
                     </AutoColumn>
                   </RowBetween>
                 </PieWrapper>

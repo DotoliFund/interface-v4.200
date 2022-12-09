@@ -1,8 +1,6 @@
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import Web3Status from 'components/Web3Status'
-import { useNftFlag } from 'featureFlags/flags/nft'
-import { chainIdToBackendName } from 'graphql/data/util'
+import { VOTE_URL } from 'constants/addresses'
 import { Box } from 'nft/components/Box'
 import { Row } from 'nft/components/Flex'
 import { UniIcon } from 'nft/components/icons'
@@ -11,7 +9,6 @@ import { NavLink, NavLinkProps, useLocation } from 'react-router-dom'
 
 import { ChainSelector } from './ChainSelector'
 import { MenuDropdown } from './MenuDropdown'
-// import { ShoppingBag } from './ShoppingBag'
 import * as styles from './style.css'
 
 interface MenuItemProps {
@@ -36,16 +33,6 @@ const MenuItem = ({ href, id, isActive, children }: MenuItemProps) => {
 
 const PageTabs = () => {
   const { pathname } = useLocation()
-  const nftFlag = useNftFlag()
-  const { chainId: connectedChainId } = useWeb3React()
-  const chainName = chainIdToBackendName(connectedChainId)
-
-  const isPoolActive =
-    pathname.startsWith('/pool') ||
-    pathname.startsWith('/add') ||
-    pathname.startsWith('/remove') ||
-    pathname.startsWith('/increase') ||
-    pathname.startsWith('/find')
 
   return (
     <>
@@ -61,13 +48,20 @@ const PageTabs = () => {
       <MenuItem href="/staking">
         <Trans>Staking</Trans>
       </MenuItem>
+      <MenuItem href={pathname}>
+        <div
+          onClick={() => {
+            window.open(VOTE_URL)
+          }}
+        >
+          <Trans>Vote</Trans>
+        </div>
+      </MenuItem>
     </>
   )
 }
 
 const Navbar = () => {
-  const { pathname } = useLocation()
-
   return (
     <>
       <nav className={styles.nav}>
@@ -83,18 +77,16 @@ const Navbar = () => {
               <PageTabs />
             </Row>
           </Box>
-          <Box className={styles.middleContainer}>{/* <SearchBar /> */}</Box>
+          <Box className={styles.middleContainer}></Box>
           <Box className={styles.rightSideContainer}>
             <Row gap="12">
-              <Box display={{ sm: 'flex', xl: 'none' }}>{/* <SearchBar /> */}</Box>
+              <Box display={{ sm: 'flex', xl: 'none' }}></Box>
               <Box display={{ sm: 'none', lg: 'flex' }}>
                 <MenuDropdown />
               </Box>
-              {/* {showShoppingBag && <ShoppingBag />} */}
               <Box display={{ sm: 'none', lg: 'flex' }}>
                 <ChainSelector />
               </Box>
-
               <Web3Status />
             </Row>
           </Box>
