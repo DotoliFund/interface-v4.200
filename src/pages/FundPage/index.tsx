@@ -156,7 +156,7 @@ export default function FundPage() {
   const investors = useFundInvestors(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
-  const [valueLabel, setValueLabel] = useState<string | undefined>()
+  const [dateHover, setDateHover] = useState<string | undefined>()
   const [volumeHover, setVolumeHover] = useState<number | undefined>()
   const [principalHover, setPrincipalHover] = useState<number | undefined>()
   const [tokensHover, setTokensHover] = useState<string[] | undefined>()
@@ -420,10 +420,10 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
+                  label={dateHover}
                   value={volumeHover}
-                  label={valueLabel}
+                  setLabel={setDateHover}
                   setValue={setVolumeHover}
-                  setLabel={setValueLabel}
                   setPrincipal={setPrincipalHover}
                   setTokens={setTokensHover}
                   setSymbols={setSymbolsHover}
@@ -443,7 +443,7 @@ export default function FundPage() {
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
+                        {dateHover ? <MonoSpace>{dateHover} (UTC)</MonoSpace> : null}
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
@@ -454,10 +454,10 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
+                  label={dateHover}
                   value={volumeHover}
-                  label={valueLabel}
+                  setLabel={setDateHover}
                   setValue={setVolumeHover}
-                  setLabel={setValueLabel}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">Fees</ThemedText.DeprecatedMediumHeader>
@@ -472,7 +472,7 @@ export default function FundPage() {
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
+                        {dateHover ? <MonoSpace>{dateHover} (UTC)</MonoSpace> : null}
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }

@@ -2,18 +2,20 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import MultiAreaChart from 'components/AreaChart/principal'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
-import { DarkGreyCard, GreyCard } from 'components/Card'
+import { DarkGreyCard } from 'components/Card'
+import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import LineChart from 'components/LineChart'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
+import PieChart from 'components/PieChart'
 import PositionList from 'components/PositionList'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
 import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
-import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
+import { EthereumNetworkInfo } from 'constants/networks'
 import { useInvestorChartData } from 'data/FundAccount/chartData'
 import { useInvestorData } from 'data/FundAccount/investorData'
 import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityTransactions'
@@ -22,7 +24,7 @@ import { useColor } from 'hooks/useColor'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -36,6 +38,8 @@ import { networkPrefix } from 'utils/networkPrefix'
 import { formatDollarAmount } from 'utils/numbers'
 
 import { LoadingRows } from './styled'
+
+const PIE_HEIGHT = 340
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -57,21 +61,12 @@ const ThemedBackground = styled.div<{ backgroundColor: string }>`
 
 const ContentLayout = styled.div`
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 360px 1fr;
   grid-gap: 1em;
 
   @media screen and (max-width: 800px) {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
-  }
-`
-
-const TokenButton = styled(GreyCard)`
-  padding: 8px 12px;
-  border-radius: 10px;
-  :hover {
-    cursor: pointer;
-    opacity: 0.6;
   }
 `
 
@@ -183,6 +178,18 @@ const MainContentWrapper = styled.main`
   flex-direction: column;
 `
 
+const PieWrapper = styled(Card)`
+  width: 100%;
+  height: ${PIE_HEIGHT}px;
+  padding: 1rem;
+  display: flex;
+  background-color: ${({ theme }) => theme.deprecated_bg0};
+  flex-direction: column;
+  > * {
+    font-size: 1rem;
+  }
+`
+
 function PositionsLoadingPlaceholder() {
   return (
     <LoadingRows>
@@ -203,7 +210,6 @@ function PositionsLoadingPlaceholder() {
 }
 
 enum ChartView {
-  VOL_ETH,
   VOL_USD,
   TOKENS,
 }
@@ -216,7 +222,7 @@ export default function FundAccount() {
   const navigate = useNavigate()
   const XXXFactoryContract = useXXXFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
-  const { account, chainId, provider } = useWeb3React()
+  const { account } = useWeb3React()
   const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
 
   useEffect(() => {
@@ -301,53 +307,9 @@ export default function FundAccount() {
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
   const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
-  const formattedVolumeETH = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data) => {
-        return {
-          time: unixToDate(data.timestamp),
-          volume: data.volumeETH,
-          principal: data.principalUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
-
-  const formattedVolumeUSD = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data) => {
-        return {
-          time: unixToDate(data.timestamp),
-          volume: data.volumeUSD,
-          principal: data.principalUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
-
-  const formattedTokensData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data) => {
-        return {
-          time: data.timestamp,
-          tokens: data.tokens,
-          symbols: data.symbols,
-          tokensVolumeUSD: data.tokensVolumeUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
-
-  const [view, setView] = useState(ChartView.VOL_ETH)
-  const [latestValue, setLatestValue] = useState<number | undefined>()
-  const [valueLabel, setValueLabel] = useState<string | undefined>()
-
+  const [view, setView] = useState(ChartView.VOL_USD)
+  const [dateHover, setDateHover] = useState<string | undefined>()
+  const [volumeHover, setVolumeHover] = useState<number | undefined>()
   const [principalHover, setPrincipalHover] = useState<number | undefined>()
   const [tokensHover, setTokensHover] = useState<string[] | undefined>()
   const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
@@ -363,6 +325,64 @@ export default function FundAccount() {
   ) ?? [[], []]
 
   const filteredPositions = [...openPositions, ...(userHideClosedPositions ? [] : closedPositions)]
+
+  const formattedVolumeUSD = useMemo(() => {
+    if (chartData) {
+      return chartData.map((data) => {
+        return {
+          time: unixToDate(data.timestamp),
+          volume: data.volumeUSD,
+          principal: data.principalUSD,
+          tokens: data.tokens,
+          symbols: data.symbols,
+          tokensVolume: data.tokensVolumeUSD,
+        }
+      })
+    } else {
+      return []
+    }
+  }, [chartData])
+
+  const formattedTokensData = useMemo(() => {
+    if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
+      return tokensHover.map((data, index) => {
+        return {
+          token: data,
+          symbol: symbolsHover[index],
+          tokenVolume: tokensVolumeUSDHover[index],
+        }
+      })
+    } else {
+      return undefined
+    }
+  }, [chartData, tokensHover, symbolsHover, tokensVolumeUSDHover])
+
+  const formattedLatestTokensData = useMemo(() => {
+    if (formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]) {
+      const latestVolumeUSD = formattedVolumeUSD[formattedVolumeUSD.length - 1]
+      return latestVolumeUSD.tokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: latestVolumeUSD.symbols[index],
+          tokenVolume: latestVolumeUSD.tokensVolume[index],
+        }
+      })
+    } else {
+      return []
+    }
+  }, [formattedVolumeUSD])
+
+  const latestVolumeData = useMemo(() => {
+    if (formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]) {
+      const latestVolumeUSD = formattedVolumeUSD[formattedVolumeUSD.length - 1]
+      return {
+        volume: latestVolumeUSD.volume,
+        principal: latestVolumeUSD.principal,
+      }
+    } else {
+      return undefined
+    }
+  }, [formattedVolumeUSD])
 
   const menuItems1 = [
     {
@@ -585,36 +605,56 @@ export default function FundAccount() {
           <ContentLayout>
             <DarkGreyCard>
               <AutoColumn gap="lg">
-                <GreyCard padding="16px">
-                  <AutoColumn gap="md">
-                    <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
-                    <RowBetween>
-                      <RowFixed>
-                        <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                          {shortenAddress(investorData.manager)}
-                        </ThemedText.DeprecatedLabel>
-                      </RowFixed>
-                    </RowBetween>
-                  </AutoColumn>
-                </GreyCard>
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(latestValue ? latestValue : 0)}
+                <AutoRow gap="md">
+                  <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
+                    {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
-                </AutoColumn>
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px">
-                    {formatDollarAmount(investorData.principalUSD)}
-                  </ThemedText.DeprecatedLabel>
-                </AutoColumn>
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="24px">
-                    {investorData.profitRatio.toFixed(2)}%
-                  </ThemedText.DeprecatedLabel>
-                </AutoColumn>
+                </AutoRow>
+                <PieWrapper>
+                  <PieChart
+                    data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
+                    color={activeNetwork.primaryColor}
+                  />
+                  <RowBetween mt="15px">
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel fontSize="24px">
+                        {formatDollarAmount(
+                          volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                        )}
+                      </ThemedText.DeprecatedLabel>
+                    </AutoColumn>
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel fontSize="24px">
+                        {formatDollarAmount(
+                          principalHover !== undefined
+                            ? principalHover
+                            : latestVolumeData
+                            ? latestVolumeData.principal
+                            : 0
+                        )}
+                      </ThemedText.DeprecatedLabel>
+                    </AutoColumn>
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel fontSize="24px">
+                        {volumeHover !== undefined && principalHover !== undefined && principalHover > 0
+                          ? ((volumeHover - principalHover) / principalHover).toFixed(2)
+                          : principalHover === 0
+                          ? 0
+                          : latestVolumeData && latestVolumeData.principal > 0
+                          ? (
+                              (latestVolumeData.volume - latestVolumeData.principal) /
+                              latestVolumeData.principal
+                            ).toFixed(2)
+                          : 0}
+                        %
+                      </ThemedText.DeprecatedLabel>
+                    </AutoColumn>
+                  </RowBetween>
+                </PieWrapper>
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
@@ -625,21 +665,12 @@ export default function FundAccount() {
                 </AutoColumn>
                 <ToggleWrapper width="240px">
                   <ToggleElementFree
-                    isActive={view === ChartView.VOL_ETH}
+                    isActive={view === ChartView.VOL_USD}
                     fontSize="12px"
-                    onClick={() => (view === ChartView.VOL_ETH ? {} : setView(ChartView.VOL_ETH))}
+                    onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                   >
-                    VolumeETH
+                    VolumeUSD
                   </ToggleElementFree>
-                  {activeNetwork === ArbitrumNetworkInfo ? null : (
-                    <ToggleElementFree
-                      isActive={view === ChartView.VOL_USD}
-                      fontSize="12px"
-                      onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
-                    >
-                      VolumeUSD
-                    </ToggleElementFree>
-                  )}
                   <ToggleElementFree
                     isActive={view === ChartView.TOKENS}
                     fontSize="12px"
@@ -649,49 +680,16 @@ export default function FundAccount() {
                   </ToggleElementFree>
                 </ToggleWrapper>
               </ToggleRow>
-              {view === ChartView.VOL_ETH ? (
-                <MultiAreaChart
-                  data={formattedVolumeETH}
-                  height={220}
-                  minHeight={332}
-                  color={activeNetwork.primaryColor}
-                  value={latestValue}
-                  label={valueLabel}
-                  setValue={setLatestValue}
-                  setLabel={setValueLabel}
-                  setPrincipal={setPrincipalHover}
-                  setTokens={setTokensHover}
-                  setSymbols={setSymbolsHover}
-                  setTokensVolumeUSD={setTokensVolumeUSDHover}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {latestValue
-                            ? latestValue.toFixed(4)
-                            : formattedVolumeETH && formattedVolumeETH[formattedVolumeETH.length - 1]
-                            ? formattedVolumeETH[formattedVolumeETH.length - 1].volume.toFixed(4)
-                            : 0}
-                          {' ETH'}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
-                      </ThemedText.DeprecatedMain>
-                    </AutoColumn>
-                  }
-                />
-              ) : view === ChartView.VOL_USD ? (
+              {view === ChartView.VOL_USD ? (
                 <MultiAreaChart
                   data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={latestValue}
-                  label={valueLabel}
-                  setValue={setLatestValue}
-                  setLabel={setValueLabel}
+                  label={dateHover}
+                  value={volumeHover}
+                  setLabel={setDateHover}
+                  setValue={setVolumeHover}
                   setPrincipal={setPrincipalHover}
                   setTokens={setTokensHover}
                   setSymbols={setSymbolsHover}
@@ -702,29 +700,29 @@ export default function FundAccount() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {'$ '}
-                          {latestValue
-                            ? latestValue.toFixed(2)
+                          {volumeHover
+                            ? volumeHover.toFixed(2)
                             : formattedVolumeUSD && formattedVolumeUSD[formattedVolumeUSD.length - 1]
                             ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume.toFixed(2)
                             : 0}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : null}
+                        {dateHover ? <MonoSpace>{dateHover} (UTC)</MonoSpace> : null}
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
                 />
               ) : (
                 <LineChart
-                  data={formattedTokensData}
+                  data={formattedVolumeUSD}
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  value={latestValue}
-                  label={valueLabel}
-                  setValue={setLatestValue}
-                  setLabel={setValueLabel}
+                  value={volumeHover}
+                  label={dateHover}
+                  setLabel={setDateHover}
+                  setValue={setVolumeHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">Tokens</ThemedText.DeprecatedMediumHeader>
