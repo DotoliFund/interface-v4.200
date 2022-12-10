@@ -1,6 +1,7 @@
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import Loader from 'components/Loader'
+import Percent from 'components/Percent'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -110,7 +111,7 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
             : '-$' + -investor.profitUSD.toFixed(2).toString()}
         </Label>
         <Label end={1} fontWeight={400}>
-          {investor.profitRatio.toFixed(2)}%
+          <Percent value={investor.profitRatio} wrap={false} />
         </Label>
         <Label end={1} fontWeight={400}>
           {formatTime(investor.createdAtTimestamp.toString(), 8)}

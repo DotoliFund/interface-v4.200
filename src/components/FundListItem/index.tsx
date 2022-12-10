@@ -4,6 +4,7 @@ import { Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import Badge from 'components/Badge'
 import Loader from 'components/Loader'
+import Percent from 'components/Percent'
 import { RowBetween } from 'components/Row'
 import { useFundData } from 'data/FundPage/fundData'
 import { Link } from 'react-router-dom'
@@ -11,6 +12,7 @@ import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { FundDetails } from 'types/fund'
 import { shortenAddress } from 'utils'
+import { formatDollarAmount } from 'utils/numbers'
 
 import { DAI, USDC_MAINNET, USDT, WBTC, WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 
@@ -192,7 +194,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
           &nbsp;
           <Badge>
             <BadgeText>
-              <Trans>{fundData?.profitRatio.toFixed(2)}%</Trans>
+              <Percent value={fundData?.profitRatio} wrap={false} fontSize="14px" />
             </BadgeText>
           </Badge>
         </PrimaryPositionIdData>
@@ -202,22 +204,22 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
         <RangeLineItem>
           <RangeText>
             <ExtentsText>
-              <Trans>TVL: </Trans>
+              <Trans>TVL : </Trans>
             </ExtentsText>
-            <Trans>{fundData.volumeUSD.toFixed(2)}</Trans>
+            <Trans>{formatDollarAmount(fundData.volumeUSD)}</Trans>
           </RangeText>
           <RangeText>
             <ExtentsText>
-              <Trans>Principal:</Trans>
+              <Trans>Principal : </Trans>
             </ExtentsText>
-            <Trans>{fundData.principalUSD.toFixed(2)}</Trans>
+            <Trans>{formatDollarAmount(fundData.principalUSD)}</Trans>
           </RangeText>
           <RangeText>
             <RangeText>
               <ExtentsText>
-                <Trans>Profit:</Trans>
+                <Trans>Profit : </Trans>
               </ExtentsText>
-              <Trans>{fundData.profitUSD.toFixed(2)}</Trans>
+              <Trans>{formatDollarAmount(fundData.profitUSD)}</Trans>
             </RangeText>
             <RangeText></RangeText>
             <ExtentsText>

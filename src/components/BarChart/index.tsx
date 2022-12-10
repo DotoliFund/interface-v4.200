@@ -27,10 +27,12 @@ export type BarChartProps = {
   height?: number | undefined
   minHeight?: number
   setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of value
+  setSymbol: Dispatch<SetStateAction<string | undefined>> // used for label of value
   setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
   setAmount: Dispatch<SetStateAction<number | undefined>> // used for value on hover
-  value?: number
   label?: string
+  symbol?: string
+  value?: number
   amount?: number
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
@@ -42,10 +44,12 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#4A2B65',
-  value,
   label,
+  symbol,
+  value,
   amount,
   setLabel,
+  setSymbol,
   setValue,
   setAmount,
   topLeft,
@@ -57,8 +61,8 @@ const Chart = ({
 }: BarChartProps) => {
   const CustomTooltip = (active: any) => {
     if (active.payload && active.payload.length) {
-      console.log(active.payload[0].payload)
       setLabel(active.payload[0].payload.token)
+      setSymbol(active.payload[0].payload.symbol)
       setValue(active.payload[0].value)
       setAmount(active.payload[0].payload.amount)
     }

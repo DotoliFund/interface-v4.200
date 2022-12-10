@@ -5,8 +5,9 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
+import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
 
@@ -31,14 +32,14 @@ export type AreaChartProps = {
   color2?: string | undefined
   height?: number | undefined
   minHeight?: number
-  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
   setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of value
+  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
   setPrincipal: Dispatch<SetStateAction<number | undefined>> // used for label of value
   setTokens: Dispatch<SetStateAction<string[] | undefined>> // used for value on hover
   setSymbols: Dispatch<SetStateAction<string[] | undefined>> // used for value on hover
   setTokensVolumeUSD: Dispatch<SetStateAction<number[] | undefined>> // used for value of hover
-  value?: number
   label?: string
+  value?: number
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -49,10 +50,10 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#4A2B65',
-  value,
   label,
-  setValue,
+  value,
   setLabel,
+  setValue,
   setPrincipal,
   setTokens,
   setSymbols,
@@ -66,7 +67,7 @@ const Chart = ({
 }: AreaChartProps) => {
   const CustomTooltip = (active: any) => {
     if (active.payload && active.payload.length) {
-      setLabel(active.label)
+      setLabel(active.payload[0].payload.time)
       setValue(active.payload[0].value)
       setPrincipal(active.payload[0].payload.principal)
       setTokens(active.payload[0].payload.tokens)
@@ -119,10 +120,11 @@ const Chart = ({
               dataKey="time"
               axisLine={false}
               tickLine={false}
-              tickFormatter={(time) => dayjs(time).format('DD')}
+              tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
               minTickGap={10}
             />
             <Tooltip content={<CustomTooltip />} />
+            <Legend />
             <Area dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
             <Area dataKey="principal" type="monotone" stroke={color2} fill="url(#gradient)" strokeWidth={2} />
           </AreaChart>

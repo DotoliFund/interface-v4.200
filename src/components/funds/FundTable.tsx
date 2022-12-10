@@ -2,6 +2,7 @@ import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import Loader from 'components/Loader'
 import { LoadingRows } from 'components/Loader/styled'
+import Percent from 'components/Percent'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
@@ -103,7 +104,7 @@ const LinkWrapper = styled(Link)`
 
 const SORT_FIELD = {
   fund: 'fund',
-  manager: 'manager',
+  created: 'createdAtTimestamp',
   volumeUSD: 'volumeUSD',
   principalUSD: 'principalUSD',
   profitRatioUSD: 'profitRatioUSD',
@@ -123,7 +124,7 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
           {fundData.principalUSD.toFixed(3)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {fundData.profitRatio.toFixed(2)}
+          <Percent value={fundData.profitRatio} wrap={false} />
         </Label>
         <Label end={1} fontWeight={400}>
           {fundData.investorCount}
@@ -205,17 +206,17 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
             <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume USD {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.principalUSD)}>
               Principal {arrow(SORT_FIELD.principalUSD)}
             </ClickableText>
             <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
               Ratio {arrow(SORT_FIELD.profitRatioUSD)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
-              Investors {arrow(SORT_FIELD.profitRatioUSD)}
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.investorCount)}>
+              Investors {arrow(SORT_FIELD.investorCount)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
-              Created {arrow(SORT_FIELD.profitRatioUSD)}
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.created)}>
+              Created {arrow(SORT_FIELD.created)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />

@@ -31,10 +31,10 @@ export type AreaChartProps = {
   color2?: string | undefined
   height?: number | undefined
   minHeight?: number
-  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
   setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of valye
-  value?: number
+  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
   label?: string
+  value?: number
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -45,10 +45,10 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#4A2B65',
-  value,
   label,
-  setValue,
+  value,
   setLabel,
+  setValue,
   topLeft,
   topRight,
   bottomLeft,
