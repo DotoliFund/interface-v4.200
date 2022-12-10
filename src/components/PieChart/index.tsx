@@ -1,14 +1,31 @@
-import React from 'react'
+import Card from 'components/Card'
+import React, { ReactNode } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
+import styled from 'styled-components/macro'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
 const RADIAN = Math.PI / 180
+const DEFAULT_HEIGHT = 340
+
+const Wrapper = styled(Card)`
+  width: 100%;
+  height: ${DEFAULT_HEIGHT}px;
+
+  padding-right: 1rem;
+  display: flex;
+  background-color: ${({ theme }) => theme.deprecated_bg0};
+  flex-direction: column;
+  > * {
+    font-size: 1rem;
+  }
+`
 
 export type PieChartProps = {
   data: any[]
+  topLeft?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({ data }: PieChartProps) => {
+const Chart = ({ data, topLeft }: PieChartProps) => {
   if (!data || data.length === 0) {
     data = [
       {
@@ -44,24 +61,27 @@ const Chart = ({ data }: PieChartProps) => {
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          label={<RenderCustomizedLabel />}
-          outerRadius={110}
-          fill="#8884d8"
-          dataKey="tokenVolume"
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-      </PieChart>
-    </ResponsiveContainer>
+    <Wrapper>
+      Tokens
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart width={340} height={340}>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={<RenderCustomizedLabel />}
+            outerRadius={130}
+            fill="#8884d8"
+            dataKey="tokenVolume"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </Wrapper>
   )
 }
 

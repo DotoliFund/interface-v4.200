@@ -6,13 +6,13 @@ import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
 
-const DEFAULT_HEIGHT = 300
+const DEFAULT_HEIGHT = 340
 
 const Wrapper = styled(Card)`
   width: 100%;
   height: ${DEFAULT_HEIGHT}px;
   padding: 1rem;
-  padding-right: 2rem;
+  padding-right: 1rem;
   display: flex;
   background-color: ${({ theme }) => theme.deprecated_bg0};
   flex-direction: column;
@@ -24,7 +24,6 @@ export type BarChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined
-  height?: number | undefined
   minHeight?: number
   setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of value
   setSymbol: Dispatch<SetStateAction<string | undefined>> // used for label of value
@@ -85,12 +84,12 @@ const Chart = ({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             width={500}
-            height={300}
+            height={340}
             data={data}
             margin={{
               top: 5,
-              right: 30,
-              left: 20,
+              right: 5,
+              left: 5,
               bottom: 5,
             }}
           >

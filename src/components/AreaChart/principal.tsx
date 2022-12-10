@@ -5,19 +5,20 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
-import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { useState } from 'react'
+import { Area, AreaChart, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
 import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
 
-const DEFAULT_HEIGHT = 300
+const DEFAULT_HEIGHT = 340
 
 const Wrapper = styled(Card)`
   width: 100%;
   height: ${DEFAULT_HEIGHT}px;
   padding: 1rem;
-  padding-right: 2rem;
+  padding-right: 1rem;
   display: flex;
   background-color: ${({ theme }) => theme.deprecated_bg0};
   flex-direction: column;
@@ -65,16 +66,32 @@ const Chart = ({
   minHeight = DEFAULT_HEIGHT,
   ...rest
 }: AreaChartProps) => {
-  const CustomTooltip = (active: any) => {
-    if (active.payload && active.payload.length) {
-      setLabel(active.payload[0].payload.time)
-      setValue(active.payload[0].value)
-      setPrincipal(active.payload[0].payload.principal)
-      setTokens(active.payload[0].payload.tokens)
-      setSymbols(active.payload[0].payload.symbols)
-      setTokensVolumeUSD(active.payload[0].payload.tokensVolume)
+  const [presentCursor, setPresentCursor] = useState<boolean | true>()
+
+  const CustomTooltip = (props: any) => {
+    if (props.active) {
+      setPresentCursor(false)
+    } else {
+      setPresentCursor(true)
+    }
+
+    if (props.payload && props.payload.length) {
+      setLabel(props.payload[0].payload.time)
+      setValue(props.payload[0].value)
+      setPrincipal(props.payload[0].payload.principal)
+      setTokens(props.payload[0].payload.tokens)
+      setSymbols(props.payload[0].payload.symbols)
+      setTokensVolumeUSD(props.payload[0].payload.tokensVolume)
     }
     return null
+  }
+
+  const CustomizedLabel = (props: any) => {
+    return (
+      <text x={props.viewBox.x - 35} y={props.viewBox.height - 5} fill="yellow" fontSize={14}>
+        Now
+      </text>
+    )
   }
 
   return (
@@ -93,11 +110,11 @@ const Chart = ({
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             width={500}
-            height={300}
+            height={340}
             data={data}
             margin={{
               top: 5,
-              right: 30,
+              right: 20,
               left: 20,
               bottom: 5,
             }}
@@ -125,6 +142,15 @@ const Chart = ({
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
+            {presentCursor ? (
+              <ReferenceLine
+                x={data[data.length - 1].time}
+                stroke="yellow"
+                strokeWidth={1}
+                label={<CustomizedLabel />}
+                strokeDasharray="3 3"
+              />
+            ) : null}
             <Area dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
             <Area dataKey="principal" type="monotone" stroke={color2} fill="url(#gradient)" strokeWidth={2} />
           </AreaChart>

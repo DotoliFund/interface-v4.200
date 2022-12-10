@@ -4,14 +4,13 @@ import MultiAreaChart from 'components/AreaChart/principal'
 import BarChart from 'components/BarChart'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
-import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import Loader from 'components/Loader'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import Percent from 'components/Percent'
 import PieChart from 'components/PieChart'
 import PositionList from 'components/PositionList'
-import { AutoRow, RowBetween, RowFixed } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
@@ -40,8 +39,6 @@ import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 import { LoadingRows } from './styled'
-
-const PIE_HEIGHT = 340
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -81,9 +78,12 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `
 
-const ToggleRow = styled(RowBetween)`
+const ToggleRow = styled(RowFlat)`
+  justify-content: flex-end;
+  margin-bottom: 10px;
+
   @media screen and (max-width: 600px) {
-    flex-direction: column;
+    flex-direction: row;
   }
 `
 
@@ -178,18 +178,6 @@ const MainContentWrapper = styled.main`
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-`
-
-const PieWrapper = styled(Card)`
-  width: 100%;
-  height: ${PIE_HEIGHT}px;
-  padding: 1rem;
-  display: flex;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
-  flex-direction: column;
-  > * {
-    font-size: 1rem;
-  }
 `
 
 function PositionsLoadingPlaceholder() {
@@ -622,47 +610,21 @@ export default function FundAccount() {
           </ResponsiveRow>
           <ContentLayout>
             <DarkGreyCard>
-              <AutoColumn gap="lg">
+              <AutoColumn gap="md">
                 <AutoRow gap="md">
-                  <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain ml="8px">Manager : </ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
                     {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                <PieWrapper>
-                  <PieChart
-                    data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
-                    color={activeNetwork.primaryColor}
-                  />
-                  <RowBetween mt="15px">
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel fontSize="24px">
-                        {formatDollarAmount(volumeHover ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0)}
-                      </ThemedText.DeprecatedLabel>
-                    </AutoColumn>
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel fontSize="24px">
-                        {formatDollarAmount(
-                          principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
-                        )}
-                      </ThemedText.DeprecatedLabel>
-                    </AutoColumn>
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                      <Percent value={ratio} wrap={false} fontSize="22px" />
-                    </AutoColumn>
-                  </RowBetween>
-                </PieWrapper>
+                <PieChart
+                  data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
+                  color={activeNetwork.primaryColor}
+                />
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
-              <ToggleRow align="flex-start">
-                <AutoColumn>
-                  <ThemedText.DeprecatedLabel fontSize="24px" height="20px"></ThemedText.DeprecatedLabel>
-                  <ThemedText.DeprecatedMain height="20px" fontSize="12px"></ThemedText.DeprecatedMain>
-                </AutoColumn>
+              <ToggleRow>
                 <ToggleWrapper width="240px">
                   <ToggleElementFree
                     isActive={view === ChartView.VOL_USD}
@@ -683,8 +645,6 @@ export default function FundAccount() {
               {view === ChartView.VOL_USD ? (
                 <MultiAreaChart
                   data={formattedVolumeUSD}
-                  height={220}
-                  minHeight={332}
                   color={activeNetwork.primaryColor}
                   label={dateHover}
                   value={volumeHover}
@@ -717,12 +677,26 @@ export default function FundAccount() {
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
+                  topRight={
+                    <AutoColumn gap="4px" justify="end">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Profit</ThemedText.DeprecatedMediumHeader>
+                      {/* <ThemedText.DeprecatedLargeHeader fontSize="26px">
+                        <MonoSpace>
+                          {formatDollarAmount(
+                            principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
+                          )}
+                        </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader> */}
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                        <Percent value={ratio} wrap={false} fontSize="24px" />
+                        <br />
+                      </ThemedText.DeprecatedMediumHeader>
+                    </AutoColumn>
+                  }
                 />
               ) : view === ChartView.TOKENS ? (
                 <BarChart
                   data={formattedLatestTokensData}
-                  height={220}
-                  minHeight={332}
                   color={activeNetwork.primaryColor}
                   label={tokenAddressHover}
                   symbol={tokenSymbolHover}

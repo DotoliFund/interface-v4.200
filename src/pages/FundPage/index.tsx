@@ -11,7 +11,7 @@ import InvestorTable from 'components/funds/InvestorTable'
 import Loader from 'components/Loader'
 import Percent from 'components/Percent'
 import PieChart from 'components/PieChart'
-import { AutoRow, RowBetween, RowFixed } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
 import TransactionTable from 'components/TransactionsTable'
@@ -79,9 +79,12 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `
 
-const ToggleRow = styled(RowBetween)`
+const ToggleRow = styled(RowFlat)`
+  justify-content: flex-end;
+  margin-bottom: 10px;
+
   @media screen and (max-width: 600px) {
-    flex-direction: column;
+    flex-direction: row;
   }
 `
 
@@ -354,46 +357,21 @@ export default function FundPage() {
           </ResponsiveRow>
           <ContentLayout>
             <DarkGreyCard>
-              <AutoColumn gap="lg">
+              <AutoColumn gap="md">
                 <AutoRow gap="md">
-                  <ThemedText.DeprecatedMain>Manager</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain ml="8px">Manager : </ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
                     {shortenAddress(fundData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                <PieWrapper>
-                  <PieChart
-                    data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
-                    color={activeNetwork.primaryColor}
-                  />
-                  <RowBetween mt="15px">
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMain fontWeight={400}>TVL</ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel fontSize="24px">
-                        {formatDollarAmount(volumeHover ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0)}
-                      </ThemedText.DeprecatedLabel>
-                    </AutoColumn>
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMain fontWeight={400}>Principal</ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel fontSize="24px">
-                        {formatDollarAmount(
-                          principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
-                        )}
-                      </ThemedText.DeprecatedLabel>
-                    </AutoColumn>
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMain fontWeight={400}>Ratio</ThemedText.DeprecatedMain>
-                      <Percent value={ratio} wrap={false} fontSize="22px" />
-                    </AutoColumn>
-                  </RowBetween>
-                </PieWrapper>
+                <PieChart
+                  data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
+                  color={activeNetwork.primaryColor}
+                />
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
-              <ToggleRow align="flex-start">
-                <AutoColumn>
-                  <ThemedText.DeprecatedMain paddingY="20px" fontSize="12px"></ThemedText.DeprecatedMain>
-                </AutoColumn>
+              <ToggleRow>
                 <ToggleWrapper width="240px">
                   <ToggleElementFree
                     isActive={view === ChartView.VOL_USD}
@@ -425,8 +403,6 @@ export default function FundPage() {
               {view === ChartView.VOL_USD ? (
                 <MultiAreaChart
                   data={formattedVolumeUSD}
-                  height={220}
-                  minHeight={332}
                   color={activeNetwork.primaryColor}
                   label={dateHover}
                   value={volumeHover}
@@ -446,7 +422,7 @@ export default function FundPage() {
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
+                      <ThemedText.DeprecatedMain fontSize="14px" height="14px">
                         {dateHover ? (
                           <MonoSpace>
                             {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
@@ -459,12 +435,26 @@ export default function FundPage() {
                       </ThemedText.DeprecatedMain>
                     </AutoColumn>
                   }
+                  topRight={
+                    <AutoColumn gap="4px" justify="end">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Profit</ThemedText.DeprecatedMediumHeader>
+                      {/* <ThemedText.DeprecatedLargeHeader fontSize="26px">
+                        <MonoSpace>
+                          {formatDollarAmount(
+                            principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
+                          )}
+                        </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader> */}
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                        <Percent value={ratio} wrap={false} fontSize="24px" />
+                        <br />
+                      </ThemedText.DeprecatedMediumHeader>
+                    </AutoColumn>
+                  }
                 />
               ) : view === ChartView.TOKENS ? (
                 <BarChart
                   data={formattedLatestTokensData}
-                  height={220}
-                  minHeight={332}
                   color={activeNetwork.primaryColor}
                   label={tokenAddressHover}
                   symbol={tokenSymbolHover}
