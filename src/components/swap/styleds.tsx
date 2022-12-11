@@ -37,8 +37,8 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   height: 40px;
   width: 40px;
   position: relative;
-  margin-top: -18px;
-  margin-bottom: -18px;
+  margin-top: -21px;
+  margin-bottom: -21px;
   margin-left: auto;
   margin-right: auto;
   background-color: ${({ theme }) => theme.backgroundInteractive};

@@ -5,7 +5,6 @@ import MultiAreaChart from 'components/AreaChart/principal'
 import BarChart from 'components/BarChart'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
-import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import InvestorTable from 'components/funds/InvestorTable'
 import Loader from 'components/Loader'
@@ -38,8 +37,6 @@ import { unixToDate } from 'utils/date'
 import { formatTime } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
-
-const PIE_HEIGHT = 340
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -85,18 +82,6 @@ const ToggleRow = styled(RowFlat)`
 
   @media screen and (max-width: 600px) {
     flex-direction: row;
-  }
-`
-
-const PieWrapper = styled(Card)`
-  width: 100%;
-  height: ${PIE_HEIGHT}px;
-  padding: 1rem;
-  display: flex;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
-  flex-direction: column;
-  > * {
-    font-size: 1rem;
   }
 `
 
@@ -156,6 +141,12 @@ export default function FundPage() {
       }
     }
   }, [isInvestorLoading, isSubscribed, myFund])
+
+  // present Fund Data
+  // get each tokens amount -> tokens eth price
+  // get each tokens eth price -> usd price
+  // sum all tokens usd price -> tvl
+  // principal -> latest fund data's principal
 
   // token data
   const fundData = useFundData(fundAddress?.toUpperCase()).data
@@ -222,6 +213,21 @@ export default function FundPage() {
       return []
     }
   }, [fundData])
+
+  // const formattedPresentTokensData = useMemo(() => {
+  //   if (fundData) {
+  //     return fundData.tokens.map((data, index) => {
+  //       return {
+  //         token: data,
+  //         symbol: fundData.symbols[index],
+  //         amount: fundData.tokensAmount[index],
+  //         tokenVolume: getTokenPriceETH(data),
+  //       }
+  //     })
+  //   } else {
+  //     return []
+  //   }
+  // }, [fundData])
 
   const latestVolumeData = useMemo(() => {
     if (fundData && chartData && chartData.length > 0) {

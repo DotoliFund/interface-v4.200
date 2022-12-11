@@ -430,214 +430,208 @@ export default function Swap() {
 
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
-      <>
-        <TokenSafetyModal
-          isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-          tokenAddress={importTokensNotInDefault[0]?.address}
-          secondTokenAddress={importTokensNotInDefault[1]?.address}
-          onContinue={handleConfirmTokenWarning}
-          onCancel={handleDismissTokenWarning}
-          showCancel={true}
-        />
-        <PageWrapper>
-          <SwapWrapper id="swap-page">
-            <SwapHeader allowedSlippage={allowedSlippage} />
-            <ConfirmSwapModal
-              isOpen={showConfirm}
-              trade={trade}
-              originalTrade={tradeToConfirm}
-              onAcceptChanges={handleAcceptChanges}
-              attemptingTxn={attemptingTxn}
-              txHash={txHash}
-              recipient={recipient}
-              allowedSlippage={allowedSlippage}
-              onConfirm={handleSwap}
-              swapErrorMessage={swapErrorMessage}
-              onDismiss={handleConfirmDismiss}
-              swapQuoteReceivedDate={swapQuoteReceivedDate}
-            />
-            <div style={{ display: 'relative' }}>
-              <SwapSection>
-                <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                  <InvestorCurrencyInputPanel
-                    label={
-                      independentField === Field.OUTPUT && !showWrap ? (
-                        <Trans>From (at most)</Trans>
-                      ) : (
-                        <Trans>From</Trans>
-                      )
+      <TokenSafetyModal
+        isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
+        tokenAddress={importTokensNotInDefault[0]?.address}
+        secondTokenAddress={importTokensNotInDefault[1]?.address}
+        onContinue={handleConfirmTokenWarning}
+        onCancel={handleDismissTokenWarning}
+        showCancel={true}
+      />
+      <PageWrapper>
+        <SwapWrapper id="swap-page">
+          <SwapHeader allowedSlippage={allowedSlippage} />
+          <ConfirmSwapModal
+            isOpen={showConfirm}
+            trade={trade}
+            originalTrade={tradeToConfirm}
+            onAcceptChanges={handleAcceptChanges}
+            attemptingTxn={attemptingTxn}
+            txHash={txHash}
+            recipient={recipient}
+            allowedSlippage={allowedSlippage}
+            onConfirm={handleSwap}
+            swapErrorMessage={swapErrorMessage}
+            onDismiss={handleConfirmDismiss}
+            swapQuoteReceivedDate={swapQuoteReceivedDate}
+          />
+          <div style={{ display: 'relative' }}>
+            <SwapSection>
+              <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                <InvestorCurrencyInputPanel
+                  label={
+                    independentField === Field.OUTPUT && !showWrap ? <Trans>From (at most)</Trans> : <Trans>From</Trans>
+                  }
+                  value={formattedAmounts[Field.INPUT]}
+                  showMaxButton={showMaxButton}
+                  currency={currencies[Field.INPUT] ?? null}
+                  onUserInput={handleTypeInput}
+                  onMax={handleMaxInput}
+                  fiatValue={fiatValueInput ?? undefined}
+                  onCurrencySelect={handleInputSelect}
+                  otherCurrency={currencies[Field.OUTPUT]}
+                  showCommonBases={true}
+                  id={SectionName.CURRENCY_INPUT_PANEL}
+                  loading={independentField === Field.OUTPUT && routeIsSyncing}
+                />
+              </Trace>
+            </SwapSection>
+            <ArrowWrapper clickable={isSupportedChain(chainId)}>
+              <TraceEvent
+                events={[Event.onClick]}
+                name={EventName.SWAP_TOKENS_REVERSED}
+                element={ElementName.SWAP_TOKENS_REVERSE_ARROW_BUTTON}
+              >
+                <ArrowContainer
+                  onClick={() => {
+                    onSwitchTokens()
+                  }}
+                  color={theme.textPrimary}
+                >
+                  <ArrowDown
+                    size="16"
+                    color={
+                      currencies[Field.INPUT] && currencies[Field.OUTPUT]
+                        ? theme.deprecated_text1
+                        : theme.deprecated_text3
                     }
-                    value={formattedAmounts[Field.INPUT]}
-                    showMaxButton={showMaxButton}
-                    currency={currencies[Field.INPUT] ?? null}
-                    onUserInput={handleTypeInput}
-                    onMax={handleMaxInput}
-                    fiatValue={fiatValueInput ?? undefined}
-                    onCurrencySelect={handleInputSelect}
-                    otherCurrency={currencies[Field.OUTPUT]}
+                  />
+                </ArrowContainer>
+              </TraceEvent>
+            </ArrowWrapper>
+          </div>
+          <AutoColumn gap="md">
+            <div>
+              <OutputSwapSection showDetailsDropdown={showDetailsDropdown}>
+                <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
+                  <InvestorCurrencyInputPanel
+                    value={formattedAmounts[Field.OUTPUT]}
+                    onUserInput={handleTypeOutput}
+                    label={
+                      independentField === Field.INPUT && !showWrap ? <Trans>To (at least)</Trans> : <Trans>To</Trans>
+                    }
+                    showMaxButton={false}
+                    hideBalance={false}
+                    fiatValue={fiatValueOutput ?? undefined}
+                    priceImpact={stablecoinPriceImpact}
+                    currency={currencies[Field.OUTPUT] ?? null}
+                    onCurrencySelect={handleOutputSelect}
+                    otherCurrency={currencies[Field.INPUT]}
                     showCommonBases={true}
-                    id={SectionName.CURRENCY_INPUT_PANEL}
-                    loading={independentField === Field.OUTPUT && routeIsSyncing}
+                    id={SectionName.CURRENCY_OUTPUT_PANEL}
+                    loading={independentField === Field.INPUT && routeIsSyncing}
                   />
                 </Trace>
-              </SwapSection>
-              <ArrowWrapper clickable={isSupportedChain(chainId)}>
+
+                {recipient !== null && !showWrap ? (
+                  <>
+                    <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
+                      <ArrowWrapper clickable={false}>
+                        <ArrowDown size="16" color={theme.deprecated_text2} />
+                      </ArrowWrapper>
+                      <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
+                        <Trans>- Remove recipient</Trans>
+                      </LinkStyledButton>
+                    </AutoRow>
+                    <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
+                  </>
+                ) : null}
+              </OutputSwapSection>
+              {showDetailsDropdown && (
+                <DetailsSwapSection>
+                  <SwapDetailsDropdown
+                    trade={trade}
+                    syncing={routeIsSyncing}
+                    loading={routeIsLoading}
+                    showInverted={showInverted}
+                    setShowInverted={setShowInverted}
+                    allowedSlippage={allowedSlippage}
+                  />
+                </DetailsSwapSection>
+              )}
+            </div>
+            {showPriceImpactWarning && <PriceImpactWarning priceImpact={largerPriceImpact} />}
+            <div>
+              {swapIsUnsupported ? (
+                <ButtonPrimary disabled={true}>
+                  <ThemedText.DeprecatedMain mb="4px">
+                    <Trans>Unsupported Asset</Trans>
+                  </ThemedText.DeprecatedMain>
+                </ButtonPrimary>
+              ) : !account ? (
                 <TraceEvent
                   events={[Event.onClick]}
-                  name={EventName.SWAP_TOKENS_REVERSED}
-                  element={ElementName.SWAP_TOKENS_REVERSE_ARROW_BUTTON}
+                  name={EventName.CONNECT_WALLET_BUTTON_CLICKED}
+                  properties={{ received_swap_quote: getIsValidSwapQuote(trade, tradeState, swapInputError) }}
+                  element={ElementName.CONNECT_WALLET_BUTTON}
                 >
-                  <ArrowContainer
-                    onClick={() => {
-                      onSwitchTokens()
-                    }}
-                    color={theme.textPrimary}
-                  >
-                    <ArrowDown
-                      size="16"
-                      color={
-                        currencies[Field.INPUT] && currencies[Field.OUTPUT]
-                          ? theme.deprecated_text1
-                          : theme.deprecated_text3
-                      }
-                    />
-                  </ArrowContainer>
+                  <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
+                    <Trans>Connect Wallet</Trans>
+                  </ButtonLight>
                 </TraceEvent>
-              </ArrowWrapper>
-            </div>
-            <AutoColumn gap={'12px'}>
-              <div>
-                <OutputSwapSection showDetailsDropdown={showDetailsDropdown}>
-                  <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
-                    <InvestorCurrencyInputPanel
-                      value={formattedAmounts[Field.OUTPUT]}
-                      onUserInput={handleTypeOutput}
-                      label={
-                        independentField === Field.INPUT && !showWrap ? <Trans>To (at least)</Trans> : <Trans>To</Trans>
-                      }
-                      showMaxButton={false}
-                      hideBalance={false}
-                      fiatValue={fiatValueOutput ?? undefined}
-                      priceImpact={stablecoinPriceImpact}
-                      currency={currencies[Field.OUTPUT] ?? null}
-                      onCurrencySelect={handleOutputSelect}
-                      otherCurrency={currencies[Field.INPUT]}
-                      showCommonBases={true}
-                      id={SectionName.CURRENCY_OUTPUT_PANEL}
-                      loading={independentField === Field.INPUT && routeIsSyncing}
-                    />
-                  </Trace>
-
-                  {recipient !== null && !showWrap ? (
-                    <>
-                      <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                        <ArrowWrapper clickable={false}>
-                          <ArrowDown size="16" color={theme.deprecated_text2} />
-                        </ArrowWrapper>
-                        <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                          <Trans>- Remove recipient</Trans>
-                        </LinkStyledButton>
-                      </AutoRow>
-                      <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
-                    </>
+              ) : showWrap ? (
+                <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
+                  {wrapInputError ? (
+                    <WrapErrorText wrapInputError={wrapInputError} />
+                  ) : wrapType === WrapType.WRAP ? (
+                    <Trans>Wrap</Trans>
+                  ) : wrapType === WrapType.UNWRAP ? (
+                    <Trans>Unwrap</Trans>
                   ) : null}
-                </OutputSwapSection>
-                {showDetailsDropdown && (
-                  <DetailsSwapSection>
-                    <SwapDetailsDropdown
-                      trade={trade}
-                      syncing={routeIsSyncing}
-                      loading={routeIsLoading}
-                      showInverted={showInverted}
-                      setShowInverted={setShowInverted}
-                      allowedSlippage={allowedSlippage}
-                    />
-                  </DetailsSwapSection>
-                )}
-              </div>
-              {showPriceImpactWarning && <PriceImpactWarning priceImpact={largerPriceImpact} />}
-              <div>
-                {swapIsUnsupported ? (
-                  <ButtonPrimary disabled={true}>
-                    <ThemedText.DeprecatedMain mb="4px">
-                      <Trans>Unsupported Asset</Trans>
-                    </ThemedText.DeprecatedMain>
-                  </ButtonPrimary>
-                ) : !account ? (
-                  <TraceEvent
-                    events={[Event.onClick]}
-                    name={EventName.CONNECT_WALLET_BUTTON_CLICKED}
-                    properties={{ received_swap_quote: getIsValidSwapQuote(trade, tradeState, swapInputError) }}
-                    element={ElementName.CONNECT_WALLET_BUTTON}
-                  >
-                    <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
-                      <Trans>Connect Wallet</Trans>
-                    </ButtonLight>
-                  </TraceEvent>
-                ) : showWrap ? (
-                  <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                    {wrapInputError ? (
-                      <WrapErrorText wrapInputError={wrapInputError} />
-                    ) : wrapType === WrapType.WRAP ? (
-                      <Trans>Wrap</Trans>
-                    ) : wrapType === WrapType.UNWRAP ? (
-                      <Trans>Unwrap</Trans>
-                    ) : null}
-                  </ButtonPrimary>
-                ) : routeNotFound && userHasSpecifiedInputOutput && !routeIsLoading && !routeIsSyncing ? (
-                  <GreyCard style={{ textAlign: 'center' }}>
-                    <ThemedText.DeprecatedMain mb="4px">
-                      <Trans>Insufficient liquidity for this trade.</Trans>
-                    </ThemedText.DeprecatedMain>
-                  </GreyCard>
-                ) : (
-                  <ButtonError
-                    onClick={() => {
-                      if (isExpertMode) {
-                        handleSwap()
-                      } else {
-                        setSwapState({
-                          tradeToConfirm: trade,
-                          attemptingTxn: false,
-                          swapErrorMessage: undefined,
-                          showConfirm: true,
-                          txHash: undefined,
-                        })
-                      }
-                    }}
-                    id="swap-button"
-                    disabled={!isValid || routeIsSyncing || routeIsLoading || priceImpactTooHigh || !!swapCallbackError}
-                    error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
-                  >
-                    <Text fontSize={20} fontWeight={500}>
-                      {swapInputError ? (
-                        swapInputError
-                      ) : routeIsSyncing || routeIsLoading ? (
-                        <Trans>Swap</Trans>
-                      ) : priceImpactSeverity > 2 ? (
-                        <Trans>Swap Anyway</Trans>
-                      ) : priceImpactTooHigh ? (
-                        <Trans>Price Impact Too High</Trans>
-                      ) : (
-                        <Trans>Swap</Trans>
-                      )}
-                    </Text>
-                  </ButtonError>
-                )}
-                {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
-              </div>
-            </AutoColumn>
-          </SwapWrapper>
-          <NetworkAlert />
-        </PageWrapper>
-        <SwitchLocaleLink />
-        {!swapIsUnsupported ? null : (
-          <UnsupportedCurrencyFooter
-            show={swapIsUnsupported}
-            currencies={[currencies[Field.INPUT], currencies[Field.OUTPUT]]}
-          />
-        )}
-      </>
+                </ButtonPrimary>
+              ) : routeNotFound && userHasSpecifiedInputOutput && !routeIsLoading && !routeIsSyncing ? (
+                <GreyCard style={{ textAlign: 'center' }}>
+                  <ThemedText.DeprecatedMain mb="4px">
+                    <Trans>Insufficient liquidity for this trade.</Trans>
+                  </ThemedText.DeprecatedMain>
+                </GreyCard>
+              ) : (
+                <ButtonError
+                  onClick={() => {
+                    if (isExpertMode) {
+                      handleSwap()
+                    } else {
+                      setSwapState({
+                        tradeToConfirm: trade,
+                        attemptingTxn: false,
+                        swapErrorMessage: undefined,
+                        showConfirm: true,
+                        txHash: undefined,
+                      })
+                    }
+                  }}
+                  id="swap-button"
+                  disabled={!isValid || routeIsSyncing || routeIsLoading || priceImpactTooHigh || !!swapCallbackError}
+                  error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
+                >
+                  <Text fontSize={20} fontWeight={500}>
+                    {swapInputError ? (
+                      swapInputError
+                    ) : routeIsSyncing || routeIsLoading ? (
+                      <Trans>Swap</Trans>
+                    ) : priceImpactSeverity > 2 ? (
+                      <Trans>Swap Anyway</Trans>
+                    ) : priceImpactTooHigh ? (
+                      <Trans>Price Impact Too High</Trans>
+                    ) : (
+                      <Trans>Swap</Trans>
+                    )}
+                  </Text>
+                </ButtonError>
+              )}
+              {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
+            </div>
+          </AutoColumn>
+        </SwapWrapper>
+        <NetworkAlert />
+      </PageWrapper>
+      <SwitchLocaleLink />
+      {!swapIsUnsupported ? null : (
+        <UnsupportedCurrencyFooter
+          show={swapIsUnsupported}
+          currencies={[currencies[Field.INPUT], currencies[Field.OUTPUT]]}
+        />
+      )}
     </Trace>
   )
 }
