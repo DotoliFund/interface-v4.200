@@ -29,7 +29,7 @@ import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -106,7 +106,6 @@ export default function FundPage() {
 
   // theming
   const backgroundColor = useColor()
-  const theme = useTheme()
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
@@ -185,7 +184,7 @@ export default function FundPage() {
     }
   }, [chartData])
 
-  const formattedTokensData = useMemo(() => {
+  const formattedHoverData = useMemo(() => {
     if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
       return tokensHover.map((data, index) => {
         return {
@@ -213,21 +212,6 @@ export default function FundPage() {
       return []
     }
   }, [fundData])
-
-  // const formattedPresentTokensData = useMemo(() => {
-  //   if (fundData) {
-  //     return fundData.tokens.map((data, index) => {
-  //       return {
-  //         token: data,
-  //         symbol: fundData.symbols[index],
-  //         amount: fundData.tokensAmount[index],
-  //         tokenVolume: getTokenPriceETH(data),
-  //       }
-  //     })
-  //   } else {
-  //     return []
-  //   }
-  // }, [fundData])
 
   const latestVolumeData = useMemo(() => {
     if (fundData && chartData && chartData.length > 0) {
@@ -371,7 +355,7 @@ export default function FundPage() {
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
-                  data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
+                  data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
                 />
               </AutoColumn>
@@ -444,13 +428,6 @@ export default function FundPage() {
                   topRight={
                     <AutoColumn gap="4px" justify="end">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">Profit</ThemedText.DeprecatedMediumHeader>
-                      {/* <ThemedText.DeprecatedLargeHeader fontSize="26px">
-                        <MonoSpace>
-                          {formatDollarAmount(
-                            principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
-                          )}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader> */}
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">
                         <Percent value={ratio} wrap={false} fontSize="24px" />
                         <br />

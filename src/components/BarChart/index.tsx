@@ -58,12 +58,17 @@ const Chart = ({
   minHeight = DEFAULT_HEIGHT,
   ...rest
 }: BarChartProps) => {
-  const CustomTooltip = (active: any) => {
-    if (active.payload && active.payload.length) {
-      setLabel(active.payload[0].payload.token)
-      setSymbol(active.payload[0].payload.symbol)
-      setValue(active.payload[0].value)
-      setAmount(active.payload[0].payload.amount)
+  const CustomTooltip = (actions: any) => {
+    if (actions.payload && actions.payload.length) {
+      setLabel(actions.payload[0].payload.token)
+      setSymbol(actions.payload[0].payload.symbol)
+      setValue(actions.payload[0].value)
+      setAmount(actions.payload[0].payload.amount)
+    } else {
+      setLabel(actions.init.token)
+      setSymbol(actions.init.symbol)
+      setValue(actions.init.tokenVolume)
+      setAmount(actions.init.amount)
     }
     return null
   }
@@ -100,7 +105,7 @@ const Chart = ({
               </linearGradient>
             </defs>
             <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
-            <Tooltip cursor={false} content={<CustomTooltip />} />
+            <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
             <Bar dataKey="tokenVolume" type="monotone" stroke={color} fill="url(#gradient)" />
           </BarChart>
         </ResponsiveContainer>

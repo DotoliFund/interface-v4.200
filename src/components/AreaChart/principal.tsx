@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { Area, AreaChart, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
 import { unixToDate } from 'utils/date'
+import { formatTime } from 'utils/date'
 
 dayjs.extend(utc)
 
@@ -88,8 +89,8 @@ const Chart = ({
 
   const CustomizedLabel = (props: any) => {
     return (
-      <text x={props.viewBox.x - 35} y={props.viewBox.height - 5} fill="yellow" fontSize={14}>
-        Now
+      <text x={props.viewBox.x - 10} y={props.viewBox.height / 12} fill="yellow" fontSize={14} textAnchor="end">
+        {formatTime(props.date.toString(), 8)}
       </text>
     )
   }
@@ -147,7 +148,7 @@ const Chart = ({
                 x={data[data.length - 1].time}
                 stroke="yellow"
                 strokeWidth={1}
-                label={<CustomizedLabel />}
+                label={<CustomizedLabel date={data[data.length - 1].time} />}
                 strokeDasharray="3 3"
               />
             ) : null}

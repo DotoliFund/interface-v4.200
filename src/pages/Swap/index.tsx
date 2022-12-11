@@ -24,9 +24,6 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import { isSupportedChain } from 'constants/chains'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import useENSAddress from 'hooks/useENSAddress'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
@@ -130,11 +127,6 @@ export default function Swap() {
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
   const navigate = useNavigate()
-  const navBarFlag = useNavBarFlag()
-  const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
-  const tokensFlag = useTokensFlag()
   const { account, chainId } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [newSwapQuoteNeedsLogging, setNewSwapQuoteNeedsLogging] = useState(true)
@@ -565,7 +557,7 @@ export default function Swap() {
                   properties={{ received_swap_quote: getIsValidSwapQuote(trade, tradeState, swapInputError) }}
                   element={ElementName.CONNECT_WALLET_BUTTON}
                 >
-                  <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
+                  <ButtonLight onClick={toggleWalletModal}>
                     <Trans>Connect Wallet</Trans>
                   </ButtonLight>
                 </TraceEvent>

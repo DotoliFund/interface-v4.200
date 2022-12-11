@@ -339,7 +339,7 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const formattedTokensData = useMemo(() => {
+  const formattedHoverData = useMemo(() => {
     if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
       return tokensHover.map((data, index) => {
         return {
@@ -618,7 +618,7 @@ export default function FundAccount() {
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
-                  data={formattedTokensData ? formattedTokensData : formattedLatestTokensData}
+                  data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
                 />
               </AutoColumn>
@@ -680,13 +680,6 @@ export default function FundAccount() {
                   topRight={
                     <AutoColumn gap="4px" justify="end">
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">Profit</ThemedText.DeprecatedMediumHeader>
-                      {/* <ThemedText.DeprecatedLargeHeader fontSize="26px">
-                        <MonoSpace>
-                          {formatDollarAmount(
-                            principalHover ? principalHover : latestVolumeData ? latestVolumeData.principal : 0
-                          )}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader> */}
                       <ThemedText.DeprecatedMediumHeader fontSize="16px">
                         <Percent value={ratio} wrap={false} fontSize="24px" />
                         <br />
@@ -738,7 +731,6 @@ export default function FundAccount() {
           </ContentLayout>
           <TitleRow padding={'0'}>
             <ThemedText.DeprecatedMain fontSize="24px">Positions</ThemedText.DeprecatedMain>
-
             <ButtonRow>
               <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to={newPositionLink}>
                 + <Trans>New Position</Trans>
