@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import AddressInputPanel from 'components/AddressInputPanel'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import {
@@ -17,24 +16,24 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
-import { ArrowWrapper, PageWrapper, SwapWrapper } from 'components/swap/styleds'
+import { RowBetween, RowFixed } from 'components/Row'
+import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
-import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { toHex } from 'interface/utils/calldata'
 import { XXXFund2 } from 'interface/XXXFund2'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
-import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
+import { CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -49,44 +48,48 @@ import { InterfaceTrade } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
 import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
-import styled, { css, useTheme } from 'styled-components/macro'
-import { LinkStyledButton, ThemedText } from 'theme'
+import styled, { useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeRealizedPriceImpact } from 'utils/prices'
 import { supportedChainId } from 'utils/supportedChainId'
 
-const ArrowContainer = styled.div`
-  display: inline-block;
-  margin-left: 6%;
+const StyledDepositHeader = styled.div`
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  width: 100%;
+  color: ${({ theme }) => theme.deprecated_text2};
 `
-const ArrowDownWrapper = styled.div`
-  margin-top: -80%;
-  margin-left: 24%;
-`
-const ArrowUpWrapper = styled.div`
-  margin-left: 56%;
-  margin-top: -18%;
-`
-const BottomWrapper = styled.div<{ redesignFlag: boolean }>`
-  ${({ redesignFlag }) =>
-    redesignFlag &&
-    css`
-      background-color: ${({ theme }) => theme.backgroundModule};
-      border-radius: 12px;
-      padding: 8px 12px 10px;
-      color: ${({ theme }) => theme.textSecondary};
-      font-size: 14px;
-      line-height: 20px;
-      font-weight: 500;
-    `}
-`
-const TopInputWrapper = styled.div<{ redesignFlag: boolean }>`
-  padding: ${({ redesignFlag }) => redesignFlag && '0px 12px'};
-  visibility: ${({ redesignFlag }) => !redesignFlag && 'none'};
-`
-const BottomInputWrapper = styled.div<{ redesignFlag: boolean }>`
-  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px'};
+
+const DepositSection = styled.div`
+  position: relative;
+  background-color: ${({ theme }) => theme.backgroundModule};
+  border-radius: 12px;
+  padding: 16px;
+  color: ${({ theme }) => theme.textSecondary};
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  &:before {
+    box-sizing: border-box;
+    background-size: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    content: '';
+    border: 1px solid ${({ theme }) => theme.backgroundModule};
+  }
+  &:hover:before {
+    border-color: ${({ theme }) => theme.stateOverlayHover};
+  }
+  &:focus-within:before {
+    border-color: ${({ theme }) => theme.stateOverlayPressed};
+  }
 `
 
 export function getIsValidSwapQuote(
@@ -138,13 +141,9 @@ export default function Deposit() {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
   const tokensFlag = useTokensFlag()
   const { account, chainId, provider } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const [newSwapQuoteNeedsLogging, setNewSwapQuoteNeedsLogging] = useState(true)
-  const [fetchingSwapQuoteStartTime, setFetchingSwapQuoteStartTime] = useState<Date | undefined>()
 
   // token warning stuff
   const [loadedInputCurrency] = [useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId)]
@@ -186,13 +185,13 @@ export default function Deposit() {
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
-  // swap state
-  const { typedValue, recipient } = useDepositState()
+  // Deposit state
+  const { typedValue } = useDepositState()
   const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedDepositInfo()
-
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
+  const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
-  const { onCurrencySelection, onUserInput, onChangeRecipient } = useDepositActionHandlers()
+  const { onCurrencySelection, onUserInput } = useDepositActionHandlers()
   const isValid = !swapInputError
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -314,28 +313,26 @@ export default function Deposit() {
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
       <>
         {tokensFlag === TokensVariant.Enabled && <TokensBanner />}
-        {redesignFlagEnabled ? (
-          <TokenSafetyModal
-            isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-            tokenAddress={importTokensNotInDefault[0]?.address}
-            secondTokenAddress={importTokensNotInDefault[1]?.address}
-            onContinue={handleConfirmTokenWarning}
-            onCancel={handleDismissTokenWarning}
-            showCancel={true}
-          />
-        ) : (
-          <TokenWarningModal
-            isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-            tokens={importTokensNotInDefault}
-            onConfirm={handleConfirmTokenWarning}
-            onDismiss={handleDismissTokenWarning}
-          />
-        )}
+        <TokenWarningModal
+          isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
+          tokens={importTokensNotInDefault}
+          onConfirm={handleConfirmTokenWarning}
+          onDismiss={handleDismissTokenWarning}
+        />
         <PageWrapper>
           <SwapWrapper id="swap-page">
-            <AutoColumn gap={'0px'}>
+            <StyledDepositHeader>
+              <RowBetween>
+                <RowFixed>
+                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                    <Trans>Deposit</Trans>
+                  </ThemedText.DeprecatedBlack>
+                </RowFixed>
+              </RowBetween>
+            </StyledDepositHeader>
+            <AutoColumn gap={'6px'}>
               <div style={{ display: 'relative' }}>
-                <TopInputWrapper redesignFlag={redesignFlagEnabled}>
+                <DepositSection>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
                     <CurrencyInputPanel
                       label={<Trans>deposit123</Trans>}
@@ -344,7 +341,7 @@ export default function Deposit() {
                       currency={currencies[Field.INPUT] ?? null}
                       onUserInput={handleTypeInput}
                       onMax={handleMaxInput}
-                      fiatValue={undefined}
+                      fiatValue={fiatValueInput ?? undefined}
                       onCurrencySelect={handleInputSelect}
                       otherCurrency={currencies[Field.INPUT]}
                       showCommonBases={true}
@@ -352,129 +349,94 @@ export default function Deposit() {
                       loading={false}
                     />
                   </Trace>
-                </TopInputWrapper>
+                </DepositSection>
               </div>
-              <BottomWrapper redesignFlag={redesignFlagEnabled}>
-                {redesignFlagEnabled && 'For'}
-                <AutoColumn gap={redesignFlagEnabled ? '0px' : '8px'}>
-                  <BottomInputWrapper redesignFlag={redesignFlagEnabled}>
-                    {recipient !== null ? (
-                      <>
-                        <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                          <ArrowWrapper clickable={false}>
-                            <ArrowDown size="16" color={theme.deprecated_text2} />
-                          </ArrowWrapper>
-                          <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                            <Trans>- Remove recipient</Trans>
-                          </LinkStyledButton>
-                        </AutoRow>
-                        <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
-                      </>
-                    ) : null}
-                  </BottomInputWrapper>
-
-                  <div>
-                    {addIsUnsupported ? (
-                      <ButtonPrimary disabled={true}>
-                        <ThemedText.DeprecatedMain mb="4px">
-                          <Trans>Unsupported Asset</Trans>
-                        </ThemedText.DeprecatedMain>
-                      </ButtonPrimary>
-                    ) : !account ? (
-                      <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
-                        <Trans>Connect Wallet</Trans>
-                      </ButtonLight>
-                    ) : showApproveFlow ? (
-                      <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                        <AutoColumn style={{ width: '100%' }} gap="12px">
-                          <ButtonConfirmed
-                            onClick={handleApprove}
-                            disabled={approveTokenButtonDisabled}
-                            width="100%"
-                            altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                            confirmed={approvalState === ApprovalState.APPROVED}
-                          >
-                            <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                              <span style={{ display: 'flex', alignItems: 'center' }}>
-                                {/* we need to shorten this string on mobile */}
-                                {approvalState === ApprovalState.APPROVED ? (
-                                  <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
-                                ) : (
-                                  <Trans>
-                                    Allow the Uniswap Protocol to use your {currencies[Field.INPUT]?.symbol}
-                                  </Trans>
-                                )}
-                              </span>
-                              {approvalState === ApprovalState.PENDING ? (
-                                <Loader stroke="white" />
-                              ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                                <CheckCircle size="20" color={theme.deprecated_green1} />
-                              ) : (
-                                <MouseoverTooltip
-                                  text={
-                                    <Trans>
-                                      You must give the Uniswap smart contracts permission to use your{' '}
-                                      {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
-                                    </Trans>
-                                  }
-                                >
-                                  <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                                </MouseoverTooltip>
-                              )}
-                            </AutoRow>
-                          </ButtonConfirmed>
-                          <ButtonError
-                            onClick={() => {
-                              if (isExpertMode) {
-                                //handleSwap()
-                              } else {
-                                onDeposit()
-                                // setDepositState({
-                                //   attemptingTxn: false,
-                                //   swapErrorMessage: undefined,
-                                //   showConfirm: true,
-                                //   txHash: undefined,
-                                // })
+              <div>
+                {addIsUnsupported ? (
+                  <ButtonPrimary disabled={true}>
+                    <ThemedText.DeprecatedMain mb="4px">
+                      <Trans>Unsupported Asset</Trans>
+                    </ThemedText.DeprecatedMain>
+                  </ButtonPrimary>
+                ) : !account ? (
+                  <ButtonLight onClick={toggleWalletModal}>
+                    <Trans>Connect Wallet</Trans>
+                  </ButtonLight>
+                ) : showApproveFlow ? (
+                  <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
+                    <AutoColumn style={{ width: '100%' }} gap="12px">
+                      <ButtonConfirmed
+                        onClick={handleApprove}
+                        disabled={approveTokenButtonDisabled}
+                        width="100%"
+                        altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
+                        confirmed={approvalState === ApprovalState.APPROVED}
+                      >
+                        <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
+                          <span style={{ display: 'flex', alignItems: 'center' }}>
+                            {/* we need to shorten this string on mobile */}
+                            {approvalState === ApprovalState.APPROVED ? (
+                              <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
+                            ) : (
+                              <Trans>Allow the Uniswap Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
+                            )}
+                          </span>
+                          {approvalState === ApprovalState.PENDING ? (
+                            <Loader stroke="white" />
+                          ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
+                            <CheckCircle size="20" color={theme.deprecated_green1} />
+                          ) : (
+                            <MouseoverTooltip
+                              text={
+                                <Trans>
+                                  You must give the Uniswap smart contracts permission to use your{' '}
+                                  {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
+                                </Trans>
                               }
-                            }}
-                            width="100%"
-                            id="swap-button"
-                            disabled={!isValid || approvalState !== ApprovalState.APPROVED}
-                            error={isValid}
-                          >
-                            <Text fontSize={16} fontWeight={500}>
-                              <Trans>Deposit</Trans>
-                            </Text>
-                          </ButtonError>
-                        </AutoColumn>
-                      </AutoRow>
-                    ) : (
+                            >
+                              <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
+                            </MouseoverTooltip>
+                          )}
+                        </AutoRow>
+                      </ButtonConfirmed>
                       <ButtonError
                         onClick={() => {
                           if (isExpertMode) {
                             //handleSwap()
                           } else {
                             onDeposit()
-                            // setDepositState({
-                            //   attemptingTxn: false,
-                            //   swapErrorMessage: undefined,
-                            //   showConfirm: true,
-                            //   txHash: undefined,
-                            // })
                           }
                         }}
+                        width="100%"
                         id="swap-button"
-                        disabled={!isValid}
+                        disabled={!isValid || approvalState !== ApprovalState.APPROVED}
                         error={isValid}
                       >
-                        <Text fontSize={20} fontWeight={500}>
-                          {swapInputError ? swapInputError : <Trans>Deposit</Trans>}
+                        <Text fontSize={16} fontWeight={500}>
+                          <Trans>Deposit</Trans>
                         </Text>
                       </ButtonError>
-                    )}
-                  </div>
-                </AutoColumn>
-              </BottomWrapper>
+                    </AutoColumn>
+                  </AutoRow>
+                ) : (
+                  <ButtonError
+                    onClick={() => {
+                      if (isExpertMode) {
+                        //handleSwap()
+                      } else {
+                        onDeposit()
+                      }
+                    }}
+                    id="swap-button"
+                    disabled={!isValid}
+                    error={isValid}
+                  >
+                    <Text fontSize={20} fontWeight={500}>
+                      {swapInputError ? swapInputError : <Trans>Deposit</Trans>}
+                    </Text>
+                  </ButtonError>
+                )}
+              </div>
             </AutoColumn>
           </SwapWrapper>
           <NetworkAlert />

@@ -1,32 +1,26 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import AddressInputPanel from 'components/AddressInputPanel'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/InvestorCurrencyInputPanel'
+import WithdrawCurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
-import { AutoRow } from 'components/Row'
-import { ArrowWrapper, PageWrapper, SwapWrapper } from 'components/swap/styleds'
+import { RowBetween, RowFixed } from 'components/Row'
+import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokensBanner from 'components/Tokens/TokensBanner'
-import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
-import { useTokenContract } from 'hooks/useContract'
-import useENSAddress from 'hooks/useENSAddress'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { XXXFund2 } from 'interface/XXXFund2'
 import { useCallback, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
-import { ArrowDown } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -41,31 +35,47 @@ import {
   useWithdrawActionHandlers,
   useWithdrawState,
 } from 'state/withdraw/hooks'
-import styled, { css, useTheme } from 'styled-components/macro'
-import { LinkStyledButton, ThemedText } from 'theme'
+import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { supportedChainId } from 'utils/supportedChainId'
 
-const BottomWrapper = styled.div<{ redesignFlag: boolean }>`
-  ${({ redesignFlag }) =>
-    redesignFlag &&
-    css`
-      background-color: ${({ theme }) => theme.backgroundModule};
-      border-radius: 12px;
-      padding: 8px 12px 10px;
-      color: ${({ theme }) => theme.textSecondary};
-      font-size: 14px;
-      line-height: 20px;
-      font-weight: 500;
-    `}
+const StyledWithdrawHeader = styled.div`
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  width: 100%;
+  color: ${({ theme }) => theme.deprecated_text2};
 `
-const TopInputWrapper = styled.div<{ redesignFlag: boolean }>`
-  padding: ${({ redesignFlag }) => redesignFlag && '0px 12px'};
-  visibility: ${({ redesignFlag }) => !redesignFlag && 'none'};
-`
-const BottomInputWrapper = styled.div<{ redesignFlag: boolean }>`
-  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px'};
+
+const WithdrawSection = styled.div`
+  position: relative;
+  background-color: ${({ theme }) => theme.backgroundModule};
+  border-radius: 12px;
+  padding: 16px;
+  color: ${({ theme }) => theme.textSecondary};
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  &:before {
+    box-sizing: border-box;
+    background-size: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    content: '';
+    border: 1px solid ${({ theme }) => theme.backgroundModule};
+  }
+  &:hover:before {
+    border-color: ${({ theme }) => theme.stateOverlayHover};
+  }
+  &:focus-within:before {
+    border-color: ${({ theme }) => theme.stateOverlayPressed};
+  }
 `
 
 export function getIsValidSwapQuote(
@@ -79,12 +89,7 @@ export function getIsValidSwapQuote(
 export default function Withdraw() {
   const params = useParams()
   const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
   const navigate = useNavigate()
-  const navBarFlag = useNavBarFlag()
-  const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
   const tokensFlag = useTokensFlag()
   const { account, chainId, provider } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -121,40 +126,17 @@ export default function Withdraw() {
     [chainId, defaultTokens, urlLoadedTokens]
   )
 
-  const theme = useTheme()
-
   // toggle wallet when disconnected
   const toggleWalletModal = useToggleWalletModal()
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
-  // swap state
-  const { typedValue, recipient } = useWithdrawState()
+  // withdraw state
+  const { typedValue } = useWithdrawState()
   const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedWithdrawInfo(fundAddress)
-
-  // const {
-  //   wrapType,
-  //   execute: onWrap,
-  //   inputError: wrapInputError,
-  // } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  // const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-  const { address: recipientAddress } = useENSAddress(recipient)
-
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
-
-  // const [routeNotFound, routeIsLoading, routeIsSyncing] = useMemo(
-  //   () => [!trade?.swaps, TradeState.LOADING === tradeState, TradeState.SYNCING === tradeState],
-  //   [trade, tradeState]
-  // )
-
-  // show price estimates based on wrap trade
-  // const inputValue = showWrap ? parsedAmount : trade?.inputAmount
-  // const fiatValueInput = useStablecoinValue(inputValue)
-  // const stablecoinPriceImpact = useMemo(
-  //   () => (routeIsSyncing ? undefined : computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)),
-  //   [fiatValueInput, routeIsSyncing]
-  // )
+  const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
   const { onCurrencySelection, onUserInput, onChangeRecipient } = useWithdrawActionHandlers()
   const isValid = !swapInputError
@@ -171,19 +153,6 @@ export default function Withdraw() {
     navigate('/withdraw/')
   }, [navigate])
 
-  // modal and loading
-  const [{ showConfirm, swapErrorMessage, attemptingTxn, txHash }, setWithdrawState] = useState<{
-    showConfirm: boolean
-    attemptingTxn: boolean
-    swapErrorMessage: string | undefined
-    txHash: string | undefined
-  }>({
-    showConfirm: false,
-    attemptingTxn: false,
-    swapErrorMessage: undefined,
-    txHash: undefined,
-  })
-
   const formattedAmounts = useMemo(
     () => ({
       [Field.INPUT]: typedValue,
@@ -198,8 +167,6 @@ export default function Withdraw() {
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
   const currency = currencies[Field.INPUT]
-  const tokenAddress = currency?.wrapped.address
-  const tokenContract = useTokenContract(tokenAddress)
 
   async function onWithdraw() {
     if (!chainId || !provider || !account) return
@@ -256,52 +223,35 @@ export default function Withdraw() {
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
       <>
         {tokensFlag === TokensVariant.Enabled && <TokensBanner />}
-        {redesignFlagEnabled ? (
-          <TokenSafetyModal
-            isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-            tokenAddress={importTokensNotInDefault[0]?.address}
-            secondTokenAddress={importTokensNotInDefault[1]?.address}
-            onContinue={handleConfirmTokenWarning}
-            onCancel={handleDismissTokenWarning}
-            showCancel={true}
-          />
-        ) : (
-          <TokenWarningModal
-            isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-            tokens={importTokensNotInDefault}
-            onConfirm={handleConfirmTokenWarning}
-            onDismiss={handleDismissTokenWarning}
-          />
-        )}
+        <TokenWarningModal
+          isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
+          tokens={importTokensNotInDefault}
+          onConfirm={handleConfirmTokenWarning}
+          onDismiss={handleDismissTokenWarning}
+        />
         <PageWrapper>
           <SwapWrapper id="swap-page">
-            {/* <SwapHeader allowedSlippage={undefined} />
-            <ConfirmSwapModal
-              isOpen={showConfirm}
-              trade={undefined}
-              originalTrade={undefined}
-              onAcceptChanges={handleAcceptChanges}
-              attemptingTxn={attemptingTxn}
-              txHash={txHash}
-              recipient={recipient}
-              allowedSlippage={undefined}
-              onConfirm={handleWithdraw}
-              swapErrorMessage={swapErrorMessage}
-              onDismiss={handleConfirmDismiss}
-              swapQuoteReceivedDate={swapQuoteReceivedDate}
-            /> */}
-            <AutoColumn gap={'0px'}>
+            <StyledWithdrawHeader>
+              <RowBetween>
+                <RowFixed>
+                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                    <Trans>Withdraw</Trans>
+                  </ThemedText.DeprecatedBlack>
+                </RowFixed>
+              </RowBetween>
+            </StyledWithdrawHeader>
+            <AutoColumn gap={'6px'}>
               <div style={{ display: 'relative' }}>
-                <TopInputWrapper redesignFlag={redesignFlagEnabled}>
+                <WithdrawSection>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                    <InvestorCurrencyInputPanel
-                      label={<Trans>Withdraw123</Trans>}
+                    <WithdrawCurrencyInputPanel
+                      label={<Trans>Withdraw</Trans>}
                       value={formattedAmounts[Field.INPUT]}
                       showMaxButton={showMaxButton}
                       currency={currencies[Field.INPUT] ?? null}
                       onUserInput={handleTypeInput}
                       onMax={handleMaxInput}
-                      fiatValue={undefined}
+                      fiatValue={fiatValueInput ?? undefined}
                       onCurrencySelect={handleInputSelect}
                       otherCurrency={currencies[Field.INPUT]}
                       showCommonBases={true}
@@ -309,76 +259,38 @@ export default function Withdraw() {
                       loading={false}
                     />
                   </Trace>
-                </TopInputWrapper>
+                </WithdrawSection>
               </div>
-              <BottomWrapper redesignFlag={redesignFlagEnabled}>
-                {redesignFlagEnabled && 'For'}
-                <AutoColumn gap={redesignFlagEnabled ? '0px' : '8px'}>
-                  <BottomInputWrapper redesignFlag={redesignFlagEnabled}>
-                    {recipient !== null ? (
-                      <>
-                        <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                          <ArrowWrapper clickable={false}>
-                            <ArrowDown size="16" color={theme.deprecated_text2} />
-                          </ArrowWrapper>
-                          <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                            <Trans>- Remove recipient</Trans>
-                          </LinkStyledButton>
-                        </AutoRow>
-                        <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
-                      </>
-                    ) : null}
-                    {/* {userHasSpecifiedInput && (
-                      <SwapDetailsDropdown
-                        trade={trade}
-                        syncing={routeIsSyncing}
-                        loading={routeIsLoading}
-                        showInverted={showInverted}
-                        setShowInverted={setShowInverted}
-                        allowedSlippage={allowedSlippage}
-                      />
-                    )} */}
-                    {/* {showPriceImpactWarning && <PriceImpactWarning priceImpact={largerPriceImpact} />} */}
-                  </BottomInputWrapper>
-
-                  <div>
-                    {addIsUnsupported ? (
-                      <ButtonPrimary disabled={true}>
-                        <ThemedText.DeprecatedMain mb="4px">
-                          <Trans>Unsupported Asset</Trans>
-                        </ThemedText.DeprecatedMain>
-                      </ButtonPrimary>
-                    ) : !account ? (
-                      <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
-                        <Trans>Connect Wallet</Trans>
-                      </ButtonLight>
-                    ) : (
-                      <ButtonError
-                        onClick={() => {
-                          if (isExpertMode) {
-                            //handleSwap()
-                          } else {
-                            onWithdraw()
-                            // setWithdrawState({
-                            //   attemptingTxn: false,
-                            //   swapErrorMessage: undefined,
-                            //   showConfirm: true,
-                            //   txHash: undefined,
-                            // })
-                          }
-                        }}
-                        id="swap-button"
-                        disabled={!isValid}
-                        error={isValid}
-                      >
-                        <Text fontSize={20} fontWeight={500}>
-                          {swapInputError ? swapInputError : <Trans>Withdraw</Trans>}
-                        </Text>
-                      </ButtonError>
-                    )}
-                  </div>
-                </AutoColumn>
-              </BottomWrapper>
+              <div>
+                {addIsUnsupported ? (
+                  <ButtonPrimary disabled={true}>
+                    <ThemedText.DeprecatedMain mb="4px">
+                      <Trans>Unsupported Asset</Trans>
+                    </ThemedText.DeprecatedMain>
+                  </ButtonPrimary>
+                ) : !account ? (
+                  <ButtonLight onClick={toggleWalletModal}>
+                    <Trans>Connect Wallet</Trans>
+                  </ButtonLight>
+                ) : (
+                  <ButtonError
+                    onClick={() => {
+                      if (isExpertMode) {
+                        //handleSwap()
+                      } else {
+                        onWithdraw()
+                      }
+                    }}
+                    id="swap-button"
+                    disabled={!isValid}
+                    error={isValid}
+                  >
+                    <Text fontSize={20} fontWeight={500}>
+                      {swapInputError ? swapInputError : <Trans>Withdraw</Trans>}
+                    </Text>
+                  </ButtonError>
+                )}
+              </div>
             </AutoColumn>
           </SwapWrapper>
           <NetworkAlert />
