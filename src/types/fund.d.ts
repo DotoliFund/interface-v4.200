@@ -61,6 +61,11 @@ export interface Investor {
   tokensAmount: number[]
   tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
+  liquidityTokens: string[]
+  liquiditySymbols: string[]
+  liquidityAmount: number[]
+  liquidityVolumeETH: number[]
+  liquidityVolumeUSD: number[]
   profitETH: number
   profitUSD: number
   profitRatio: number
@@ -81,6 +86,11 @@ export interface InvestorFields {
   tokensAmount: string[]
   tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
+  liquidityTokens: string[]
+  liquiditySymbols: string[]
+  liquidityAmount: number[]
+  liquidityVolumeETH: number[]
+  liquidityVolumeUSD: number[]
   profitETH: string
   profitUSD: string
   profitRatio: string
