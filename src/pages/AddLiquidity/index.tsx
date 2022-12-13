@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
-import InvestorCurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputPanel'
+import CurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputPanel'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { NULL_ADDRESS } from 'constants/addresses'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -20,7 +20,7 @@ import {
   useV3MintActionHandlers,
   useV3MintState,
 } from 'state/mint/v3/hooks'
-import { useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 
 import { ButtonError, ButtonLight, ButtonPrimary, ButtonText, ButtonYellow } from '../../components/Button'
 import { BlueCard, OutlineCard, YellowCard } from '../../components/Card'
@@ -72,6 +72,36 @@ import {
 } from './styled'
 
 const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
+
+const SwapSection = styled.div`
+  position: relative;
+  background-color: ${({ theme }) => theme.backgroundModule};
+  border-radius: 12px;
+  padding: 16px;
+  color: ${({ theme }) => theme.textSecondary};
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  &:before {
+    box-sizing: border-box;
+    background-size: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    content: '';
+    border: 1px solid ${({ theme }) => theme.backgroundModule};
+  }
+  &:hover:before {
+    border-color: ${({ theme }) => theme.stateOverlayHover};
+  }
+  &:focus-within:before {
+    border-color: ${({ theme }) => theme.stateOverlayPressed};
+  }
+`
 
 export default function AddLiquidity() {
   const navigate = useNavigate()
@@ -564,34 +594,36 @@ export default function AddLiquidity() {
                     <ThemedText.DeprecatedLabel>
                       {hasExistingPosition ? <Trans>Add more liquidity</Trans> : <Trans>Deposit Amounts</Trans>}
                     </ThemedText.DeprecatedLabel>
-
-                    <InvestorCurrencyInputPanel
-                      value={formattedAmounts[Field.CURRENCY_A]}
-                      onUserInput={onFieldAInput}
-                      onMax={() => {
-                        onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
-                      }}
-                      showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-                      currency={currencies[Field.CURRENCY_A] ?? null}
-                      id="add-liquidity-input-tokena"
-                      fiatValue={usdcValues[Field.CURRENCY_A]}
-                      showCommonBases
-                      locked={depositADisabled}
-                    />
-
-                    <InvestorCurrencyInputPanel
-                      value={formattedAmounts[Field.CURRENCY_B]}
-                      onUserInput={onFieldBInput}
-                      onMax={() => {
-                        onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-                      }}
-                      showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-                      fiatValue={usdcValues[Field.CURRENCY_B]}
-                      currency={currencies[Field.CURRENCY_B] ?? null}
-                      id="add-liquidity-input-tokenb"
-                      showCommonBases
-                      locked={depositBDisabled}
-                    />
+                    <SwapSection>
+                      <CurrencyInputPanel
+                        value={formattedAmounts[Field.CURRENCY_A]}
+                        onUserInput={onFieldAInput}
+                        onMax={() => {
+                          onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+                        }}
+                        showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
+                        currency={currencies[Field.CURRENCY_A] ?? null}
+                        id="add-liquidity-input-tokena"
+                        fiatValue={usdcValues[Field.CURRENCY_A]}
+                        showCommonBases
+                        locked={depositADisabled}
+                      />
+                    </SwapSection>
+                    <SwapSection>
+                      <CurrencyInputPanel
+                        value={formattedAmounts[Field.CURRENCY_B]}
+                        onUserInput={onFieldBInput}
+                        onMax={() => {
+                          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+                        }}
+                        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+                        fiatValue={usdcValues[Field.CURRENCY_B]}
+                        currency={currencies[Field.CURRENCY_B] ?? null}
+                        id="add-liquidity-input-tokenb"
+                        showCommonBases
+                        locked={depositBDisabled}
+                      />
+                    </SwapSection>
                   </AutoColumn>
                 </DynamicSection>
               </div>
