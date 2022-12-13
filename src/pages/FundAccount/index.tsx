@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import MultiAreaChart from 'components/AreaChart/principal'
-import BarChart from 'components/BarChart'
+import BarChart from 'components/BarChart/stacked'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -307,9 +307,11 @@ export default function FundAccount() {
   const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
   // Bar chart hover
   const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
+  const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
+  const [liquidityVolumeHover, setLiquidityVolumeHover] = useState<number | undefined>()
+  const [liquidityAmountHover, setLiquidityAmountHover] = useState<number | undefined>()
   const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
   const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
-  const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
 
   const { positions, loading: positionsLoading } = useV3Positions(fundAddress, investorAddress)
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
@@ -361,6 +363,8 @@ export default function FundAccount() {
           symbol: investorData.symbols[index],
           amount: investorData.tokensAmount[index],
           tokenVolume: investorData.tokensVolumeUSD[index],
+          liquidityAmount: investorData.liquidityAmount[index],
+          liquidityVolume: investorData.liquidityVolumeUSD[index],
         }
       })
     } else {
@@ -695,32 +699,43 @@ export default function FundAccount() {
                   symbol={tokenSymbolHover}
                   value={tokenVolumeHover}
                   amount={tokenAmountHover}
+                  liquidityValue={liquidityVolumeHover}
+                  liquidityAmount={liquidityAmountHover}
                   setLabel={setTokenAddressHover}
                   setSymbol={setTokenSymbolHover}
                   setValue={setTokenVolumeHover}
                   setAmount={setTokenAmountHover}
+                  setLiquidityValue={setLiquidityVolumeHover}
+                  setLiquidityAmount={setLiquidityAmountHover}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                        {tokenSymbolHover ? tokenSymbolHover : null}
-                      </ThemedText.DeprecatedMediumHeader>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                      {formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)}
-                    </AutoColumn>
-                  }
-                  topRight={
-                    <AutoColumn gap="4px" justify="end">
-                      {tokenAddressHover ? (
-                        <ThemedText.DeprecatedMain fontSize="16px">
-                          <MonoSpace>{tokenAddressHover}</MonoSpace>
-                          <br />
-                          <br />
-                          <br />
-                          <br />
+                      <AutoRow>
+                        <ThemedText.DeprecatedMediumHeader fontSize="18px">
+                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          &nbsp;
+                        </ThemedText.DeprecatedMediumHeader>
+                        {tokenAddressHover ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <MonoSpace>{tokenAddressHover}</MonoSpace>
+                          </ThemedText.DeprecatedMain>
+                        ) : null}
+                      </AutoRow>
+                      <AutoRow>
+                        <ThemedText.DeprecatedMediumHeader fontSize="26px">
+                          <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
+                        </ThemedText.DeprecatedMediumHeader>
+                        <ThemedText.DeprecatedMain fontSize="20px">
+                          <MonoSpace>({formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)})</MonoSpace>
                         </ThemedText.DeprecatedMain>
-                      ) : null}
+                      </AutoRow>
+                      <AutoRow>
+                        <ThemedText.DeprecatedMediumHeader fontSize="26px">
+                          <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
+                        </ThemedText.DeprecatedMediumHeader>
+                        <ThemedText.DeprecatedMain fontSize="20px">
+                          <MonoSpace>({formatDollarAmount(liquidityVolumeHover ? liquidityVolumeHover : 0)})</MonoSpace>
+                        </ThemedText.DeprecatedMain>
+                      </AutoRow>
                     </AutoColumn>
                   }
                 />

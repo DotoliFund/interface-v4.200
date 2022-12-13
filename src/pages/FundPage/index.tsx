@@ -141,12 +141,6 @@ export default function FundPage() {
     }
   }, [isInvestorLoading, isSubscribed, myFund])
 
-  // present Fund Data
-  // get each tokens amount -> tokens eth price
-  // get each tokens eth price -> usd price
-  // sum all tokens usd price -> tvl
-  // principal -> latest fund data's principal
-
   // token data
   const fundData = useFundData(fundAddress?.toUpperCase()).data
   const chartData = useFundChartData(fundAddress).data
