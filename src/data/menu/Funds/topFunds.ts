@@ -16,6 +16,8 @@ export const TOP_FUNDS = () => {
         principalUSD
         volumeETH
         volumeUSD
+        liquidityVolumeETH
+        liquidityVolumeUSD
         feeVolumeETH
         feeVolumeUSD
         tokens
@@ -75,6 +77,8 @@ export function useTopFunds(): {
           principalUSD: parseFloat(fundFields.principalUSD),
           volumeETH: parseFloat(fundFields.volumeETH),
           volumeUSD: parseFloat(fundFields.volumeUSD),
+          liquidityVolumeETH: parseFloat(fundFields.liquidityVolumeETH),
+          liquidityVolumeUSD: parseFloat(fundFields.liquidityVolumeUSD),
           feeVolumeETH: parseFloat(fundFields.feeVolumeETH),
           feeVolumeUSD: parseFloat(fundFields.feeVolumeUSD),
           tokens: fundFields.tokens,

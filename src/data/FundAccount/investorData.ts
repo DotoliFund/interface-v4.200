@@ -16,6 +16,8 @@ const INVESTOR_DATA = gql`
       principalUSD
       volumeETH
       volumeUSD
+      liquidityVolumeETH
+      liquidityVolumeUSD
       tokens
       symbols
       tokensAmount
@@ -23,9 +25,9 @@ const INVESTOR_DATA = gql`
       tokensVolumeUSD
       liquidityTokens
       liquiditySymbols
-      liquidityAmount
-      liquidityVolumeETH
-      liquidityVolumeUSD
+      liquidityTokensAmount
+      liquidityTokensVolumeETH
+      liquidityTokensVolumeUSD
       profitETH
       profitUSD
       profitRatio
@@ -86,6 +88,8 @@ export function useInvestorData(
         principalUSD: parseFloat(data.investor.principalUSD),
         volumeETH: parseFloat(data.investor.volumeETH),
         volumeUSD: parseFloat(data.investor.volumeUSD),
+        liquidityVolumeETH: parseFloat(data.investor.liquidityVolumeETH),
+        liquidityVolumeUSD: parseFloat(data.investor.liquidityVolumeUSD),
         tokens: data.investor.tokens,
         symbols: data.investor.symbols,
         tokensAmount: data.investor.tokensAmount.map((value) => {
@@ -99,13 +103,13 @@ export function useInvestorData(
         }),
         liquidityTokens: data.investor.liquidityTokens,
         liquiditySymbols: data.investor.liquiditySymbols,
-        liquidityAmount: data.investor.liquidityAmount.map((value) => {
+        liquidityTokensAmount: data.investor.liquidityTokensAmount.map((value) => {
           return parseFloat(value)
         }),
-        liquidityVolumeETH: data.investor.liquidityVolumeETH.map((value) => {
+        liquidityTokensVolumeETH: data.investor.liquidityTokensVolumeETH.map((value) => {
           return parseFloat(value)
         }),
-        liquidityVolumeUSD: data.investor.liquidityVolumeUSD.map((value) => {
+        liquidityTokensVolumeUSD: data.investor.liquidityTokensVolumeUSD.map((value) => {
           return parseFloat(value)
         }),
         profitETH: parseFloat(data.investor.profitETH),

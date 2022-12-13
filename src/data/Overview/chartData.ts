@@ -13,6 +13,8 @@ export const XXXFUND2_CHART_DATA_BULK = () => {
         investorCount
         totalVolumeETH
         totalVolumeUSD
+        totalLiquidityVolumeETH
+        totalLiquidityVolumeUSD
       }
     }
     `
@@ -60,6 +62,8 @@ export function useXXXFund2ChartData(): {
           investorCount: parseFloat(xxxfund2SnapshotFields.investorCount),
           totalVolumeETH: parseFloat(xxxfund2SnapshotFields.totalVolumeETH),
           totalVolumeUSD: parseFloat(xxxfund2SnapshotFields.totalVolumeUSD),
+          totalLiquidityVolumeETH: parseFloat(xxxfund2SnapshotFields.totalLiquidityVolumeETH),
+          totalLiquidityVolumeUSD: parseFloat(xxxfund2SnapshotFields.totalLiquidityVolumeUSD),
         }
         return fundSnapshotData
       })

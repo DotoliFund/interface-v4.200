@@ -16,6 +16,8 @@ const FUND_INVESTORS = gql`
       principalUSD
       volumeETH
       volumeUSD
+      liquidityVolumeETH
+      liquidityVolumeUSD
       tokens
       symbols
       tokensAmount
@@ -23,9 +25,9 @@ const FUND_INVESTORS = gql`
       tokensVolumeUSD
       liquidityTokens
       liquiditySymbols
-      liquidityAmount
-      liquidityVolumeETH
-      liquidityVolumeUSD
+      liquidityTokensAmount
+      liquidityTokensVolumeETH
+      liquidityTokensVolumeUSD
       profitETH
       profitUSD
       profitRatio
@@ -81,6 +83,8 @@ export function useFundInvestors(fund: string | undefined): {
           principalUSD: parseFloat(investorDataFields.principalUSD),
           volumeETH: parseFloat(investorDataFields.volumeETH),
           volumeUSD: parseFloat(investorDataFields.volumeUSD),
+          liquidityVolumeETH: parseFloat(investorDataFields.liquidityVolumeETH),
+          liquidityVolumeUSD: parseFloat(investorDataFields.liquidityVolumeUSD),
           tokens: investorDataFields.tokens,
           symbols: investorDataFields.symbols,
           tokensAmount: investorDataFields.tokensAmount.map((value) => {
@@ -94,13 +98,13 @@ export function useFundInvestors(fund: string | undefined): {
           }),
           liquidityTokens: investorDataFields.tokens,
           liquiditySymbols: investorDataFields.symbols,
-          liquidityAmount: investorDataFields.tokensAmount.map((value) => {
+          liquidityTokensAmount: investorDataFields.liquidityTokensAmount.map((value) => {
             return parseFloat(value)
           }),
-          liquidityVolumeETH: investorDataFields.tokensVolumeETH.map((value) => {
+          liquidityTokensVolumeETH: investorDataFields.liquidityTokensVolumeETH.map((value) => {
             return parseFloat(value)
           }),
-          liquidityVolumeUSD: investorDataFields.tokensVolumeUSD.map((value) => {
+          liquidityTokensVolumeUSD: investorDataFields.liquidityTokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),
           profitETH: parseFloat(investorDataFields.profitETH),

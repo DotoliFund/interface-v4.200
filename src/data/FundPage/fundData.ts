@@ -16,6 +16,8 @@ const FUND_DATA = gql`
       principalUSD
       volumeETH
       volumeUSD
+      liquidityVolumeETH
+      liquidityVolumeUSD
       feeVolumeETH
       feeVolumeUSD
       tokens
@@ -75,6 +77,8 @@ export function useFundData(fund: string | undefined): {
         principalUSD: parseFloat(data.fund.principalUSD),
         volumeETH: parseFloat(data.fund.volumeETH),
         volumeUSD: parseFloat(data.fund.volumeUSD),
+        liquidityVolumeETH: parseFloat(data.fund.liquidityVolumeETH),
+        liquidityVolumeUSD: parseFloat(data.fund.liquidityVolumeUSD),
         feeVolumeETH: parseFloat(data.fund.feeVolumeETH),
         feeVolumeUSD: parseFloat(data.fund.feeVolumeUSD),
         tokens: data.fund.tokens,

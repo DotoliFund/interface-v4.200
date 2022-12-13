@@ -81,8 +81,8 @@ const Chart = ({
       setSymbol(actions.payload[0].payload.symbol)
       setValue(actions.payload[0].value)
       setAmount(actions.payload[0].payload.amount)
-      setLiquidityValue(actions.payload[0].payload.liquidityVolume)
-      setLiquidityAmount(actions.payload[0].payload.liquidityAmount)
+      setLiquidityValue(actions.payload[0].payload.liquidityTokensVolume)
+      setLiquidityAmount(actions.payload[0].payload.liquidityTokensAmount)
     } else {
       if (actions.init === undefined) {
         return null
@@ -91,8 +91,8 @@ const Chart = ({
         setSymbol(actions.init.symbol)
         setValue(actions.init.tokenVolume)
         setAmount(actions.init.amount)
-        setLiquidityValue(actions.init.liquidityVolume)
-        setLiquidityAmount(actions.init.liquidityAmount)
+        setLiquidityValue(actions.init.liquidityTokensVolume)
+        setLiquidityAmount(actions.init.liquidityTokensAmount)
       }
     }
     return null
@@ -132,7 +132,7 @@ const Chart = ({
           <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
           <Legend />
           <Bar dataKey="tokenVolume" stackId="a" stroke={color} fill="url(#gradient)" maxBarSize={80} />
-          <Bar dataKey="liquidityVolume" stackId="a" stroke={color2} fill="url(#gradient2)" maxBarSize={80} />
+          <Bar dataKey="liquidityTokensVolume" stackId="a" stroke={color2} fill="url(#gradient2)" maxBarSize={80} />
         </BarChart>
       </ResponsiveContainer>
     </Wrapper>

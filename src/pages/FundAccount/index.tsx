@@ -363,8 +363,8 @@ export default function FundAccount() {
           symbol: investorData.symbols[index],
           amount: investorData.tokensAmount[index],
           tokenVolume: investorData.tokensVolumeUSD[index],
-          liquidityAmount: investorData.liquidityAmount[index],
-          liquidityVolume: investorData.liquidityVolumeUSD[index],
+          liquidityTokensAmount: investorData.liquidityTokensAmount[index],
+          liquidityTokensVolume: investorData.liquidityTokensVolumeUSD[index],
         }
       })
     } else {

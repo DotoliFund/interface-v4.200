@@ -12,6 +12,8 @@ export interface Fund {
   principalUSD: number
   volumeETH: number
   volumeUSD: number
+  liquidityVolumeETH: number
+  liquidityVolumeUSD: number
   feeVolumeETH: number
   feeVolumeUSD: number
   tokens: string[]
@@ -34,6 +36,8 @@ export interface FundFields {
   principalUSD: string
   volumeETH: string
   volumeUSD: string
+  liquidityVolumeETH: string
+  liquidityVolumeUSD: string
   feeVolumeETH: string
   feeVolumeUSD: string
   tokens: string[]
@@ -56,6 +60,8 @@ export interface Investor {
   principalUSD: number
   volumeETH: number
   volumeUSD: number
+  liquidityVolumeETH: number
+  liquidityVolumeUSD: number
   tokens: string[]
   symbols: string[]
   tokensAmount: number[]
@@ -63,9 +69,9 @@ export interface Investor {
   tokensVolumeUSD: number[]
   liquidityTokens: string[]
   liquiditySymbols: string[]
-  liquidityAmount: number[]
-  liquidityVolumeETH: number[]
-  liquidityVolumeUSD: number[]
+  liquidityTokensAmount: number[]
+  liquidityTokensVolumeETH: number[]
+  liquidityTokensVolumeUSD: number[]
   profitETH: number
   profitUSD: number
   profitRatio: number
@@ -81,6 +87,8 @@ export interface InvestorFields {
   principalUSD: string
   volumeETH: string
   volumeUSD: string
+  liquidityVolumeETH: string
+  liquidityVolumeUSD: string
   tokens: string[]
   symbols: string[]
   tokensAmount: string[]
@@ -88,9 +96,9 @@ export interface InvestorFields {
   tokensVolumeUSD: string[]
   liquidityTokens: string[]
   liquiditySymbols: string[]
-  liquidityAmount: string[]
-  liquidityVolumeETH: string[]
-  liquidityVolumeUSD: string[]
+  liquidityTokensAmount: string[]
+  liquidityTokensVolumeETH: string[]
+  liquidityTokensVolumeUSD: string[]
   profitETH: string
   profitUSD: string
   profitRatio: string
@@ -103,6 +111,8 @@ export interface XXXFund2Snapshot {
   investorCount: number
   totalVolumeETH: number
   totalVolumeUSD: number
+  totalLiquidityVolumeETH: number
+  totalLiquidityVolumeUSD: number
 }
 
 export interface XXXFund2SnapshotFields {
@@ -112,6 +122,8 @@ export interface XXXFund2SnapshotFields {
   investorCount: string
   totalVolumeETH: string
   totalVolumeUSD: string
+  totalLiquidityVolumeETH: string
+  totalLiquidityVolumeUSD: string
 }
 
 export interface FundSnapshot {
@@ -124,6 +136,8 @@ export interface FundSnapshot {
   principalUSD: number
   volumeETH: number
   volumeUSD: number
+  liquidityVolumeETH: number
+  liquidityVolumeUSD: number
   feeVolumeETH: number
   feeVolumeUSD: number
   tokens: string[]
@@ -142,6 +156,8 @@ export interface FundSnapshotFields {
   principalUSD: string
   volumeETH: string
   volumeUSD: string
+  liquidityVolumeETH: string
+  liquidityVolumeUSD: string
   feeVolumeETH: string
   feeVolumeUSD: string
   tokens: string[]
@@ -160,6 +176,8 @@ export interface InvestorSnapshot {
   principalUSD: number
   volumeETH: number
   volumeUSD: number
+  liquidityVolumeETH: number
+  liquidityVolumeUSD: number
   tokens: string[]
   symbols: string[]
   tokensVolumeETH: number[]
@@ -176,6 +194,8 @@ export interface InvestorSnapshotFields {
   principalUSD: string
   volumeETH: string
   volumeUSD: string
+  liquidityVolumeETH: string
+  liquidityVolumeUSD: string
   tokens: string[]
   symbols: string[]
   tokensVolumeETH: string[]
