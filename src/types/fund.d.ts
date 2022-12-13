@@ -88,9 +88,9 @@ export interface InvestorFields {
   tokensVolumeUSD: string[]
   liquidityTokens: string[]
   liquiditySymbols: string[]
-  liquidityAmount: number[]
-  liquidityVolumeETH: number[]
-  liquidityVolumeUSD: number[]
+  liquidityAmount: string[]
+  liquidityVolumeETH: string[]
+  liquidityVolumeUSD: string[]
   profitETH: string
   profitUSD: string
   profitRatio: string

@@ -25,8 +25,7 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
@@ -443,26 +442,36 @@ export default function FundPage() {
                   setAmount={setTokenAmountHover}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                        {tokenSymbolHover ? tokenSymbolHover : null}
-                      </ThemedText.DeprecatedMediumHeader>
+                      <AutoRow>
+                        <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          &nbsp;&nbsp;
+                        </ThemedText.DeprecatedMediumHeader>
+                        {tokenAddressHover ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
+                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                            </Link>
+                          </ThemedText.DeprecatedMain>
+                        ) : null}
+                      </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      {formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)}
                     </AutoColumn>
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      {tokenAddressHover ? (
-                        <ThemedText.DeprecatedMain fontSize="16px">
-                          <MonoSpace>{tokenAddressHover}</MonoSpace>
-                          <br />
-                          <br />
-                          <br />
-                          <br />
+                      {latestVolumeData ? (
+                        <ThemedText.DeprecatedMain fontSize="14px">
+                          <MonoSpace>
+                            {unixToDate(latestVolumeData.date)} ( {formatTime(latestVolumeData.date.toString(), 8)})
+                          </MonoSpace>
                         </ThemedText.DeprecatedMain>
                       ) : null}
+                      <ThemedText.DeprecatedLargeHeader fontSize="30px">
+                        <MonoSpace>{formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)}</MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
                 />

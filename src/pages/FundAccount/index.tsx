@@ -712,24 +712,37 @@ export default function FundAccount() {
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="18px">
                           {tokenSymbolHover ? tokenSymbolHover : null}
-                          &nbsp;
+                          &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
                         {tokenAddressHover ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
-                            <MonoSpace>{tokenAddressHover}</MonoSpace>
+                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
+                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                            </Link>
                           </ThemedText.DeprecatedMain>
                         ) : null}
                       </AutoRow>
-                      <AutoRow>
-                        <ThemedText.DeprecatedMediumHeader fontSize="26px">
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        <MonoSpace>
+                          {formatAmount(
+                            tokenAmountHover && liquidityAmountHover ? tokenAmountHover + liquidityAmountHover : 0
+                          )}
+                        </MonoSpace>
+                      </ThemedText.DeprecatedLargeHeader>
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px">
+                      <AutoRow justify="end">
+                        <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
                           <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
                         </ThemedText.DeprecatedMediumHeader>
                         <ThemedText.DeprecatedMain fontSize="20px">
                           <MonoSpace>({formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)})</MonoSpace>
                         </ThemedText.DeprecatedMain>
                       </AutoRow>
-                      <AutoRow>
-                        <ThemedText.DeprecatedMediumHeader fontSize="26px">
+                      <AutoRow justify="end">
+                        <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
                           <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
                         </ThemedText.DeprecatedMediumHeader>
                         <ThemedText.DeprecatedMain fontSize="20px">

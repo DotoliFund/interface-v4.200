@@ -97,15 +97,15 @@ export function useInvestorData(
         tokensVolumeUSD: data.investor.tokensVolumeUSD.map((value) => {
           return parseFloat(value)
         }),
-        liquidityTokens: data.investor.tokens,
-        liquiditySymbols: data.investor.symbols,
-        liquidityAmount: data.investor.tokensAmount.map((value) => {
+        liquidityTokens: data.investor.liquidityTokens,
+        liquiditySymbols: data.investor.liquiditySymbols,
+        liquidityAmount: data.investor.liquidityAmount.map((value) => {
           return parseFloat(value)
         }),
-        liquidityVolumeETH: data.investor.tokensVolumeETH.map((value) => {
+        liquidityVolumeETH: data.investor.liquidityVolumeETH.map((value) => {
           return parseFloat(value)
         }),
-        liquidityVolumeUSD: data.investor.tokensVolumeUSD.map((value) => {
+        liquidityVolumeUSD: data.investor.liquidityVolumeUSD.map((value) => {
           return parseFloat(value)
         }),
         profitETH: parseFloat(data.investor.profitETH),
