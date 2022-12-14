@@ -31,8 +31,8 @@ export type AreaChartProps = {
   color2?: string | undefined
   height?: number | undefined
   minHeight?: number
-  setLabel: Dispatch<SetStateAction<string | undefined>> // used for label of valye
-  setValue: Dispatch<SetStateAction<number | undefined>> // used for value on hover
+  setLabel: Dispatch<SetStateAction<string | undefined>>
+  setValue: Dispatch<SetStateAction<number | undefined>>
   label?: string
   value?: number
   topLeft?: ReactNode | undefined
@@ -56,10 +56,10 @@ const Chart = ({
   minHeight = DEFAULT_HEIGHT,
   ...rest
 }: AreaChartProps) => {
-  const CustomTooltip = (active: any) => {
-    if (active.payload && active.payload.length) {
-      setLabel(active.label)
-      setValue(active.payload[0].value)
+  const CustomTooltip = (props: any) => {
+    if (props.payload && props.payload.length) {
+      setLabel(props.label)
+      setValue(props.payload[0].value)
     }
     return null
   }

@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import AreaChart from 'components/AreaChart'
-import MultiAreaChart from 'components/AreaChart/principal'
 import BarChart from 'components/BarChart'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
+import ComposedChart from 'components/ComposedChart'
 import InvestorTable from 'components/funds/InvestorTable'
 import Loader from 'components/Loader'
 import Percent from 'components/Percent'
@@ -147,9 +147,10 @@ export default function FundPage() {
   const investors = useFundInvestors(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
-  // Area chart hover
+  // Composed chart hover
   const [dateHover, setDateHover] = useState<string | undefined>()
   const [volumeHover, setVolumeHover] = useState<number | undefined>()
+  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
   const [principalHover, setPrincipalHover] = useState<number | undefined>()
   const [tokensHover, setTokensHover] = useState<string[] | undefined>()
   const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
@@ -170,6 +171,7 @@ export default function FundPage() {
           tokens: data.tokens,
           symbols: data.symbols,
           tokensVolume: data.tokensVolumeUSD,
+          liquidityVolume: data.liquidityVolumeUSD,
         }
       })
     } else {
@@ -209,9 +211,10 @@ export default function FundPage() {
   const latestVolumeData = useMemo(() => {
     if (fundData && chartData && chartData.length > 0) {
       return {
+        time: chartData[chartData.length - 1].timestamp,
         volume: fundData.volumeUSD,
+        liquidityVolume: chartData[chartData.length - 1].liquidityVolumeUSD,
         principal: fundData.principalUSD,
-        date: chartData[chartData.length - 1].timestamp,
       }
     } else {
       return undefined
@@ -219,14 +222,23 @@ export default function FundPage() {
   }, [fundData, chartData])
 
   const ratio = useMemo(() => {
-    return volumeHover !== undefined && principalHover !== undefined && principalHover > 0
-      ? Number((((volumeHover - principalHover) / principalHover) * 100).toFixed(2))
+    return volumeHover !== undefined &&
+      liquidityHover !== undefined &&
+      principalHover !== undefined &&
+      principalHover > 0
+      ? Number((((volumeHover + liquidityHover - principalHover) / principalHover) * 100).toFixed(2))
       : principalHover === 0
       ? Number(0)
       : latestVolumeData && latestVolumeData.principal > 0
-      ? Number((((latestVolumeData.volume - latestVolumeData.principal) / latestVolumeData.principal) * 100).toFixed(2))
+      ? Number(
+          (
+            ((latestVolumeData.volume + latestVolumeData.liquidityVolume - latestVolumeData.principal) /
+              latestVolumeData.principal) *
+            100
+          ).toFixed(2)
+        )
       : Number(0)
-  }, [volumeHover, principalHover, latestVolumeData])
+  }, [volumeHover, liquidityHover, principalHover, latestVolumeData])
 
   const formattedFeesData = useMemo(() => {
     if (chartData) {
@@ -384,47 +396,82 @@ export default function FundPage() {
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_USD ? (
-                <MultiAreaChart
+                <ComposedChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
                   label={dateHover}
                   value={volumeHover}
                   setLabel={setDateHover}
                   setValue={setVolumeHover}
+                  setLiquidityVolume={setLiquidityHover}
                   setPrincipal={setPrincipalHover}
                   setTokens={setTokensHover}
                   setSymbols={setSymbolsHover}
                   setTokensVolumeUSD={setTokensVolumeUSDHover}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">TVL</ThemedText.DeprecatedMediumHeader>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(
-                            volumeHover ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                            volumeHover !== undefined && liquidityHover !== undefined
+                              ? volumeHover + liquidityHover
+                              : latestVolumeData
+                              ? latestVolumeData.volume + latestVolumeData.liquidityVolume
+                              : 0
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="14px" height="14px">
+                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                        <Percent value={ratio} wrap={false} fontSize="22px" />
+                      </ThemedText.DeprecatedMediumHeader>
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px" justify="end">
+                      <AutoRow justify="end">
+                        <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
+                          <MonoSpace>
+                            {formatDollarAmount(
+                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                            )}
+                          </MonoSpace>
+                        </ThemedText.DeprecatedMediumHeader>
+                        &nbsp;&nbsp;
+                        <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#3377ff'}>
+                          <MonoSpace>
+                            {formatDollarAmount(
+                              liquidityHover !== undefined
+                                ? liquidityHover
+                                : latestVolumeData
+                                ? latestVolumeData.liquidityVolume
+                                : 0
+                            )}
+                          </MonoSpace>
+                        </ThemedText.DeprecatedMediumHeader>
+                        &nbsp;&nbsp;
+                        <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#99FF99'}>
+                          <MonoSpace>
+                            {formatDollarAmount(
+                              principalHover !== undefined
+                                ? principalHover
+                                : latestVolumeData
+                                ? latestVolumeData.principal
+                                : 0
+                            )}
+                          </MonoSpace>
+                        </ThemedText.DeprecatedMediumHeader>
+                      </AutoRow>
+                      <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
                         {dateHover ? (
                           <MonoSpace>
                             {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
                           </MonoSpace>
                         ) : latestVolumeData ? (
                           <MonoSpace>
-                            {unixToDate(latestVolumeData.date)} ( {formatTime(latestVolumeData.date.toString(), 8)})
+                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
                           </MonoSpace>
                         ) : null}
                       </ThemedText.DeprecatedMain>
-                    </AutoColumn>
-                  }
-                  topRight={
-                    <AutoColumn gap="4px" justify="end">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Profit</ThemedText.DeprecatedMediumHeader>
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                        <Percent value={ratio} wrap={false} fontSize="24px" />
-                        <br />
-                      </ThemedText.DeprecatedMediumHeader>
                     </AutoColumn>
                   }
                 />
@@ -465,7 +512,7 @@ export default function FundPage() {
                       {latestVolumeData ? (
                         <ThemedText.DeprecatedMain fontSize="14px">
                           <MonoSpace>
-                            {unixToDate(latestVolumeData.date)} ( {formatTime(latestVolumeData.date.toString(), 8)})
+                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
                           </MonoSpace>
                         </ThemedText.DeprecatedMain>
                       ) : null}
@@ -498,7 +545,7 @@ export default function FundPage() {
                       <ThemedText.DeprecatedMain fontSize="12px" height="14px">
                         {latestVolumeData ? (
                           <MonoSpace>
-                            {unixToDate(latestVolumeData.date)} ( {formatTime(latestVolumeData.date.toString(), 8)})
+                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
                           </MonoSpace>
                         ) : null}
                       </ThemedText.DeprecatedMain>

@@ -65,20 +65,20 @@ const Chart = ({
       tokenVolume: 0,
     })
   }
-  const CustomTooltip = (actions: any) => {
-    if (actions.payload && actions.payload.length) {
-      setLabel(actions.payload[0].payload.token)
-      setSymbol(actions.payload[0].payload.symbol)
-      setValue(actions.payload[0].value)
-      setAmount(actions.payload[0].payload.amount)
+  const CustomTooltip = (props: any) => {
+    if (props.payload && props.payload.length) {
+      setLabel(props.payload[0].payload.token)
+      setSymbol(props.payload[0].payload.symbol)
+      setValue(props.payload[0].value)
+      setAmount(props.payload[0].payload.amount)
     } else {
-      if (actions.init === undefined) {
+      if (props.init === undefined) {
         return null
       } else {
-        setLabel(actions.init.token)
-        setSymbol(actions.init.symbol)
-        setValue(actions.init.tokenVolume)
-        setAmount(actions.init.amount)
+        setLabel(props.init.token)
+        setSymbol(props.init.symbol)
+        setValue(props.init.tokenVolume)
+        setAmount(props.init.amount)
       }
     }
     return null
@@ -94,7 +94,7 @@ const Chart = ({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             width={500}
-            height={340}
+            height={300}
             data={data}
             margin={{
               top: 5,

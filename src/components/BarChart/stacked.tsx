@@ -64,7 +64,6 @@ const Chart = ({
   bottomRight,
   ...rest
 }: BarChartProps) => {
-  console.log(11, data)
   if (data.length === 0) {
     data.push({
       token: '',
@@ -75,24 +74,24 @@ const Chart = ({
       liquidityVolume: 0,
     })
   }
-  const CustomTooltip = (actions: any) => {
-    if (actions.payload && actions.payload.length) {
-      setLabel(actions.payload[0].payload.token)
-      setSymbol(actions.payload[0].payload.symbol)
-      setValue(actions.payload[0].value)
-      setAmount(actions.payload[0].payload.amount)
-      setLiquidityValue(actions.payload[0].payload.liquidityTokensVolume)
-      setLiquidityAmount(actions.payload[0].payload.liquidityTokensAmount)
+  const CustomTooltip = (props: any) => {
+    if (props.payload && props.payload.length) {
+      setLabel(props.payload[0].payload.token)
+      setSymbol(props.payload[0].payload.symbol)
+      setValue(props.payload[0].value)
+      setAmount(props.payload[0].payload.amount)
+      setLiquidityValue(props.payload[0].payload.liquidityTokensVolume)
+      setLiquidityAmount(props.payload[0].payload.liquidityTokensAmount)
     } else {
-      if (actions.init === undefined) {
+      if (props.init === undefined) {
         return null
       } else {
-        setLabel(actions.init.token)
-        setSymbol(actions.init.symbol)
-        setValue(actions.init.tokenVolume)
-        setAmount(actions.init.amount)
-        setLiquidityValue(actions.init.liquidityTokensVolume)
-        setLiquidityAmount(actions.init.liquidityTokensAmount)
+        setLabel(props.init.token)
+        setSymbol(props.init.symbol)
+        setValue(props.init.tokenVolume)
+        setAmount(props.init.amount)
+        setLiquidityValue(props.init.liquidityTokensVolume)
+        setLiquidityAmount(props.init.liquidityTokensAmount)
       }
     }
     return null
