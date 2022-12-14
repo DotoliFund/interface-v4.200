@@ -53,8 +53,6 @@ const Chart = ({
   topRight,
   bottomLeft,
   bottomRight,
-  minHeight = DEFAULT_HEIGHT,
-  ...rest
 }: AreaChartProps) => {
   const CustomTooltip = (props: any) => {
     if (props.payload && props.payload.length) {
@@ -65,7 +63,7 @@ const Chart = ({
   }
 
   return (
-    <Wrapper minHeight={minHeight} {...rest}>
+    <Wrapper>
       <RowBetween>
         {topLeft ?? null}
         {topRight ?? null}

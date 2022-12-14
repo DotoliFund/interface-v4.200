@@ -10,6 +10,7 @@ import { useFundListData } from 'state/funds/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { unixToDate } from 'utils/date'
+import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
 const RowBetween = styled(Row)`
@@ -56,8 +57,8 @@ export default function Home() {
 
   const [activeNetwork] = useActiveNetworkVersion()
 
-  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
-  const [liquidityLabel, setLiquidityLabel] = useState<string | undefined>()
+  const [dateHover, setDateHover] = useState<string | undefined>()
+  const [tvlHover, setTvlHover] = useState<number | undefined>()
   const [investorCountHover, setInvestorCountHover] = useState<number | undefined>()
   const [investorCountLabel, setInvestorCountLabel] = useState<string | undefined>()
 
@@ -68,8 +69,8 @@ export default function Home() {
     if (chartData) {
       return chartData.map((day) => {
         return {
-          time: unixToDate(day.timestamp),
-          value: day.totalVolumeUSD,
+          time: day.timestamp,
+          value: day.totalVolumeUSD + day.totalLiquidityVolumeUSD,
         }
       })
     } else {
@@ -90,12 +91,16 @@ export default function Home() {
     }
   }, [chartData])
 
-  const tvlValue = useMemo(() => {
-    if (liquidityHover) {
-      return formatDollarAmount(liquidityHover, 2, true)
+  const latestVolumeData = useMemo(() => {
+    if (chartData && chartData.length > 0) {
+      return {
+        time: chartData[chartData.length - 1].timestamp,
+        value: chartData[chartData.length - 1].totalVolumeUSD + chartData[chartData.length - 1].totalLiquidityVolumeUSD,
+      }
+    } else {
+      return undefined
     }
-    return formatDollarAmount(0, 2, true)
-  }, [liquidityHover])
+  }, [chartData])
 
   return (
     <PageWrapper>
@@ -106,21 +111,31 @@ export default function Home() {
           <ChartWrapper>
             <AreaChart
               data={formattedTvlData}
-              height={220}
-              minHeight={332}
               color={activeNetwork.primaryColor}
-              value={liquidityHover}
-              label={liquidityLabel}
-              setValue={setLiquidityHover}
-              setLabel={setLiquidityLabel}
+              label={dateHover}
+              value={tvlHover}
+              setLabel={setDateHover}
+              setValue={setTvlHover}
               topLeft={
                 <AutoColumn gap="4px">
                   <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
-                    <MonoSpace>{tvlValue} </MonoSpace>
+                    <MonoSpace>
+                      {formatDollarAmount(
+                        tvlHover !== undefined ? tvlHover : latestVolumeData ? latestVolumeData.value : 0
+                      )}
+                    </MonoSpace>
                   </ThemedText.LargeHeader>
-                  <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                    {liquidityLabel ? <MonoSpace>{liquidityLabel} (UTC)</MonoSpace> : null}
+                  <ThemedText.DeprecatedMain fontSize="14px" height="14px">
+                    {dateHover ? (
+                      <MonoSpace>
+                        {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
+                      </MonoSpace>
+                    ) : latestVolumeData ? (
+                      <MonoSpace>
+                        {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
+                      </MonoSpace>
+                    ) : null}
                   </ThemedText.DeprecatedMain>
                 </AutoColumn>
               }
@@ -141,7 +156,7 @@ export default function Home() {
                   <ThemedText.MediumHeader fontSize="16px">Investors</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
-                      {investorCountHover
+                      {investorCountHover !== undefined
                         ? investorCountHover
                         : formattedCountData.length > 0
                         ? formattedCountData[formattedCountData.length - 1].value
