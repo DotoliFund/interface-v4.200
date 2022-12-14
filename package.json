@@ -206,5 +206,10 @@
     "wcag-contrast": "^3.0.0",
     "web-vitals": "^2.1.4",
     "react-icons": "^3.11.0"
+  },
+  "engines": {
+    "npm": "please-use-yarn",
+    "node": "14",
+    "yarn": ">=1.22"
   }
 }
