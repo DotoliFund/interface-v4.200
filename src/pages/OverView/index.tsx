@@ -50,7 +50,7 @@ const ChartWrapper = styled.div`
   `};
 `
 
-export default function Home() {
+export default function Overview() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])

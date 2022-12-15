@@ -155,7 +155,7 @@ export default function App() {
                   <Route path="remove/:fundAddress/:investorAddress/:tokenId" element={<RemoveLiquidityV3 />} />
                   <Route path="staking" element={<Staking />} />
 
-                  <Route path="*" element={<Overview />} />
+                  <Route path="*" element={<Home />} />
                 </Routes>
               ) : (
                 <Loader />
