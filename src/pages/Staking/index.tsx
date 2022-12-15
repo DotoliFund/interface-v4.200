@@ -250,15 +250,9 @@ export default function Staking() {
           <SwapWrapper id="swap-page">
             <AutoColumn gap={'0px'}>
               <div>
-                UnStaked :{' '}
-                {Number(
-                  formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)
-                ).toFixed(4)}
+                UnStaked : {formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)}
               </div>
-              <div>
-                Earned :{' '}
-                {Number(formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)).toFixed(4)}
-              </div>
+              <div>Earned : {formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)}</div>
               <div>Staked : {formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)}</div>
               <div>
                 Total Staked :{' '}
