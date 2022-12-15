@@ -8,7 +8,7 @@
   "scripts": {
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
-    "contracts:compile:fund": "typechain --target ethers-v5 --out-dir src/types/fund \"../core/artifacts/contracts/**/*[!dbg].json\"",
+    "contracts:compile:fund": "typechain --target ethers-v5 --out-dir src/types/fund \"./node_modules/xxxfund/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3 && yarn contracts:compile:fund",
     "relay": "relay-compiler relay.config.js",
     "relay-thegraph": "relay-compiler relay_thegraph.config.js",
@@ -206,7 +206,8 @@
     "video-extensions": "^1.2.0",
     "wcag-contrast": "^3.0.0",
     "web-vitals": "^2.1.4",
-    "react-icons": "^3.11.0"
+    "react-icons": "^3.11.0",
+    "xxxfund": "^0.0.1"
   },
   "engines": {
     "npm": "please-use-yarn",
