@@ -11,7 +11,7 @@ import Deposit from 'pages/Deposit'
 import FundAccount from 'pages/FundAccount'
 import FundPage from 'pages/FundPage'
 import Home from 'pages/Home'
-import Overview from 'pages/Overview'
+import WOverview from 'pages/Overview'
 import Staking from 'pages/Staking'
 import Swap from 'pages/Swap'
 import Withdraw from 'pages/Withdraw'
@@ -132,7 +132,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="home" element={<Home />} />
-                  <Route path="overview" element={<Overview />} />
+                  <Route path="overview" element={<WOverview />} />
                   <Route path="account" element={<Account />} />
                   <Route path="fund/:fundAddress" element={<FundPage />} />
                   <Route path="fund/:fundAddress/:investorAddress" element={<FundAccount />} />
