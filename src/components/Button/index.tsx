@@ -82,8 +82,8 @@ export const ButtonPrimary = styled(BaseButton)<{ redesignFlag?: boolean }>`
 export const ButtonLight = styled(BaseButton)<{ redesignFlag?: boolean }>`
   background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.accentActionSoft : theme.deprecated_primary5)};
   color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.accentAction : theme.deprecated_primaryText1)};
-  font-size: ${({ redesignFlag }) => (redesignFlag ? '20px' : '16px')};
-  font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};
+  font-size: ${({ redesignFlag }) => (redesignFlag ? '20px' : '14px')};
+  font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '400')};
 
   &:focus {
     box-shadow: 0 0 0 1pt

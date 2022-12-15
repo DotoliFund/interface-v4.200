@@ -1,78 +1,84 @@
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { ButtonConfirmed, ButtonError, ButtonLight } from 'components/Button'
+import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInputPanel'
 import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
-import { AutoRow } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { XXX_ADDRESS, XXXSTAKING2_ADDRESS } from 'constants/addresses'
-import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { useAllTokens, useCurrency } from 'hooks/Tokens'
+import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { XXXStaking2 } from 'interface/XXXStaking2'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
-import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useDefaultsFromURLSearch } from 'state/deposit/hooks'
 import { useStakingInfo } from 'state/stake/hooks'
 import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
-import styled, { css, useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 import { XXX } from '../../constants/tokens'
 
-const BottomWrapper = styled.div<{ redesignFlag: boolean }>`
-  ${({ redesignFlag }) =>
-    redesignFlag &&
-    css`
-      background-color: ${({ theme }) => theme.backgroundModule};
-      border-radius: 12px;
-      padding: 8px 12px 10px;
-      color: ${({ theme }) => theme.textSecondary};
-      font-size: 14px;
-      line-height: 20px;
-      font-weight: 500;
-    `}
+const StyledStakingHeader = styled.div`
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  width: 100%;
+  color: ${({ theme }) => theme.deprecated_text2};
 `
-const TopInputWrapper = styled.div<{ redesignFlag: boolean }>`
-  padding: ${({ redesignFlag }) => redesignFlag && '0px 12px'};
-  visibility: ${({ redesignFlag }) => !redesignFlag && 'none'};
+
+const StakingSection = styled.div`
+  position: relative;
+  background-color: ${({ theme }) => theme.backgroundModule};
+  border-radius: 12px;
+  padding: 16px;
+  color: ${({ theme }) => theme.textSecondary};
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  &:before {
+    box-sizing: border-box;
+    background-size: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    content: '';
+    border: 1px solid ${({ theme }) => theme.backgroundModule};
+  }
+  &:hover:before {
+    border-color: ${({ theme }) => theme.stateOverlayHover};
+  }
+  &:focus-within:before {
+    border-color: ${({ theme }) => theme.stateOverlayPressed};
+  }
 `
 
 export default function Staking() {
-  const navigate = useNavigate()
-  const navBarFlag = useNavBarFlag()
-  const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
   const { account, chainId, provider } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const xxx = chainId ? XXX[chainId] : undefined
 
   // token warning stuff
   const [loadedInputCurrency] = [useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId)]
-  const urlLoadedTokens: Token[] = useMemo(
-    () => [loadedInputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
-    [loadedInputCurrency]
-  )
-
-  // dismiss warning if all imported tokens are in active lists
-  const defaultTokens = useAllTokens()
 
   const theme = useTheme()
 
@@ -248,18 +254,74 @@ export default function Staking() {
       <>
         <PageWrapper>
           <SwapWrapper id="swap-page">
-            <AutoColumn gap={'0px'}>
-              <div>
-                UnStaked : {formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)}
-              </div>
-              <div>Earned : {formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)}</div>
-              <div>Staked : {formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)}</div>
-              <div>
-                Total Staked :{' '}
-                {formatCurrencyAmount(stakingInfo?.totalStakedAmount, xxx?.decimals ? xxx?.decimals : 18)}
-              </div>
+            <StyledStakingHeader>
+              <RowBetween>
+                <RowFixed>
+                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                    <Trans>Staking</Trans>
+                  </ThemedText.DeprecatedBlack>
+                </RowFixed>
+              </RowBetween>
+            </StyledStakingHeader>
+            <AutoColumn gap={'12px'}>
+              <Card backgroundColor={'#202B58'}>
+                <AutoColumn gap={'8px'}>
+                  <AutoRow>
+                    <Text pl={'20px'}>UnStaked</Text>
+                    <Text pl={'60px'}>
+                      {parseFloat(
+                        formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)
+                      ).toFixed(5)}
+                    </Text>
+                  </AutoRow>
+                  <AutoRow>
+                    <Text pl={'20px'}>Earned</Text>
+                    <Text pl={'77px'}>
+                      {parseFloat(
+                        formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)
+                      ).toFixed(5)}
+                    </Text>
+                    <ButtonLight
+                      ml={'62px'}
+                      maxWidth={'135px'}
+                      maxHeight={'14px'}
+                      onClick={() => {
+                        onClaimReward()
+                      }}
+                    >
+                      Claim Reward
+                    </ButtonLight>
+                  </AutoRow>
+                  <AutoRow>
+                    <Text pl={'20px'}> Staked</Text>
+                    <Text pl={'78px'}>
+                      {parseFloat(
+                        formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)
+                      ).toFixed(5)}
+                    </Text>
+                    <ButtonLight
+                      ml={'62px'}
+                      maxWidth={'135px'}
+                      maxHeight={'14px'}
+                      onClick={() => {
+                        onWithdraw()
+                      }}
+                    >
+                      Withdraw
+                    </ButtonLight>
+                  </AutoRow>
+                  <AutoRow>
+                    <Text pl={'20px'}> Total Staked</Text>
+                    <Text pl={'40px'}>
+                      {parseFloat(
+                        formatCurrencyAmount(stakingInfo?.totalStakedAmount, xxx?.decimals ? xxx?.decimals : 18)
+                      ).toFixed(5)}
+                    </Text>
+                  </AutoRow>
+                </AutoColumn>
+              </Card>
               <div style={{ display: 'relative' }}>
-                <TopInputWrapper redesignFlag={redesignFlagEnabled}>
+                <StakingSection>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
                     <CurrencyInputPanel
                       label={<Trans>staking</Trans>}
@@ -276,121 +338,96 @@ export default function Staking() {
                       loading={false}
                     />
                   </Trace>
-                </TopInputWrapper>
+                </StakingSection>
               </div>
-              <BottomWrapper redesignFlag={redesignFlagEnabled}>
-                {redesignFlagEnabled && 'For'}
-                <AutoColumn gap={redesignFlagEnabled ? '0px' : '8px'}>
-                  <div>
-                    {!account ? (
-                      <ButtonLight onClick={toggleWalletModal} redesignFlag={redesignFlagEnabled}>
-                        <Trans>Connect Wallet</Trans>
-                      </ButtonLight>
-                    ) : showApproveFlow ? (
-                      <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                        <AutoColumn style={{ width: '100%' }} gap="12px">
-                          <ButtonConfirmed
-                            onClick={handleApprove}
-                            disabled={approveTokenButtonDisabled}
-                            width="100%"
-                            altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                            confirmed={approvalState === ApprovalState.APPROVED}
-                          >
-                            <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                              <span style={{ display: 'flex', alignItems: 'center' }}>
-                                {/* we need to shorten this string on mobile */}
-                                {approvalState === ApprovalState.APPROVED ? (
-                                  <Trans>You can now trade {currency?.symbol}</Trans>
-                                ) : (
-                                  <Trans>Allow the Uniswap Protocol to use your {currency?.symbol}</Trans>
-                                )}
-                              </span>
-                              {approvalState === ApprovalState.PENDING ? (
-                                <Loader stroke="white" />
-                              ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                                <CheckCircle size="20" color={theme.deprecated_green1} />
+              <AutoColumn gap={'8px'}>
+                <div>
+                  {!account ? (
+                    <ButtonLight onClick={toggleWalletModal}>
+                      <Trans>Connect Wallet</Trans>
+                    </ButtonLight>
+                  ) : showApproveFlow ? (
+                    <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
+                      <AutoColumn style={{ width: '100%' }} gap="12px">
+                        <ButtonConfirmed
+                          onClick={handleApprove}
+                          disabled={approveTokenButtonDisabled}
+                          width="100%"
+                          altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
+                          confirmed={approvalState === ApprovalState.APPROVED}
+                        >
+                          <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                              {/* we need to shorten this string on mobile */}
+                              {approvalState === ApprovalState.APPROVED ? (
+                                <Trans>You can now trade {currency?.symbol}</Trans>
                               ) : (
-                                <MouseoverTooltip
-                                  text={
-                                    <Trans>
-                                      You must give the Uniswap smart contracts permission to use your{' '}
-                                      {currency?.symbol}. You only have to do this once per token.
-                                    </Trans>
-                                  }
-                                >
-                                  <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                                </MouseoverTooltip>
+                                <Trans>Allow the Uniswap Protocol to use your {currency?.symbol}</Trans>
                               )}
-                            </AutoRow>
-                          </ButtonConfirmed>
-                          <ButtonError
-                            onClick={() => {
-                              if (isExpertMode) {
-                                //handleSwap()
-                              } else {
-                                onStake()
-                                // setDepositState({
-                                //   attemptingTxn: false,
-                                //   swapErrorMessage: undefined,
-                                //   showConfirm: true,
-                                //   txHash: undefined,
-                                // })
-                              }
-                            }}
-                            width="100%"
-                            id="swap-button"
-                            disabled={approvalState !== ApprovalState.APPROVED}
-                            error={true}
-                          >
-                            <Text fontSize={16} fontWeight={500}>
-                              <Trans>Stake</Trans>
-                            </Text>
-                          </ButtonError>
-                        </AutoColumn>
-                      </AutoRow>
-                    ) : (
-                      <ButtonError
-                        onClick={() => {
-                          if (isExpertMode) {
-                            //handleSwap()
-                          } else {
-                            onStake()
-                            // setDepositState({
-                            //   attemptingTxn: false,
-                            //   swapErrorMessage: undefined,
-                            //   showConfirm: true,
-                            //   txHash: undefined,
-                            // })
-                          }
-                        }}
-                        id="swap-button"
-                        disabled={false}
-                        error={true}
-                      >
-                        <Text fontSize={20} fontWeight={500}>
-                          <Trans>Stake</Trans>
-                        </Text>
-                      </ButtonError>
-                    )}
-                  </div>
-                  <ButtonLight
-                    onClick={() => {
-                      onClaimReward()
-                    }}
-                    redesignFlag={redesignFlagEnabled}
-                  >
-                    <Trans>Claim Reward</Trans>
-                  </ButtonLight>
-                  <ButtonLight
-                    onClick={() => {
-                      onWithdraw()
-                    }}
-                    redesignFlag={redesignFlagEnabled}
-                  >
-                    <Trans>Withdraw</Trans>
-                  </ButtonLight>
-                </AutoColumn>
-              </BottomWrapper>
+                            </span>
+                            {approvalState === ApprovalState.PENDING ? (
+                              <Loader stroke="white" />
+                            ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
+                              <CheckCircle size="20" color={theme.deprecated_green1} />
+                            ) : (
+                              <MouseoverTooltip
+                                text={
+                                  <Trans>
+                                    You must give the Uniswap smart contracts permission to use your {currency?.symbol}.
+                                    You only have to do this once per token.
+                                  </Trans>
+                                }
+                              >
+                                <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
+                              </MouseoverTooltip>
+                            )}
+                          </AutoRow>
+                        </ButtonConfirmed>
+                        <ButtonError
+                          onClick={() => {
+                            if (isExpertMode) {
+                              //handleSwap()
+                            } else {
+                              onStake()
+                              // setDepositState({
+                              //   attemptingTxn: false,
+                              //   swapErrorMessage: undefined,
+                              //   showConfirm: true,
+                              //   txHash: undefined,
+                              // })
+                            }
+                          }}
+                          width="100%"
+                          id="swap-button"
+                          disabled={approvalState !== ApprovalState.APPROVED}
+                          error={true}
+                        >
+                          <Text fontSize={16} fontWeight={500}>
+                            <Trans>Stake</Trans>
+                          </Text>
+                        </ButtonError>
+                      </AutoColumn>
+                    </AutoRow>
+                  ) : (
+                    <ButtonError
+                      onClick={() => {
+                        if (isExpertMode) {
+                          //handleSwap()
+                        } else {
+                          onStake()
+                        }
+                      }}
+                      id="swap-button"
+                      disabled={false}
+                      error={true}
+                    >
+                      <Text fontSize={20} fontWeight={500}>
+                        <Trans>Stake</Trans>
+                      </Text>
+                    </ButtonError>
+                  )}
+                </div>
+              </AutoColumn>
             </AutoColumn>
           </SwapWrapper>
           <NetworkAlert />

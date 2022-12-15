@@ -9,8 +9,7 @@ import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useFundListData } from 'state/funds/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
-import { unixToDate } from 'utils/date'
-import { formatTime } from 'utils/date'
+import { formatTime, unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
 const RowBetween = styled(Row)`
@@ -82,7 +81,7 @@ export default function Overview() {
     if (chartData) {
       return chartData.map((day) => {
         return {
-          time: unixToDate(day.timestamp),
+          time: day.timestamp,
           value: day.investorCount,
         }
       })
@@ -102,11 +101,24 @@ export default function Overview() {
     }
   }, [chartData])
 
+  const latestCountData = useMemo(() => {
+    if (chartData && chartData.length > 0) {
+      return {
+        time: chartData[chartData.length - 1].timestamp,
+        value: chartData[chartData.length - 1].investorCount,
+      }
+    } else {
+      return undefined
+    }
+  }, [chartData])
+
   return (
     <PageWrapper>
       <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
       <AutoColumn gap="16px">
-        <ThemedText.DeprecatedMain>Uniswap Overview</ThemedText.DeprecatedMain>
+        <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+          XXXFund Overview
+        </ThemedText.DeprecatedMain>
         <ResponsiveRow>
           <ChartWrapper>
             <AreaChart
@@ -126,6 +138,10 @@ export default function Overview() {
                       )}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
+                </AutoColumn>
+              }
+              topRight={
+                <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontSize="14px" height="14px">
                     {dateHover ? (
                       <MonoSpace>
@@ -133,10 +149,12 @@ export default function Overview() {
                       </MonoSpace>
                     ) : latestVolumeData ? (
                       <MonoSpace>
-                        {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
+                        {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)} )
                       </MonoSpace>
                     ) : null}
                   </ThemedText.DeprecatedMain>
+                  <br />
+                  <br />
                 </AutoColumn>
               }
             />
@@ -158,21 +176,35 @@ export default function Overview() {
                     <MonoSpace>
                       {investorCountHover !== undefined
                         ? investorCountHover
-                        : formattedCountData.length > 0
-                        ? formattedCountData[formattedCountData.length - 1].value
-                        : 0}{' '}
+                        : latestCountData !== undefined
+                        ? latestCountData.value
+                        : 0}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
-                  <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                    {investorCountLabel ? <MonoSpace>{investorCountLabel} (UTC)</MonoSpace> : null}
+                </AutoColumn>
+              }
+              topRight={
+                <AutoColumn gap="4px">
+                  <ThemedText.DeprecatedMain fontSize="14px" height="14px">
+                    {investorCountLabel ? (
+                      <MonoSpace>
+                        {unixToDate(Number(investorCountLabel))} ( {formatTime(investorCountLabel, 8)} )
+                      </MonoSpace>
+                    ) : latestCountData ? (
+                      <MonoSpace>
+                        {unixToDate(Number(latestCountData.time))} ( {formatTime(latestCountData.time.toString(), 8)} )
+                      </MonoSpace>
+                    ) : null}
                   </ThemedText.DeprecatedMain>
+                  <br />
+                  <br />
                 </AutoColumn>
               }
             />
           </ChartWrapper>
         </ResponsiveRow>
-        <RowBetween>
-          <ThemedText.DeprecatedMain>Top Funds</ThemedText.DeprecatedMain>
+        <RowBetween mt={'16px'}>
+          <ThemedText.DeprecatedMain fontSize="22px">Top Funds</ThemedText.DeprecatedMain>
         </RowBetween>
         <FundTable fundDatas={fundListData.data} />
       </AutoColumn>

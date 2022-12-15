@@ -1,14 +1,8 @@
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import {
-  formatPercentInBasisPointsNumber,
-  formatToDecimal,
-  getDurationFromDateMilliseconds,
-  getTokenAddress,
-} from 'components/AmplitudeAnalytics/utils'
 import { sendEvent } from 'components/analytics'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
@@ -52,7 +46,6 @@ import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { computeRealizedPriceImpact } from 'utils/prices'
 import { supportedChainId } from 'utils/supportedChainId'
 
 const StyledDepositHeader = styled.div`
@@ -98,40 +91,6 @@ export function getIsValidSwapQuote(
   swapInputError?: ReactNode
 ): boolean {
   return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
-}
-
-function largerPercentValue(a?: Percent, b?: Percent) {
-  if (a && b) {
-    return a.greaterThan(b) ? a : b
-  } else if (a) {
-    return a
-  } else if (b) {
-    return b
-  }
-  return undefined
-}
-
-const formatSwapQuoteReceivedEventProperties = (
-  trade: InterfaceTrade<Currency, Currency, TradeType>,
-  fetchingSwapQuoteStartTime: Date | undefined
-) => {
-  return {
-    token_in_symbol: trade.inputAmount.currency.symbol,
-    token_out_symbol: trade.outputAmount.currency.symbol,
-    token_in_address: getTokenAddress(trade.inputAmount.currency),
-    token_out_address: getTokenAddress(trade.outputAmount.currency),
-    price_impact_basis_points: trade ? formatPercentInBasisPointsNumber(computeRealizedPriceImpact(trade)) : undefined,
-    estimated_network_fee_usd: trade.gasUseEstimateUSD ? formatToDecimal(trade.gasUseEstimateUSD, 2) : undefined,
-    chain_id:
-      trade.inputAmount.currency.chainId === trade.outputAmount.currency.chainId
-        ? trade.inputAmount.currency.chainId
-        : undefined,
-    token_in_amount: formatToDecimal(trade.inputAmount, trade.inputAmount.currency.decimals),
-    token_out_amount: formatToDecimal(trade.outputAmount, trade.outputAmount.currency.decimals),
-    quote_latency_milliseconds: fetchingSwapQuoteStartTime
-      ? getDurationFromDateMilliseconds(fetchingSwapQuoteStartTime)
-      : undefined,
-  }
 }
 
 export default function Deposit() {

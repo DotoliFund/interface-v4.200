@@ -320,7 +320,7 @@ export default function FundPage() {
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
       {fundData ? (
-        <AutoColumn gap="32px">
+        <AutoColumn gap="16px">
           <RowBetween>
             <AutoRow gap="4px">
               <StyledInternalLink to={networkPrefix(activeNetwork)}>
@@ -555,9 +555,13 @@ export default function FundPage() {
               ) : null}
             </DarkGreyCard>
           </ContentLayout>
-          <ThemedText.DeprecatedMain fontSize="24px">Investors</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            Investors
+          </ThemedText.DeprecatedMain>
           <DarkGreyCard>{investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
-          <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            Transactions
+          </ThemedText.DeprecatedMain>
           <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
         </AutoColumn>
       ) : (

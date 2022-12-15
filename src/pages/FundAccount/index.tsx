@@ -591,7 +591,7 @@ export default function FundAccount() {
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
       {investorData ? (
-        <AutoColumn gap="32px">
+        <AutoColumn gap="16px">
           <RowBetween>
             <AutoRow gap="4px">
               <StyledInternalLink to={networkPrefix(activeNetwork)}>
@@ -806,7 +806,7 @@ export default function FundAccount() {
               )}
             </DarkGreyCard>
           </ContentLayout>
-          <TitleRow padding={'0'}>
+          <TitleRow mt={'16px'}>
             <ThemedText.DeprecatedMain fontSize="24px">Positions</ThemedText.DeprecatedMain>
             <ButtonRow>
               <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to={newPositionLink}>
@@ -842,9 +842,13 @@ export default function FundAccount() {
               </ErrorContainer>
             )}
           </MainContentWrapper>
-          <ThemedText.DeprecatedMain fontSize="24px">Transactions</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            Transactions
+          </ThemedText.DeprecatedMain>
           <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
-          <ThemedText.DeprecatedMain fontSize="24px">Liquidity Transactions</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            Liquidity Transactions
+          </ThemedText.DeprecatedMain>
           <DarkGreyCard>
             {liquidityTransactions ? <LiquidityTransactionTable transactions={liquidityTransactions} /> : <Loader />}
           </DarkGreyCard>

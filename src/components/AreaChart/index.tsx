@@ -7,6 +7,7 @@ import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
+import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
 
@@ -16,7 +17,7 @@ const Wrapper = styled(Card)`
   width: 100%;
   height: ${DEFAULT_HEIGHT}px;
   padding: 1rem;
-  padding-right: 2rem;
+  padding-right: 1rem;
   display: flex;
   background-color: ${({ theme }) => theme.deprecated_bg0};
   flex-direction: column;
@@ -82,8 +83,8 @@ const Chart = ({
             data={data}
             margin={{
               top: 5,
-              right: 30,
-              left: 20,
+              right: 15,
+              left: 15,
               bottom: 5,
             }}
             onMouseLeave={() => {
@@ -101,7 +102,7 @@ const Chart = ({
               dataKey="time"
               axisLine={false}
               tickLine={false}
-              tickFormatter={(time) => dayjs(time).format('DD')}
+              tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
               minTickGap={10}
             />
             <Tooltip content={<CustomTooltip />} />
