@@ -17906,6 +17906,11 @@ xxxfund@^0.0.1:
   resolved "https://registry.yarnpkg.com/xxxfund/-/xxxfund-0.0.1.tgz#967bab74cf0c07499660f4a23bff2526ad3d4a4e"
   integrity sha512-HdTonJa60GU19+ate0gdvTcW+rdRGTFd6bHENo/Cul57BFv6f0/Pgk0N9tive0Xj5Hx1xpjQaj3gKeSNEZKMKQ==
 
+xxxstaking@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/xxxstaking/-/xxxstaking-0.0.1.tgz#022bc9e609afec3c52e46a9f7eb25b048cfa4715"
+  integrity sha512-sU4Nc1olAJZjdWDuAn3OJt5iaTHLToQDrkLqaUvGEtygFOiuXO/LyGoW7McPVqqjd8NUVu/47w8Zfkv+mXC2vA==
+
 y18n@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-4.0.3.tgz#b5f259c82cd6e336921efd7bfd8bf560de9eeedf"
