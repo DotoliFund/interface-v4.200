@@ -238,9 +238,7 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
           </DataText>
           &nbsp;
           <Badge>
-            <BadgeText>
-              <Trans>{new Percent(feeAmount, 1_000_000).toSignificant()}%</Trans>
-            </BadgeText>
+            <BadgeText>{new Percent(feeAmount, 1_000_000).toSignificant()}%</BadgeText>
           </Badge>
         </PrimaryPositionIdData>
         <RangeBadge removed={removed} inRange={!outOfRange} />
@@ -252,25 +250,21 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
             <ExtentsText>
               <Trans>Min: </Trans>
             </ExtentsText>
-            <Trans>
-              {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
-              per <HoverInlineText text={currencyBase?.symbol ?? ''} />
-            </Trans>
-          </RangeText>{' '}
+            {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />
+            per <HoverInlineText text={currencyBase?.symbol ?? ''} />
+          </RangeText>
           <HideSmall>
-            <DoubleArrow>⟷</DoubleArrow>{' '}
+            <DoubleArrow>⟷</DoubleArrow>
           </HideSmall>
           <SmallOnly>
-            <DoubleArrow>⟷</DoubleArrow>{' '}
+            <DoubleArrow>⟷</DoubleArrow>
           </SmallOnly>
           <RangeText>
             <ExtentsText>
               <Trans>Max:</Trans>
             </ExtentsText>
-            <Trans>
-              {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
-              per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} />
-            </Trans>
+            {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />
+            per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} />
           </RangeText>
         </RangeLineItem>
       ) : (
