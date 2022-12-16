@@ -81,6 +81,7 @@ const MenuItem = styled.div`
   width: 100%;
   font-weight: 500;
 `
+
 const MoreOptionsButton = styled(ButtonGray)`
   border-radius: 12px;
   flex: 1 1 auto;

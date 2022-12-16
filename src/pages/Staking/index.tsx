@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonConfirmed, ButtonError, ButtonLight } from 'components/Button'
+import { ButtonConfirmed, ButtonError, ButtonGray, ButtonLight } from 'components/Button'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInputPanel'
@@ -23,9 +23,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { useDefaultsFromURLSearch } from 'state/deposit/hooks'
 import { useStakingInfo } from 'state/stake/hooks'
-import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
@@ -72,13 +70,17 @@ const StakingSection = styled.div`
   }
 `
 
+const OptionButton = styled(ButtonGray)`
+  border-radius: 12px;
+  flex: 1 1 auto;
+  padding: 4px 6px;
+  width: 90%;
+  background-color: ${({ theme }) => theme.deprecated_bg0};
+`
+
 export default function Staking() {
   const { account, chainId, provider } = useWeb3React()
-  const loadedUrlParams = useDefaultsFromURLSearch()
   const xxx = chainId ? XXX[chainId] : undefined
-
-  // token warning stuff
-  const [loadedInputCurrency] = [useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId)]
 
   const theme = useTheme()
 
@@ -98,11 +100,8 @@ export default function Staking() {
   )
 
   const stakingInfo = useStakingInfo()
-
   const currency = useCurrency(chainId ? XXX_ADDRESS[chainId] : undefined)
-
   const parsedAmount = useMemo(() => (xxx ? tryParseCurrencyAmount(typedValue, xxx) : undefined), [xxx, typedValue])
-
   const formattedAmounts = useMemo(() => typedValue, [typedValue])
 
   const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
@@ -171,7 +170,7 @@ export default function Staking() {
       })
   }
 
-  async function onClaimReward() {
+  async function onGetReward() {
     if (!chainId || !provider || !account) return
 
     const { calldata, value } = XXXStaking2.claimRewardCallParameters()
@@ -265,60 +264,38 @@ export default function Staking() {
             </StyledStakingHeader>
             <AutoColumn gap={'12px'}>
               <Card backgroundColor={'#202B58'}>
-                <AutoColumn gap={'8px'}>
-                  <AutoRow>
-                    <Text pl={'20px'}>UnStaked</Text>
-                    <Text pl={'60px'}>
-                      {parseFloat(
-                        formatCurrencyAmount(stakingInfo?.unStakingBalance, xxx?.decimals ? xxx?.decimals : 18)
-                      ).toFixed(5)}
-                    </Text>
-                  </AutoRow>
-                  <AutoRow>
-                    <Text pl={'20px'}>Earned</Text>
-                    <Text pl={'77px'}>
-                      {parseFloat(
-                        formatCurrencyAmount(stakingInfo?.earnedAmount, xxx?.decimals ? xxx?.decimals : 18)
-                      ).toFixed(5)}
-                    </Text>
-                    <ButtonLight
-                      ml={'62px'}
-                      maxWidth={'135px'}
-                      maxHeight={'14px'}
+                <RowBetween>
+                  <AutoColumn gap="10px">
+                    <Text ml={'20px'}>UnStaked</Text>
+                    <Text ml={'20px'}>Earned</Text>
+                    <Text ml={'20px'}>Staked</Text>
+                    <Text ml={'20px'}>Total Staked</Text>
+                  </AutoColumn>
+                  <AutoColumn gap="10px">
+                    <Text ml={'32px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
+                    <Text ml={'32px'}>{formatCurrencyAmount(stakingInfo?.earnedAmount, 12)}</Text>
+                    <Text ml={'32px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
+                    <Text ml={'32px'}>{formatCurrencyAmount(stakingInfo?.totalStakedAmount, 12)}</Text>
+                  </AutoColumn>
+                  <AutoColumn gap="8px">
+                    <OptionButton
+                      mr={'20px'}
                       onClick={() => {
-                        onClaimReward()
+                        onGetReward()
                       }}
                     >
-                      Claim Reward
-                    </ButtonLight>
-                  </AutoRow>
-                  <AutoRow>
-                    <Text pl={'20px'}> Staked</Text>
-                    <Text pl={'78px'}>
-                      {parseFloat(
-                        formatCurrencyAmount(stakingInfo?.stakedAmount, xxx?.decimals ? xxx?.decimals : 18)
-                      ).toFixed(5)}
-                    </Text>
-                    <ButtonLight
-                      ml={'62px'}
-                      maxWidth={'135px'}
-                      maxHeight={'14px'}
+                      Get Reward
+                    </OptionButton>
+                    <OptionButton
+                      mr={'20px'}
                       onClick={() => {
                         onWithdraw()
                       }}
                     >
                       Withdraw
-                    </ButtonLight>
-                  </AutoRow>
-                  <AutoRow>
-                    <Text pl={'20px'}> Total Staked</Text>
-                    <Text pl={'40px'}>
-                      {parseFloat(
-                        formatCurrencyAmount(stakingInfo?.totalStakedAmount, xxx?.decimals ? xxx?.decimals : 18)
-                      ).toFixed(5)}
-                    </Text>
-                  </AutoRow>
-                </AutoColumn>
+                    </OptionButton>
+                  </AutoColumn>
+                </RowBetween>
               </Card>
               <div style={{ display: 'relative' }}>
                 <StakingSection>
@@ -389,12 +366,6 @@ export default function Staking() {
                               //handleSwap()
                             } else {
                               onStake()
-                              // setDepositState({
-                              //   attemptingTxn: false,
-                              //   swapErrorMessage: undefined,
-                              //   showConfirm: true,
-                              //   txHash: undefined,
-                              // })
                             }
                           }}
                           width="100%"
