@@ -1,6 +1,6 @@
-import { useAtom } from 'jotai'
-import { atomWithStorage, useAtomValue } from 'jotai/utils'
+import { atomWithStorage, useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { createContext, ReactNode, useCallback, useContext } from 'react'
+export { FeatureFlag } from './flags/featureFlags'
 
 interface FeatureFlagsContextType {
   isLoaded: boolean
@@ -9,7 +9,7 @@ interface FeatureFlagsContextType {
 
 const FeatureFlagContext = createContext<FeatureFlagsContextType>({ isLoaded: false, flags: {} })
 
-export function useFeatureFlagsContext(): FeatureFlagsContextType {
+function useFeatureFlagsContext(): FeatureFlagsContextType {
   const context = useContext(FeatureFlagContext)
   if (!context) {
     throw Error('Feature flag hooks can only be used by children of FeatureFlagProvider.')
@@ -22,14 +22,16 @@ export function useFeatureFlagsContext(): FeatureFlagsContextType {
 export const featureFlagSettings = atomWithStorage<Record<string, string>>('featureFlags', {})
 
 export function useUpdateFlag() {
-  const [featureFlags, setFeatureFlags] = useAtom(featureFlagSettings)
+  const setFeatureFlags = useUpdateAtom(featureFlagSettings)
 
   return useCallback(
     (featureFlag: string, option: string) => {
-      featureFlags[featureFlag] = option
-      setFeatureFlags(featureFlags)
+      setFeatureFlags((featureFlags) => ({
+        ...featureFlags,
+        [featureFlag]: option,
+      }))
     },
-    [featureFlags, setFeatureFlags]
+    [setFeatureFlags]
   )
 }
 
@@ -53,22 +55,13 @@ export enum BaseVariant {
   Enabled = 'enabled',
 }
 
-export enum FeatureFlag {
-  navBar = 'navBar',
-  wallet = 'wallet',
-  nft = 'nfts',
-  redesign = 'redesign',
-  tokens = 'tokens',
-  tokensNetworkFilter = 'tokensNetworkFilter',
-  tokenSafety = 'tokenSafety',
-}
-
-export function useBaseFlag(flag: string): BaseVariant {
+export function useBaseFlag(flag: string, defaultValue = BaseVariant.Control): BaseVariant {
   switch (useFeatureFlagsContext().flags[flag]) {
     case 'enabled':
       return BaseVariant.Enabled
     case 'control':
-    default:
       return BaseVariant.Control
+    default:
+      return defaultValue
   }
 }

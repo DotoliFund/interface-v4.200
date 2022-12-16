@@ -13,12 +13,9 @@ import { AutoRow } from 'components/Row'
 import { RowBetween, RowFixed } from 'components/Row'
 import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import TokensBanner from 'components/Tokens/TokensBanner'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
@@ -98,9 +95,6 @@ export default function Deposit() {
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
   const navigate = useNavigate()
-  const navBarFlag = useNavBarFlag()
-  const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
-  const tokensFlag = useTokensFlag()
   const { account, chainId, provider } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -271,7 +265,7 @@ export default function Deposit() {
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
       <>
-        {tokensFlag === TokensVariant.Enabled && <TokensBanner />}
+        {/* {tokensFlag === TokensVariant.Enabled && <TokensBanner />} */}
         <TokenWarningModal
           isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
           tokens={importTokensNotInDefault}

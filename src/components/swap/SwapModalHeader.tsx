@@ -1,11 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { Price } from '@uniswap/sdk-core'
-import { sendAnalyticsEvent } from 'components/AmplitudeAnalytics'
-import { EventName, SWAP_PRICE_UPDATE_USER_RESPONSE } from 'components/AmplitudeAnalytics/constants'
-import { formatPercentInBasisPointsNumber } from 'components/AmplitudeAnalytics/utils'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import { InterfaceTrade } from 'state/routing/types'
@@ -19,17 +14,17 @@ import { ButtonPrimary } from '../Button'
 import { LightCard } from '../Card'
 import { AutoColumn } from '../Column'
 import { FiatValue } from '../CurrencyInputPanel/FiatValue'
-import CurrencyLogo from '../CurrencyLogo'
+import CurrencyLogo from '../Logo/CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
+import TradePrice from '../swap/TradePrice'
 import { AdvancedSwapDetails } from './AdvancedSwapDetails'
 import { SwapShowAcceptChanges, TruncatedText } from './styleds'
-import TradePrice from './TradePrice'
 
-const ArrowWrapper = styled.div<{ redesignFlag: boolean }>`
+const ArrowWrapper = styled.div`
   padding: 4px;
   border-radius: 12px;
-  height: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
-  width: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
+  height: 40px;
+  width: 40px;
   position: relative;
   margin-top: -18px;
   margin-bottom: -18px;
@@ -37,35 +32,11 @@ const ArrowWrapper = styled.div<{ redesignFlag: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg1)};
+  background-color: ${({ theme }) => theme.backgroundSurface};
   border: 4px solid;
-  border-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundModule : theme.deprecated_bg0)};
+  border-color: ${({ theme }) => theme.backgroundModule};
   z-index: 2;
 `
-
-const formatAnalyticsEventProperties = (
-  trade: InterfaceTrade<Currency, Currency, TradeType>,
-  priceUpdate: number | undefined,
-  response: SWAP_PRICE_UPDATE_USER_RESPONSE
-) => ({
-  chain_id:
-    trade.inputAmount.currency.chainId === trade.outputAmount.currency.chainId
-      ? trade.inputAmount.currency.chainId
-      : undefined,
-  response,
-  token_in_symbol: trade.inputAmount.currency.symbol,
-  token_out_symbol: trade.outputAmount.currency.symbol,
-  price_update_basis_points: priceUpdate,
-})
-
-const getPriceUpdateBasisPoints = (
-  prevPrice: Price<Currency, Currency>,
-  newPrice: Price<Currency, Currency>
-): number => {
-  const changeFraction = newPrice.subtract(prevPrice).divide(prevPrice)
-  const changePercentage = new Percent(changeFraction.numerator, changeFraction.denominator)
-  return formatPercentInBasisPointsNumber(changePercentage)
-}
 
 export default function SwapModalHeader({
   trade,
@@ -85,48 +56,28 @@ export default function SwapModalHeader({
   onAcceptChanges: () => void
 }) {
   const theme = useTheme()
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 
   const [showInverted, setShowInverted] = useState<boolean>(false)
-  const [lastExecutionPrice, setLastExecutionPrice] = useState(trade.executionPrice)
-  const [priceUpdate, setPriceUpdate] = useState<number | undefined>()
 
   const fiatValueInput = useStablecoinValue(trade.inputAmount)
   const fiatValueOutput = useStablecoinValue(trade.outputAmount)
 
-  useEffect(() => {
-    if (!trade.executionPrice.equalTo(lastExecutionPrice)) {
-      //setPriceUpdate(getPriceUpdateBasisPoints(lastExecutionPrice, trade.executionPrice))
-      setLastExecutionPrice(trade.executionPrice)
-    }
-  }, [lastExecutionPrice, setLastExecutionPrice, trade.executionPrice])
-
-  useEffect(() => {
-    if (shouldLogModalCloseEvent && showAcceptChanges)
-      sendAnalyticsEvent(
-        EventName.SWAP_PRICE_UPDATE_ACKNOWLEDGED,
-        formatAnalyticsEventProperties(trade, priceUpdate, SWAP_PRICE_UPDATE_USER_RESPONSE.REJECTED)
-      )
-    setShouldLogModalCloseEvent(false)
-  }, [shouldLogModalCloseEvent, showAcceptChanges, setShouldLogModalCloseEvent, trade, priceUpdate])
-
   return (
-    <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
+    <AutoColumn gap="4px" style={{ marginTop: '1rem' }}>
       <LightCard padding="0.75rem 1rem">
-        <AutoColumn gap={'8px'}>
+        <AutoColumn gap="sm">
           <RowBetween align="center">
-            <RowFixed gap={'0px'}>
+            <RowFixed gap="0px">
               <TruncatedText
                 fontSize={24}
                 fontWeight={500}
-                color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.deprecated_primary1 : ''}
+                color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.accentAction : ''}
               >
                 {trade.inputAmount.toSignificant(6)}
               </TruncatedText>
             </RowFixed>
-            <RowFixed gap={'0px'}>
-              <CurrencyLogo currency={trade.inputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+            <RowFixed gap="0px">
+              <CurrencyLogo currency={trade.inputAmount.currency} size="20px" style={{ marginRight: '12px' }} />
               <Text fontSize={20} fontWeight={500}>
                 {trade.inputAmount.currency.symbol}
               </Text>
@@ -137,26 +88,26 @@ export default function SwapModalHeader({
           </RowBetween>
         </AutoColumn>
       </LightCard>
-      <ArrowWrapper redesignFlag={redesignFlagEnabled}>
-        <ArrowDown size="16" color={redesignFlagEnabled ? theme.textPrimary : theme.deprecated_text2} />
+      <ArrowWrapper>
+        <ArrowDown size="16" color={theme.textPrimary} />
       </ArrowWrapper>
       <LightCard padding="0.75rem 1rem" style={{ marginBottom: '0.25rem' }}>
-        <AutoColumn gap={'8px'}>
+        <AutoColumn gap="sm">
           <RowBetween align="flex-end">
-            <RowFixed gap={'0px'}>
+            <RowFixed gap="0px">
               <TruncatedText fontSize={24} fontWeight={500}>
                 {trade.outputAmount.toSignificant(6)}
               </TruncatedText>
             </RowFixed>
-            <RowFixed gap={'0px'}>
-              <CurrencyLogo currency={trade.outputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+            <RowFixed gap="0px">
+              <CurrencyLogo currency={trade.outputAmount.currency} size="20px" style={{ marginRight: '12px' }} />
               <Text fontSize={20} fontWeight={500}>
                 {trade.outputAmount.currency.symbol}
               </Text>
             </RowFixed>
           </RowBetween>
           <RowBetween>
-            <ThemedText.DeprecatedBody fontSize={14} color={theme.deprecated_text3}>
+            <ThemedText.DeprecatedBody fontSize={14} color={theme.textTertiary}>
               <FiatValue
                 fiatValue={fiatValueOutput}
                 priceImpact={computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)}
@@ -172,11 +123,11 @@ export default function SwapModalHeader({
         <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
       </LightCard>
       {showAcceptChanges ? (
-        <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
+        <SwapShowAcceptChanges justify="flex-start" gap="0px">
           <RowBetween>
             <RowFixed>
               <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <ThemedText.DeprecatedMain color={theme.deprecated_primary1}>
+              <ThemedText.DeprecatedMain color={theme.accentAction}>
                 <Trans>Price Updated</Trans>
               </ThemedText.DeprecatedMain>
             </RowFixed>

@@ -1,5 +1,5 @@
 import Card from 'components/Card'
-import { LoadingRows } from 'components/Loader'
+import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -112,11 +112,11 @@ const Chart = ({
         {topRight ?? null}
       </RowBetween>
       {data?.length === 0 ? (
-        <LoadingRows>
+        <Loader>
           <div />
           <div />
           <div />
-        </LoadingRows>
+        </Loader>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart

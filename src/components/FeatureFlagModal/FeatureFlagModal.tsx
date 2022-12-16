@@ -1,10 +1,6 @@
 import { BaseVariant, FeatureFlag, featureFlagSettings, useUpdateFlag } from 'featureFlags'
-import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
-import { TokenSafetyVariant, useTokenSafetyFlag } from 'featureFlags/flags/tokenSafety'
-import { TokensNetworkFilterVariant, useTokensNetworkFilterFlag } from 'featureFlags/flags/tokensNetworkFilter'
+import { Permit2Variant, usePermit2Flag } from 'featureFlags/flags/permit2'
+import { TraceJsonRpcVariant, useTraceJsonRpcFlag } from 'featureFlags/flags/traceJsonRpc'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { Children, PropsWithChildren, ReactElement, ReactNode, useCallback, useState } from 'react'
 import { X } from 'react-feather'
@@ -206,40 +202,19 @@ export default function FeatureFlagModal() {
           <X size={24} />
         </CloseButton>
       </Header>
-      <FeatureFlagGroup name="Phase 0">
+      <FeatureFlagOption
+        variant={Permit2Variant}
+        value={usePermit2Flag()}
+        featureFlag={FeatureFlag.permit2}
+        label="Permit 2 / Universal Router"
+      />
+      <FeatureFlagGroup name="Debug">
         <FeatureFlagOption
-          variant={RedesignVariant}
-          value={useRedesignFlag()}
-          featureFlag={FeatureFlag.redesign}
-          label="Redesign"
+          variant={TraceJsonRpcVariant}
+          value={useTraceJsonRpcFlag()}
+          featureFlag={FeatureFlag.traceJsonRpc}
+          label="Enables JSON-RPC tracing"
         />
-        <FeatureFlagOption
-          variant={NavBarVariant}
-          value={useNavBarFlag()}
-          featureFlag={FeatureFlag.navBar}
-          label="NavBar"
-        />
-        <FeatureFlagOption
-          variant={TokensVariant}
-          value={useTokensFlag()}
-          featureFlag={FeatureFlag.tokens}
-          label="Tokens"
-        />
-        <FeatureFlagOption
-          variant={TokensNetworkFilterVariant}
-          value={useTokensNetworkFilterFlag()}
-          featureFlag={FeatureFlag.tokensNetworkFilter}
-          label="Tokens Network Filter"
-        />
-        <FeatureFlagOption
-          variant={TokenSafetyVariant}
-          value={useTokenSafetyFlag()}
-          featureFlag={FeatureFlag.tokenSafety}
-          label="Token Safety"
-        />
-      </FeatureFlagGroup>
-      <FeatureFlagGroup name="Phase 1">
-        <FeatureFlagOption variant={NftVariant} value={useNftFlag()} featureFlag={FeatureFlag.nft} label="NFTs" />
       </FeatureFlagGroup>
       <SaveButton onClick={() => window.location.reload()}>Reload</SaveButton>
     </Modal>

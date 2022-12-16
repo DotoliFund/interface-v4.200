@@ -4,15 +4,12 @@ import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import AnimatedDropdown from 'components/AnimatedDropdown'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import RoutingDiagram from 'components/RoutingDiagram/RoutingDiagram'
 import { AutoRow, RowBetween } from 'components/Row'
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'constants/chains'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import useAutoRouterSupported from 'hooks/useAutoRouterSupported'
 import { memo, useState } from 'react'
 import { Plus } from 'react-feather'
@@ -23,12 +20,10 @@ import { Separator, ThemedText } from 'theme'
 
 import { AutoRouterLabel, AutoRouterLogo } from './RouterLabel'
 
-const Wrapper = styled(AutoColumn)<{ darkMode?: boolean; fixedOpen?: boolean; redesignFlag: boolean }>`
+const Wrapper = styled(AutoColumn)<{ darkMode?: boolean; fixedOpen?: boolean }>`
   padding: ${({ fixedOpen }) => (fixedOpen ? '12px' : '12px 8px 12px 12px')};
   border-radius: 16px;
-  border: 1px solid
-    ${({ theme, fixedOpen, redesignFlag }) =>
-      fixedOpen ? 'transparent' : redesignFlag ? theme.backgroundOutline : theme.deprecated_bg2};
+  border: 1px solid ${({ theme, fixedOpen }) => (fixedOpen ? 'transparent' : theme.backgroundOutline)};
   cursor: pointer;
 `
 
@@ -38,7 +33,7 @@ const OpenCloseIcon = styled(Plus)<{ open?: boolean }>`
   stroke-width: 2px;
   transition: transform 0.1s;
   transform: ${({ open }) => (open ? 'rotate(45deg)' : 'none')};
-  stroke: ${({ theme }) => theme.deprecated_text3};
+  stroke: ${({ theme }) => theme.textTertiary};
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -56,8 +51,6 @@ export default memo(function SwapRoute({ trade, syncing, fixedOpen = false, ...r
   const routes = getTokenPath(trade)
   const [open, setOpen] = useState(false)
   const { chainId } = useWeb3React()
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 
   const [darkMode] = useDarkModeManager()
 
@@ -68,21 +61,14 @@ export default memo(function SwapRoute({ trade, syncing, fixedOpen = false, ...r
     : undefined
 
   return (
-    <Wrapper {...rest} darkMode={darkMode} fixedOpen={fixedOpen} redesignFlag={redesignFlagEnabled}>
-      <TraceEvent
-        events={[Event.onClick]}
-        name={EventName.SWAP_AUTOROUTER_VISUALIZATION_EXPANDED}
-        element={ElementName.AUTOROUTER_VISUALIZATION_ROW}
-        shouldLogImpression={!open}
-      >
-        <RowBetween onClick={() => setOpen(!open)}>
-          <AutoRow gap="4px" width="auto">
-            <AutoRouterLogo />
-            <AutoRouterLabel />
-          </AutoRow>
-          {fixedOpen ? null : <OpenCloseIcon open={open} />}
-        </RowBetween>
-      </TraceEvent>
+    <Wrapper {...rest} darkMode={darkMode} fixedOpen={fixedOpen}>
+      <RowBetween onClick={() => setOpen(!open)}>
+        <AutoRow gap="4px" width="auto">
+          <AutoRouterLogo />
+          <AutoRouterLabel />
+        </AutoRow>
+        {fixedOpen ? null : <OpenCloseIcon open={open} />}
+      </RowBetween>
       <AnimatedDropdown open={open || fixedOpen}>
         <AutoRow gap="4px" width="auto" style={{ paddingTop: '12px', margin: 0 }}>
           {syncing ? (

@@ -11,10 +11,8 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { RowBetween, RowFixed } from 'components/Row'
 import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import TokensBanner from 'components/Tokens/TokensBanner'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
@@ -90,7 +88,6 @@ export default function Withdraw() {
   const params = useParams()
   const fundAddress = params.fundAddress
   const navigate = useNavigate()
-  const tokensFlag = useTokensFlag()
   const { account, chainId, provider } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -222,7 +219,7 @@ export default function Withdraw() {
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
       <>
-        {tokensFlag === TokensVariant.Enabled && <TokensBanner />}
+        {/* {tokensFlag === TokensVariant.Enabled && <TokensBanner />} */}
         <TokenWarningModal
           isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
           tokens={importTokensNotInDefault}

@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core'
 import Card from 'components/Card'
 import { LoadingRows } from 'components/Loader/styled'
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'constants/chains'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
 import { InterfaceTrade } from 'state/routing/types'
@@ -55,8 +54,6 @@ export function AdvancedSwapDetails({
   const theme = useTheme()
   const { chainId } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 
   const { expectedOutputAmount, priceImpact } = useMemo(() => {
     return {
@@ -67,7 +64,7 @@ export function AdvancedSwapDetails({
 
   return !trade ? null : (
     <StyledCard>
-      <AutoColumn gap="8px">
+      <AutoColumn gap="sm">
         <RowBetween>
           <RowFixed>
             <MouseoverTooltip
@@ -79,7 +76,7 @@ export function AdvancedSwapDetails({
               }
               disableHover={hideInfoTooltips}
             >
-              <ThemedText.DeprecatedSubHeader color={theme.deprecated_text1}>
+              <ThemedText.DeprecatedSubHeader color={theme.textPrimary}>
                 <Trans>Expected Output</Trans>
               </ThemedText.DeprecatedSubHeader>
             </MouseoverTooltip>
@@ -98,7 +95,7 @@ export function AdvancedSwapDetails({
               text={<Trans>The impact your trade has on the market price of this pool.</Trans>}
               disableHover={hideInfoTooltips}
             >
-              <ThemedText.DeprecatedSubHeader color={theme.deprecated_text1}>
+              <ThemedText.DeprecatedSubHeader color={theme.textPrimary}>
                 <Trans>Price Impact</Trans>
               </ThemedText.DeprecatedSubHeader>
             </MouseoverTooltip>
@@ -121,7 +118,7 @@ export function AdvancedSwapDetails({
               }
               disableHover={hideInfoTooltips}
             >
-              <ThemedText.DeprecatedSubHeader color={theme.deprecated_text3}>
+              <ThemedText.DeprecatedSubHeader color={theme.textTertiary}>
                 {trade.tradeType === TradeType.EXACT_INPUT ? (
                   <Trans>Minimum received</Trans>
                 ) : (
@@ -132,7 +129,7 @@ export function AdvancedSwapDetails({
             </MouseoverTooltip>
           </RowFixed>
           <TextWithLoadingPlaceholder syncing={syncing} width={70}>
-            <ThemedText.DeprecatedBlack textAlign="right" fontSize={14} color={theme.deprecated_text3}>
+            <ThemedText.DeprecatedBlack textAlign="right" fontSize={14} color={theme.textTertiary}>
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? `${trade.minimumAmountOut(allowedSlippage).toSignificant(6)} ${trade.outputAmount.currency.symbol}`
                 : `${trade.maximumAmountIn(allowedSlippage).toSignificant(6)} ${trade.inputAmount.currency.symbol}`}
@@ -149,12 +146,12 @@ export function AdvancedSwapDetails({
               }
               disableHover={hideInfoTooltips}
             >
-              <ThemedText.DeprecatedSubHeader color={theme.deprecated_text3}>
+              <ThemedText.DeprecatedSubHeader color={theme.textTertiary}>
                 <Trans>Network Fee</Trans>
               </ThemedText.DeprecatedSubHeader>
             </MouseoverTooltip>
             <TextWithLoadingPlaceholder syncing={syncing} width={50}>
-              <ThemedText.DeprecatedBlack textAlign="right" fontSize={14} color={theme.deprecated_text3}>
+              <ThemedText.DeprecatedBlack textAlign="right" fontSize={14} color={theme.textTertiary}>
                 ~${trade.gasUseEstimateUSD.toFixed(2)}
               </ThemedText.DeprecatedBlack>
             </TextWithLoadingPlaceholder>

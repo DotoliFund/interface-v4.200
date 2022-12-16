@@ -9,18 +9,14 @@ import FundList from 'components/FundList'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import TokensBanner from 'components/Tokens/TokensBanner'
 import { NULL_ADDRESS, XXXFACTORY_ADDRESSES } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
-import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 //import { useV3Positions } from 'hooks/useV3Positions'
 import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
-import { useToggleWalletModal } from 'state/application/hooks'
 //import { useUserHideClosedPositions } from 'state/user/hooks'
 import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
@@ -158,13 +154,10 @@ function FundsLoadingPlaceholder() {
 }
 
 function WrongNetworkCard() {
-  const navBarFlag = useNavBarFlag()
-  const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const theme = useTheme()
-  const tokensFlag = useTokensFlag()
   return (
     <>
-      {tokensFlag === TokensVariant.Enabled && <TokensBanner />}
+      {/* {tokensFlag === TokensVariant.Enabled && <TokensBanner />} */}
       <PageWrapper>
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
@@ -193,10 +186,7 @@ function WrongNetworkCard() {
 }
 
 export default function Account() {
-  const navBarFlag = useNavBarFlag()
-  const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
   const { account, chainId, provider } = useWeb3React()
-  const toggleWalletModal = useToggleWalletModal()
   const XXXFactoryContract = useXXXFactoryContract()
   const theme = useTheme()
   const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()

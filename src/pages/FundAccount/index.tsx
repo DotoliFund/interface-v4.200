@@ -12,7 +12,7 @@ import PieChart from 'components/PieChart'
 import PositionList from 'components/PositionList'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
-import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index'
+import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
 import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
 import { EthereumNetworkInfo } from 'constants/networks'
@@ -642,20 +642,20 @@ export default function FundAccount() {
             <DarkGreyCard>
               <ToggleRow>
                 <ToggleWrapper width="240px">
-                  <ToggleElementFree
+                  <ToggleElement
                     isActive={view === ChartView.VOL_USD}
                     fontSize="12px"
                     onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                   >
                     Volume
-                  </ToggleElementFree>
-                  <ToggleElementFree
+                  </ToggleElement>
+                  <ToggleElement
                     isActive={view === ChartView.TOKENS}
                     fontSize="12px"
                     onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
                   >
                     Tokens
-                  </ToggleElementFree>
+                  </ToggleElement>
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_USD ? (

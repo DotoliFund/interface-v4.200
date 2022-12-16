@@ -4,13 +4,11 @@ import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import SearchSmall from 'components/Search'
 import { getChainInfoOrDefault } from 'constants/chainInfo'
-import { useTokensFlag } from 'featureFlags/flags/tokens'
 import { darken } from 'polished'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
 import { useUserHasAvailableClaim } from 'state/claim/hooks'
-import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
 import styled, { useTheme } from 'styled-components/macro'
@@ -247,11 +245,8 @@ const SmallContentGrouping = styled.div`
   }
 `
 export default function Header() {
-  const tokensFlag = useTokensFlag()
-
   const { account, chainId } = useWeb3React()
 
-  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const [darkMode] = useDarkModeManager()
   const { deprecated_white, deprecated_black } = useTheme()
 

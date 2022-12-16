@@ -3,7 +3,6 @@ import { Percent } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { L2_CHAIN_IDS } from 'constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import ms from 'ms.macro'
 import { darken } from 'polished'
 import { useState } from 'react'
@@ -24,7 +23,7 @@ enum DeadlineError {
 }
 
 const FancyButton = styled.button`
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.textPrimary};
   align-items: center;
   height: 2rem;
   border-radius: 36px;
@@ -38,51 +37,51 @@ const FancyButton = styled.button`
     border: 1px solid ${({ theme }) => theme.deprecated_bg4};
   }
   :focus {
-    border: 1px solid ${({ theme }) => theme.deprecated_primary1};
+    border: 1px solid ${({ theme }) => theme.accentAction};
   }
 `
 
-const Option = styled(FancyButton)<{ active: boolean; redesignFlag: boolean }>`
+const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
-  border-radius: ${({ redesignFlag }) => redesignFlag && '12px'};
+  border-radius: 12px;
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active, theme }) => active && theme.deprecated_primary1};
-  color: ${({ active, theme }) => (active ? theme.deprecated_white : theme.deprecated_text1)};
+  background-color: ${({ active, theme }) => active && theme.accentAction};
+  color: ${({ active, theme }) => (active ? theme.white : theme.textPrimary)};
 `
 
-const Input = styled.input<{ redesignFlag: boolean }>`
+const Input = styled.input`
   background: ${({ theme }) => theme.deprecated_bg1};
   font-size: 16px;
-  border-radius: ${({ redesignFlag }) => redesignFlag && '12px'};
+  border-radius: 12px;
   width: auto;
   outline: none;
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  color: ${({ theme, color }) => (color === 'red' ? theme.deprecated_red1 : theme.deprecated_text1)};
+  color: ${({ theme, color }) => (color === 'red' ? theme.accentFailure : theme.textPrimary)};
   text-align: right;
 
   ::placeholder {
-    color: ${({ theme, redesignFlag }) => redesignFlag && theme.textTertiary};
+    color: ${({ theme }) => theme.textTertiary};
   }
 `
 
-const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean; redesignFlag: boolean }>`
+const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
   height: 2rem;
   position: relative;
   padding: 0 0.75rem;
-  border-radius: ${({ redesignFlag }) => redesignFlag && '12px'};
+  border-radius: 12px;
   flex: 1;
   border: ${({ theme, active, warning }) =>
     active
-      ? `1px solid ${warning ? theme.deprecated_red1 : theme.deprecated_primary1}`
-      : warning && `1px solid ${theme.deprecated_red1}`};
+      ? `1px solid ${warning ? theme.accentFailure : theme.accentAction}`
+      : warning && `1px solid ${theme.accentFailure}`};
   :hover {
     border: ${({ theme, active, warning }) =>
-      active && `1px solid ${warning ? darken(0.1, theme.deprecated_red1) : darken(0.1, theme.deprecated_primary1)}`};
+      active && `1px solid ${warning ? darken(0.1, theme.accentFailure) : darken(0.1, theme.accentAction)}`};
   }
 
   input {
@@ -109,8 +108,6 @@ const THREE_DAYS_IN_SECONDS = ms`3 days` / 1000
 export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
   const { chainId } = useWeb3React()
   const theme = useTheme()
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 
   const [userSlippageTolerance, setUserSlippageTolerance] = useUserSlippageTolerance()
 
@@ -174,7 +171,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     <AutoColumn gap="md">
       <AutoColumn gap="sm">
         <RowFixed>
-          <ThemedText.DeprecatedBlack fontWeight={400} fontSize={14} color={theme.deprecated_text2}>
+          <ThemedText.DeprecatedBlack fontWeight={400} fontSize={14} color={theme.textSecondary}>
             <Trans>Slippage tolerance</Trans>
           </ThemedText.DeprecatedBlack>
           <QuestionHelper
@@ -185,7 +182,6 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         </RowFixed>
         <RowBetween>
           <Option
-            redesignFlag={redesignFlagEnabled}
             onClick={() => {
               parseSlippageInput('')
             }}
@@ -193,12 +189,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           >
             <Trans>Auto</Trans>
           </Option>
-          <OptionCustom
-            redesignFlag={redesignFlagEnabled}
-            active={userSlippageTolerance !== 'auto'}
-            warning={!!slippageError}
-            tabIndex={-1}
-          >
+          <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
             <RowBetween>
               {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
@@ -208,7 +199,6 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 </SlippageEmojiContainer>
               ) : null}
               <Input
-                redesignFlag={redesignFlagEnabled}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={
                   slippageInput.length > 0
@@ -250,7 +240,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       {showCustomDeadlineRow && (
         <AutoColumn gap="sm">
           <RowFixed>
-            <ThemedText.DeprecatedBlack fontSize={14} fontWeight={400} color={theme.deprecated_text2}>
+            <ThemedText.DeprecatedBlack fontSize={14} fontWeight={400} color={theme.textSecondary}>
               <Trans>Transaction deadline</Trans>
             </ThemedText.DeprecatedBlack>
             <QuestionHelper
@@ -258,14 +248,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             />
           </RowFixed>
           <RowFixed>
-            <OptionCustom
-              style={{ width: '80px' }}
-              warning={!!deadlineError}
-              tabIndex={-1}
-              redesignFlag={redesignFlagEnabled}
-            >
+            <OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
               <Input
-                redesignFlag={redesignFlagEnabled}
                 placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
                 value={
                   deadlineInput.length > 0
