@@ -206,9 +206,9 @@ export default function Staking() {
 
   async function onWithdraw() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount) return
+    if (!currency || !stakingInfo) return
 
-    const { calldata, value } = XXXStaking2.withdrawCallParameters(parsedAmount)
+    const { calldata, value } = XXXStaking2.withdrawCallParameters(stakingInfo.stakedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: XXXSTAKING2_ADDRESS[chainId],
       data: calldata,
