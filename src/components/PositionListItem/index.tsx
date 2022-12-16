@@ -251,7 +251,7 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
               <Trans>Min: </Trans>
             </ExtentsText>
             {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />
-            per <HoverInlineText text={currencyBase?.symbol ?? ''} />
+            &nbsp; per <HoverInlineText text={currencyBase?.symbol ?? ''} />
           </RangeText>
           <HideSmall>
             <DoubleArrow>⟷</DoubleArrow>
@@ -264,7 +264,7 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
               <Trans>Max:</Trans>
             </ExtentsText>
             {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />
-            per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} />
+            &nbsp; per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} />
           </RangeText>
         </RangeLineItem>
       ) : (
