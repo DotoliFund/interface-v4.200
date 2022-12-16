@@ -8,6 +8,7 @@ import Percent from 'components/Percent'
 import { RowBetween } from 'components/Row'
 import { useFundData } from 'data/FundPage/fundData'
 import { Link } from 'react-router-dom'
+import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { FundDetails } from 'types/fund'
@@ -122,6 +123,11 @@ const DataText = styled.div`
   `};
 `
 
+const DataText2 = styled.div`
+  font-weight: 600;
+  font-size: 14px;
+`
+
 interface FundListItemProps {
   fundDetails: FundDetails
 }
@@ -206,26 +212,26 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             <ExtentsText>
               <Trans>TVL : </Trans>
             </ExtentsText>
-            <Trans>{formatDollarAmount(fundData.volumeUSD)}</Trans>
+            <Text>{formatDollarAmount(fundData.volumeUSD)}</Text>
           </RangeText>
           <RangeText>
             <ExtentsText>
               <Trans>Principal : </Trans>
             </ExtentsText>
-            <Trans>{formatDollarAmount(fundData.principalUSD)}</Trans>
+            <Text>{formatDollarAmount(fundData.principalUSD)}</Text>
           </RangeText>
           <RangeText>
             <RangeText>
               <ExtentsText>
                 <Trans>Profit : </Trans>
               </ExtentsText>
-              <Trans>{formatDollarAmount(fundData.profitUSD)}</Trans>
+              <Text>{formatDollarAmount(fundData.profitUSD)}</Text>
             </RangeText>
             <RangeText></RangeText>
             <ExtentsText>
               <Trans>Investors:</Trans>
             </ExtentsText>
-            <Trans>{fundData.investorCount}</Trans>
+            <Text>{fundData.investorCount}</Text>
           </RangeText>
         </RangeLineItem>
       ) : (
