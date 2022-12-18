@@ -1,4 +1,3 @@
-import { Trans } from '@lingui/macro'
 import { useState } from 'react'
 import { Button as RebassButton } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
@@ -6,7 +5,6 @@ import styled from 'styled-components/macro'
 import {
   ArrowForward,
   ArrowRight,
-  CoverBg,
   CoverBtnWrapper,
   CoverContainer,
   CoverContent,
@@ -47,6 +45,33 @@ const Button = styled(RebassButton)<{ primary?: boolean; big?: boolean; dark?: b
     background: ${({ primary }) => (primary ? '#fff' : '#01BF71')};
   }
 `
+
+interface CoverSectionProps {
+  headline: string
+  description: string
+}
+
+const CoverSection = ({ headline, description }: CoverSectionProps) => {
+  const [hover, setHover] = useState(false)
+
+  const onHover = () => {
+    setHover(!hover)
+  }
+
+  return (
+    <CoverContainer>
+      <CoverContent>
+        <CoverH1>{headline}</CoverH1>
+        <CoverP>{description}</CoverP>
+        <CoverBtnWrapper>
+          <Button primary={true} big={true} dark={true} fontBig={true}>
+            Get started {hover ? <ArrowForward /> : <ArrowRight />}
+          </Button>
+        </CoverBtnWrapper>
+      </CoverContent>
+    </CoverContainer>
+  )
+}
 
 interface InfoSectionProps {
   lightBg: boolean
@@ -104,41 +129,20 @@ const InfoSection = ({
   )
 }
 
-const CoverSection = () => {
-  const [hover, setHover] = useState(false)
-
-  const onHover = () => {
-    setHover(!hover)
-  }
-
-  return (
-    <CoverContainer>
-      <CoverBg></CoverBg>
-      <CoverContent>
-        <CoverH1>Awesome Title Goes Here</CoverH1>
-        <CoverP>Sign up for a new account today and consume awesome features from our website.</CoverP>
-        <CoverBtnWrapper>
-          <Button primary={true} big={true} dark={true} fontBig={true}>
-            Get started {hover ? <ArrowForward /> : <ArrowRight />}
-          </Button>
-        </CoverBtnWrapper>
-      </CoverContent>
-    </CoverContainer>
-  )
-}
-
 export default function Home() {
   return (
     <div>
-      <Trans>h1. Heading</Trans>
-      <CoverSection />
+      <CoverSection
+        headline={'Manage or Invest crypto fund with confidence'}
+        description={'Swap and Provide Liquidity with Uniswap'}
+      />
       <InfoSection
         id={'about'}
         lightBg={false}
         lightText={true}
-        topLine={'Title of the Company'}
-        headline={'Sample headline goes here'}
-        description={'Here we will place a detailed description of the service we are providing'}
+        topLine={'Efficient Profits and Fees'}
+        headline={'More benefits for managers and investors because of no third parties'}
+        description={'Managers are rewarded according to their investment results'}
         buttonLabel={'Get started'}
         imgStart={false}
         img={'logo192.png'}
@@ -149,10 +153,10 @@ export default function Home() {
         id={'about'}
         lightBg={false}
         lightText={true}
-        topLine={'4444444444444'}
-        headline={'S33333333333333re'}
-        description={'H333333333333333333333333333333333333333333oviding'}
-        buttonLabel={'G4444444444ted'}
+        topLine={'Decentralized fund investment'}
+        headline={'Only investors can withdraw their own funds'}
+        description={'Managers can only swap or provide Uniswap liquidity'}
+        buttonLabel={'Get started'}
         imgStart={false}
         img={'logo192.png'}
         alt={'Car'}
@@ -162,10 +166,23 @@ export default function Home() {
         id={'about'}
         lightBg={false}
         lightText={true}
-        topLine={'Titlrrrrrrrrrrrrrrrrany'}
-        headline={'Samplerrrrrrrrrrrrrrrrrrs here'}
-        description={'Here we fffffffffffffffffffffffffffffffffffffffffroviding'}
-        buttonLabel={'Gedddddddddddddted'}
+        topLine={'Transparent fund management'}
+        headline={'All investments of the manager are recorded'}
+        description={'Investors can choose the best manager at any time'}
+        buttonLabel={'Get started'}
+        imgStart={false}
+        img={'logo192.png'}
+        alt={'Car'}
+        darkText={false}
+      />
+      <InfoSection
+        id={'about'}
+        lightBg={false}
+        lightText={true}
+        topLine={'Governance'}
+        headline={'Fee rate and investable cryptos are determined by voting'}
+        description={'You can vote with governance token and increase governance token by staking'}
+        buttonLabel={'Get started'}
         imgStart={false}
         img={'logo192.png'}
         alt={'Car'}

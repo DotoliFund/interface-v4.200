@@ -117,7 +117,7 @@ export default function Overview() {
       <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
       <AutoColumn gap="16px">
         <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-          XXXFund Overview
+          Overview
         </ThemedText.DeprecatedMain>
         <ResponsiveRow>
           <ChartWrapper>

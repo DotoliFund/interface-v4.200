@@ -73,6 +73,7 @@ const StakingSection = styled.div`
 const OptionButton = styled(ButtonGray)`
   border-radius: 12px;
   flex: 1 1 auto;
+  font-size: 12px;
   padding: 4px 6px;
   width: 90%;
   background-color: ${({ theme }) => theme.deprecated_bg0};
@@ -277,7 +278,7 @@ export default function Staking() {
                     <Text ml={'32px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
                     <Text ml={'32px'}>{formatCurrencyAmount(stakingInfo?.totalStakedAmount, 12)}</Text>
                   </AutoColumn>
-                  <AutoColumn gap="8px">
+                  <AutoColumn gap="6px">
                     <OptionButton
                       mr={'20px'}
                       onClick={() => {
