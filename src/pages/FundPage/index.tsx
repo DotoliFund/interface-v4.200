@@ -147,6 +147,7 @@ export default function FundPage() {
   const investors = useFundInvestors(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
+
   // Composed chart hover
   const [dateHover, setDateHover] = useState<string | undefined>()
   const [volumeHover, setVolumeHover] = useState<number | undefined>()
@@ -181,21 +182,29 @@ export default function FundPage() {
 
   const formattedHoverData = useMemo(() => {
     if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
-      return tokensHover.map((data, index) => {
+      const hoverData = tokensHover.map((data, index) => {
         return {
           token: data,
           symbol: symbolsHover[index],
           tokenVolume: tokensVolumeUSDHover[index],
         }
       })
+      if (liquidityHover) {
+        hoverData.push({
+          token: 'Liquidity',
+          symbol: 'Liquidity',
+          tokenVolume: liquidityHover,
+        })
+      }
+      return hoverData
     } else {
       return undefined
     }
-  }, [chartData, tokensHover, symbolsHover, tokensVolumeUSDHover])
+  }, [chartData, tokensHover, symbolsHover, liquidityHover, tokensVolumeUSDHover])
 
   const formattedLatestTokensData = useMemo(() => {
     if (fundData) {
-      return fundData.tokens.map((data, index) => {
+      const fundTokenData = fundData.tokens.map((data, index) => {
         return {
           token: data,
           symbol: fundData.symbols[index],
@@ -203,6 +212,13 @@ export default function FundPage() {
           tokenVolume: fundData.tokensVolumeUSD[index],
         }
       })
+      fundTokenData.push({
+        token: 'Liquidity',
+        symbol: 'Liquidity',
+        amount: 0,
+        tokenVolume: fundData.liquidityVolumeUSD,
+      })
+      return fundTokenData
     } else {
       return []
     }
@@ -494,7 +510,7 @@ export default function FundPage() {
                           {tokenSymbolHover ? tokenSymbolHover : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {tokenAddressHover ? (
+                        {tokenAddressHover === 'Liquidity' ? null : tokenAddressHover ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
                               <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
@@ -503,7 +519,15 @@ export default function FundPage() {
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
+                        <MonoSpace>
+                          {tokenAddressHover === 'Liquidity' ? (
+                            <>
+                              <br />
+                            </>
+                          ) : (
+                            formatAmount(tokenAmountHover)
+                          )}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }

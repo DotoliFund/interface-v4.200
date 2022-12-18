@@ -71,15 +71,6 @@ const Chart = ({
       setSymbol(props.payload[0].payload.symbol)
       setValue(props.payload[0].value)
       setAmount(props.payload[0].payload.amount)
-    } else {
-      if (props.init === undefined) {
-        return null
-      } else {
-        setLabel(props.init.token)
-        setSymbol(props.init.symbol)
-        setValue(props.init.tokenVolume)
-        setAmount(props.init.amount)
-      }
     }
     return null
   }

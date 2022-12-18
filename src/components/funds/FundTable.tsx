@@ -112,13 +112,15 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
+  const theme = useTheme()
+
   return (
     <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{index + 1}</Label>
         <Label fontWeight={400}>{shortenAddress(fundData.address)}</Label>
         <Label end={1} fontWeight={400}>
-          {fundData.volumeUSD.toFixed(3)}
+          {(fundData.volumeUSD + fundData.liquidityVolumeUSD).toFixed(3)}
         </Label>
         <Label end={1} fontWeight={400}>
           {fundData.principalUSD.toFixed(3)}
