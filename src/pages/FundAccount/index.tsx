@@ -130,6 +130,7 @@ const TitleRow = styled(RowBetween)`
     width: 100%;
   `};
 `
+
 const ButtonRow = styled(RowFixed)`
   & > *:not(:last-child) {
     margin-left: 8px;
@@ -223,12 +224,12 @@ export default function FundAccount() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
-  const { loading: accountFundLoading, result: [accountFund] = [] } = useSingleCallResult(
+  const { loading: accountManagingFundLoading, result: [accountManagingFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
-  const { loading: investorFundLoading, result: [investorFund] = [] } = useSingleCallResult(
+  const { loading: investorManagingFundLoading, result: [investorManagingFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'getFundByManager',
     [investorAddress ?? undefined]
@@ -239,58 +240,85 @@ export default function FundAccount() {
     [account, fundAddress]
   )
 
-  const [isManager, setIsManager] = useState<boolean>(false)
+  const [accountIsManager, setAccountIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!accountFundLoading) {
+    if (!accountManagingFundLoading) {
       setState()
     }
     async function setState() {
-      if (accountFund && fundAddress && accountFund.toUpperCase() === fundAddress.toUpperCase()) {
-        setIsManager(true)
+      if (accountManagingFund && fundAddress && accountManagingFund.toUpperCase() === fundAddress.toUpperCase()) {
+        setAccountIsManager(true)
+      } else {
+        setAccountIsManager(false)
       }
     }
-  }, [accountFundLoading, accountFund, fundAddress, account])
+  }, [accountManagingFundLoading, accountManagingFund, fundAddress, account])
 
-  const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
-  useEffect(() => {
-    if (!investorFundLoading) {
-      setState()
-    }
-    async function setState() {
-      if (investorFund && fundAddress && investorFund.toUpperCase() === fundAddress.toUpperCase()) {
-        setIsManagerAccount(true)
-      }
-    }
-  }, [investorFundLoading, investorFund, fundAddress, investorAddress])
-
-  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  const [accountIsInvestor, setAccountIsInvestor] = useState<boolean>(false)
   useEffect(() => {
     if (!isAccountSubscribedLoading) {
       setState()
     }
     async function setState() {
       if (
-        accountFund &&
+        accountManagingFund &&
         fundAddress &&
-        accountFund.toUpperCase() !== fundAddress.toUpperCase() &&
+        accountManagingFund.toUpperCase() !== fundAddress.toUpperCase() &&
         isAccountSubscribed
       ) {
-        setIsInvestor(true)
+        setAccountIsInvestor(true)
+      } else {
+        setAccountIsInvestor(false)
       }
     }
-  }, [accountFund, fundAddress, isAccountSubscribedLoading, isAccountSubscribed])
+  }, [accountManagingFund, fundAddress, isAccountSubscribedLoading, isAccountSubscribed])
 
-  const [isInvestorAccount, setIsInvestorAccount] = useState<boolean>(false)
+  const [accountIsFundAccount, setAccountIsFundAccount] = useState<boolean>(false)
   useEffect(() => {
-    if (!investorFundLoading) {
+    if (!isAccountSubscribedLoading) {
       setState()
     }
     async function setState() {
-      if (investorFund && fundAddress && investorFund.toUpperCase() !== fundAddress.toUpperCase()) {
-        setIsInvestorAccount(true)
+      if (
+        account &&
+        investorAddress &&
+        account.toUpperCase() === investorAddress.toUpperCase() &&
+        isAccountSubscribed
+      ) {
+        setAccountIsFundAccount(true)
+      } else {
+        setAccountIsFundAccount(false)
       }
     }
-  }, [investorFund, fundAddress, investorFundLoading])
+  }, [investorAddress, isAccountSubscribedLoading, isAccountSubscribed])
+
+  const [fundAccountIsManager, setFundAccountIsManager] = useState<boolean>(false)
+  useEffect(() => {
+    if (!investorManagingFundLoading) {
+      setState()
+    }
+    async function setState() {
+      if (investorManagingFund && fundAddress && investorManagingFund.toUpperCase() === fundAddress.toUpperCase()) {
+        setFundAccountIsManager(true)
+      } else {
+        setFundAccountIsManager(false)
+      }
+    }
+  }, [investorManagingFundLoading, investorManagingFund, fundAddress, investorAddress])
+
+  const [fundAccountIsNotManager, setFundAccountIsNotManager] = useState<boolean>(false)
+  useEffect(() => {
+    if (!investorManagingFundLoading) {
+      setState()
+    }
+    async function setState() {
+      if (investorManagingFund && fundAddress && investorManagingFund.toUpperCase() !== fundAddress.toUpperCase()) {
+        setFundAccountIsNotManager(true)
+      } else {
+        setFundAccountIsNotManager(false)
+      }
+    }
+  }, [investorManagingFund, fundAddress, investorManagingFundLoading])
 
   const investorData = useInvestorData(fundAddress, investorAddress).data
   const chartData = useInvestorChartData(fundAddress, investorAddress).data
@@ -502,7 +530,7 @@ export default function FundAccount() {
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
-    ) : isManager && isManagerAccount ? (
+    ) : accountIsManager && fundAccountIsManager ? (
       <>
         <ButtonPrimary
           $borderRadius="12px"
@@ -529,7 +557,7 @@ export default function FundAccount() {
           )}
         />
       </>
-    ) : isManager && isInvestorAccount ? (
+    ) : accountIsManager && fundAccountIsNotManager ? (
       <>
         <ButtonPrimary
           $borderRadius="12px"
@@ -556,7 +584,7 @@ export default function FundAccount() {
           )}
         />
       </>
-    ) : isInvestor && isInvestorAccount ? (
+    ) : accountIsInvestor && fundAccountIsNotManager && accountIsFundAccount ? (
       <>
         <ButtonPrimary
           $borderRadius="12px"
@@ -583,9 +611,7 @@ export default function FundAccount() {
           )}
         />
       </>
-    ) : (
-      <></>
-    )
+    ) : null
 
   return (
     <PageWrapper>
@@ -808,11 +834,18 @@ export default function FundAccount() {
           </ContentLayout>
           <TitleRow mt={'16px'}>
             <ThemedText.DeprecatedMain fontSize="24px">Positions</ThemedText.DeprecatedMain>
-            <ButtonRow>
-              <ResponsiveButtonPrimary data-cy="join-pool-button" id="join-pool-button" as={Link} to={newPositionLink}>
-                + <Trans>New Position</Trans>
-              </ResponsiveButtonPrimary>
-            </ButtonRow>
+            {accountIsManager ? (
+              <ButtonRow>
+                <ResponsiveButtonPrimary
+                  data-cy="join-pool-button"
+                  id="join-pool-button"
+                  as={Link}
+                  to={newPositionLink}
+                >
+                  + <Trans>New Position</Trans>
+                </ResponsiveButtonPrimary>
+              </ButtonRow>
+            ) : null}
           </TitleRow>
           <MainContentWrapper>
             {positionsLoading ? (
