@@ -5,7 +5,6 @@ import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FundList from 'components/FundList'
-//import PositionList from 'components/PositionList'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
@@ -15,13 +14,10 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
-//import { useV3Positions } from 'hooks/useV3Positions'
 import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
-//import { useUserHideClosedPositions } from 'state/user/hooks'
 import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
-//import { PositionDetails } from 'types/position'
 import { FundDetails } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
@@ -223,6 +219,7 @@ export default function Account() {
     'subscribedFunds',
     []
   )
+
   const [investingFundsInfo, setInvestingFundsInfo] = useState<FundDetails[]>()
   const [investingFundsInfoLoading, setInvestingFundsInfoLoading] = useState(false)
   useEffect(() => {
@@ -373,10 +370,9 @@ export default function Account() {
                 )}
               </MainContentWrapper>
               <MainContentWrapper>
-                {investingFundsLoading ? (
+                {investingFundsLoading || investingFundsInfoLoading ? (
                   <FundsLoadingPlaceholder />
                 ) : investingFundsInfo && investingFundsInfo.length > 0 ? (
-                  //<Trans>{investingFunds}</Trans>
                   <FundList
                     isManagingFund={false}
                     funds={investingFundsInfo}

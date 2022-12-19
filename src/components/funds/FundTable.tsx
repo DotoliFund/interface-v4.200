@@ -112,8 +112,6 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
-  const theme = useTheme()
-
   return (
     <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>

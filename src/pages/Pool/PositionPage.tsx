@@ -540,6 +540,8 @@ export function PositionPage() {
     async function setState() {
       if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
+      } else {
+        setIsManager(false)
       }
     }
   }, [isManagerLoading, myFund, fundAddress])
@@ -652,35 +654,33 @@ export function PositionPage() {
                 </Badge>
                 <RangeBadge removed={removed} inRange={inRange} />
               </RowFixed>
-              {isManager && (
-                <RowFixed>
-                  {currency0 && currency1 && feeAmount && tokenId ? (
-                    <ButtonGray
-                      as={Link}
-                      to={`/increase/${fundAddress}/${investor}/${currencyId(currency0)}/${currencyId(
-                        currency1
-                      )}/${feeAmount}/${tokenId}`}
-                      width="fit-content"
-                      padding="6px 8px"
-                      $borderRadius="12px"
-                      style={{ marginRight: '8px' }}
-                    >
-                      <Trans>Increase Liquidity</Trans>
-                    </ButtonGray>
-                  ) : null}
-                  {tokenId && !removed ? (
-                    <ResponsiveButtonPrimary
-                      as={Link}
-                      to={`/remove/${fundAddress}/${investor}/${tokenId}`}
-                      width="fit-content"
-                      padding="6px 8px"
-                      $borderRadius="12px"
-                    >
-                      <Trans>Remove Liquidity</Trans>
-                    </ResponsiveButtonPrimary>
-                  ) : null}
-                </RowFixed>
-              )}
+              <RowFixed>
+                {isManager && currency0 && currency1 && feeAmount && tokenId ? (
+                  <ButtonGray
+                    as={Link}
+                    to={`/increase/${fundAddress}/${investor}/${currencyId(currency0)}/${currencyId(
+                      currency1
+                    )}/${feeAmount}/${tokenId}`}
+                    width="fit-content"
+                    padding="6px 8px"
+                    $borderRadius="12px"
+                    style={{ marginRight: '8px' }}
+                  >
+                    <Trans>Increase Liquidity</Trans>
+                  </ButtonGray>
+                ) : null}
+                {(isManager || account?.toUpperCase() === investor?.toUpperCase()) && tokenId && !removed ? (
+                  <ResponsiveButtonPrimary
+                    as={Link}
+                    to={`/remove/${fundAddress}/${investor}/${tokenId}`}
+                    width="fit-content"
+                    padding="6px 8px"
+                    $borderRadius="12px"
+                  >
+                    <Trans>Remove Liquidity</Trans>
+                  </ResponsiveButtonPrimary>
+                ) : null}
+              </RowFixed>
             </ResponsiveRow>
             <RowBetween></RowBetween>
           </AutoColumn>
@@ -700,11 +700,6 @@ export function PositionPage() {
                 <div style={{ marginRight: 12 }}>
                   <NFT image={metadata.result.image} height={400} />
                 </div>
-                {/* {typeof chainId === 'number' && owner && !ownsNFT ? (
-                  <ExternalLink href={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)}>
-                    <Trans>Owner</Trans>
-                  </ExternalLink>
-                ) : null} */}
               </DarkCard>
             ) : (
               <DarkCard
@@ -797,7 +792,7 @@ export function PositionPage() {
                           </ThemedText.DeprecatedLargeHeader>
                         )}
                       </AutoColumn>
-                      {isManager &&
+                      {(isManager || account?.toUpperCase() === investor?.toUpperCase()) &&
                       (feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) || !!collectMigrationHash) ? (
                         <ButtonConfirmed
                           disabled={collecting || !!collectMigrationHash}

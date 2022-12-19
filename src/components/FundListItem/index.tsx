@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import Badge from 'components/Badge'
 import Loader from 'components/Loader'
 import Percent from 'components/Percent'
@@ -181,10 +180,9 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 }
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
-  const { fund: fundAddress, investor: investorAddress } = fundDetails
-  const { account } = useWeb3React()
+  const { fund: fundAddress } = fundDetails
   const fundData = useFundData(fundAddress.toUpperCase()).data
-  const fundLink = '/fund/' + fundAddress + '/' + account
+  const fundLink = '/fund/' + fundAddress
 
   return (
     <LinkRow to={fundLink}>
