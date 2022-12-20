@@ -61,6 +61,8 @@ export function useInvestorChartData(
     client: dataClient,
   })
 
+  if (!data || (data && !data.investorSnapshots)) return { data: [], error: false, loading: false }
+
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
 

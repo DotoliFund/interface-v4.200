@@ -65,6 +65,8 @@ export function useInvestorData(
     client: dataClient,
   })
 
+  if (!data || (data && !data.investor)) return { data: undefined, error: false, loading: false }
+
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
 

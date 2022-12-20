@@ -181,7 +181,6 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
   const { fund: fundAddress } = fundDetails
-  console.log(444, fundAddress)
   const fundData = useFundData(fundAddress).data
   const fundLink = '/fund/' + fundAddress
   return (

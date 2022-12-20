@@ -258,11 +258,6 @@ export default function Account() {
     }
   }, [investingFundsLoading, managingFund, investingFunds, provider, account])
 
-  console.log(11, managingFund)
-  console.log(22, investingFunds)
-  console.log(33, managingFundInfo)
-  console.log(44, investingFundsInfo)
-
   const menuItems = [
     {
       content: (

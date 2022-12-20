@@ -40,6 +40,8 @@ export function useXXXFund2ChartData(): {
     client: dataClient,
   })
 
+  if (!data || (data && !data.xxxfund2Snapshots)) return { data: [], error: false, loading: false }
+
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
 

@@ -51,6 +51,8 @@ export function useFundChartData(fund: string | undefined): {
     client: dataClient,
   })
 
+  if (!data || (data && !data.fundSnapshots)) return { data: [], error: false, loading: false }
+
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
 
