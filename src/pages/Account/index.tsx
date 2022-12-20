@@ -8,7 +8,8 @@ import FundList from 'components/FundList'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { NULL_ADDRESS, XXXFACTORY_ADDRESSES } from 'constants/addresses'
+import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
+import { NULL_ADDRESS } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
 import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
@@ -210,6 +211,8 @@ export default function Account() {
             investor: account,
           },
         ])
+      } else {
+        setManagingFundInfo(undefined)
       }
     }
   }, [managingFundLoading, managingFund, provider, account])
@@ -217,7 +220,7 @@ export default function Account() {
   const { loading: investingFundsLoading, result: [investingFunds] = [] } = useSingleCallResult(
     XXXFactoryContract,
     'subscribedFunds',
-    []
+    [account ?? undefined]
   )
 
   const [investingFundsInfo, setInvestingFundsInfo] = useState<FundDetails[]>()
@@ -231,21 +234,34 @@ export default function Account() {
       setInvestingFundsInfoLoading(false)
     }
     async function getInfo() {
-      if (investingFunds && investingFunds.length > 0 && investingFunds !== NULL_ADDRESS && provider && account) {
+      if (investingFunds && investingFunds.length > 0 && provider && account) {
         const investingFundList = investingFunds
         const investingFundsInfoList: FundDetails[] = []
 
         for (let i = 0; i < investingFundList.length; i++) {
+          const investingFund: string = investingFundList[i]
+          if (investingFund.toUpperCase() === managingFund.toUpperCase()) continue
           const investingFundsInfo: FundDetails = {
-            fund: investingFundList[i],
+            fund: investingFund,
             investor: account,
           }
           investingFundsInfoList.push(investingFundsInfo)
         }
-        setInvestingFundsInfo(investingFundsInfoList)
+        if (investingFundsInfoList.length === 0) {
+          setInvestingFundsInfo(undefined)
+        } else {
+          setInvestingFundsInfo(investingFundsInfoList)
+        }
+      } else {
+        setInvestingFundsInfo(undefined)
       }
     }
-  }, [investingFundsLoading, investingFunds, provider, account])
+  }, [investingFundsLoading, managingFund, investingFunds, provider, account])
+
+  console.log(11, managingFund)
+  console.log(22, investingFunds)
+  console.log(33, managingFundInfo)
+  console.log(44, investingFundsInfo)
 
   const menuItems = [
     {

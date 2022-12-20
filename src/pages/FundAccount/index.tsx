@@ -290,7 +290,7 @@ export default function FundAccount() {
         setAccountIsFundAccount(false)
       }
     }
-  }, [investorAddress, isAccountSubscribedLoading, isAccountSubscribed])
+  }, [account, investorAddress, isAccountSubscribedLoading, isAccountSubscribed])
 
   const [fundAccountIsManager, setFundAccountIsManager] = useState<boolean>(false)
   useEffect(() => {

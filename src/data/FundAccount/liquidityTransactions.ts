@@ -196,7 +196,6 @@ export function useFundAccountLiquidityTransactions(
   // get client
   const { dataClient } = useClients()
 
-  const id = fund.toUpperCase() + '-' + investor.toUpperCase()
   const { loading, error, data } = useQuery<InvestorTransactionResults>(FUND_ACCOUNT_TRANSACTIONS, {
     variables: { fund, investor },
     client: dataClient,

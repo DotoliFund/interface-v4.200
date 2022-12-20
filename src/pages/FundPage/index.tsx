@@ -119,6 +119,8 @@ export default function FundPage() {
     async function setState() {
       if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
         setIsManager(true)
+      } else {
+        setIsManager(false)
       }
     }
   }, [isManagerLoading, myFund, fundAddress])
@@ -136,12 +138,14 @@ export default function FundPage() {
     async function setState() {
       if (isSubscribed) {
         setIsInvestor(true)
+      } else {
+        setIsInvestor(false)
       }
     }
   }, [isInvestorLoading, isSubscribed, myFund])
 
   // token data
-  const fundData = useFundData(fundAddress?.toUpperCase()).data
+  const fundData = useFundData(fundAddress).data
   const chartData = useFundChartData(fundAddress).data
   const transactions = useFundTransactions(fundAddress).data
   const investors = useFundInvestors(fundAddress).data
