@@ -5,7 +5,9 @@ import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Column from 'components/Column'
 import Row, { RowBetween } from 'components/Row'
+import { NULL_ADDRESS } from 'constants/addresses'
 import { useActiveTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
+import { useCurrency } from 'hooks/Tokens'
 import { useXXXFund2Contract } from 'hooks/useContract'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
@@ -113,17 +115,20 @@ export function FeeCurrencySearch({
     []
   )
 
-  const searchCurrencies: Currency[] = useMemo(() => {
-    const s = debouncedQuery.toLowerCase().trim()
+  const currency = useCurrency(getFeeTokens ? getFeeTokens[0][0] : NULL_ADDRESS)
 
-    const tokens = filteredSortedTokens.filter((t) => !(t.equals(wrapped) || (disableNonToken && t.isNative)))
-    const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
-      (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
-    )
-    console.log(11, tokens)
-    console.log(22, natives)
-    return [...natives, ...tokens]
-  }, [debouncedQuery, filteredSortedTokens, wrapped, disableNonToken, native])
+  const searchCurrencies: Currency[] = useMemo(() => {
+    return currency ? [currency] : []
+    // const s = debouncedQuery.toLowerCase().trim()
+
+    // const tokens = filteredSortedTokens.filter((t) => !(t.equals(wrapped) || (disableNonToken && t.isNative)))
+    // const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
+    //   (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
+    // )
+    // console.log(11, tokens)
+    // console.log(22, natives)
+    // return [...natives, ...tokens]
+  }, [currency])
 
   console.log(33, searchCurrencies)
 
