@@ -274,7 +274,6 @@ export default function FundPage() {
   }, [chartData])
 
   function onAccount(fund: string, account: string) {
-    navigate('/fund')
     navigate(`/fund/${fund}/${account}`)
   }
 
@@ -310,10 +309,11 @@ export default function FundPage() {
       })
   }
 
-  const Buttons = () =>
+  const ButtonA = () =>
     !account ? (
       <ButtonPrimary
         $borderRadius="12px"
+        margin={'6px'}
         padding={'12px'}
         data-testid="navbar-connect-wallet"
         onClick={toggleWalletModal}
@@ -323,18 +323,40 @@ export default function FundPage() {
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
     ) : (isManager || isInvestor) && fundAddress ? (
-      <ButtonPrimary $borderRadius="12px" padding={'12px'} onClick={() => onAccount(fundAddress, account)}>
+      <ButtonPrimary
+        $borderRadius="12px"
+        margin={'6px'}
+        padding={'12px'}
+        onClick={() => onAccount(fundAddress, account)}
+      >
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>My Account</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
     ) : (
-      <ButtonPrimary $borderRadius="12px" padding={'12px'} onClick={() => onSubscribe()}>
+      <ButtonPrimary $borderRadius="12px" margin={'6px'} padding={'12px'} onClick={() => onSubscribe()}>
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>Subscribe</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
     )
+
+  const ButtonB = () =>
+    account && isManager && fundAddress ? (
+      <ButtonPrimary
+        $borderRadius="12px"
+        margin={'6px'}
+        padding={'12px'}
+        data-testid="navbar-connect-wallet"
+        onClick={() => {
+          navigate(`/fee/${fundAddress}`)
+        }}
+      >
+        <ThemedText.DeprecatedMain mb="4px">
+          <Trans>Fee</Trans>
+        </ThemedText.DeprecatedMain>
+      </ButtonPrimary>
+    ) : null
 
   return (
     <PageWrapper>
@@ -366,7 +388,8 @@ export default function FundPage() {
             </AutoColumn>
             {activeNetwork !== EthereumNetworkInfo ? null : (
               <RowFixed>
-                <Buttons />
+                <ButtonA />
+                <ButtonB />
               </RowFixed>
             )}
           </ResponsiveRow>

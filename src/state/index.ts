@@ -5,6 +5,7 @@ import { load, save } from 'redux-localstorage-simple'
 import connection from 'state/connection/reducer'
 import create from 'state/create/reducer'
 import deposit from 'state/deposit/reducer'
+import fee from 'state/fee/reducer'
 import swap from 'state/swap/reducer'
 import transactions from 'state/transactions/reducer'
 import user from 'state/user/reducer'
@@ -27,6 +28,7 @@ export const store = configureStore({
     application,
     deposit,
     withdraw,
+    fee,
     wallets,
     create,
     user,

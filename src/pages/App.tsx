@@ -8,6 +8,7 @@ import { useFeatureFlagsIsLoaded } from 'featureFlags'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Account from 'pages/Account'
 import Deposit from 'pages/Deposit'
+import Fee from 'pages/Fee'
 import FundAccount from 'pages/FundAccount'
 import FundPage from 'pages/FundPage'
 import Home from 'pages/Home'
@@ -138,6 +139,7 @@ export default function App() {
                   <Route path="fund/:fundAddress/:investorAddress" element={<FundAccount />} />
                   <Route path="deposit/:fundAddress/:investorAddress" element={<Deposit />} />
                   <Route path="withdraw/:fundAddress/:investorAddress" element={<Withdraw />} />
+                  <Route path="fee/:fundAddress" element={<Fee />} />
                   <Route path="swap/:fundAddress/:investorAddress" element={<Swap />} />
                   <Route path="pool/:fundAddress/:investorAddress/:tokenId" element={<PositionPage />} />
                   <Route path="add" element={<RedirectDuplicateTokenIds />}>

@@ -32,6 +32,8 @@ export function tokenComparator(balances: TokenBalances, a: Token, b: Token) {
 
 /** Sorts tokens by query, giving precedence to exact matches and partial matches. */
 export function useSortTokensByQuery<T extends Token | TokenInfo>(query: string, tokens?: T[]): T[] {
+  console.log(33, query)
+  console.log(44, tokens)
   return useMemo(() => {
     if (!tokens) {
       return []
