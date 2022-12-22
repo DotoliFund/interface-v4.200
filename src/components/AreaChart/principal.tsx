@@ -70,11 +70,12 @@ const Chart = ({
   const [presentCursor, setPresentCursor] = useState<boolean | true>()
 
   const CustomTooltip = (props: any) => {
-    if (props.active) {
-      setPresentCursor(false)
-    } else {
-      setPresentCursor(true)
-    }
+    //TODO : if remove comment, error possible
+    // if (props.active) {
+    //   setPresentCursor(false)
+    // } else {
+    //   setPresentCursor(true)
+    // }
 
     if (props.payload && props.payload.length) {
       setLabel(props.payload[0].payload.time)
