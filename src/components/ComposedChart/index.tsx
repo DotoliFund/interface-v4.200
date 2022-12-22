@@ -4,7 +4,7 @@ import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Bar, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
@@ -85,16 +85,25 @@ const Chart = ({
     // } else {
     //   setPresentCursor(true)
     // }
+    const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
+    const label = payload ? payload.payload.time : undefined
+    const value = payload ? payload.value : undefined
+    const liquidityVolume = payload ? payload.payload.liquidityVolume : undefined
+    const principal = payload ? payload.payload.principal : undefined
+    const tokens = payload ? payload.payload.tokens : undefined
+    const symbols = payload ? payload.payload.symbols : undefined
+    const tokensVolumeUSD = payload ? payload.payload.tokensVolume : undefined
 
-    if (props.payload && props.payload.length) {
-      setLabel(props.payload[0].payload.time)
-      setValue(props.payload[0].value)
-      setLiquidityVolume(props.payload[0].payload.liquidityVolume)
-      setPrincipal(props.payload[0].payload.principal)
-      setTokens(props.payload[0].payload.tokens)
-      setSymbols(props.payload[0].payload.symbols)
-      setTokensVolumeUSD(props.payload[0].payload.tokensVolume)
-    }
+    useEffect(() => {
+      setLabel(label)
+      setValue(value)
+      setLiquidityVolume(liquidityVolume)
+      setPrincipal(principal)
+      setTokens(tokens)
+      setSymbols(symbols)
+      setTokensVolumeUSD(tokensVolumeUSD)
+    }, [label, value, liquidityVolume, principal, tokens, symbols, tokensVolumeUSD])
+
     return null
   }
 
