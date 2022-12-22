@@ -5,9 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Column from 'components/Column'
 import Row, { RowBetween } from 'components/Row'
-import { NULL_ADDRESS } from 'constants/addresses'
 import { useActiveTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
-import { useCurrency } from 'hooks/Tokens'
 import { useXXXFund2Contract } from 'hooks/useContract'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
@@ -23,12 +21,13 @@ import { Text } from 'rebass'
 import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { CloseIcon, ThemedText } from 'theme'
+import { FeeToken } from 'types/fund'
 import { isAddress } from 'utils'
 
 import CommonBases from '../CommonBases'
 import { CurrencyRow, formatAnalyticsEventProperties } from '../CurrencyList'
-import CurrencyList from '../CurrencyList'
 import { PaddedColumn, SearchInput, Separator } from '../styleds'
+import FeeCurrencyList from './FeeCurrencyList'
 
 const ContentWrapper = styled(Column)`
   background-color: ${({ theme }) => theme.backgroundSurface};
@@ -47,6 +46,16 @@ interface FeeCurrencySearchProps {
   showCommonBases?: boolean
   showCurrencyAmount?: boolean
   disableNonToken?: boolean
+}
+
+function isTokenExist(tokens: FeeToken[], token: string) {
+  let isExist = false
+  tokens.map((value, index) => {
+    if (value.tokenAddress.toUpperCase() === token.toUpperCase()) {
+      isExist = true
+    }
+  })
+  return isExist
 }
 
 export function FeeCurrencySearch({
@@ -108,29 +117,24 @@ export function FeeCurrencySearch({
   const native = useNativeCurrency()
   const wrapped = native.wrapped
 
-  //TODO : getFeeTokens
   const { loading: getFeeTokensLoading, result: [getFeeTokens] = [] } = useSingleCallResult(
     XXXFund2Contract,
     'getFeeTokens',
     []
   )
-
-  const currency = useCurrency(getFeeTokens ? getFeeTokens[0][0] : NULL_ADDRESS)
+  const feeTokens: FeeToken[] = getFeeTokens
 
   const searchCurrencies: Currency[] = useMemo(() => {
-    return currency ? [currency] : []
-    // const s = debouncedQuery.toLowerCase().trim()
+    const s = debouncedQuery.toLowerCase().trim()
 
-    // const tokens = filteredSortedTokens.filter((t) => !(t.equals(wrapped) || (disableNonToken && t.isNative)))
-    // const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
-    //   (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
-    // )
-    // console.log(11, tokens)
-    // console.log(22, natives)
-    // return [...natives, ...tokens]
-  }, [currency])
-
-  console.log(33, searchCurrencies)
+    const tokens = filteredSortedTokens.filter(
+      (t) => !t.equals(wrapped) && !(disableNonToken && t.isNative) && isTokenExist(feeTokens, t.address)
+    )
+    const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
+      (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
+    )
+    return [...natives, ...tokens]
+  }, [filteredSortedTokens, debouncedQuery, disableNonToken, wrapped, native, feeTokens])
 
   const handleCurrencySelect = useCallback(
     (currency: Currency, hasWarning?: boolean) => {
@@ -244,9 +248,10 @@ export function FeeCurrencySearch({
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>
             {({ height }) => (
-              <CurrencyList
+              <FeeCurrencyList
                 height={height}
                 currencies={searchCurrencies}
+                feeTokens={feeTokens}
                 otherListTokens={filteredInactiveTokens}
                 onCurrencySelect={handleCurrencySelect}
                 otherCurrency={otherSelectedCurrency}

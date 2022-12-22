@@ -1,16 +1,17 @@
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, Fraction, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
 import { checkWarning } from 'constants/tokenSafety'
+import JSBI from 'jsbi'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { XOctagon } from 'react-feather'
 import { Check } from 'react-feather'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
+import { FeeToken } from 'types/fund'
 
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
-import { useCurrencyBalance } from '../../../state/connection/hooks'
 import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 import { ThemedText } from '../../../theme'
 import Column, { AutoColumn } from '../../Column'
@@ -65,8 +66,8 @@ export const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
   height: 1em;
 `
 
-function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
-  return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
+function Balance({ balance }: { balance: string }) {
+  return <StyledBalanceText title={balance}>{balance}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
@@ -103,8 +104,13 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
-export function CurrencyRow({
+function getFeeTokenAmountDecimal(token: Currency, amount: number): string {
+  return new Fraction(amount, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(token.decimals))).toSignificant(6)
+}
+
+export function FeeCurrencyRow({
   currency,
+  feeToken,
   onSelect,
   isSelected,
   otherSelected,
@@ -113,6 +119,7 @@ export function CurrencyRow({
   eventProperties,
 }: {
   currency: Currency
+  feeToken: FeeToken
   onSelect: (hasWarning: boolean) => void
   isSelected: boolean
   otherSelected: boolean
@@ -123,11 +130,14 @@ export function CurrencyRow({
   const { account } = useWeb3React()
   const key = currencyKey(currency)
   const customAdded = useIsUserAddedToken(currency)
-  const balance = useCurrencyBalance(account ?? undefined, currency)
-  // const balance = useCurrencyBalance(account ?? undefined, currency) //TODO : change balance to fee amount
+  const balance = currency && feeToken ? getFeeTokenAmountDecimal(currency, feeToken.amount) : '0'
+  // const balance = useCurrencyBalance(account ?? undefined, currency)
   const warning = currency.isNative ? null : checkWarning(currency.address)
   const isBlockedToken = !!warning && !warning.canProceed
   const blockedTokenOpacity = '0.6'
+
+  console.log(11, currency)
+  console.log(22, feeToken)
 
   // only show add or remove buttons if not on selected list
   return (
@@ -215,6 +225,7 @@ const LoadingRow = () => (
 export default function CurrencyList({
   height,
   currencies,
+  feeTokens,
   otherListTokens,
   selectedCurrency,
   onCurrencySelect,
@@ -227,6 +238,7 @@ export default function CurrencyList({
 }: {
   height: number
   currencies: Currency[]
+  feeTokens: FeeToken[]
   otherListTokens?: WrappedTokenInfo[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency, hasWarning?: boolean) => void
@@ -247,7 +259,7 @@ export default function CurrencyList({
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
       const row: Currency = data[index]
-
+      const feeToken: FeeToken = feeTokens[index]
       const currency = row
 
       const isSelected = Boolean(currency && selectedCurrency && selectedCurrency.equals(currency))
@@ -260,9 +272,10 @@ export default function CurrencyList({
         return LoadingRow()
       } else if (currency) {
         return (
-          <CurrencyRow
+          <FeeCurrencyRow
             style={style}
             currency={currency}
+            feeToken={feeToken}
             isSelected={isSelected}
             onSelect={handleSelect}
             otherSelected={otherSelected}
@@ -274,7 +287,16 @@ export default function CurrencyList({
         return null
       }
     },
-    [onCurrencySelect, otherCurrency, selectedCurrency, showCurrencyAmount, isLoading, isAddressSearch, searchQuery]
+    [
+      onCurrencySelect,
+      otherCurrency,
+      feeTokens,
+      selectedCurrency,
+      showCurrencyAmount,
+      isLoading,
+      isAddressSearch,
+      searchQuery,
+    ]
   )
 
   const itemKey = useCallback((index: number, data: typeof itemData) => {

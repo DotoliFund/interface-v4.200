@@ -203,9 +203,7 @@ export abstract class XXXFund2 {
 
   public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [token, toHex(amount.quotient)])
-
     const value: string = toHex(0)
-
     return {
       calldata,
       value,
@@ -214,9 +212,7 @@ export abstract class XXXFund2 {
 
   public static withdrawCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('withdraw', [token, toHex(amount.quotient)])
-
     const value: string = toHex(0)
-
     return {
       calldata,
       value,
@@ -225,9 +221,7 @@ export abstract class XXXFund2 {
 
   public static feeOutCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('feeOut', [token, toHex(amount.quotient)])
-
     const value: string = toHex(0)
-
     return {
       calldata,
       value,

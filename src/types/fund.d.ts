@@ -3,6 +3,11 @@ export interface FundDetails {
   investor: string
 }
 
+export interface FeeToken {
+  tokenAddress: string
+  amount: number
+}
+
 export interface Fund {
   address: string
   createdAtTimestamp: number
