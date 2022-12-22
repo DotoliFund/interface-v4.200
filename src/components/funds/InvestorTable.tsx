@@ -8,9 +8,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
-import { ExternalLink, ThemedText } from 'theme'
+import { ThemedText } from 'theme'
 import { Investor } from 'types/fund'
-import { getEtherscanLink, shortenAddress } from 'utils'
+import { shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
@@ -91,14 +91,7 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
   return (
     <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
       <ResponsiveGrid>
-        <Label fontWeight={400}>
-          <ExternalLink
-            href={getEtherscanLink(1, investor.manager, 'address', activeNetwork)}
-            style={{ color: color ?? theme.deprecated_blue1 }}
-          >
-            {shortenAddress(investor.investor)}
-          </ExternalLink>
-        </Label>
+        <Label fontWeight={400}>{shortenAddress(investor.investor)}</Label>
         <Label end={1} fontWeight={400}>
           {formatDollarAmount(Number((investor.volumeUSD + investor.liquidityVolumeUSD).toFixed(2)))}
         </Label>
