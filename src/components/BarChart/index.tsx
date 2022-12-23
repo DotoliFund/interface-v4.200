@@ -28,10 +28,6 @@ export type BarChartProps = {
   setSymbol: Dispatch<SetStateAction<string | undefined>>
   setValue: Dispatch<SetStateAction<number | undefined>>
   setAmount: Dispatch<SetStateAction<number | undefined>>
-  label?: string
-  symbol?: string
-  value?: number
-  amount?: number
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -42,10 +38,6 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#4A2B65',
-  label,
-  symbol,
-  value,
-  amount,
   setLabel,
   setSymbol,
   setValue,

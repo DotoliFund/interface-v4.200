@@ -442,8 +442,6 @@ export default function FundPage() {
                 <ComposedChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
-                  label={dateHover}
-                  value={volumeHover}
                   setLabel={setDateHover}
                   setValue={setVolumeHover}
                   setLiquidityVolume={setLiquidityHover}
@@ -522,10 +520,6 @@ export default function FundPage() {
                 <BarChart
                   data={formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
-                  label={tokenAddressHover}
-                  symbol={tokenSymbolHover}
-                  value={tokenVolumeHover}
-                  amount={tokenAmountHover}
                   setLabel={setTokenAddressHover}
                   setSymbol={setTokenSymbolHover}
                   setValue={setTokenVolumeHover}
@@ -547,7 +541,7 @@ export default function FundPage() {
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {tokenAddressHover ? (
+                          {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
                             formatAmount(tokenAmountHover)
                           ) : (
                             <>
@@ -585,8 +579,6 @@ export default function FundPage() {
                   height={220}
                   minHeight={332}
                   color={activeNetwork.primaryColor}
-                  label={dateHover}
-                  value={volumeHover}
                   setLabel={setDateHover}
                   setValue={setVolumeHover}
                   topLeft={
@@ -599,8 +591,12 @@ export default function FundPage() {
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="12px" height="14px">
-                        {latestVolumeData ? (
+                      <ThemedText.DeprecatedMain fontSize="14px" height="14px">
+                        {dateHover ? (
+                          <MonoSpace>
+                            {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
+                          </MonoSpace>
+                        ) : latestVolumeData ? (
                           <MonoSpace>
                             {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
                           </MonoSpace>

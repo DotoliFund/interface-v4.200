@@ -124,8 +124,6 @@ export default function Overview() {
             <AreaChart
               data={formattedTvlData}
               color={activeNetwork.primaryColor}
-              label={dateHover}
-              value={tvlHover}
               setLabel={setDateHover}
               setValue={setTvlHover}
               topLeft={
@@ -165,8 +163,6 @@ export default function Overview() {
               height={220}
               minHeight={332}
               color={activeNetwork.primaryColor}
-              value={investorCountHover}
-              label={investorCountLabel}
               setValue={setInvestorCountHover}
               setLabel={setInvestorCountLabel}
               topLeft={

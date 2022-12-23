@@ -34,8 +34,6 @@ export type AreaChartProps = {
   minHeight?: number
   setLabel: Dispatch<SetStateAction<string | undefined>>
   setValue: Dispatch<SetStateAction<number | undefined>>
-  label?: string
-  value?: number
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -45,9 +43,6 @@ export type AreaChartProps = {
 const Chart = ({
   data,
   color = '#56B2A4',
-  color2 = '#4A2B65',
-  label,
-  value,
   setLabel,
   setValue,
   topLeft,

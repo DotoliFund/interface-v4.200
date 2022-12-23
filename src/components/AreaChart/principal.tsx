@@ -40,8 +40,6 @@ export type AreaChartProps = {
   setTokens: Dispatch<SetStateAction<string[] | undefined>>
   setSymbols: Dispatch<SetStateAction<string[] | undefined>>
   setTokensVolumeUSD: Dispatch<SetStateAction<number[] | undefined>>
-  label?: string
-  value?: number
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -52,8 +50,6 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#4A2B65',
-  label,
-  value,
   setLabel,
   setValue,
   setPrincipal,

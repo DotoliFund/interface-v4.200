@@ -688,8 +688,6 @@ export default function FundAccount() {
                 <ComposedChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
-                  label={dateHover}
-                  value={volumeHover}
                   setLabel={setDateHover}
                   setValue={setVolumeHover}
                   setLiquidityVolume={setLiquidityHover}
@@ -768,12 +766,6 @@ export default function FundAccount() {
                 <BarChart
                   data={formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
-                  label={tokenAddressHover}
-                  symbol={tokenSymbolHover}
-                  value={tokenVolumeHover}
-                  amount={tokenAmountHover}
-                  liquidityValue={liquidityVolumeHover}
-                  liquidityAmount={liquidityAmountHover}
                   setLabel={setTokenAddressHover}
                   setSymbol={setTokenSymbolHover}
                   setValue={setTokenVolumeHover}
