@@ -15,10 +15,7 @@ import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 const ETHERSCAN_PREFIXES: { [chainId: number]: string } = {
   [SupportedChainId.MAINNET]: '',
-  [SupportedChainId.ROPSTEN]: 'ropsten.',
-  [SupportedChainId.RINKEBY]: 'rinkeby.',
   [SupportedChainId.GOERLI]: 'goerli.',
-  [SupportedChainId.KOVAN]: 'kovan.',
   [SupportedChainId.OPTIMISM]: 'optimistic.',
   [SupportedChainId.OPTIMISM_GOERLI]: 'goerli-optimistic.',
 }
