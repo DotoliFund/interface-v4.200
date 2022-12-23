@@ -4,7 +4,7 @@ import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { useState } from 'react'
 import { Area, AreaChart, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
@@ -70,21 +70,25 @@ const Chart = ({
   const [presentCursor, setPresentCursor] = useState<boolean | true>()
 
   const CustomTooltip = (props: any) => {
-    //TODO : if remove comment, error possible
-    // if (props.active) {
-    //   setPresentCursor(false)
-    // } else {
-    //   setPresentCursor(true)
-    // }
+    const active = props.active ? false : true
+    const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
+    const time = payload ? payload.payload.time : undefined
+    const value = payload ? payload.value : undefined
+    const principal = payload ? payload.payload.principal : undefined
+    const tokens = payload ? payload.payload.tokens : undefined
+    const symbols = payload ? payload.payload.symbols : undefined
+    const tokensVolume = payload ? payload.payload.tokensVolume : undefined
 
-    if (props.payload && props.payload.length) {
-      setLabel(props.payload[0].payload.time)
-      setValue(props.payload[0].value)
-      setPrincipal(props.payload[0].payload.principal)
-      setTokens(props.payload[0].payload.tokens)
-      setSymbols(props.payload[0].payload.symbols)
-      setTokensVolumeUSD(props.payload[0].payload.tokensVolume)
-    }
+    useEffect(() => {
+      setPresentCursor(active)
+      setLabel(time)
+      setValue(value)
+      setPrincipal(principal)
+      setTokens(tokens)
+      setSymbols(symbols)
+      setTokensVolumeUSD(tokensVolume)
+    }, [active, time, value, principal, tokens, symbols, tokensVolume])
+
     return null
   }
 

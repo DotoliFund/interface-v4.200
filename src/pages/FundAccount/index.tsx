@@ -796,33 +796,41 @@ export default function FundAccount() {
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {formatAmount(
-                            tokenAmountHover !== undefined && liquidityAmountHover !== undefined
-                              ? tokenAmountHover + liquidityAmountHover
-                              : 0
-                          )}
-                        </MonoSpace>
+                        {tokenAmountHover && liquidityAmountHover ? (
+                          <MonoSpace>{formatAmount(tokenAmountHover + liquidityAmountHover)}</MonoSpace>
+                        ) : (
+                          <>
+                            <br />
+                          </>
+                        )}
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
                   topRight={
                     <AutoColumn gap="4px">
                       <AutoRow justify="end">
-                        <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
-                          <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
-                        </ThemedText.DeprecatedMediumHeader>
-                        <ThemedText.DeprecatedMain fontSize="20px">
-                          <MonoSpace>({formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)})</MonoSpace>
-                        </ThemedText.DeprecatedMain>
+                        {tokenAmountHover && tokenVolumeHover ? (
+                          <>
+                            <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
+                              <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
+                            </ThemedText.DeprecatedMediumHeader>
+                            <ThemedText.DeprecatedMain fontSize="20px">
+                              <MonoSpace>({formatDollarAmount(tokenVolumeHover)})</MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          </>
+                        ) : null}
                       </AutoRow>
                       <AutoRow justify="end">
-                        <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
-                          <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
-                        </ThemedText.DeprecatedMediumHeader>
-                        <ThemedText.DeprecatedMain fontSize="20px">
-                          <MonoSpace>({formatDollarAmount(liquidityVolumeHover ? liquidityVolumeHover : 0)})</MonoSpace>
-                        </ThemedText.DeprecatedMain>
+                        {liquidityAmountHover && liquidityVolumeHover ? (
+                          <>
+                            <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
+                              <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
+                            </ThemedText.DeprecatedMediumHeader>
+                            <ThemedText.DeprecatedMain fontSize="20px">
+                              <MonoSpace>({formatDollarAmount(liquidityVolumeHover)})</MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          </>
+                        ) : null}
                       </AutoRow>
                     </AutoColumn>
                   }

@@ -79,30 +79,26 @@ const Chart = ({
   const [presentCursor, setPresentCursor] = useState<boolean | true>()
 
   const CustomTooltip = (props: any) => {
-    //TODO : if remove comment, error possible
-    // if (props.active) {
-    //   setPresentCursor(false)
-    // } else {
-    //   setPresentCursor(true)
-    // }
+    const active = props.active ? false : true
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
-    const label = payload ? payload.payload.time : undefined
+    const time = payload ? payload.payload.time : undefined
     const value = payload ? payload.value : undefined
     const liquidityVolume = payload ? payload.payload.liquidityVolume : undefined
     const principal = payload ? payload.payload.principal : undefined
     const tokens = payload ? payload.payload.tokens : undefined
     const symbols = payload ? payload.payload.symbols : undefined
-    const tokensVolumeUSD = payload ? payload.payload.tokensVolume : undefined
+    const tokensVolume = payload ? payload.payload.tokensVolume : undefined
 
     useEffect(() => {
-      setLabel(label)
+      setPresentCursor(active)
+      setLabel(time)
       setValue(value)
       setLiquidityVolume(liquidityVolume)
       setPrincipal(principal)
       setTokens(tokens)
       setSymbols(symbols)
-      setTokensVolumeUSD(tokensVolumeUSD)
-    }, [label, value, liquidityVolume, principal, tokens, symbols, tokensVolumeUSD])
+      setTokensVolumeUSD(tokensVolume)
+    }, [active, time, value, liquidityVolume, principal, tokens, symbols, tokensVolume])
 
     return null
   }

@@ -1,7 +1,7 @@
 import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
 import { darken } from 'polished'
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
 
@@ -66,12 +66,19 @@ const Chart = ({
     })
   }
   const CustomTooltip = (props: any) => {
-    if (props.payload && props.payload.length) {
-      setLabel(props.payload[0].payload.token)
-      setSymbol(props.payload[0].payload.symbol)
-      setValue(props.payload[0].value)
-      setAmount(props.payload[0].payload.amount)
-    }
+    const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
+    const token = payload ? payload.payload.token : undefined
+    const symbol = payload ? payload.payload.symbol : undefined
+    const value = payload ? payload.value : undefined
+    const amount = payload ? payload.payload.amount : undefined
+
+    useEffect(() => {
+      setLabel(token)
+      setSymbol(symbol)
+      setValue(value)
+      setAmount(amount)
+    }, [token, symbol, value, amount])
+
     return null
   }
 

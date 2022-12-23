@@ -547,12 +547,12 @@ export default function FundPage() {
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {tokenAddressHover === 'Liquidity' ? (
+                          {tokenAddressHover ? (
+                            formatAmount(tokenAmountHover)
+                          ) : (
                             <>
                               <br />
                             </>
-                          ) : (
-                            formatAmount(tokenAmountHover)
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
@@ -568,7 +568,13 @@ export default function FundPage() {
                         </ThemedText.DeprecatedMain>
                       ) : null}
                       <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                        <MonoSpace>{formatDollarAmount(tokenVolumeHover ? tokenVolumeHover : 0)}</MonoSpace>
+                        {tokenVolumeHover ? (
+                          <MonoSpace>{formatDollarAmount(tokenVolumeHover)}</MonoSpace>
+                        ) : (
+                          <>
+                            <br />
+                          </>
+                        )}
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }

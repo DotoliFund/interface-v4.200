@@ -4,7 +4,7 @@ import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
 import { unixToDate } from 'utils/date'
@@ -56,10 +56,15 @@ const Chart = ({
   bottomRight,
 }: AreaChartProps) => {
   const CustomTooltip = (props: any) => {
-    if (props.payload && props.payload.length) {
-      setLabel(props.label)
-      setValue(props.payload[0].value)
-    }
+    const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
+    const time = payload ? payload.payload.time : undefined
+    const value = payload ? payload.value : undefined
+
+    useEffect(() => {
+      setLabel(time)
+      setValue(value)
+    }, [time, value])
+
     return null
   }
 

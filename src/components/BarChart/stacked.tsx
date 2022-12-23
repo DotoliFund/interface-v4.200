@@ -1,7 +1,7 @@
 import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
 import { darken } from 'polished'
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled from 'styled-components/macro'
 
@@ -74,26 +74,25 @@ const Chart = ({
       liquidityVolume: 0,
     })
   }
+
   const CustomTooltip = (props: any) => {
-    if (props.payload && props.payload.length) {
-      setLabel(props.payload[0].payload.token)
-      setSymbol(props.payload[0].payload.symbol)
-      setValue(props.payload[0].value)
-      setAmount(props.payload[0].payload.amount)
-      setLiquidityValue(props.payload[0].payload.liquidityTokensVolume)
-      setLiquidityAmount(props.payload[0].payload.liquidityTokensAmount)
-    } else {
-      if (props.init === undefined) {
-        return null
-      } else {
-        setLabel(props.init.token)
-        setSymbol(props.init.symbol)
-        setValue(props.init.tokenVolume)
-        setAmount(props.init.amount)
-        setLiquidityValue(props.init.liquidityTokensVolume)
-        setLiquidityAmount(props.init.liquidityTokensAmount)
-      }
-    }
+    const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
+    const token = payload ? payload.payload.token : undefined
+    const symbol = payload ? payload.payload.symbol : undefined
+    const value = payload ? payload.value : undefined
+    const amount = payload ? payload.payload.amount : undefined
+    const liquidityTokensVolume = payload ? payload.payload.liquidityTokensVolume : undefined
+    const liquidityTokensAmount = payload ? payload.payload.liquidityTokensAmount : undefined
+
+    useEffect(() => {
+      setLabel(token)
+      setSymbol(symbol)
+      setValue(value)
+      setAmount(amount)
+      setLiquidityValue(liquidityTokensVolume)
+      setLiquidityAmount(liquidityTokensAmount)
+    }, [token, symbol, value, amount, liquidityTokensVolume, liquidityTokensAmount])
+
     return null
   }
 
@@ -128,7 +127,7 @@ const Chart = ({
             </linearGradient>
           </defs>
           <XAxis dataKey="symbol" axisLine={false} tickLine={false} />
-          <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
+          <Tooltip cursor={false} content={<CustomTooltip />} />
           <Legend />
           <Bar dataKey="tokenVolume" stackId="a" stroke={color} fill="url(#gradient)" maxBarSize={80} />
           <Bar dataKey="liquidityTokensVolume" stackId="a" stroke={color2} fill="url(#gradient2)" maxBarSize={80} />
