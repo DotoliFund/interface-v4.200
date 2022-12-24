@@ -54,6 +54,7 @@ function isTokenExist(tokens: FeeToken[], token: string) {
     if (value.tokenAddress.toUpperCase() === token.toUpperCase()) {
       isExist = true
     }
+    return value
   })
   return isExist
 }

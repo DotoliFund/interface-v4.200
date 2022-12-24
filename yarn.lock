@@ -43,25 +43,25 @@
   integrity sha512-+u76oB43nOHrF4DDWRLWDCtci7f3QJoEBigemIdIeTi1ODqjx6Tad9NCVnPRwewWlKkVab5PlK8DCtPTyX7S8g==
 
 "@amplitude/analytics-browser@^1.2.0":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.6.1.tgz#1b67f117643e3c3acba71a915e11d1e280a853eb"
-  integrity sha512-i9Mt3p6ikZm7zu6QRMIziSzNwWW3F2zEIKoOoBbMxy97hSliM93/VoLBLOzwMhusHK3Xy5OwcIgYVUHdXbmigw==
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.6.7.tgz#2d42db6e7c628ad7a5b0abe7323e045dda43ed67"
+  integrity sha512-XbiSH01hMpNrS7ymv5u5GB5Fwk1EO2EgWV3SZ0ck3ajKQZQg1/Q1p0TggrB79pSG047xYIdVQjoD0XzAtPdOug==
   dependencies:
-    "@amplitude/analytics-client-common" "^0.4.0"
-    "@amplitude/analytics-core" "^0.10.0"
-    "@amplitude/analytics-types" "^0.12.0"
+    "@amplitude/analytics-client-common" "^0.5.1"
+    "@amplitude/analytics-core" "^0.11.1"
+    "@amplitude/analytics-types" "^0.14.0"
     "@amplitude/ua-parser-js" "^0.7.31"
-    tslib "^2.3.1"
+    tslib "^2.4.1"
 
-"@amplitude/analytics-client-common@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-client-common/-/analytics-client-common-0.4.0.tgz#5ba53af7d447a992d006f263dd9040c87e07ec6b"
-  integrity sha512-I3cy6AYCiVUqXAD6yU+tm3qBZdEyrdruDaUS/vVPoi+MvHIkZIXw7xaQjmkBRURWCgdcxu5LioU8r1ld1widtA==
+"@amplitude/analytics-client-common@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-client-common/-/analytics-client-common-0.5.1.tgz#8ecf6db65fc59c53b624ddeda02573452b5f9271"
+  integrity sha512-RmIRJ1JG7Kre1bNY6x+mSp/LjnWNZngwL50zI9DsLuYw5fOmHCzJHn1Ntte+rQDlQ7dTr3jMg1zeP6+76CMw2Q==
   dependencies:
     "@amplitude/analytics-connector" "^1.4.5"
-    "@amplitude/analytics-core" "^0.10.0"
-    "@amplitude/analytics-types" "^0.12.0"
-    tslib "^2.3.1"
+    "@amplitude/analytics-core" "^0.11.1"
+    "@amplitude/analytics-types" "^0.14.0"
+    tslib "^2.4.1"
 
 "@amplitude/analytics-connector@^1.4.5":
   version "1.4.6"
@@ -70,18 +70,18 @@
   dependencies:
     "@amplitude/ua-parser-js" "0.7.31"
 
-"@amplitude/analytics-core@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.10.0.tgz#0d68cede53fecaadfef9c36455eb271454b6ccee"
-  integrity sha512-D/6U9SzyDmcNWnT/lFnBKfYl4ASicLlwD1tqu4RZoYS3SwHd/PNST+LbnL3yBTEIJIY//qjth9lLBh/RRzePfg==
+"@amplitude/analytics-core@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.11.1.tgz#faa801c1566dff9136091d6c9171b23ce4e18ef9"
+  integrity sha512-G+GgYFwxhD5DjYDKuC6jRcsO/kqJw4hLTlJ0x2mwppxVuMqQ44wRvdQ1hhzMRY02AGnmr0OR1xDtft8CabiIag==
   dependencies:
-    "@amplitude/analytics-types" "^0.12.0"
-    tslib "^2.3.1"
+    "@amplitude/analytics-types" "^0.14.0"
+    tslib "^2.4.1"
 
-"@amplitude/analytics-types@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.12.0.tgz#aeec6f204758637603937f05393bdf89fa8e7a5b"
-  integrity sha512-XwySEhnCdU8fNWUNaB38JS7bwOt4GOUG8OqgzuXtR8HvGnpCvuT7C6H+BIGA7MfctNQBAzR+6IBgDD+8r1/OEQ==
+"@amplitude/analytics-types@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.14.0.tgz#06848235e52fe1d46a6e04bbc5d14090bdde15e3"
+  integrity sha512-O3E/KHyWCb4HAlYevqgCzqQdS+0LhbJV2IeVGox2eyCge+/lGwtGdJV2rJNWcoGf3p+BhnbqJBlhkPMs12iniA==
 
 "@amplitude/ua-parser-js@0.7.31", "@amplitude/ua-parser-js@^0.7.31":
   version "0.7.31"
@@ -3989,10 +3989,10 @@
     ethers "^5.3.1"
     tiny-invariant "^1.3.1"
 
-"@uniswap/redux-multicall@^1.1.1":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@uniswap/redux-multicall/-/redux-multicall-1.1.6.tgz#27e52d97e359b6de06410fbc6d0699b9e6422707"
-  integrity sha512-B7kR63dtIJzr9iGITsNYAh8ktDfKEi9Ilsfq0oKxSzAChZmkq9Ss/EZ6/VKSvq1m4rPe+b9CPxZIBdRzpmf2/w==
+"@uniswap/redux-multicall@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@uniswap/redux-multicall/-/redux-multicall-1.1.8.tgz#9cc5090305b10df68fb6162eb1ba7c2c762f5e7f"
+  integrity sha512-LttOBVJuoRNC6N4MHsb5dF2GszLsj1ddPKKccEw1XOX17bGrFdm2A6GwKgES+v+Hj3lluDbQL6atcQtymP21iw==
 
 "@uniswap/router-sdk@^1.3.0", "@uniswap/router-sdk@^1.4.0":
   version "1.4.0"
@@ -16743,7 +16743,7 @@ tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2, tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1:
+tslib@^2, tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
   integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
