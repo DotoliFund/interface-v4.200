@@ -1,8 +1,7 @@
-import { Currency, Fraction, Token } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
 import { checkWarning } from 'constants/tokenSafety'
-import JSBI from 'jsbi'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { XOctagon } from 'react-feather'
 import { Check } from 'react-feather'
@@ -10,8 +9,8 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import { FeeToken } from 'types/fund'
+import { getFeeTokenAmountDecimal } from 'utils/formatCurrencyAmount'
 
-import { useIsUserAddedToken } from '../../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 import { ThemedText } from '../../../theme'
 import Column, { AutoColumn } from '../../Column'
@@ -104,10 +103,6 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
-function getFeeTokenAmountDecimal(token: Currency, amount: number): string {
-  return new Fraction(amount, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(token.decimals))).toSignificant(6)
-}
-
 export function FeeCurrencyRow({
   currency,
   feeToken,
@@ -129,15 +124,10 @@ export function FeeCurrencyRow({
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const customAdded = useIsUserAddedToken(currency)
   const balance = currency && feeToken ? getFeeTokenAmountDecimal(currency, feeToken.amount) : '0'
-  // const balance = useCurrencyBalance(account ?? undefined, currency)
   const warning = currency.isNative ? null : checkWarning(currency.address)
   const isBlockedToken = !!warning && !warning.canProceed
   const blockedTokenOpacity = '0.6'
-
-  console.log(11, currency)
-  console.log(22, feeToken)
 
   // only show add or remove buttons if not on selected list
   return (

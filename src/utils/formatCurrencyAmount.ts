@@ -39,3 +39,7 @@ export function formatPrice(
 
   return formatLocaleNumber({ number: price, locale, sigFigs })
 }
+
+export function getFeeTokenAmountDecimal(token: Currency, amount: number): string {
+  return new Fraction(amount, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(token.decimals))).toSignificant(6)
+}

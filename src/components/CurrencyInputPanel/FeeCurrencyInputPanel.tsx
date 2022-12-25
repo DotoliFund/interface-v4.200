@@ -5,14 +5,14 @@ import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
 import { isSupportedChain } from 'constants/chains'
-import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { Lock } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
 import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
-import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
+import { FeeToken } from 'types/fund'
+import { getFeeTokenAmountDecimal } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { ThemedText } from '../../theme'
@@ -171,7 +171,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   font-variant: small-caps;
 `
 
-interface SwapCurrencyInputPanelProps {
+interface FeeCurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -179,6 +179,7 @@ interface SwapCurrencyInputPanelProps {
   label?: ReactNode
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
+  feeTokens: FeeToken[]
   hideBalance?: boolean
   pair?: Pair | null
   hideInput?: boolean
@@ -194,13 +195,14 @@ interface SwapCurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function SwapCurrencyInputPanel({
+export default function FeeCurrencyInputPanel({
   value,
   onUserInput,
   onMax,
   showMaxButton,
   onCurrencySelect,
   currency,
+  feeTokens,
   otherCurrency,
   id,
   showCommonBases,
@@ -215,17 +217,16 @@ export default function SwapCurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: SwapCurrencyInputPanelProps) {
+}: FeeCurrencyInputPanelProps) {
   const params = useParams()
   const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
-  const selectedCurrencyBalance = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
-    currency?.wrapped.address ?? undefined
-  )
+  const feeToken = feeTokens
+    ? feeTokens.filter((t) => t.tokenAddress.toUpperCase() === currency?.wrapped.address.toUpperCase())
+    : undefined
+  const selectedCurrencyBalance =
+    currency && feeToken && feeToken.length > 0 ? getFeeTokenAmountDecimal(currency, feeToken[0].amount) : undefined
   const theme = useTheme()
   const [fiatValueIsLoading, setFiatValueIsLoading] = useState(false)
 
@@ -318,11 +319,7 @@ export default function SwapCurrencyInputPanel({
                     style={{ display: 'inline' }}
                   >
                     {!hideBalance && currency && selectedCurrencyBalance ? (
-                      renderBalance ? (
-                        renderBalance(selectedCurrencyBalance)
-                      ) : (
-                        <Trans>Balance: {formatCurrencyAmount(selectedCurrencyBalance, 4)}</Trans>
-                      )
+                      <Trans>Balance: {selectedCurrencyBalance}</Trans>
                     ) : null}
                   </ThemedText.DeprecatedBody>
                   {showMaxButton && selectedCurrencyBalance ? (
@@ -345,6 +342,7 @@ export default function SwapCurrencyInputPanel({
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
+          feeTokens={feeTokens}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
           showCurrencyAmount={showCurrencyAmount}

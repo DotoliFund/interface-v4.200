@@ -10,7 +10,6 @@ import { useXXXFund2Contract } from 'hooks/useContract'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useToggle from 'hooks/useToggle'
-import { useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
@@ -41,6 +40,7 @@ interface FeeCurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
+  feeTokens: FeeToken[]
   onCurrencySelect: (currency: Currency, hasWarning?: boolean) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
@@ -62,6 +62,7 @@ function isTokenExist(tokens: FeeToken[], token: string) {
 export function FeeCurrencySearch({
   fundAddress,
   selectedCurrency,
+  feeTokens,
   onCurrencySelect,
   otherSelectedCurrency,
   showCommonBases,
@@ -118,24 +119,36 @@ export function FeeCurrencySearch({
   const native = useNativeCurrency()
   const wrapped = native.wrapped
 
-  const { loading: getFeeTokensLoading, result: [getFeeTokens] = [] } = useSingleCallResult(
-    XXXFund2Contract,
-    'getFeeTokens',
-    []
-  )
-  const feeTokens: FeeToken[] = getFeeTokens
-
-  const searchCurrencies: Currency[] = useMemo(() => {
-    const s = debouncedQuery.toLowerCase().trim()
-
+  const feeCurrencies: Currency[] = useMemo(() => {
     const tokens = filteredSortedTokens.filter(
       (t) => !t.equals(wrapped) && !(disableNonToken && t.isNative) && isTokenExist(feeTokens, t.address)
     )
-    const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
-      (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
-    )
-    return [...natives, ...tokens]
-  }, [filteredSortedTokens, debouncedQuery, disableNonToken, wrapped, native, feeTokens])
+    if (feeTokens) {
+      for (let i = 0; i < feeTokens.length; i++) {
+        if (feeTokens[i].tokenAddress.toUpperCase() === wrapped.address.toUpperCase()) {
+          return [native, ...tokens]
+        }
+      }
+    }
+    return [...tokens]
+  }, [filteredSortedTokens, disableNonToken, wrapped, native, feeTokens])
+
+  const sortedFeeTokens: FeeToken[] = feeCurrencies.map((value, index) => {
+    const feeCurrency = value.wrapped.address
+    for (let i = 0; i < feeTokens.length; i++) {
+      const unsortedFeeToken = feeTokens[i].tokenAddress
+      if (unsortedFeeToken.toUpperCase() === feeCurrency.toUpperCase()) {
+        return {
+          tokenAddress: unsortedFeeToken,
+          amount: feeTokens[i].amount,
+        }
+      }
+    }
+    return {
+      tokenAddress: 'Unknown',
+      amount: 0,
+    }
+  })
 
   const handleCurrencySelect = useCallback(
     (currency: Currency, hasWarning?: boolean) => {
@@ -165,17 +178,17 @@ export function FeeCurrencySearch({
         const s = debouncedQuery.toLowerCase().trim()
         if (s === native?.symbol?.toLowerCase()) {
           handleCurrencySelect(native)
-        } else if (searchCurrencies.length > 0) {
+        } else if (feeCurrencies.length > 0) {
           if (
-            searchCurrencies[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
-            searchCurrencies.length === 1
+            feeCurrencies[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+            feeCurrencies.length === 1
           ) {
-            handleCurrencySelect(searchCurrencies[0])
+            handleCurrencySelect(feeCurrencies[0])
           }
         }
       }
     },
-    [debouncedQuery, native, searchCurrencies, handleCurrencySelect]
+    [debouncedQuery, native, feeCurrencies, handleCurrencySelect]
   )
 
   // menu ui
@@ -245,14 +258,14 @@ export function FeeCurrencySearch({
             )}
           />
         </Column>
-      ) : searchCurrencies?.length > 0 || filteredInactiveTokens?.length > 0 || isLoading ? (
+      ) : feeCurrencies?.length > 0 || filteredInactiveTokens?.length > 0 || isLoading ? (
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>
             {({ height }) => (
               <FeeCurrencyList
                 height={height}
-                currencies={searchCurrencies}
-                feeTokens={feeTokens}
+                currencies={feeCurrencies}
+                feeTokens={sortedFeeTokens}
                 otherListTokens={filteredInactiveTokens}
                 onCurrencySelect={handleCurrencySelect}
                 otherCurrency={otherSelectedCurrency}

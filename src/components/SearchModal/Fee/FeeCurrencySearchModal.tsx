@@ -5,6 +5,7 @@ import useLast from 'hooks/useLast'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useUserAddedTokens } from 'state/user/hooks'
+import { FeeToken } from 'types/fund'
 
 import { FeeCurrencySearch } from './FeeCurrencySearch'
 
@@ -13,6 +14,7 @@ interface FeeCurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
+  feeTokens: FeeToken[]
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
@@ -32,6 +34,7 @@ export default memo(function FeeCurrencySearchModal({
   onDismiss,
   onCurrencySelect,
   selectedCurrency,
+  feeTokens,
   otherSelectedCurrency,
   showCommonBases = false,
   showCurrencyAmount = true,
@@ -83,6 +86,7 @@ export default memo(function FeeCurrencySearchModal({
           onDismiss={onDismiss}
           onCurrencySelect={handleCurrencySelect}
           selectedCurrency={selectedCurrency}
+          feeTokens={feeTokens}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={showCommonBases}
           showCurrencyAmount={showCurrencyAmount}

@@ -1,12 +1,12 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-//import { useCurrencyBalances } from 'lib/hooks/useCurrencyBalance'
-import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
+import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { FeeToken } from 'types/fund'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
@@ -66,9 +66,9 @@ const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 }
 
 // from the current fee inputs, compute the best trade and return it.
-export function useDerivedFeeInfo(fundAddress: string | undefined): {
-  currencies: { [field in Field]?: Currency | null }
-  currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
+export function useDerivedFeeInfo(feeTokens: FeeToken[]): {
+  currency: Currency | null
+  currencyBalance: CurrencyAmount<Currency> | undefined
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: ReactNode
 } {
@@ -84,33 +84,27 @@ export function useDerivedFeeInfo(fundAddress: string | undefined): {
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
-  // const relevantTokenBalances = useCurrencyBalances(
-  //   account ?? undefined,
-  //   useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
-  // )
-  const relevantTokenBalances = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    account,
-    inputCurrency?.wrapped.address ?? undefined
-  )
+  let feeTokenBalance = 0
+  if (inputCurrency && feeTokens) {
+    for (let i = 0; i < feeTokens.length; i++) {
+      const feeTokenAddress = feeTokens[i].tokenAddress
+      const currencyAddress = inputCurrency.wrapped.address
+      if (currencyAddress.toUpperCase() === feeTokenAddress.toUpperCase()) {
+        feeTokenBalance = feeTokens[i].amount
+        break
+      }
+    }
+  }
+
+  const currencyBalance = inputCurrency
+    ? CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(feeTokenBalance.toString()))
+    : undefined
+
+  const currency: Currency | null = inputCurrency ? inputCurrency : null
 
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),
     [inputCurrency, typedValue]
-  )
-
-  const currencyBalances = useMemo(
-    () => ({
-      [Field.INPUT]: relevantTokenBalances,
-    }),
-    [relevantTokenBalances]
-  )
-
-  const currencies: { [field in Field]?: Currency | null } = useMemo(
-    () => ({
-      [Field.INPUT]: inputCurrency,
-    }),
-    [inputCurrency]
   )
 
   const inputError = useMemo(() => {
@@ -120,7 +114,7 @@ export function useDerivedFeeInfo(fundAddress: string | undefined): {
       inputError = <Trans>Connect Wallet</Trans>
     }
 
-    if (!currencies[Field.INPUT]) {
+    if (!currency) {
       inputError = inputError ?? <Trans>Select a token</Trans>
     }
 
@@ -137,24 +131,21 @@ export function useDerivedFeeInfo(fundAddress: string | undefined): {
       }
     }
 
-    // compare input balance to max input based on version
-    const [balanceIn] = [currencyBalances[Field.INPUT]]
-
-    if (parsedAmount && balanceIn?.lessThan(parsedAmount)) {
+    if (parsedAmount && currencyBalance?.lessThan(parsedAmount)) {
       inputError = <Trans>Insufficient {parsedAmount.currency.symbol} balance</Trans>
     }
 
     return inputError
-  }, [account, currencies, currencyBalances, parsedAmount, to])
+  }, [account, currency, currencyBalance, parsedAmount, to])
 
   return useMemo(
     () => ({
-      currencies,
-      currencyBalances,
+      currency,
+      currencyBalance,
       parsedAmount,
       inputError,
     }),
-    [currencies, currencyBalances, inputError, parsedAmount]
+    [currency, currencyBalance, inputError, parsedAmount]
   )
 }
 

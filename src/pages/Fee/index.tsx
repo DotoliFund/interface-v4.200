@@ -14,9 +14,11 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
+import { useXXXFund2Contract } from 'hooks/useContract'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { XXXFund2 } from 'interface/XXXFund2'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useCallback, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -30,8 +32,8 @@ import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
+import { FeeToken } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { supportedChainId } from 'utils/supportedChainId'
 
 const StyledFeeHeader = styled.div`
@@ -124,13 +126,20 @@ export default function Fee() {
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
+  const XXXFund2Contract = useXXXFund2Contract(fundAddress)
+  const { loading: getFeeTokensLoading, result: [getFeeTokens] = [] } = useSingleCallResult(
+    XXXFund2Contract,
+    'getFeeTokens',
+    []
+  )
+  const feeTokens: FeeToken[] = getFeeTokens
+
   // fee state
   const { typedValue } = useFeeState()
-  const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedFeeInfo(fundAddress)
-  const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
-  const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
+  const { currencyBalance, parsedAmount, currency, inputError: swapInputError } = useDerivedFeeInfo(feeTokens)
+  const fiatValueInput = useStablecoinValue(parsedAmount)
 
-  const { onCurrencySelection, onUserInput, onChangeRecipient } = useFeeActionHandlers()
+  const { onCurrencySelection, onUserInput } = useFeeActionHandlers()
   const isValid = !swapInputError
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -152,13 +161,8 @@ export default function Fee() {
     [typedValue]
   )
 
-  const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
-    () => maxAmountSpend(currencyBalances[Field.INPUT]),
-    [currencyBalances]
-  )
-  const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
-
-  const currency = currencies[Field.INPUT]
+  const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(() => currencyBalance, [currencyBalance])
+  const showMaxButton = Boolean(currencyBalance?.greaterThan(0) && !parsedAmount?.equalTo(currencyBalance))
 
   async function onFee() {
     if (!chainId || !provider || !account) return
@@ -194,7 +198,7 @@ export default function Fee() {
       })
   }
 
-  const addIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], null)
+  const addIsUnsupported = useIsSwapUnsupported(currency, null)
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
@@ -240,12 +244,13 @@ export default function Fee() {
                       label={<Trans>Fee</Trans>}
                       value={formattedAmounts[Field.INPUT]}
                       showMaxButton={showMaxButton}
-                      currency={currencies[Field.INPUT] ?? null}
+                      currency={currency ?? null}
+                      feeTokens={feeTokens}
                       onUserInput={handleTypeInput}
                       onMax={handleMaxInput}
                       fiatValue={fiatValueInput ?? undefined}
                       onCurrencySelect={handleInputSelect}
-                      otherCurrency={currencies[Field.INPUT]}
+                      otherCurrency={currency}
                       showCommonBases={true}
                       id={SectionName.CURRENCY_INPUT_PANEL}
                       loading={false}
