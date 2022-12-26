@@ -25,10 +25,11 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
+import { BarChart as BarChartIcon, PieChart as PieChartIcon } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -84,6 +85,20 @@ const ToggleRow = styled(RowFlat)`
   }
 `
 
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const BarChartIconComponent = styled(BarChartIcon)`
+  ${IconStyle}
+`
+
+const PieChartIconComponent = styled(PieChartIcon)`
+  ${IconStyle}
+`
+
 enum ChartView {
   VOL_USD,
   TOKENS,
@@ -105,6 +120,7 @@ export default function FundPage() {
 
   // theming
   const backgroundColor = useColor()
+  const theme = useTheme()
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
     XXXFactoryContract,
@@ -402,10 +418,22 @@ export default function FundPage() {
                     {shortenAddress(fundData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                <PieChart
-                  data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
-                  color={activeNetwork.primaryColor}
-                />
+                {!formattedHoverData &&
+                formattedLatestTokensData &&
+                formattedLatestTokensData[0].token === 'Liquidity' &&
+                formattedLatestTokensData[0].symbol === 'Liquidity' ? (
+                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                    <PieChartIconComponent strokeWidth={1} />
+                    <div>
+                      <Trans>Your managing fund will appear here.</Trans>
+                    </div>
+                  </ThemedText.DeprecatedBody>
+                ) : formattedHoverData ? (
+                  <PieChart
+                    data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
+                    color={activeNetwork.primaryColor}
+                  />
+                ) : null}
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
@@ -517,62 +545,73 @@ export default function FundPage() {
                   }
                 />
               ) : view === ChartView.TOKENS ? (
-                <BarChart
-                  data={formattedLatestTokensData}
-                  color={activeNetwork.primaryColor}
-                  setLabel={setTokenAddressHover}
-                  setSymbol={setTokenSymbolHover}
-                  setValue={setTokenVolumeHover}
-                  setAmount={setTokenAmountHover}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <AutoRow>
-                        <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {tokenSymbolHover ? tokenSymbolHover : null}
-                          &nbsp;&nbsp;
-                        </ThemedText.DeprecatedMediumHeader>
-                        {tokenAddressHover === 'Liquidity' ? null : tokenAddressHover ? (
+                formattedLatestTokensData &&
+                formattedLatestTokensData[0].token === 'Liquidity' &&
+                formattedLatestTokensData[0].symbol === 'Liquidity' ? (
+                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                    <BarChartIconComponent strokeWidth={1} />
+                    <div>
+                      <Trans>Your managing fund will appear here.</Trans>
+                    </div>
+                  </ThemedText.DeprecatedBody>
+                ) : (
+                  <BarChart
+                    data={formattedLatestTokensData}
+                    color={activeNetwork.primaryColor}
+                    setLabel={setTokenAddressHover}
+                    setSymbol={setTokenSymbolHover}
+                    setValue={setTokenVolumeHover}
+                    setAmount={setTokenAmountHover}
+                    topLeft={
+                      <AutoColumn gap="4px">
+                        <AutoRow>
+                          <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                            {tokenSymbolHover ? tokenSymbolHover : null}
+                            &nbsp;&nbsp;
+                          </ThemedText.DeprecatedMediumHeader>
+                          {tokenAddressHover === 'Liquidity' ? null : tokenAddressHover ? (
+                            <ThemedText.DeprecatedMain fontSize="14px">
+                              <Link to={'https://www.guru99.com/c-function-pointers.html'}>
+                                <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                              </Link>
+                            </ThemedText.DeprecatedMain>
+                          ) : null}
+                        </AutoRow>
+                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                          <MonoSpace>
+                            {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
+                              formatAmount(tokenAmountHover)
+                            ) : (
+                              <>
+                                <br />
+                              </>
+                            )}
+                          </MonoSpace>
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                    topRight={
+                      <AutoColumn gap="4px" justify="end">
+                        {latestVolumeData ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
-                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
-                            </Link>
+                            <MonoSpace>
+                              {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
+                            </MonoSpace>
                           </ThemedText.DeprecatedMain>
                         ) : null}
-                      </AutoRow>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
-                            formatAmount(tokenAmountHover)
+                        <ThemedText.DeprecatedLargeHeader fontSize="30px">
+                          {tokenVolumeHover ? (
+                            <MonoSpace>{formatDollarAmount(tokenVolumeHover)}</MonoSpace>
                           ) : (
                             <>
                               <br />
                             </>
                           )}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                  topRight={
-                    <AutoColumn gap="4px" justify="end">
-                      {latestVolumeData ? (
-                        <ThemedText.DeprecatedMain fontSize="14px">
-                          <MonoSpace>
-                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
-                          </MonoSpace>
-                        </ThemedText.DeprecatedMain>
-                      ) : null}
-                      <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                        {tokenVolumeHover ? (
-                          <MonoSpace>{formatDollarAmount(tokenVolumeHover)}</MonoSpace>
-                        ) : (
-                          <>
-                            <br />
-                          </>
-                        )}
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                />
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                  />
+                )
               ) : isManager && view === ChartView.FEES ? (
                 <AreaChart
                   data={formattedFeesData}
