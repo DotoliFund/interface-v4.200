@@ -222,6 +222,7 @@ export default function FeeCurrencyInputPanel({
   const fundAddress = params.fundAddress
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
+  const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false
   const feeToken = feeTokens
     ? feeTokens.filter((t) => t.tokenAddress.toUpperCase() === currency?.wrapped.address.toUpperCase())
     : undefined
@@ -259,13 +260,13 @@ export default function FeeCurrencyInputPanel({
               className="token-amount-input"
               value={value}
               onUserInput={onUserInput}
-              disabled={!chainAllowed}
+              disabled={!chainAllowed || isFeeEmpty}
               $loading={loading}
             />
           )}
 
           <CurrencySelect
-            disabled={!chainAllowed}
+            disabled={!chainAllowed || isFeeEmpty}
             visible={currency !== undefined}
             selected={!!currency}
             hideInput={hideInput}

@@ -133,6 +133,7 @@ export default function Fee() {
     []
   )
   const feeTokens: FeeToken[] = getFeeTokens
+  const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false
 
   // fee state
   const { typedValue } = useFeeState()
@@ -259,7 +260,13 @@ export default function Fee() {
                 </FeeSection>
               </div>
               <div>
-                {addIsUnsupported ? (
+                {isFeeEmpty ? (
+                  <ButtonPrimary disabled={true}>
+                    <ThemedText.DeprecatedMain mb="4px">
+                      <Trans>No Fee</Trans>
+                    </ThemedText.DeprecatedMain>
+                  </ButtonPrimary>
+                ) : addIsUnsupported ? (
                   <ButtonPrimary disabled={true}>
                     <ThemedText.DeprecatedMain mb="4px">
                       <Trans>Unsupported Asset</Trans>
