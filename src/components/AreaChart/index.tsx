@@ -11,7 +11,7 @@ import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
 
-const DEFAULT_HEIGHT = 300
+const DEFAULT_HEIGHT = 340
 
 const Wrapper = styled(Card)`
   width: 100%;

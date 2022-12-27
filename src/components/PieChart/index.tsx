@@ -1,11 +1,24 @@
+import { Trans } from '@lingui/macro'
 import Card from 'components/Card'
 import React, { ReactNode } from 'react'
+import { PieChart as PieChartIcon } from 'react-feather'
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
-import styled from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
 const RADIAN = Math.PI / 180
 const DEFAULT_HEIGHT = 340
+
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const PieChartIconComponent = styled(PieChartIcon)`
+  ${IconStyle}
+`
 
 const Wrapper = styled(Card)`
   width: 100%;
@@ -13,7 +26,6 @@ const Wrapper = styled(Card)`
 
   padding-right: 1rem;
   display: flex;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
   flex-direction: column;
   > * {
     font-size: 1rem;
@@ -26,15 +38,10 @@ export type PieChartProps = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 const Chart = ({ data, topLeft }: PieChartProps) => {
-  if (!data || data.length === 0) {
-    data = [
-      {
-        token: 'Empty',
-        symbol: 'Empty',
-        tokenVolume: 1,
-      },
-    ]
-  }
+  const theme = useTheme()
+
+  const isEmptyData = !data || data.length === 0
+
   const RenderCustomizedLabel = (active: any) => {
     const radius = active.innerRadius + (active.outerRadius - active.innerRadius) * 0.5
     const x = active.cx + radius * Math.cos(-active.midAngle * RADIAN)
@@ -62,24 +69,35 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
 
   return (
     <Wrapper>
-      Tokens
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={340} height={340}>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={<RenderCustomizedLabel />}
-            outerRadius={130}
-            fill="#8884d8"
-            dataKey="tokenVolume"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-        </PieChart>
+        {isEmptyData ? (
+          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+            <PieChartIconComponent strokeWidth={1} />
+            <div>
+              <Trans>Your managing fund will appear here.</Trans>
+            </div>
+          </ThemedText.DeprecatedBody>
+        ) : (
+          <>
+            Tokens
+            <PieChart width={300} height={300}>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={<RenderCustomizedLabel />}
+                outerRadius={130}
+                fill="#8884d8"
+                dataKey="tokenVolume"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </>
+        )}
       </ResponsiveContainer>
     </Wrapper>
   )

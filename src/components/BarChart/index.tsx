@@ -1,9 +1,12 @@
+import { Trans } from '@lingui/macro'
 import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
+import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 const DEFAULT_HEIGHT = 340
 
@@ -13,12 +16,23 @@ const Wrapper = styled(Card)`
   padding: 1rem;
   padding-right: 1rem;
   display: flex;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+
   flex-direction: column;
   > * {
     font-size: 1rem;
   }
 `
+
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const BarChartIconComponent = styled(BarChartIcon)`
+  ${IconStyle}
+`
+
 export type BarChartProps = {
   data: any[]
   color?: string | undefined
@@ -49,14 +63,9 @@ const Chart = ({
   minHeight = DEFAULT_HEIGHT,
   ...rest
 }: BarChartProps) => {
-  if (data.length === 0) {
-    data.push({
-      token: '',
-      symbol: 'Empty',
-      amount: 0,
-      tokenVolume: 0,
-    })
-  }
+  const theme = useTheme()
+  const isEmptyData = !data || data.length === 0
+
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
     const token = payload ? payload.payload.token : undefined
@@ -75,34 +84,47 @@ const Chart = ({
   }
 
   return (
-    <Wrapper minHeight={minHeight} {...rest}>
+    <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
       <RowBetween>
-        {topLeft ?? null}
-        {topRight ?? null}
+        {isEmptyData ? null : (
+          <>
+            {topLeft ?? null}
+            {topRight ?? null}
+          </>
+        )}
       </RowBetween>
       {
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-              top: 5,
-              right: 10,
-              left: 10,
-              bottom: 5,
-            }}
-          >
-            <defs>
-              <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
-            <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
-            <Bar dataKey="tokenVolume" type="monotone" stroke={color} fill="url(#gradient)" maxBarSize={80} />
-          </BarChart>
+          {isEmptyData ? (
+            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+              <BarChartIconComponent strokeWidth={1} />
+              <div>
+                <Trans>Your managing fund will appear here.</Trans>
+              </div>
+            </ThemedText.DeprecatedBody>
+          ) : (
+            <BarChart
+              width={500}
+              height={300}
+              data={data}
+              margin={{
+                top: 5,
+                right: 10,
+                left: 10,
+                bottom: 5,
+              }}
+            >
+              <defs>
+                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
+                  <stop offset="100%" stopColor={color} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
+              <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
+              <Bar dataKey="tokenVolume" type="monotone" stroke={color} fill="url(#gradient)" maxBarSize={80} />
+            </BarChart>
+          )}
         </ResponsiveContainer>
       }
       <RowBetween>

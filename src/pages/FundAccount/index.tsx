@@ -674,19 +674,10 @@ export default function FundAccount() {
                     {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                {!formattedHoverData && formattedLatestTokensData && formattedLatestTokensData.length === 0 ? (
-                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
-                    <PieChartIconComponent strokeWidth={1} />
-                    <div>
-                      <Trans>Your managing fund will appear here.</Trans>
-                    </div>
-                  </ThemedText.DeprecatedBody>
-                ) : formattedHoverData ? (
-                  <PieChart
-                    data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
-                    color={activeNetwork.primaryColor}
-                  />
-                ) : null}
+                <PieChart
+                  data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
+                  color={activeNetwork.primaryColor}
+                />
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
@@ -787,82 +778,71 @@ export default function FundAccount() {
                   }
                 />
               ) : view === ChartView.TOKENS ? (
-                formattedLatestTokensData && formattedLatestTokensData.length === 0 ? (
-                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
-                    <BarChartIconComponent strokeWidth={1} />
-                    <div>
-                      <Trans>Your managing fund will appear here.</Trans>
-                    </div>
-                  </ThemedText.DeprecatedBody>
-                ) : (
-                  <BarChart
-                    data={formattedLatestTokensData}
-                    color={activeNetwork.primaryColor}
-                    setLabel={setTokenAddressHover}
-                    setSymbol={setTokenSymbolHover}
-                    setValue={setTokenVolumeHover}
-                    setAmount={setTokenAmountHover}
-                    setLiquidityValue={setLiquidityVolumeHover}
-                    setLiquidityAmount={setLiquidityAmountHover}
-                    topLeft={
-                      <AutoColumn gap="4px">
-                        <AutoRow>
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px">
-                            {tokenSymbolHover ? tokenSymbolHover : null}
-                            &nbsp;&nbsp;
-                          </ThemedText.DeprecatedMediumHeader>
-                          {tokenAddressHover ? (
-                            <ThemedText.DeprecatedMain fontSize="14px">
-                              <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                                <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
-                              </Link>
+                <BarChart
+                  data={formattedLatestTokensData}
+                  color={activeNetwork.primaryColor}
+                  setLabel={setTokenAddressHover}
+                  setSymbol={setTokenSymbolHover}
+                  setValue={setTokenVolumeHover}
+                  setAmount={setTokenAmountHover}
+                  setLiquidityValue={setLiquidityVolumeHover}
+                  setLiquidityAmount={setLiquidityAmountHover}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <AutoRow>
+                        <ThemedText.DeprecatedMediumHeader fontSize="18px">
+                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          &nbsp;&nbsp;
+                        </ThemedText.DeprecatedMediumHeader>
+                        {tokenAddressHover ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
+                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                            </Link>
+                          </ThemedText.DeprecatedMain>
+                        ) : null}
+                      </AutoRow>
+                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                        {tokenAmountHover && liquidityAmountHover ? (
+                          <MonoSpace>{formatAmount(tokenAmountHover + liquidityAmountHover)}</MonoSpace>
+                        ) : (
+                          <>
+                            <br />
+                          </>
+                        )}
+                      </ThemedText.DeprecatedLargeHeader>
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px">
+                      <AutoRow justify="end">
+                        {tokenAmountHover && tokenVolumeHover ? (
+                          <>
+                            <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
+                              <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
+                            </ThemedText.DeprecatedMediumHeader>
+                            <ThemedText.DeprecatedMain fontSize="20px">
+                              <MonoSpace>({formatDollarAmount(tokenVolumeHover)})</MonoSpace>
                             </ThemedText.DeprecatedMain>
-                          ) : null}
-                        </AutoRow>
-                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                          {tokenAmountHover && liquidityAmountHover ? (
-                            <MonoSpace>{formatAmount(tokenAmountHover + liquidityAmountHover)}</MonoSpace>
-                          ) : (
-                            <>
-                              <br />
-                            </>
-                          )}
-                        </ThemedText.DeprecatedLargeHeader>
-                      </AutoColumn>
-                    }
-                    topRight={
-                      <AutoColumn gap="4px">
-                        <AutoRow justify="end">
-                          {tokenAmountHover && tokenVolumeHover ? (
-                            <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
-                                <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
-                              </ThemedText.DeprecatedMediumHeader>
-                              <ThemedText.DeprecatedMain fontSize="20px">
-                                <MonoSpace>({formatDollarAmount(tokenVolumeHover)})</MonoSpace>
-                              </ThemedText.DeprecatedMain>
-                            </>
-                          ) : null}
-                        </AutoRow>
-                        <AutoRow justify="end">
-                          {liquidityAmountHover && liquidityVolumeHover ? (
-                            <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
-                                <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
-                              </ThemedText.DeprecatedMediumHeader>
-                              <ThemedText.DeprecatedMain fontSize="20px">
-                                <MonoSpace>({formatDollarAmount(liquidityVolumeHover)})</MonoSpace>
-                              </ThemedText.DeprecatedMain>
-                            </>
-                          ) : null}
-                        </AutoRow>
-                      </AutoColumn>
-                    }
-                  />
-                )
-              ) : (
-                <></>
-              )}
+                          </>
+                        ) : null}
+                      </AutoRow>
+                      <AutoRow justify="end">
+                        {liquidityAmountHover && liquidityVolumeHover ? (
+                          <>
+                            <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
+                              <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
+                            </ThemedText.DeprecatedMediumHeader>
+                            <ThemedText.DeprecatedMain fontSize="20px">
+                              <MonoSpace>({formatDollarAmount(liquidityVolumeHover)})</MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          </>
+                        ) : null}
+                      </AutoRow>
+                    </AutoColumn>
+                  }
+                />
+              ) : null}
             </DarkGreyCard>
           </ContentLayout>
           <TitleRow mt={'16px'}>

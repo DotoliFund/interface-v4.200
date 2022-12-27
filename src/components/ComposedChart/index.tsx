@@ -6,8 +6,9 @@ import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import { useEffect, useState } from 'react'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { formatTime, unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
@@ -25,6 +26,16 @@ const Wrapper = styled(Card)`
   > * {
     font-size: 1rem;
   }
+`
+
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const BarChartIconComponent = styled(BarChartIcon)`
+  ${IconStyle}
 `
 
 export type ComposedChartProps = {
@@ -70,6 +81,7 @@ const Chart = ({
   bottomRight,
   ...rest
 }: ComposedChartProps) => {
+  const theme = useTheme()
   const [presentCursor, setPresentCursor] = useState<boolean | true>()
 
   const CustomTooltip = (props: any) => {
