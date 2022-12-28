@@ -18,13 +18,14 @@ const FUND_DATA = gql`
       volumeUSD
       liquidityVolumeETH
       liquidityVolumeUSD
-      feeVolumeETH
-      feeVolumeUSD
       tokens
       symbols
       tokensAmount
       tokensVolumeETH
       tokensVolumeUSD
+      feeTokens
+      feeSymbols
+      feeTokensAmount
       profitETH
       profitUSD
       profitRatio
@@ -81,8 +82,6 @@ export function useFundData(fund: string | undefined): {
         volumeUSD: parseFloat(data.fund.volumeUSD),
         liquidityVolumeETH: parseFloat(data.fund.liquidityVolumeETH),
         liquidityVolumeUSD: parseFloat(data.fund.liquidityVolumeUSD),
-        feeVolumeETH: parseFloat(data.fund.feeVolumeETH),
-        feeVolumeUSD: parseFloat(data.fund.feeVolumeUSD),
         tokens: data.fund.tokens,
         symbols: data.fund.symbols,
         tokensAmount: data.fund.tokensAmount.map((value) => {
@@ -92,6 +91,11 @@ export function useFundData(fund: string | undefined): {
           return parseFloat(value)
         }),
         tokensVolumeUSD: data.fund.tokensVolumeUSD.map((value) => {
+          return parseFloat(value)
+        }),
+        feeTokens: data.fund.feeTokens,
+        feeSymbols: data.fund.feeSymbols,
+        feeTokensAmount: data.fund.feeTokensAmount.map((value) => {
           return parseFloat(value)
         }),
         profitETH: parseFloat(data.fund.profitETH),

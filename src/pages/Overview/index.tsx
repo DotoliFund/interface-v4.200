@@ -56,20 +56,20 @@ export default function Overview() {
 
   const [activeNetwork] = useActiveNetworkVersion()
 
-  const [dateHover, setDateHover] = useState<string | undefined>()
-  const [tvlHover, setTvlHover] = useState<number | undefined>()
-  const [investorCountHover, setInvestorCountHover] = useState<number | undefined>()
-  const [investorCountLabel, setInvestorCountLabel] = useState<string | undefined>()
+  const [volumeDateHover, setVolumeDateHover] = useState<string | undefined>()
+  const [volumeHover, setVolumeHover] = useState<number | undefined>()
+  const [liquidityDateHover, setLiquidityDateHover] = useState<string | undefined>()
+  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
 
   const fundListData = useFundListData()
   const chartData = useXXXFund2ChartData().data
 
-  const formattedTvlData = useMemo(() => {
+  const formattedTotalVolume = useMemo(() => {
     if (chartData) {
       return chartData.map((day) => {
         return {
           time: day.timestamp,
-          value: day.totalVolumeUSD + day.totalLiquidityVolumeUSD,
+          value: day.totalVolumeUSD,
         }
       })
     } else {
@@ -77,12 +77,12 @@ export default function Overview() {
     }
   }, [chartData])
 
-  const formattedCountData = useMemo(() => {
+  const formattedTotalLiquidityVolume = useMemo(() => {
     if (chartData) {
       return chartData.map((day) => {
         return {
           time: day.timestamp,
-          value: day.investorCount,
+          value: day.totalLiquidityVolumeUSD,
         }
       })
     } else {
@@ -94,18 +94,18 @@ export default function Overview() {
     if (chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].totalVolumeUSD + chartData[chartData.length - 1].totalLiquidityVolumeUSD,
+        value: chartData[chartData.length - 1].totalVolumeUSD,
       }
     } else {
       return undefined
     }
   }, [chartData])
 
-  const latestCountData = useMemo(() => {
+  const latestLiquidityData = useMemo(() => {
     if (chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].investorCount,
+        value: chartData[chartData.length - 1].totalLiquidityVolumeUSD,
       }
     } else {
       return undefined
@@ -122,17 +122,17 @@ export default function Overview() {
         <ResponsiveRow>
           <ChartWrapper>
             <AreaChart
-              data={formattedTvlData}
+              data={formattedTotalVolume}
               color={activeNetwork.primaryColor}
-              setLabel={setDateHover}
-              setValue={setTvlHover}
+              setLabel={setVolumeDateHover}
+              setValue={setVolumeHover}
               topLeft={
                 <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">TVL</ThemedText.MediumHeader>
+                  <ThemedText.MediumHeader fontSize="16px">Volume</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
                       {formatDollarAmount(
-                        tvlHover !== undefined ? tvlHover : latestVolumeData ? latestVolumeData.value : 0
+                        volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.value : 0
                       )}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
@@ -141,9 +141,9 @@ export default function Overview() {
               topRight={
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                    {dateHover ? (
+                    {volumeDateHover ? (
                       <MonoSpace>
-                        {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
+                        {unixToDate(Number(volumeDateHover))} ( {formatTime(volumeDateHover.toString(), 8)} )
                       </MonoSpace>
                     ) : latestVolumeData ? (
                       <MonoSpace>
@@ -159,22 +159,22 @@ export default function Overview() {
           </ChartWrapper>
           <ChartWrapper>
             <AreaChart
-              data={formattedCountData}
-              height={220}
-              minHeight={332}
+              data={formattedTotalLiquidityVolume}
               color={activeNetwork.primaryColor}
-              setValue={setInvestorCountHover}
-              setLabel={setInvestorCountLabel}
+              setLabel={setLiquidityDateHover}
+              setValue={setLiquidityHover}
               topLeft={
                 <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">Investors</ThemedText.MediumHeader>
+                  <ThemedText.MediumHeader fontSize="16px">Liquidity</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
-                      {investorCountHover !== undefined
-                        ? investorCountHover
-                        : latestCountData !== undefined
-                        ? latestCountData.value
-                        : 0}
+                      {formatDollarAmount(
+                        liquidityHover !== undefined
+                          ? liquidityHover
+                          : latestLiquidityData
+                          ? latestLiquidityData.value
+                          : 0
+                      )}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
                 </AutoColumn>
@@ -182,13 +182,13 @@ export default function Overview() {
               topRight={
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                    {investorCountLabel ? (
+                    {liquidityDateHover ? (
                       <MonoSpace>
-                        {unixToDate(Number(investorCountLabel))} ( {formatTime(investorCountLabel, 8)} )
+                        {unixToDate(Number(liquidityDateHover))} ( {formatTime(liquidityDateHover.toString(), 8)} )
                       </MonoSpace>
-                    ) : latestCountData ? (
+                    ) : latestVolumeData ? (
                       <MonoSpace>
-                        {unixToDate(Number(latestCountData.time))} ( {formatTime(latestCountData.time.toString(), 8)} )
+                        {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)} )
                       </MonoSpace>
                     ) : null}
                   </ThemedText.DeprecatedMain>

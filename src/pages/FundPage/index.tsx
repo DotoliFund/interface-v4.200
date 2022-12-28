@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import AreaChart from 'components/AreaChart'
 import BarChart from 'components/BarChart'
+import FeeBarChart from 'components/BarChart/fee'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -36,7 +36,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { unixToDate } from 'utils/date'
 import { formatTime } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
-import { formatAmount, formatDollarAmount } from 'utils/numbers'
+import { formatDollarAmount } from 'utils/numbers'
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -181,6 +181,7 @@ export default function FundPage() {
   const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
   const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
   const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
+  const [feeTokenAmountHover, setFeeTokenAmountHover] = useState<number | undefined>()
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
@@ -259,6 +260,20 @@ export default function FundPage() {
     }
   }, [fundData, chartData])
 
+  const formattedFeesData = useMemo(() => {
+    if (fundData) {
+      return fundData.feeTokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: fundData.feeSymbols[index],
+          amount: fundData.feeTokensAmount[index],
+        }
+      })
+    } else {
+      return []
+    }
+  }, [fundData])
+
   const ratio = useMemo(() => {
     return volumeHover !== undefined &&
       liquidityHover !== undefined &&
@@ -277,19 +292,6 @@ export default function FundPage() {
         )
       : Number(0)
   }, [volumeHover, liquidityHover, principalHover, latestVolumeData])
-
-  const formattedFeesData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data) => {
-        return {
-          time: data.timestamp,
-          value: data.feeVolumeUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
 
   function onAccount(fund: string, account: string) {
     navigate(`/fund/${fund}/${account}`)
@@ -560,7 +562,7 @@ export default function FundPage() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
-                            formatAmount(tokenAmountHover)
+                            tokenAmountHover
                           ) : (
                             <>
                               <br />
@@ -592,34 +594,54 @@ export default function FundPage() {
                   }
                 />
               ) : isManager && view === ChartView.FEES ? (
-                <AreaChart
+                <FeeBarChart
                   data={formattedFeesData}
-                  height={220}
-                  minHeight={332}
                   color={activeNetwork.primaryColor}
-                  setLabel={setDateHover}
-                  setValue={setVolumeHover}
+                  setLabel={setTokenAddressHover}
+                  setSymbol={setTokenSymbolHover}
+                  setValue={setFeeTokenAmountHover}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">Fees</ThemedText.DeprecatedMediumHeader>
+                      <AutoRow>
+                        <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          &nbsp;&nbsp;
+                        </ThemedText.DeprecatedMediumHeader>
+                        {tokenAddressHover === 'Liquidity' ? null : tokenAddressHover ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
+                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                            </Link>
+                          </ThemedText.DeprecatedMain>
+                        ) : null}
+                      </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {formatDollarAmount(
-                            volumeHover ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                          {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
+                            feeTokenAmountHover
+                          ) : (
+                            <>
+                              <br />
+                            </>
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                        {dateHover ? (
-                          <MonoSpace>
-                            {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
-                          </MonoSpace>
-                        ) : latestVolumeData ? (
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px" justify="end">
+                      {latestVolumeData ? (
+                        <ThemedText.DeprecatedMain fontSize="14px">
                           <MonoSpace>
                             {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
                           </MonoSpace>
-                        ) : null}
-                      </ThemedText.DeprecatedMain>
+                        </ThemedText.DeprecatedMain>
+                      ) : null}
+                      <ThemedText.DeprecatedLargeHeader fontSize="30px">
+                        <>
+                          <br />
+                        </>
+                      </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
                 />

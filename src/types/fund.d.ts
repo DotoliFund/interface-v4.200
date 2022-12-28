@@ -19,13 +19,14 @@ export interface Fund {
   volumeUSD: number
   liquidityVolumeETH: number
   liquidityVolumeUSD: number
-  feeVolumeETH: number
-  feeVolumeUSD: number
   tokens: string[]
   symbols: string[]
   tokensAmount: number[]
   tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
+  feeTokens: string[]
+  feeSymbols: string[]
+  feeTokensAmount: number[]
   profitETH: number
   profitUSD: number
   profitRatio: number
@@ -43,13 +44,14 @@ export interface FundFields {
   volumeUSD: string
   liquidityVolumeETH: string
   liquidityVolumeUSD: string
-  feeVolumeETH: string
-  feeVolumeUSD: string
   tokens: string[]
   symbols: string[]
   tokensAmount: string[]
   tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
+  feeTokens: string[]
+  feeSymbols: string[]
+  feeTokensAmount: string[]
   profitETH: string
   profitUSD: string
   profitRatio: string
@@ -143,8 +145,6 @@ export interface FundSnapshot {
   volumeUSD: number
   liquidityVolumeETH: number
   liquidityVolumeUSD: number
-  feeVolumeETH: number
-  feeVolumeUSD: number
   tokens: string[]
   symbols: string[]
   tokensVolumeETH: number[]
@@ -163,8 +163,6 @@ export interface FundSnapshotFields {
   volumeUSD: string
   liquidityVolumeETH: string
   liquidityVolumeUSD: string
-  feeVolumeETH: string
-  feeVolumeUSD: string
   tokens: string[]
   symbols: string[]
   tokensVolumeETH: string[]

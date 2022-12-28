@@ -803,7 +803,7 @@ export default function FundAccount() {
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {tokenAmountHover && liquidityAmountHover ? (
+                        {tokenAmountHover !== undefined && liquidityAmountHover !== undefined ? (
                           <MonoSpace>{formatAmount(tokenAmountHover + liquidityAmountHover)}</MonoSpace>
                         ) : (
                           <>
