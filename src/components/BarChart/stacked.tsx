@@ -74,17 +74,17 @@ const Chart = ({
     const symbol = payload ? payload.payload.symbol : undefined
     const value = payload ? payload.value : undefined
     const amount = payload ? payload.payload.amount : undefined
-    const liquidityTokensVolume = payload ? payload.payload.liquidityTokensVolume : undefined
-    const liquidityTokensAmount = payload ? payload.payload.liquidityTokensAmount : undefined
+    const liquidity = payload ? payload.payload.Liquidity : undefined
+    const liquidityAmount = payload ? payload.payload.liquidityAmount : undefined
 
     useEffect(() => {
       setLabel(token)
       setSymbol(symbol)
       setValue(value)
       setAmount(amount)
-      setLiquidityValue(liquidityTokensVolume)
-      setLiquidityAmount(liquidityTokensAmount)
-    }, [token, symbol, value, amount, liquidityTokensVolume, liquidityTokensAmount])
+      setLiquidityValue(liquidity)
+      setLiquidityAmount(liquidityAmount)
+    }, [token, symbol, value, amount, liquidity, liquidityAmount])
 
     return null
   }
@@ -104,7 +104,7 @@ const Chart = ({
           <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
             <BarChartIconComponent strokeWidth={1} />
             <div>
-              <Trans>Your managing fund will appear here.</Trans>
+              <Trans>No token data</Trans>
             </div>
           </ThemedText.DeprecatedBody>
         ) : (
@@ -134,8 +134,8 @@ const Chart = ({
             <XAxis dataKey="symbol" axisLine={false} tickLine={false} />
             <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="tokenVolume" stackId="a" stroke={color} fill="url(#gradient)" maxBarSize={80} />
-            <Bar dataKey="liquidityTokensVolume" stackId="a" stroke={color2} fill="url(#gradient2)" maxBarSize={80} />
+            <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
+            <Bar dataKey="Liquidity" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
           </BarChart>
         )}
       </ResponsiveContainer>

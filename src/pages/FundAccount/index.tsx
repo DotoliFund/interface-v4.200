@@ -25,14 +25,7 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
-import {
-  BarChart as BarChartIcon,
-  BookOpen,
-  ChevronDown,
-  Inbox,
-  PieChart as PieChartIcon,
-  PlusCircle,
-} from 'react-feather'
+import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useUserHideClosedPositions } from 'state/user/hooks'
@@ -157,14 +150,6 @@ const IconStyle = css`
 `
 
 const InboxIcon = styled(Inbox)`
-  ${IconStyle}
-`
-
-const BarChartIconComponent = styled(BarChartIcon)`
-  ${IconStyle}
-`
-
-const PieChartIconComponent = styled(PieChartIcon)`
   ${IconStyle}
 `
 
@@ -373,12 +358,12 @@ export default function FundAccount() {
       return chartData.map((data) => {
         return {
           time: data.timestamp,
-          volume: data.volumeUSD,
-          principal: data.principalUSD,
+          Volume: data.volumeUSD,
+          Principal: data.principalUSD,
           tokens: data.tokens,
           symbols: data.symbols,
           tokensVolume: data.tokensVolumeUSD,
-          liquidityVolume: data.liquidityVolumeUSD,
+          Liquidity: data.liquidityVolumeUSD,
         }
       })
     } else {
@@ -386,13 +371,13 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const formattedHoverData = useMemo(() => {
+  const formattedHoverTokenData = useMemo(() => {
     if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
       return tokensHover.map((data, index) => {
         return {
           token: data,
           symbol: symbolsHover[index],
-          tokenVolume: tokensVolumeUSDHover[index],
+          Volume: tokensVolumeUSDHover[index],
         }
       })
     } else {
@@ -407,9 +392,9 @@ export default function FundAccount() {
           token: data,
           symbol: investorData.symbols[index],
           amount: investorData.tokensAmount[index],
-          tokenVolume: investorData.tokensVolumeUSD[index],
-          liquidityTokensAmount: investorData.liquidityTokensAmount[index],
-          liquidityTokensVolume: investorData.liquidityTokensVolumeUSD[index],
+          Volume: investorData.tokensVolumeUSD[index],
+          Liquidity: investorData.liquidityTokensVolumeUSD[index],
+          liquidityAmount: investorData.liquidityTokensAmount[index],
         }
       })
     } else {
@@ -421,9 +406,9 @@ export default function FundAccount() {
     if (investorData && chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        volume: investorData.volumeUSD,
-        liquidityVolume: chartData[chartData.length - 1].liquidityVolumeUSD,
-        principal: investorData.principalUSD,
+        Volume: investorData.volumeUSD,
+        Liquidity: chartData[chartData.length - 1].liquidityVolumeUSD,
+        Principal: investorData.principalUSD,
       }
     } else {
       return undefined
@@ -438,11 +423,11 @@ export default function FundAccount() {
       ? Number((((volumeHover + liquidityHover - principalHover) / principalHover) * 100).toFixed(2))
       : principalHover === 0
       ? Number(0)
-      : latestVolumeData && latestVolumeData.principal > 0
+      : latestVolumeData && latestVolumeData.Principal > 0
       ? Number(
           (
-            ((latestVolumeData.volume + latestVolumeData.liquidityVolume - latestVolumeData.principal) /
-              latestVolumeData.principal) *
+            ((latestVolumeData.Volume + latestVolumeData.Liquidity - latestVolumeData.Principal) /
+              latestVolumeData.Principal) *
             100
           ).toFixed(2)
         )
@@ -675,7 +660,7 @@ export default function FundAccount() {
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
-                  data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
+                  data={formattedHoverTokenData ? formattedHoverTokenData : formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
                 />
               </AutoColumn>
@@ -718,7 +703,7 @@ export default function FundAccount() {
                             volumeHover !== undefined && liquidityHover !== undefined
                               ? volumeHover + liquidityHover
                               : latestVolumeData
-                              ? latestVolumeData.volume + latestVolumeData.liquidityVolume
+                              ? latestVolumeData.Volume + latestVolumeData.Liquidity
                               : 0
                           )}
                         </MonoSpace>
@@ -734,7 +719,7 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.Volume : 0
                             )}
                           </MonoSpace>
                         </ThemedText.DeprecatedMediumHeader>
@@ -745,7 +730,7 @@ export default function FundAccount() {
                               liquidityHover !== undefined
                                 ? liquidityHover
                                 : latestVolumeData
-                                ? latestVolumeData.liquidityVolume
+                                ? latestVolumeData.Liquidity
                                 : 0
                             )}
                           </MonoSpace>
@@ -757,7 +742,7 @@ export default function FundAccount() {
                               principalHover !== undefined
                                 ? principalHover
                                 : latestVolumeData
-                                ? latestVolumeData.principal
+                                ? latestVolumeData.Principal
                                 : 0
                             )}
                           </MonoSpace>
@@ -804,7 +789,7 @@ export default function FundAccount() {
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         {tokenAmountHover !== undefined && liquidityAmountHover !== undefined ? (
-                          <MonoSpace>{formatAmount(tokenAmountHover + liquidityAmountHover)}</MonoSpace>
+                          <MonoSpace>{tokenAmountHover + liquidityAmountHover}</MonoSpace>
                         ) : (
                           <>
                             <br />

@@ -3,66 +3,18 @@ import { AutoColumn } from 'components/Column'
 import Loader from 'components/Loader'
 import { LoadingRows } from 'components/Loader/styled'
 import Percent from 'components/Percent'
+import { Arrow, Break, PageButtons } from 'components/shared'
+import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
-import { ThemedText } from 'theme'
 import { Fund } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
+import { formatDollarAmount } from 'utils/numbers'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
-`
-
-const PageButtons = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 0.2em;
-  margin-bottom: 0.5em;
-`
-
-const Arrow = styled.div<{ faded: boolean }>`
-  color: ${({ theme }) => theme.deprecated_primary1};
-  opacity: ${(props) => (props.faded ? 0.3 : 1)};
-  padding: 0 20px;
-  user-select: none;
-  :hover {
-    cursor: pointer;
-  }
-`
-
-const Break = styled.div`
-  height: 1px;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
-  width: 100%;
-`
-
-// responsive text
-const Label = styled(ThemedText.DeprecatedLabel)<{ end?: number }>`
-  display: flex;
-  font-size: 16px;
-  font-weight: 400;
-  justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
-  align-items: center;
-  font-variant-numeric: tabular-nums;
-  @media screen and (max-width: 640px) {
-    font-size: 14px;
-  }
-`
-
-const ClickableText = styled(Label)`
-  text-align: end;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-  user-select: none;
-  @media screen and (max-width: 640px) {
-    font-size: 12px;
-  }
 `
 
 const ResponsiveGrid = styled.div`
@@ -70,25 +22,28 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 20px 3.5fr repeat(6, 1fr);
+  grid-template-columns: 1.5fr repeat(5, 1fr);
 
-  @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1.5fr repeat(4, 1fr);
-    & :nth-child(3) {
+  @media screen and (max-width: 940px) {
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    & > *:nth-child(5) {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    & > *:nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
-    grid-template-columns: 20px 1.5fr repeat(3, 1fr);
-    & :nth-child(5) {
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    & > *:nth-child(5) {
       display: none;
     }
-  }
-
-  @media screen and (max-width: 480px) {
-    grid-template-columns: 2.5fr repeat(2, 1fr);
-    > *:nth-child(1) {
+    & > *:nth-child(4) {
       display: none;
     }
   }
@@ -105,9 +60,9 @@ const LinkWrapper = styled(Link)`
 const SORT_FIELD = {
   fund: 'fund',
   created: 'createdAtTimestamp',
-  volumeUSD: 'volumeUSD',
-  principalUSD: 'principalUSD',
-  profitRatioUSD: 'profitRatioUSD',
+  volume: 'volume',
+  liquidity: 'liquidity',
+  profit: 'profitRatio',
   investorCount: 'investorCount',
 }
 
@@ -115,13 +70,12 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
   return (
     <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>
-        <Label fontWeight={400}>{index + 1}</Label>
         <Label fontWeight={400}>{shortenAddress(fundData.address)}</Label>
         <Label end={1} fontWeight={400}>
-          {(fundData.volumeUSD + fundData.liquidityVolumeUSD).toFixed(3)}
+          {formatDollarAmount(fundData.volumeUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
-          {fundData.principalUSD.toFixed(3)}
+          {formatDollarAmount(fundData.liquidityVolumeUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
           <Percent value={fundData.profitRatio} wrap={false} />
@@ -144,7 +98,7 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
   const theme = useTheme()
 
   // for sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.volumeUSD)
+  const [sortField, setSortField] = useState(SORT_FIELD.volume)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
@@ -199,18 +153,17 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
       {sortedFunds.length > 0 ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <Label color={theme.deprecated_text2}>#</Label>
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
               Fund {arrow(SORT_FIELD.fund)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
-              Volume USD {arrow(SORT_FIELD.volumeUSD)}
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volume)}>
+              Volume {arrow(SORT_FIELD.volume)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.principalUSD)}>
-              Principal {arrow(SORT_FIELD.principalUSD)}
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.liquidity)}>
+              Liquidity {arrow(SORT_FIELD.liquidity)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatioUSD)}>
-              Ratio {arrow(SORT_FIELD.profitRatioUSD)}
+            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profit)}>
+              Profit {arrow(SORT_FIELD.profit)}
             </ClickableText>
             <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.investorCount)}>
               Investors {arrow(SORT_FIELD.investorCount)}

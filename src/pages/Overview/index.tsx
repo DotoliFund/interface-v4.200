@@ -1,6 +1,7 @@
 import AreaChart from 'components/AreaChart'
+import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import FundTable from 'components/funds/FundTable'
+import FundTable from 'components/funds/TopFundTable'
 import Row from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { useXXXFund2ChartData } from 'data/Overview/chartData'
@@ -202,7 +203,9 @@ export default function Overview() {
         <RowBetween mt={'16px'}>
           <ThemedText.DeprecatedMain fontSize="22px">Top Funds</ThemedText.DeprecatedMain>
         </RowBetween>
-        <FundTable fundDatas={fundListData.data} />
+        <DarkGreyCard>
+          <FundTable fundDatas={fundListData.data} />
+        </DarkGreyCard>
       </AutoColumn>
     </PageWrapper>
   )

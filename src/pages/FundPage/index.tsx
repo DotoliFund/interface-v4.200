@@ -25,11 +25,10 @@ import { useXXXFactoryContract } from 'hooks/useContract'
 import { XXXFactory } from 'interface/XXXFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
-import { BarChart as BarChartIcon, PieChart as PieChartIcon } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled, { css, useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -83,20 +82,6 @@ const ToggleRow = styled(RowFlat)`
   @media screen and (max-width: 600px) {
     flex-direction: row;
   }
-`
-
-const IconStyle = css`
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0.5rem;
-`
-
-const BarChartIconComponent = styled(BarChartIcon)`
-  ${IconStyle}
-`
-
-const PieChartIconComponent = styled(PieChartIcon)`
-  ${IconStyle}
 `
 
 enum ChartView {
@@ -188,12 +173,12 @@ export default function FundPage() {
       return chartData.map((data) => {
         return {
           time: data.timestamp,
-          volume: data.volumeUSD,
-          principal: data.principalUSD,
+          Volume: data.volumeUSD,
+          Principal: data.principalUSD,
           tokens: data.tokens,
           symbols: data.symbols,
           tokensVolume: data.tokensVolumeUSD,
-          liquidityVolume: data.liquidityVolumeUSD,
+          Liquidity: data.liquidityVolumeUSD,
         }
       })
     } else {
@@ -207,14 +192,14 @@ export default function FundPage() {
         return {
           token: data,
           symbol: symbolsHover[index],
-          tokenVolume: tokensVolumeUSDHover[index],
+          Volume: tokensVolumeUSDHover[index],
         }
       })
       if (liquidityHover && liquidityHover > 0) {
         hoverData.push({
           token: 'Liquidity',
           symbol: 'Liquidity',
-          tokenVolume: liquidityHover,
+          Volume: liquidityHover,
         })
       }
       return hoverData
@@ -230,7 +215,7 @@ export default function FundPage() {
           token: data,
           symbol: fundData.symbols[index],
           amount: fundData.tokensAmount[index],
-          tokenVolume: fundData.tokensVolumeUSD[index],
+          Volume: fundData.tokensVolumeUSD[index],
         }
       })
       if (fundData.liquidityVolumeUSD > 0) {
@@ -238,7 +223,7 @@ export default function FundPage() {
           token: 'Liquidity',
           symbol: 'Liquidity',
           amount: 0,
-          tokenVolume: fundData.liquidityVolumeUSD,
+          Volume: fundData.liquidityVolumeUSD,
         })
       }
       return fundTokenData
@@ -251,9 +236,9 @@ export default function FundPage() {
     if (fundData && chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        volume: fundData.volumeUSD,
-        liquidityVolume: chartData[chartData.length - 1].liquidityVolumeUSD,
-        principal: fundData.principalUSD,
+        Volume: fundData.volumeUSD,
+        Liquidity: chartData[chartData.length - 1].liquidityVolumeUSD,
+        Principal: fundData.principalUSD,
       }
     } else {
       return undefined
@@ -282,11 +267,11 @@ export default function FundPage() {
       ? Number((((volumeHover + liquidityHover - principalHover) / principalHover) * 100).toFixed(2))
       : principalHover === 0
       ? Number(0)
-      : latestVolumeData && latestVolumeData.principal > 0
+      : latestVolumeData && latestVolumeData.Principal > 0
       ? Number(
           (
-            ((latestVolumeData.volume + latestVolumeData.liquidityVolume - latestVolumeData.principal) /
-              latestVolumeData.principal) *
+            ((latestVolumeData.Volume + latestVolumeData.Liquidity - latestVolumeData.Principal) /
+              latestVolumeData.Principal) *
             100
           ).toFixed(2)
         )
@@ -477,7 +462,7 @@ export default function FundPage() {
                             volumeHover !== undefined && liquidityHover !== undefined
                               ? volumeHover + liquidityHover
                               : latestVolumeData
-                              ? latestVolumeData.volume + latestVolumeData.liquidityVolume
+                              ? latestVolumeData.Volume + latestVolumeData.Liquidity
                               : 0
                           )}
                         </MonoSpace>
@@ -493,7 +478,7 @@ export default function FundPage() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.volume : 0
+                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.Volume : 0
                             )}
                           </MonoSpace>
                         </ThemedText.DeprecatedMediumHeader>
@@ -504,7 +489,7 @@ export default function FundPage() {
                               liquidityHover !== undefined
                                 ? liquidityHover
                                 : latestVolumeData
-                                ? latestVolumeData.liquidityVolume
+                                ? latestVolumeData.Liquidity
                                 : 0
                             )}
                           </MonoSpace>
@@ -516,7 +501,7 @@ export default function FundPage() {
                               principalHover !== undefined
                                 ? principalHover
                                 : latestVolumeData
-                                ? latestVolumeData.principal
+                                ? latestVolumeData.Principal
                                 : 0
                             )}
                           </MonoSpace>

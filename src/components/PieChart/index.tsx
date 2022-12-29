@@ -74,7 +74,7 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
           <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
             <PieChartIconComponent strokeWidth={1} />
             <div>
-              <Trans>Your managing fund will appear here.</Trans>
+              <Trans>No tokens</Trans>
             </div>
           </ThemedText.DeprecatedBody>
         ) : (
@@ -89,7 +89,7 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
                 label={<RenderCustomizedLabel />}
                 outerRadius={130}
                 fill="#8884d8"
-                dataKey="tokenVolume"
+                dataKey="Volume"
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

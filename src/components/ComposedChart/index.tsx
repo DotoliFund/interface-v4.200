@@ -6,9 +6,8 @@ import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import { useEffect, useState } from 'react'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
-import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled, { css, useTheme } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { formatTime, unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
@@ -32,10 +31,6 @@ const IconStyle = css`
   width: 48px;
   height: 48px;
   margin-bottom: 0.5rem;
-`
-
-const BarChartIconComponent = styled(BarChartIcon)`
-  ${IconStyle}
 `
 
 export type ComposedChartProps = {
@@ -77,11 +72,7 @@ const Chart = ({
   setTokensVolumeUSD,
   topLeft,
   topRight,
-  bottomLeft,
-  bottomRight,
-  ...rest
 }: ComposedChartProps) => {
-  const theme = useTheme()
   const [presentCursor, setPresentCursor] = useState<boolean | true>()
 
   const CustomTooltip = (props: any) => {
@@ -89,8 +80,8 @@ const Chart = ({
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
     const time = payload ? payload.payload.time : undefined
     const value = payload ? payload.value : undefined
-    const liquidityVolume = payload ? payload.payload.liquidityVolume : undefined
-    const principal = payload ? payload.payload.principal : undefined
+    const liquidityVolume = payload ? payload.payload.Liquidity : undefined
+    const principal = payload ? payload.payload.Principal : undefined
     const tokens = payload ? payload.payload.tokens : undefined
     const symbols = payload ? payload.payload.symbols : undefined
     const tokensVolume = payload ? payload.payload.tokensVolume : undefined
@@ -181,9 +172,9 @@ const Chart = ({
                 strokeDasharray="3 3"
               />
             ) : null}
-            <Bar dataKey="volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
-            <Bar dataKey="liquidityVolume" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
-            <Line dataKey="principal" type="monotone" stroke={color3} />
+            <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
+            <Bar dataKey="Liquidity" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
+            <Line dataKey="Principal" type="monotone" stroke={color3} />
           </ComposedChart>
         </ResponsiveContainer>
       )}

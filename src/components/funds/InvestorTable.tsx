@@ -6,7 +6,6 @@ import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { Investor } from 'types/fund'
@@ -50,21 +49,6 @@ const ResponsiveGrid = styled.div`
   }
 `
 
-const SortText = styled.button<{ active: boolean }>`
-  cursor: pointer;
-  font-weight: ${({ active }) => (active ? 500 : 400)};
-  margin-right: 0.75rem !important;
-  border: none;
-  background-color: transparent;
-  font-size: 1rem;
-  padding: 0px;
-  color: ${({ active, theme }) => (active ? theme.deprecated_text1 : theme.deprecated_text3)};
-  outline: none;
-  @media screen and (max-width: 600px) {
-    font-size: 14px;
-  }
-`
-
 const LinkWrapper = styled(Link)`
   text-decoration: none;
   :hover {
@@ -74,38 +58,27 @@ const LinkWrapper = styled(Link)`
 `
 
 const SORT_FIELD = {
-  investor: 'Investor',
-  tvl: 'TVL',
-  principal: 'Principal',
-  profit: 'Profit',
-  profitRatio: 'Ratio',
-  timestamp: 'Time',
+  investor: 'investor',
+  volume: 'volume',
+  liquidity: 'liquidity',
+  principal: 'principal',
+  ratio: 'profitRatio',
+  timestamp: 'time',
 }
 
 const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
-  const abs0 = Math.abs(investor.profitRatio)
-  const abs1 = Math.abs(investor.principalUSD)
-  const [activeNetwork] = useActiveNetworkVersion()
-  const theme = useTheme()
-
   return (
     <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(investor.investor)}</Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number((investor.volumeUSD + investor.liquidityVolumeUSD).toFixed(2)))}
+          {formatDollarAmount(Number(investor.volumeUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.principalUSD.toFixed(2)))}
+          {formatDollarAmount(Number(investor.liquidityVolumeUSD))}
         </Label>
-        <Label
-          end={1}
-          fontWeight={400}
-          color={investor.profitUSD < 0 ? theme.deprecated_red1 : theme.deprecated_green1}
-        >
-          {investor.profitUSD > 0
-            ? '$' + investor.profitUSD.toFixed(2).toString()
-            : '-$' + -investor.profitUSD.toFixed(2).toString()}
+        <Label end={1} fontWeight={400}>
+          {formatDollarAmount(Number(investor.principalUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
           <Percent value={investor.profitRatio} wrap={false} />
@@ -189,17 +162,17 @@ export default function InvestorTable({
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)}>
             Invetsor {arrow(SORT_FIELD.investor)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.tvl)}>
-            TVL {arrow(SORT_FIELD.tvl)}
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volume)}>
+            Volume {arrow(SORT_FIELD.volume)}
+          </ClickableText>
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.liquidity)}>
+            Liquidity {arrow(SORT_FIELD.liquidity)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.principal)}>
             Principal {arrow(SORT_FIELD.principal)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profit)}>
-            Profit {arrow(SORT_FIELD.profit)}
-          </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profitRatio)}>
-            Ratio {arrow(SORT_FIELD.profitRatio)}
+          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.ratio)}>
+            Profit {arrow(SORT_FIELD.ratio)}
           </ClickableText>
           <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             Time {arrow(SORT_FIELD.timestamp)}

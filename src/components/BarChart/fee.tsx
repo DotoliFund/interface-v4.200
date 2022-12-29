@@ -95,7 +95,7 @@ const Chart = ({
             <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
               <BarChartIconComponent strokeWidth={1} />
               <div>
-                <Trans>Your managing fund will appear here.</Trans>
+                <Trans>No fee tokens</Trans>
               </div>
             </ThemedText.DeprecatedBody>
           ) : (
