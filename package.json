@@ -210,7 +210,8 @@
     "web-vitals": "^2.1.4",
     "react-icons": "^3.11.0",
     "xxxfund": "^0.0.1",
-    "xxxstaking": "^0.0.1"
+    "xxxstaking": "^0.0.1",
+    "make-plural": "^7.0.0"
   },
   "engines": {
     "npm": "please-use-yarn",
