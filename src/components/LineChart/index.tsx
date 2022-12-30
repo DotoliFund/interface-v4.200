@@ -1,5 +1,5 @@
 import Card from 'components/Card'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -97,7 +97,9 @@ const Chart = ({
           symbol: symbols[index],
         })
       }
+      return token
     })
+    return value
   })
 
   return (
@@ -107,11 +109,9 @@ const Chart = ({
         {topRight ?? null}
       </RowBetween>
       {series?.length === 0 ? (
-        <Loader>
+        <LoadingRows>
           <div />
-          <div />
-          <div />
-        </Loader>
+        </LoadingRows>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart

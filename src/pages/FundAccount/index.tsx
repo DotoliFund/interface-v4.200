@@ -5,7 +5,7 @@ import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ComposedChart from 'components/ComposedChart'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import Percent from 'components/Percent'
 import PieChart from 'components/PieChart'
@@ -37,8 +37,6 @@ import { unixToDate } from 'utils/date'
 import { formatTime } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
-
-import { LoadingRows } from './styled'
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -184,18 +182,7 @@ const MainContentWrapper = styled.main`
 function PositionsLoadingPlaceholder() {
   return (
     <LoadingRows>
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
+      <div style={{ height: '250px' }} />
     </LoadingRows>
   )
 }
@@ -876,16 +863,32 @@ export default function FundAccount() {
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
             Transactions
           </ThemedText.DeprecatedMain>
-          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
+          <DarkGreyCard>
+            {transactions ? (
+              <TransactionTable transactions={transactions} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}
+          </DarkGreyCard>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
             Liquidity Transactions
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
-            {liquidityTransactions ? <LiquidityTransactionTable transactions={liquidityTransactions} /> : <Loader />}
+            {liquidityTransactions ? (
+              <LiquidityTransactionTable transactions={liquidityTransactions} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}
           </DarkGreyCard>
         </AutoColumn>
       ) : (
-        <Loader />
+        <LoadingRows>
+          <div />
+        </LoadingRows>
       )}
     </PageWrapper>
   )

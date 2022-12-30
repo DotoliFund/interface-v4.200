@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import { Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
 import Badge from 'components/Badge'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import Percent from 'components/Percent'
 import { RowBetween } from 'components/Row'
 import { useFundData } from 'data/FundPage/fundData'
@@ -226,7 +226,9 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
           </RangeText>
         </RangeLineItem>
       ) : (
-        <Loader />
+        <LoadingRows>
+          <div />
+        </LoadingRows>
       )}
     </LinkRow>
   )

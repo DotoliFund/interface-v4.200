@@ -5,7 +5,7 @@ import Badge from 'components/Badge'
 import RangeBadge from 'components/Badge/RangeBadge'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import HoverInlineText from 'components/HoverInlineText'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
 import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
@@ -268,7 +268,9 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
           </RangeText>
         </RangeLineItem>
       ) : (
-        <Loader />
+        <LoadingRows>
+          <div />
+        </LoadingRows>
       )}
     </LinkRow>
   )

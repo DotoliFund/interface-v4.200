@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import HoverInlineText from 'components/HoverInlineText'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import { RowFixed } from 'components/Row'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
@@ -198,7 +198,11 @@ export default function TransactionTable({
   )
 
   if (!transactions) {
-    return <Loader />
+    return (
+      <LoadingRows>
+        <div />
+      </LoadingRows>
+    )
   }
 
   return (

@@ -7,7 +7,7 @@ import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ComposedChart from 'components/ComposedChart'
 import InvestorTable from 'components/funds/InvestorTable'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import Percent from 'components/Percent'
 import PieChart from 'components/PieChart'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
@@ -636,14 +636,32 @@ export default function FundPage() {
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
             Investors
           </ThemedText.DeprecatedMain>
-          <DarkGreyCard>{investors ? <InvestorTable investors={investors} /> : <Loader />} </DarkGreyCard>
+          <DarkGreyCard>
+            {investors ? (
+              <InvestorTable investors={investors} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}{' '}
+          </DarkGreyCard>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
             Transactions
           </ThemedText.DeprecatedMain>
-          <DarkGreyCard>{transactions ? <TransactionTable transactions={transactions} /> : <Loader />}</DarkGreyCard>
+          <DarkGreyCard>
+            {transactions ? (
+              <TransactionTable transactions={transactions} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}
+          </DarkGreyCard>
         </AutoColumn>
       ) : (
-        <Loader />
+        <LoadingRows>
+          <div />
+        </LoadingRows>
       )}
     </PageWrapper>
   )

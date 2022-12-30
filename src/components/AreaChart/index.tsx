@@ -1,5 +1,5 @@
 import Card from 'components/Card'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -40,16 +40,7 @@ export type AreaChartProps = {
   bottomRight?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({
-  data,
-  color = '#56B2A4',
-  setLabel,
-  setValue,
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
-}: AreaChartProps) => {
+const Chart = ({ data, color = '#56B2A4', setLabel, setValue, topLeft, topRight }: AreaChartProps) => {
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
     const time = payload ? payload.payload.time : undefined
@@ -70,11 +61,9 @@ const Chart = ({
         {topRight ?? null}
       </RowBetween>
       {data?.length === 0 ? (
-        <Loader>
-          <div />
-          <div />
-          <div />
-        </Loader>
+        <LoadingRows>
+          <div style={{ height: '250px' }} />
+        </LoadingRows>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
@@ -110,10 +99,6 @@ const Chart = ({
           </AreaChart>
         </ResponsiveContainer>
       )}
-      <RowBetween>
-        {bottomLeft ?? null}
-        {bottomRight ?? null}
-      </RowBetween>
     </Wrapper>
   )
 }

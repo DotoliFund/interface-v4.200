@@ -1,6 +1,6 @@
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import Loader from 'components/Loader'
+import { LoadingRows } from 'components/Loader/styled'
 import Percent from 'components/Percent'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
@@ -152,7 +152,11 @@ export default function InvestorTable({
   )
 
   if (!investors) {
-    return <Loader />
+    return (
+      <LoadingRows>
+        <div />
+      </LoadingRows>
+    )
   }
 
   return (

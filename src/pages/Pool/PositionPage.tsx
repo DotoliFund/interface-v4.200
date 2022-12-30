@@ -11,7 +11,6 @@ import { DarkCard, LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import Loader from 'components/Loader'
 import { RowBetween, RowFixed } from 'components/Row'
 import { Dots } from 'components/swap/styleds'
 import Toggle from 'components/Toggle'
@@ -600,18 +599,7 @@ export function PositionPage() {
 
   return loading || poolState === PoolState.LOADING || !feeAmount ? (
     <LoadingRows>
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
+      <div style={{ height: '250px' }} />
     </LoadingRows>
   ) : (
     <>
@@ -710,7 +698,9 @@ export function PositionPage() {
                   minWidth: '340px',
                 }}
               >
-                <Loader />
+                <LoadingRows>
+                  <div />
+                </LoadingRows>
               </DarkCard>
             )}
             <AutoColumn gap="sm" style={{ width: '100%', height: '100%' }}>
