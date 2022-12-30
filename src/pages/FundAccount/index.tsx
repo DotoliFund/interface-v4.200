@@ -442,52 +442,9 @@ export default function FundAccount() {
       link: `/withdraw/${fundAddress}/${investorAddress}`,
       external: false,
     },
-    {
-      content: (
-        <MenuItem>
-          <Trans>Add Liquidity</Trans>
-          <BookOpen size={16} />
-        </MenuItem>
-      ),
-      link: `/swap/${fundAddress}/${investorAddress}`,
-      external: false,
-    },
-    {
-      content: (
-        <MenuItem>
-          <Trans>Remove Liquidity</Trans>
-          <BookOpen size={16} />
-        </MenuItem>
-      ),
-      link: `/swap/${fundAddress}/${investorAddress}`,
-      external: false,
-    },
   ]
 
   const menuItems2 = [
-    {
-      content: (
-        <MenuItem>
-          <Trans>Add Liquidity</Trans>
-          <BookOpen size={16} />
-        </MenuItem>
-      ),
-      link: `/swap/${fundAddress}/${investorAddress}`,
-      external: false,
-    },
-    {
-      content: (
-        <MenuItem>
-          <Trans>Remove Liquidity</Trans>
-          <BookOpen size={16} />
-        </MenuItem>
-      ),
-      link: `/swap/${fundAddress}/${investorAddress}`,
-      external: false,
-    },
-  ]
-
-  const menuItems3 = [
     {
       content: (
         <MenuItem>
@@ -496,16 +453,6 @@ export default function FundAccount() {
         </MenuItem>
       ),
       link: `/withdraw/${fundAddress}/${investorAddress}`,
-      external: false,
-    },
-    {
-      content: (
-        <MenuItem>
-          <Trans>Remove Liquidity</Trans>
-          <BookOpen size={16} />
-        </MenuItem>
-      ),
-      link: `/swap/${fundAddress}/${investorAddress}`,
       external: false,
     },
   ]
@@ -558,18 +505,6 @@ export default function FundAccount() {
             <Trans>Swap</Trans>
           </ThemedText.DeprecatedMain>
         </ButtonPrimary>
-        <Menu
-          menuItems={menuItems2}
-          flyoutAlignment={FlyoutAlignment.LEFT}
-          ToggleUI={(props: any) => (
-            <MoreOptionsButton {...props}>
-              <MoreOptionsText>
-                <Trans>More</Trans>
-                <ChevronDown size={15} />
-              </MoreOptionsText>
-            </MoreOptionsButton>
-          )}
-        />
       </>
     ) : accountIsInvestor && fundAccountIsNotManager && accountIsFundAccount ? (
       <>
@@ -586,7 +521,7 @@ export default function FundAccount() {
           </ThemedText.DeprecatedMain>
         </ButtonPrimary>
         <Menu
-          menuItems={menuItems3}
+          menuItems={menuItems2}
           flyoutAlignment={FlyoutAlignment.LEFT}
           ToggleUI={(props: any) => (
             <MoreOptionsButton {...props}>
