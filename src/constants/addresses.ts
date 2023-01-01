@@ -14,13 +14,13 @@ export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d56
 //goerli testnet
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const XXX_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0xBFF79e985CFBc53E4FeAFBb2DC1d99d46dd849f9', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0x77e27327586E4741c8b0E33B1669da19e4Bc3818', [SupportedChainId.GOERLI]),
 }
 export const XXXSTAKING2_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x515bf040755d8B35aC7B9EC99Aa915A4Bc1971FB', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0xCBf15A99353Bb72338715eD408bebF94A4b6458B', [SupportedChainId.GOERLI]),
 }
-export const XXXFACTORY_ADDRESSES = '0xEC1f985691A0494BfB7Ab5993c1c456947C7b78D'
-export const XXXFUND2_ADDRESSES = '0x5a8E5159b370981B0AA32E0d96C6e2310226749e'
+export const XXXFACTORY_ADDRESSES = '0xCAa8AE103079E1F6d037e982Bf013Ed7170d93F8'
+export const XXXFUND2_ADDRESSES = '0x1bB3Ab506064cFce8D882b7C60448aa660730Bf5'
 
 export const VOTE_URL = 'https://www.tally.xyz/gov/eip155:5:0xfbD4900923647c69941c0819B410E3e44c9d024B'
 
