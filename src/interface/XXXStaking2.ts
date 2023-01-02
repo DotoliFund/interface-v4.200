@@ -28,8 +28,8 @@ export abstract class XXXStaking2 {
     }
   }
 
-  public static claimRewardCallParameters(): MethodParameters {
-    const calldata: string = XXXStaking2.INTERFACE.encodeFunctionData('claimReward', [])
+  public static claimRewardCallParameters(amount: CurrencyAmount<Currency>): MethodParameters {
+    const calldata: string = XXXStaking2.INTERFACE.encodeFunctionData('claimReward', [toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,

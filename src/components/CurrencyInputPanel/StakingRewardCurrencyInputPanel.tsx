@@ -15,7 +15,6 @@ import { isSupportedChain } from 'constants/chains'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import { useCurrencyBalance } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
@@ -178,6 +177,7 @@ interface CurrencyInputPanelProps {
   label?: ReactNode
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
+  rewardCurrencyBalance: CurrencyAmount<Currency> | undefined
   hideBalance?: boolean
   pair?: Pair | null
   hideInput?: boolean
@@ -200,6 +200,7 @@ export default function CurrencyInputPanel({
   showMaxButton,
   onCurrencySelect,
   currency,
+  rewardCurrencyBalance,
   otherCurrency,
   id,
   showCommonBases,
@@ -217,7 +218,6 @@ export default function CurrencyInputPanel({
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useTheme()
 
   const handleDismissSearch = useCallback(() => {
@@ -288,15 +288,15 @@ export default function CurrencyInputPanel({
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer' }}
                   >
-                    {!hideBalance && currency && selectedCurrencyBalance ? (
+                    {!hideBalance && currency && rewardCurrencyBalance ? (
                       renderBalance ? (
-                        renderBalance(selectedCurrencyBalance)
+                        renderBalance(rewardCurrencyBalance)
                       ) : (
-                        <Trans>Balance: {formatCurrencyAmount(selectedCurrencyBalance, currency.decimals)}</Trans>
+                        <Trans>Balance: {formatCurrencyAmount(rewardCurrencyBalance, currency.decimals)}</Trans>
                       )
                     ) : null}
                   </ThemedText.DeprecatedBody>
-                  {showMaxButton && selectedCurrencyBalance ? (
+                  {showMaxButton && rewardCurrencyBalance ? (
                     <TraceEvent
                       events={[Event.onClick]}
                       name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
