@@ -62,7 +62,7 @@ const Chart = ({ data, color = '#56B2A4', setLabel, setValue, topLeft, topRight 
       </RowBetween>
       {data?.length === 0 ? (
         <LoadingRows>
-          <div style={{ height: '250px' }} />
+          <div style={{ height: '235px' }} />
         </LoadingRows>
       ) : (
         <ResponsiveContainer width="100%" height="100%">

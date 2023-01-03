@@ -79,15 +79,6 @@ const RangeLineItem = styled(DataLineItem)`
 `};
 `
 
-const DoubleArrow = styled.span`
-  margin: 0 2px;
-  color: ${({ theme }) => theme.deprecated_text3};
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
-    margin: 4px;
-    padding: 20px;
-  `};
-`
-
 const RangeText = styled.span`
   /* background-color: ${({ theme }) => theme.deprecated_bg2}; */
   padding: 0.25rem 0.5rem;
@@ -184,52 +175,54 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
   const fundData = useFundData(fundAddress).data
   const fundLink = '/fund/' + fundAddress
   return (
-    <LinkRow to={fundLink}>
-      <RowBetween>
-        <PrimaryPositionIdData>
-          <DataText>{fundData ? shortenAddress(fundData.address) : ''}</DataText>
-          &nbsp;
-          <Badge>
-            <BadgeText>
-              <Percent value={fundData?.profitRatio} wrap={false} fontSize="14px" />
-            </BadgeText>
-          </Badge>
-        </PrimaryPositionIdData>
-      </RowBetween>
-
+    <>
       {fundData ? (
-        <RangeLineItem>
-          <RangeText>
-            <ExtentsText>
-              <Trans>TVL : </Trans>
-            </ExtentsText>
-            {formatDollarAmount(fundData.volumeUSD)}
-          </RangeText>
-          <RangeText>
-            <ExtentsText>
-              <Trans>Principal : </Trans>
-            </ExtentsText>
-            {formatDollarAmount(fundData.principalUSD)}
-          </RangeText>
-          <RangeText>
+        <LinkRow to={fundLink}>
+          <RowBetween>
+            <PrimaryPositionIdData>
+              <DataText>{shortenAddress(fundData.address)}</DataText>
+              &nbsp;
+              <Badge>
+                <BadgeText>
+                  <Percent value={fundData.profitRatio} wrap={false} fontSize="14px" />
+                </BadgeText>
+              </Badge>
+            </PrimaryPositionIdData>
+          </RowBetween>
+
+          <RangeLineItem>
             <RangeText>
               <ExtentsText>
-                <Trans>Profit : </Trans>
+                <Trans>TVL : </Trans>
               </ExtentsText>
-              {formatDollarAmount(fundData.profitUSD)}
+              {formatDollarAmount(fundData.volumeUSD)}
             </RangeText>
-            <RangeText></RangeText>
-            <ExtentsText>
-              <Trans>Investors:</Trans>
-            </ExtentsText>
-            {fundData.investorCount}
-          </RangeText>
-        </RangeLineItem>
+            <RangeText>
+              <ExtentsText>
+                <Trans>Principal : </Trans>
+              </ExtentsText>
+              {formatDollarAmount(fundData.principalUSD)}
+            </RangeText>
+            <RangeText>
+              <RangeText>
+                <ExtentsText>
+                  <Trans>Profit : </Trans>
+                </ExtentsText>
+                {formatDollarAmount(fundData.profitUSD)}
+              </RangeText>
+              <RangeText></RangeText>
+              <ExtentsText>
+                <Trans>Investors:</Trans>
+              </ExtentsText>
+              {fundData.investorCount}
+            </RangeText>
+          </RangeLineItem>
+        </LinkRow>
       ) : (
         <LoadingRows>
-          <div />
+          <div style={{ height: '60px' }} />
         </LoadingRows>
       )}
-    </LinkRow>
+    </>
   )
 }

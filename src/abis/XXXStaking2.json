@@ -144,7 +144,7 @@
     },
     {
       "inputs": [],
-      "name": "maxEarnedValue",
+      "name": "maxReward",
       "outputs": [
         {
           "internalType": "uint256",
@@ -260,7 +260,7 @@
     },
     {
       "inputs": [],
-      "name": "s_totalSupply",
+      "name": "s_totalStakedSupply",
       "outputs": [
         {
           "internalType": "uint256",
@@ -301,6 +301,19 @@
       "name": "stake",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "stopRewardAt",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

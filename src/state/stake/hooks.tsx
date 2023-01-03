@@ -43,7 +43,7 @@ export function useStakingInfo(): StakingInfo | undefined {
   // tokens per second, constants
   const rewardRates = useSingleCallResult(XXXStaking2Contract, 'REWARD_RATE')
   const stakedAmount = useSingleCallResult(XXXStaking2Contract, 's_balances', [account])
-  const totalStakedAmount = useSingleCallResult(XXXStaking2Contract, 's_totalSupply')
+  const totalStakedAmount = useSingleCallResult(XXXStaking2Contract, 's_totalStakedSupply')
 
   if (!chainId || !xxx) return undefined
 

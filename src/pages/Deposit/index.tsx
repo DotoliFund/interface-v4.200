@@ -329,9 +329,9 @@ export default function Deposit() {
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {/* we need to shorten this string on mobile */}
                             {approvalState === ApprovalState.APPROVED ? (
-                              <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
+                              <Trans>You can now deposit {currencies[Field.INPUT]?.symbol}</Trans>
                             ) : (
-                              <Trans>Allow the Uniswap Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
+                              <Trans>Allow the XXX Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
                             )}
                           </span>
                           {approvalState === ApprovalState.PENDING ? (
@@ -342,7 +342,7 @@ export default function Deposit() {
                             <MouseoverTooltip
                               text={
                                 <Trans>
-                                  You must give the Uniswap smart contracts permission to use your{' '}
+                                  You must give the XXX smart contracts permission to use your{' '}
                                   {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
                                 </Trans>
                               }
