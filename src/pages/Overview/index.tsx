@@ -4,6 +4,7 @@ import { AutoColumn } from 'components/Column'
 import FundTable from 'components/funds/TopFundTable'
 import Row from 'components/Row'
 import { MonoSpace } from 'components/shared'
+import TokenTable from 'components/tokens/TokenTable'
 import { useXXXFund2ChartData } from 'data/Overview/chartData'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -205,6 +206,9 @@ export default function Overview() {
         </RowBetween>
         <DarkGreyCard>
           <FundTable fundDatas={fundListData.data} />
+        </DarkGreyCard>
+        <DarkGreyCard>
+          <TokenTable tokenDatas={tokenListData.data} />
         </DarkGreyCard>
       </AutoColumn>
     </PageWrapper>

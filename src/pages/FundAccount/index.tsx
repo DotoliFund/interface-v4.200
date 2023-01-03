@@ -712,6 +712,10 @@ export default function FundAccount() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         {tokenAmountHover !== undefined && liquidityAmountHover !== undefined ? (
                           <MonoSpace>{tokenAmountHover + liquidityAmountHover}</MonoSpace>
+                        ) : tokenAmountHover !== undefined && liquidityAmountHover === undefined ? (
+                          <MonoSpace>{tokenAmountHover}</MonoSpace>
+                        ) : tokenAmountHover === undefined && liquidityAmountHover !== undefined ? (
+                          <MonoSpace>{liquidityAmountHover}</MonoSpace>
                         ) : (
                           <>
                             <br />
