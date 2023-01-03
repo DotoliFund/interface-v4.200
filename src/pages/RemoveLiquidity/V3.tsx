@@ -13,7 +13,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import FormattedCurrencyAmount from 'components/FormattedCurrencyAmount'
 import Loader from 'components/Loader'
-import { NavigationsTabs } from 'components/NavigationTabs'
+import { AddRemoveTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import Slider from 'components/Slider'
 import Toggle from 'components/Toggle'
@@ -220,13 +220,13 @@ function Remove({
 
   function modalHeader() {
     return (
-      <AutoColumn gap={'sm'} style={{ padding: '16px' }}>
+      <AutoColumn gap="sm" style={{ padding: '16px' }}>
         <RowBetween align="flex-end">
           <Text fontSize={16} fontWeight={500}>
             <Trans>Pooled {liquidityValue0?.currency?.symbol}:</Trans>
           </Text>
           <RowFixed>
-            <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+            <Text fontSize={16} fontWeight={500} marginLeft="6px">
               {liquidityValue0 && <FormattedCurrencyAmount currencyAmount={liquidityValue0} />}
             </Text>
             <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue0?.currency} />
@@ -237,7 +237,7 @@ function Remove({
             <Trans>Pooled {liquidityValue1?.currency?.symbol}:</Trans>
           </Text>
           <RowFixed>
-            <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+            <Text fontSize={16} fontWeight={500} marginLeft="6px">
               {liquidityValue1 && <FormattedCurrencyAmount currencyAmount={liquidityValue1} />}
             </Text>
             <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue1?.currency} />
@@ -245,12 +245,7 @@ function Remove({
         </RowBetween>
         {feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) ? (
           <>
-            <ThemedText.DeprecatedItalic
-              fontSize={12}
-              color={theme.deprecated_text2}
-              textAlign="left"
-              padding={'8px 0 0 0'}
-            >
+            <ThemedText.DeprecatedItalic fontSize={12} color={theme.textSecondary} textAlign="left" padding="8px 0 0 0">
               <Trans>You will also collect fees earned from this position.</Trans>
             </ThemedText.DeprecatedItalic>
             <RowBetween>
@@ -258,7 +253,7 @@ function Remove({
                 <Trans>{feeValue0?.currency?.symbol} Fees Earned:</Trans>
               </Text>
               <RowFixed>
-                <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+                <Text fontSize={16} fontWeight={500} marginLeft="6px">
                   {feeValue0 && <FormattedCurrencyAmount currencyAmount={feeValue0} />}
                 </Text>
                 <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue0?.currency} />
@@ -269,7 +264,7 @@ function Remove({
                 <Trans>{feeValue1?.currency?.symbol} Fees Earned:</Trans>
               </Text>
               <RowFixed>
-                <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+                <Text fontSize={16} fontWeight={500} marginLeft="6px">
                   {feeValue1 && <FormattedCurrencyAmount currencyAmount={feeValue1} />}
                 </Text>
                 <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue1?.currency} />
@@ -308,11 +303,11 @@ function Remove({
         )}
         pendingText={pendingText}
       />
-      <AppBody>
-        <NavigationsTabs
+      <AppBody $maxWidth="unset">
+        <AddRemoveTabs
+          creating={false}
           adding={false}
-          fundAddress={fundAddress}
-          investorAddress={investorAddress}
+          positionID={tokenId.toString()}
           defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}
         />
         <Wrapper>
@@ -367,7 +362,7 @@ function Remove({
                       <Trans>Pooled {liquidityValue0?.currency?.symbol}:</Trans>
                     </Text>
                     <RowFixed>
-                      <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+                      <Text fontSize={16} fontWeight={500} marginLeft="6px">
                         {liquidityValue0 && <FormattedCurrencyAmount currencyAmount={liquidityValue0} />}
                       </Text>
                       <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue0?.currency} />
@@ -378,7 +373,7 @@ function Remove({
                       <Trans>Pooled {liquidityValue1?.currency?.symbol}:</Trans>
                     </Text>
                     <RowFixed>
-                      <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+                      <Text fontSize={16} fontWeight={500} marginLeft="6px">
                         {liquidityValue1 && <FormattedCurrencyAmount currencyAmount={liquidityValue1} />}
                       </Text>
                       <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue1?.currency} />
@@ -392,7 +387,7 @@ function Remove({
                           <Trans>{feeValue0?.currency?.symbol} Fees Earned:</Trans>
                         </Text>
                         <RowFixed>
-                          <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+                          <Text fontSize={16} fontWeight={500} marginLeft="6px">
                             {feeValue0 && <FormattedCurrencyAmount currencyAmount={feeValue0} />}
                           </Text>
                           <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue0?.currency} />
@@ -403,7 +398,7 @@ function Remove({
                           <Trans>{feeValue1?.currency?.symbol} Fees Earned:</Trans>
                         </Text>
                         <RowFixed>
-                          <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
+                          <Text fontSize={16} fontWeight={500} marginLeft="6px">
                             {feeValue1 && <FormattedCurrencyAmount currencyAmount={feeValue1} />}
                           </Text>
                           <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue1?.currency} />
@@ -428,7 +423,7 @@ function Remove({
               )}
 
               <div style={{ display: 'flex' }}>
-                <AutoColumn gap="12px" style={{ flex: '1' }}>
+                <AutoColumn gap="md" style={{ flex: '1' }}>
                   <ButtonConfirmed
                     confirmed={false}
                     disabled={removed || percent === 0 || !liquidityValue0}
