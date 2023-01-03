@@ -4,11 +4,11 @@ import { AutoColumn } from 'components/Column'
 import FundTable from 'components/funds/TopFundTable'
 import Row from 'components/Row'
 import { MonoSpace } from 'components/shared'
-import TokenTable from 'components/tokens/TokenTable'
+import TokenTable from 'components/TokensTable'
 import { useXXXFund2ChartData } from 'data/Overview/chartData'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
-import { useFundListData } from 'state/funds/hooks'
+import { useFundListData, useTokenListData } from 'state/funds/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { formatTime, unixToDate } from 'utils/date'
@@ -64,6 +64,7 @@ export default function Overview() {
   const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
 
   const fundListData = useFundListData()
+  const tokenListData = useTokenListData()
   const chartData = useXXXFund2ChartData().data
 
   const formattedTotalVolume = useMemo(() => {

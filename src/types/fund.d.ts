@@ -111,6 +111,17 @@ export interface InvestorFields {
   profitRatio: string
 }
 
+export interface Token {
+  address: string
+  symbol: string
+}
+
+export interface TokenFields {
+  id: string
+  address: string
+  symbol: string
+}
+
 export interface XXXFund2Snapshot {
   id: string
   timestamp: number

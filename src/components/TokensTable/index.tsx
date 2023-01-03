@@ -1,16 +1,13 @@
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
-import Percent from 'components/Percent'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
-import { Fund } from 'types/fund'
+import { Token } from 'types/fund'
 import { shortenAddress } from 'utils'
-import { unixToDate } from 'utils/date'
-import { formatDollarAmount } from 'utils/numbers'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -57,32 +54,19 @@ const LinkWrapper = styled(Link)`
 `
 
 const SORT_FIELD = {
-  fund: 'fund',
-  created: 'createdAtTimestamp',
-  volume: 'volume',
-  liquidity: 'liquidity',
-  profit: 'profitRatio',
-  investorCount: 'investorCount',
+  name: 'name',
 }
 
-const DataRow = ({ tokenData, index }: { tokenData: Fund; index: number }) => {
+const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
   return (
     <ResponsiveGrid>
+      <Label>{index + 1}</Label>
       <Label fontWeight={400}>{shortenAddress(tokenData.address)}</Label>
       <Label end={1} fontWeight={400}>
-        {formatDollarAmount(tokenData.volumeUSD)}
+        {tokenData.address}
       </Label>
       <Label end={1} fontWeight={400}>
-        {formatDollarAmount(tokenData.liquidityVolumeUSD)}
-      </Label>
-      <Label end={1} fontWeight={400}>
-        <Percent value={tokenData.profitRatio} wrap={false} />
-      </Label>
-      <Label end={1} fontWeight={400}>
-        {tokenData.investorCount}
-      </Label>
-      <Label end={1} fontWeight={400}>
-        {unixToDate(tokenData.createdAtTimestamp)}
+        {tokenData.symbol}
       </Label>
     </ResponsiveGrid>
   )
@@ -90,12 +74,12 @@ const DataRow = ({ tokenData, index }: { tokenData: Fund; index: number }) => {
 
 const MAX_ITEMS = 10
 
-export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { tokenDatas: Fund[]; maxItems?: number }) {
+export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { tokenDatas: Token[]; maxItems?: number }) {
   // theming
   const theme = useTheme()
 
   // for sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.volume)
+  const [sortField, setSortField] = useState(SORT_FIELD.name)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
@@ -109,13 +93,13 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
     setMaxPage(Math.floor(tokenDatas.length / maxItems) + extraPages)
   }, [maxItems, tokenDatas])
 
-  const sortedFunds = useMemo(() => {
+  const sortedTokens = useMemo(() => {
     return tokenDatas
       ? tokenDatas
           .filter((x) => !!x)
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof Fund] > b[sortField as keyof Fund]
+              return a[sortField as keyof Token] > b[sortField as keyof Token]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {
@@ -151,30 +135,16 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
 
   return (
     <Wrapper>
-      {sortedFunds.length > 0 ? (
+      {sortedTokens.length > 0 ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.token)}>
-              Fund {arrow(SORT_FIELD.token)}
-            </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volume)}>
-              Volume {arrow(SORT_FIELD.volume)}
-            </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.liquidity)}>
-              Liquidity {arrow(SORT_FIELD.liquidity)}
-            </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profit)}>
-              Profit {arrow(SORT_FIELD.profit)}
-            </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.investorCount)}>
-              Investors {arrow(SORT_FIELD.investorCount)}
-            </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.created)}>
-              Created {arrow(SORT_FIELD.created)}
+            <Label color={theme.deprecated_text2}>#</Label>
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.name)}>
+              Name {arrow(SORT_FIELD.name)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />
-          {sortedFunds.map((tokenData, i) => {
+          {sortedTokens.map((tokenData, i) => {
             if (tokenData) {
               return (
                 <React.Fragment key={i}>
