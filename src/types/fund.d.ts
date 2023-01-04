@@ -8,6 +8,19 @@ export interface FeeToken {
   amount: number
 }
 
+export interface Token {
+  address: string
+  symbol: string
+  updatedTimestamp: string
+}
+
+export interface TokenFields {
+  id: string
+  address: string
+  symbol: string
+  updatedTimestamp: string
+}
+
 export interface Fund {
   address: string
   createdAtTimestamp: number
@@ -109,17 +122,6 @@ export interface InvestorFields {
   profitETH: string
   profitUSD: string
   profitRatio: string
-}
-
-export interface Token {
-  address: string
-  symbol: string
-}
-
-export interface TokenFields {
-  id: string
-  address: string
-  symbol: string
 }
 
 export interface XXXFund2Snapshot {

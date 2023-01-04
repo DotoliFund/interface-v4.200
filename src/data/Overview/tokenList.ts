@@ -6,13 +6,14 @@ import { Token, TokenFields } from 'types/fund'
 export const TOKENS_BULK = () => {
   const queryString = `
     query tokens {
-      tokens(orderBy: profitUSD, orderDirection: desc, subgraphError: allow) {
+      tokens(first: 100, orderBy: id, orderDirection: asc, where: { active: true }, subgraphError: allow) {
         id
         address
         symbol
+        updatedTimestamp
       }
     }
-    `
+  `
   return gql(queryString)
 }
 
@@ -53,6 +54,7 @@ export function useTokenList(): {
         const tokenData: Token = {
           address: tokenFields.address,
           symbol: tokenFields.symbol,
+          updatedTimestamp: tokenFields.updatedTimestamp,
         }
         return tokenData
       })

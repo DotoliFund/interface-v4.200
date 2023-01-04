@@ -31,7 +31,7 @@ export const FUNDS_BULK = () => {
         profitRatio
       }
     }
-    `
+  `
   return gql(queryString)
 }
 

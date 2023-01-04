@@ -17,7 +17,7 @@ export const XXXFUND2_CHART_DATA_BULK = () => {
         totalLiquidityVolumeUSD
       }
     }
-    `
+  `
   return gql(queryString)
 }
 

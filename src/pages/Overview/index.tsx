@@ -208,6 +208,9 @@ export default function Overview() {
         <DarkGreyCard>
           <FundTable fundDatas={fundListData.data} />
         </DarkGreyCard>
+        <RowBetween mt={'16px'}>
+          <ThemedText.DeprecatedMain fontSize="22px">Tokens</ThemedText.DeprecatedMain>
+        </RowBetween>
         <DarkGreyCard>
           <TokenTable tokenDatas={tokenListData.data} />
         </DarkGreyCard>

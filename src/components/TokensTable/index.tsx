@@ -1,3 +1,4 @@
+import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
@@ -5,9 +6,11 @@ import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
+import { ExternalLink } from 'theme'
 import { Token } from 'types/fund'
-import { shortenAddress } from 'utils'
+import { getEtherscanLink } from 'utils'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -58,12 +61,16 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
+  const { chainId } = useWeb3React()
+  const [activeNetwork] = useActiveNetworkVersion()
+
   return (
     <ResponsiveGrid>
       <Label>{index + 1}</Label>
-      <Label fontWeight={400}>{shortenAddress(tokenData.address)}</Label>
       <Label end={1} fontWeight={400}>
-        {tokenData.address}
+        <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address', activeNetwork)}>
+          {tokenData.address}
+        </ExternalLink>
       </Label>
       <Label end={1} fontWeight={400}>
         {tokenData.symbol}
