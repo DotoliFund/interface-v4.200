@@ -11,16 +11,27 @@ export const UNI_ADDRESS: AddressMap = constructSameAddressMap('0x1f9840a85d5aF5
 export const V2_FACTORY_ADDRESSES: AddressMap = constructSameAddressMap(V2_FACTORY_ADDRESS)
 export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D')
 
-//goerli testnet
+//mainnet
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const XXX_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0xb1A79fFFBEf247893E9Ae3A094B75DF262e980A6', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0xb1A79fFFBEf247893E9Ae3A094B75DF262e980A6', [SupportedChainId.MAINNET]),
 }
 export const XXXSTAKING2_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x64eC2D9932d08963840E04254D3Aa29B21E4241D', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0x64eC2D9932d08963840E04254D3Aa29B21E4241D', [SupportedChainId.MAINNET]),
 }
 export const XXXFACTORY_ADDRESSES = '0x67Aa3133070fDbA0A70Ad4D642A8b9cF47Cd214e'
 export const XXXFUND2_ADDRESSES = '0xf3EF25091831a4d0E9D69D2eB45a8C133f925Db3'
+
+//goerli testnet
+// export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+// export const XXX_ADDRESS: AddressMap = {
+//   ...constructSameAddressMap('0xb1A79fFFBEf247893E9Ae3A094B75DF262e980A6', [SupportedChainId.GOERLI]),
+// }
+// export const XXXSTAKING2_ADDRESS: AddressMap = {
+//   ...constructSameAddressMap('0x64eC2D9932d08963840E04254D3Aa29B21E4241D', [SupportedChainId.GOERLI]),
+// }
+// export const XXXFACTORY_ADDRESSES = '0x67Aa3133070fDbA0A70Ad4D642A8b9cF47Cd214e'
+// export const XXXFUND2_ADDRESSES = '0xf3EF25091831a4d0E9D69D2eB45a8C133f925Db3'
 
 export const VOTE_URL = 'https://www.tally.xyz/gov/eip155:5:0xfbD4900923647c69941c0819B410E3e44c9d024B'
 
