@@ -37,5 +37,3 @@ export const blockClient = new ApolloClient({
     },
   },
 })
-
-//test
