@@ -7,12 +7,12 @@ import POLYGON_LOGO_URL from 'assets/images/polygonCircle.png'
 
 import { SupportedChainId } from './chains'
 
-const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
-if (typeof INFURA_KEY === 'undefined') {
-  throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
+const ALCHEMY_KEY = process.env.REACT_APP_ALCHEMY_KEY
+if (typeof ALCHEMY_KEY === 'undefined') {
+  throw new Error(`REACT_APP_ALCHEMY_KEY must be a defined environment variable`)
 }
 
-export const MAINNET_PROVIDER = new JsonRpcProvider(`https://mainnet.infura.io/v3/${INFURA_KEY}`)
+export const MAINNET_PROVIDER = new JsonRpcProvider(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`)
 
 /**
  * Fallback JSON-RPC endpoints.
@@ -86,28 +86,31 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
  */
 export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.MAINNET]: [
-    `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+    `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
     ...FALLBACK_URLS[SupportedChainId.MAINNET],
   ],
-  [SupportedChainId.GOERLI]: [`https://goerli.infura.io/v3/${INFURA_KEY}`, ...FALLBACK_URLS[SupportedChainId.GOERLI]],
+  [SupportedChainId.GOERLI]: [
+    `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+    ...FALLBACK_URLS[SupportedChainId.GOERLI],
+  ],
   [SupportedChainId.OPTIMISM]: [
-    `https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`,
+    `https://optimism-mainnet.infura.io/v3/${ALCHEMY_KEY}`,
     ...FALLBACK_URLS[SupportedChainId.OPTIMISM],
   ],
   [SupportedChainId.OPTIMISM_GOERLI]: [
-    `https://optimism-goerli.infura.io/v3/${INFURA_KEY}`,
+    `https://optimism-goerli.infura.io/v3/${ALCHEMY_KEY}`,
     ...FALLBACK_URLS[SupportedChainId.OPTIMISM_GOERLI],
   ],
   [SupportedChainId.ARBITRUM_ONE]: [
-    `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
+    `https://arbitrum-mainnet.infura.io/v3/${ALCHEMY_KEY}`,
     ...FALLBACK_URLS[SupportedChainId.ARBITRUM_ONE],
   ],
   [SupportedChainId.POLYGON]: [
-    `https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`,
+    `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
     ...FALLBACK_URLS[SupportedChainId.POLYGON],
   ],
   [SupportedChainId.POLYGON_MUMBAI]: [
-    `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
+    `https://polygon-mumbai.infura.io/v3/${ALCHEMY_KEY}`,
     ...FALLBACK_URLS[SupportedChainId.POLYGON_MUMBAI],
   ],
   [SupportedChainId.CELO]: FALLBACK_URLS[SupportedChainId.CELO],

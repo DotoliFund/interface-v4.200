@@ -52,8 +52,8 @@ const EXTERNAL_APIS = [
     description: <Trans>The app fetches the optimal trade route from a Uniswap Labs server.</Trans>,
   },
   {
-    name: 'Infura',
-    description: <Trans>The app fetches on-chain data and constructs contract calls with an Infura API.</Trans>,
+    name: 'Alchemy',
+    description: <Trans>The app fetches on-chain data and constructs contract calls with an Alchemy API.</Trans>,
   },
   {
     name: 'TRM Labs',
