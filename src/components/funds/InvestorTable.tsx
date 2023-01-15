@@ -166,19 +166,19 @@ export default function InvestorTable({
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)}>
             Invetsor {arrow(SORT_FIELD.investor)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volume)}>
+          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
             Volume {arrow(SORT_FIELD.volume)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.liquidity)}>
+          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.liquidity)}>
             Liquidity {arrow(SORT_FIELD.liquidity)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.principal)}>
+          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.principal)}>
             Principal {arrow(SORT_FIELD.principal)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.ratio)}>
+          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.ratio)}>
             Profit {arrow(SORT_FIELD.ratio)}
           </ClickableText>
-          <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
+          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             Time {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
         </ResponsiveGrid>

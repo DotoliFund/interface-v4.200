@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { XXXFund2Snapshot, XXXFund2SnapshotFields } from 'types/fund'
 
-export const XXXFUND2_CHART_DATA_BULK = () => {
+export const FUND_CHART_DATA_BULK = () => {
   const queryString = `
     query xxxfund2Snapshots {
       xxxfund2Snapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
@@ -36,7 +36,7 @@ export function useXXXFund2ChartData(): {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<XXXFund2SnapshotResponse>(XXXFUND2_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<XXXFund2SnapshotResponse>(FUND_CHART_DATA_BULK(), {
     client: dataClient,
   })
 

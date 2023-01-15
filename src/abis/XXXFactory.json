@@ -1,9 +1,31 @@
 {
   "abi": [
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "weth9",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "uni",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "xxx",
+          "type": "address"
+        }
+      ],
       "stateMutability": "nonpayable",
       "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "FactoryCreated",
+      "type": "event"
     },
     {
       "anonymous": false,
@@ -22,6 +44,32 @@
         }
       ],
       "name": "FundCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "managerFee",
+          "type": "uint256"
+        }
+      ],
+      "name": "ManagerFeeChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "MinPoolAmountChanged",
       "type": "event"
     },
     {
@@ -67,6 +115,71 @@
       ],
       "name": "Subscribe",
       "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "WhiteListTokenAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "WhiteListTokenRemoved",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "UNI",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WETH9",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "XXX",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [],
@@ -139,7 +252,7 @@
     },
     {
       "inputs": [],
-      "name": "minWETHVolume",
+      "name": "minPoolAmount",
       "outputs": [
         {
           "internalType": "uint256",
@@ -193,11 +306,11 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "volume",
+          "name": "amount",
           "type": "uint256"
         }
       ],
-      "name": "setMinWETHVolume",
+      "name": "setMinPoolAmount",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

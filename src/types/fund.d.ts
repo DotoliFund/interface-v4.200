@@ -21,6 +21,22 @@ export interface TokenFields {
   updatedTimestamp: string
 }
 
+export interface Factory {
+  id: string
+  fundCount: number
+  investorCount: number
+  managerFee: number
+  minPoolAmount: number
+}
+
+export interface FactoryFields {
+  id: string
+  fundCount: string
+  investorCount: string
+  managerFee: string
+  minPoolAmount: string
+}
+
 export interface Fund {
   address: string
   createdAtTimestamp: number

@@ -4,6 +4,7 @@ import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
+import { OptimismNetworkInfo } from 'constants/networks'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -11,6 +12,7 @@ import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink } from 'theme'
 import { Token } from 'types/fund'
 import { getEtherscanLink } from 'utils'
+import { formatTime } from 'utils/date'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -21,24 +23,24 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(5, 1fr);
+  grid-template-columns: 1.5fr repeat(3, 1fr);
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(4, 1fr);
+    grid-template-columns: 1.5fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
-    grid-template-columns: 1.5fr repeat(4, 1fr);
+    grid-template-columns: 1.5fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
-    grid-template-columns: 1.5fr repeat(3, 1fr);
+    grid-template-columns: 1.5fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
@@ -57,7 +59,9 @@ const LinkWrapper = styled(Link)`
 `
 
 const SORT_FIELD = {
+  address: 'address',
   name: 'name',
+  updateDate: 'updateDate',
 }
 
 const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
@@ -74,6 +78,9 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
       </Label>
       <Label end={1} fontWeight={400}>
         {tokenData.symbol}
+      </Label>
+      <Label end={1} fontWeight={400}>
+        {formatTime(tokenData.updatedTimestamp, activeNetwork === OptimismNetworkInfo ? 8 : 0)}
       </Label>
     </ResponsiveGrid>
   )
@@ -146,8 +153,14 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
         <AutoColumn gap="16px">
           <ResponsiveGrid>
             <Label color={theme.deprecated_text2}>#</Label>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.name)}>
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.address)}>
+              Address {arrow(SORT_FIELD.address)}
+            </ClickableText>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.name)}>
               Name {arrow(SORT_FIELD.name)}
+            </ClickableText>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.updateDate)}>
+              Update {arrow(SORT_FIELD.updateDate)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />

@@ -2,10 +2,11 @@ import AreaChart from 'components/AreaChart'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import FundTable from 'components/funds/TopFundTable'
-import Row from 'components/Row'
+import Row, { RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import TokenTable from 'components/TokensTable'
 import { useXXXFund2ChartData } from 'data/Overview/chartData'
+import { useFactoryData } from 'data/Overview/factoryData'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useFundListData, useTokenListData } from 'state/funds/hooks'
@@ -51,6 +52,18 @@ const ChartWrapper = styled.div`
   `};
 `
 
+export const HideMedium = styled.span`
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+    display: none;
+  `};
+`
+
+export const HideSmall = styled.span`
+  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+    display: none;
+  `};
+`
+
 export default function Overview() {
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -63,10 +76,10 @@ export default function Overview() {
   const [liquidityDateHover, setLiquidityDateHover] = useState<string | undefined>()
   const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
 
+  const factoryData = useFactoryData()
   const fundListData = useFundListData()
   const tokenListData = useTokenListData()
   const chartData = useXXXFund2ChartData().data
-
   const formattedTotalVolume = useMemo(() => {
     if (chartData) {
       return chartData.map((day) => {
@@ -202,6 +215,42 @@ export default function Overview() {
             />
           </ChartWrapper>
         </ResponsiveRow>
+        <HideSmall>
+          <DarkGreyCard mt="10px">
+            <RowBetween>
+              <RowFixed>
+                <RowFixed mr="20px">
+                  <ThemedText.DeprecatedMain ml="10px">Funds :</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.fundCount}</ThemedText.DeprecatedLabel>
+                  <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
+                </RowFixed>
+                <RowFixed mr="20px">
+                  <ThemedText.DeprecatedMain ml="10px">Investors : </ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.investorCount}</ThemedText.DeprecatedLabel>
+                  <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
+                </RowFixed>
+                <HideMedium>
+                  <RowFixed mr="20px">
+                    <ThemedText.DeprecatedMain ml="10px">Manager Fee : </ThemedText.DeprecatedMain>
+                    <ThemedText.DeprecatedLabel ml="10px">
+                      {factoryData.data ? (factoryData.data.managerFee / 10000).toFixed(2) : ''} %
+                    </ThemedText.DeprecatedLabel>
+                  </RowFixed>
+                </HideMedium>
+                <HideMedium>
+                  <RowFixed mr="20px">
+                    <ThemedText.DeprecatedMain ml="10px">
+                      Pool volume to become a whitelist token:{' '}
+                    </ThemedText.DeprecatedMain>
+                    <ThemedText.DeprecatedLabel ml="10px">
+                      {factoryData.data ? factoryData.data.minPoolAmount / 1e18 : ''} ETH
+                    </ThemedText.DeprecatedLabel>
+                  </RowFixed>
+                </HideMedium>
+              </RowFixed>
+            </RowBetween>
+          </DarkGreyCard>
+        </HideSmall>
         <RowBetween mt={'16px'}>
           <ThemedText.DeprecatedMain fontSize="22px">Top Funds</ThemedText.DeprecatedMain>
         </RowBetween>

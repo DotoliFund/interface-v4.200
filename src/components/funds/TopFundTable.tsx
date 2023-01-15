@@ -159,19 +159,19 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
               Fund {arrow(SORT_FIELD.fund)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.volume)}>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
               Volume {arrow(SORT_FIELD.volume)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.liquidity)}>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.liquidity)}>
               Liquidity {arrow(SORT_FIELD.liquidity)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.profit)}>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.profit)}>
               Profit {arrow(SORT_FIELD.profit)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.investorCount)}>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investorCount)}>
               Investors {arrow(SORT_FIELD.investorCount)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} end={1} onClick={() => handleSort(SORT_FIELD.created)}>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.created)}>
               Created {arrow(SORT_FIELD.created)}
             </ClickableText>
           </ResponsiveGrid>

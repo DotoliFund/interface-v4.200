@@ -2,7 +2,7 @@ import { Interface } from '@ethersproject/abi'
 import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
 import { BigintIsh, Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Position, Trade as V3Trade } from '@uniswap/v3-sdk'
-import IXXXFund2 from 'abis/XXXFund2.json'
+import XXXFund2ABI from 'abis/XXXFund2.json'
 import { NULL_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
@@ -199,7 +199,7 @@ export interface RemoveLiquidityOptions {
 }
 
 export abstract class XXXFund2 {
-  public static INTERFACE: Interface = new Interface(IXXXFund2.abi)
+  public static INTERFACE: Interface = new Interface(XXXFund2ABI.abi)
 
   public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
     const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [token, toHex(amount.quotient)])

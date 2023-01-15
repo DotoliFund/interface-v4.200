@@ -11,26 +11,8 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
           "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
         },
         {
           "indexed": false,
@@ -66,26 +48,8 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
           "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
         },
         {
           "indexed": false,
@@ -121,18 +85,6 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
           "type": "address"
         },
@@ -158,26 +110,8 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
           "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
         },
         {
           "indexed": false,
@@ -232,19 +166,7 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
           "type": "address"
         },
         {
@@ -267,18 +189,6 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": true,
-          "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
           "indexed": false,
           "internalType": "address",
           "name": "token",
@@ -300,26 +210,8 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
           "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
         },
         {
           "indexed": false,
@@ -352,18 +244,6 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
         {
           "indexed": true,
           "internalType": "address",
@@ -404,18 +284,6 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "fund",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
           "name": "investor",
           "type": "address"
         },
@@ -440,6 +308,19 @@
       ],
       "name": "Withdraw",
       "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "WETH9",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [
@@ -562,40 +443,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "deposits",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint128",
-          "name": "liquidity",
-          "type": "uint128"
-        },
-        {
-          "internalType": "address",
-          "name": "token0",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "token1",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "factory",
       "outputs": [
@@ -612,12 +459,12 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_token",
+          "name": "token",
           "type": "address"
         },
         {
           "internalType": "uint256",
-          "name": "_amount",
+          "name": "amount",
           "type": "uint256"
         }
       ],
@@ -742,7 +589,7 @@
       "outputs": [
         {
           "internalType": "uint256[]",
-          "name": "tokenIds",
+          "name": "_tokenIds",
           "type": "uint256[]"
         }
       ],
@@ -964,22 +811,17 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
         }
       ],
-      "name": "positions",
+      "name": "positionOwner",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -1007,11 +849,6 @@
             {
               "internalType": "address",
               "name": "tokenOut",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
               "type": "address"
             },
             {
@@ -1058,6 +895,30 @@
       "name": "swap",
       "outputs": [],
       "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenIds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
