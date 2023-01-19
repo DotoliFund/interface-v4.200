@@ -1,6 +1,6 @@
 import { Interface } from '@ethersproject/abi'
 import { BigintIsh, NativeCurrency } from '@uniswap/sdk-core'
-import IXXXFactory from 'abis/XXXFactory.json'
+import IDotoliFactory from 'abis/DotoliFactory.json'
 import JSBI from 'jsbi'
 
 import { MethodParameters, toHex } from './utils/calldata'
@@ -46,11 +46,11 @@ export type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOption
 
 export type AddLiquidityOptions = MintOptions | IncreaseOptions
 
-export abstract class XXXFactory {
-  public static INTERFACE: Interface = new Interface(IXXXFactory.abi)
+export abstract class DotoliFactory {
+  public static INTERFACE: Interface = new Interface(IDotoliFactory.abi)
 
   public static createCallParameters(): MethodParameters {
-    const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('createFund')
+    const calldata: string = DotoliFactory.INTERFACE.encodeFunctionData('createFund')
     const value: string = toHex(0)
     return {
       calldata,
@@ -59,7 +59,7 @@ export abstract class XXXFactory {
   }
 
   public static subscribeCallParameters(fund: string): MethodParameters {
-    const calldata: string = XXXFactory.INTERFACE.encodeFunctionData('subscribe', [fund])
+    const calldata: string = DotoliFactory.INTERFACE.encodeFunctionData('subscribe', [fund])
     const value: string = toHex(0)
     return {
       calldata,

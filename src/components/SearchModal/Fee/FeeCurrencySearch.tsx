@@ -6,7 +6,7 @@ import { sendEvent } from 'components/analytics'
 import Column from 'components/Column'
 import Row, { RowBetween } from 'components/Row'
 import { useActiveTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
-import { useXXXFund2Contract } from 'hooks/useContract'
+import { useDotoliFundContract } from 'hooks/useContract'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useToggle from 'hooks/useToggle'
@@ -73,7 +73,7 @@ export function FeeCurrencySearch({
 }: FeeCurrencySearchProps) {
   const { chainId } = useWeb3React()
   const theme = useTheme()
-  const XXXFund2Contract = useXXXFund2Contract(fundAddress)
+  const DotoliFundContract = useDotoliFundContract(fundAddress)
 
   const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false)
 

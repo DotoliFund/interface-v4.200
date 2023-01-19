@@ -347,7 +347,7 @@
               "type": "uint128"
             }
           ],
-          "internalType": "struct IXXXFund2.CollectPositionFeeParams",
+          "internalType": "struct IDotoliFund.CollectPositionFeeParams",
           "name": "_params",
           "type": "tuple"
         }
@@ -403,7 +403,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct IXXXFund2.DecreaseLiquidityParams",
+          "internalType": "struct IDotoliFund.DecreaseLiquidityParams",
           "name": "_params",
           "type": "tuple"
         }
@@ -636,7 +636,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct IXXXFund2.IncreaseLiquidityParams",
+          "internalType": "struct IDotoliFund.IncreaseLiquidityParams",
           "name": "_params",
           "type": "tuple"
         }
@@ -777,7 +777,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct IXXXFund2.MintNewPositionParams",
+          "internalType": "struct IDotoliFund.MintNewPositionParams",
           "name": "_params",
           "type": "tuple"
         }
@@ -832,7 +832,7 @@
         {
           "components": [
             {
-              "internalType": "enum IXXXFund2.SwapType",
+              "internalType": "enum IDotoliFund.SwapType",
               "name": "swapType",
               "type": "uint8"
             },
@@ -887,7 +887,7 @@
               "type": "bytes"
             }
           ],
-          "internalType": "struct IXXXFund2.SwapParams[]",
+          "internalType": "struct IDotoliFund.SwapParams[]",
           "name": "trades",
           "type": "tuple[]"
         }

@@ -18,13 +18,13 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from 'componen
 import { NULL_ADDRESS } from 'constants/addresses'
 import { useToken } from 'hooks/Tokens'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
-import { useXXXFactoryContract } from 'hooks/useContract'
+import { useDotoliFactoryContract } from 'hooks/useContract'
 import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
 import { PoolState, usePool } from 'hooks/usePools'
 import useStablecoinPrice from 'hooks/useStablecoinPrice'
 import { useV3PositionFees } from 'hooks/useV3PositionFees'
 import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
-import { XXXFund2 } from 'interface/XXXFund2'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -337,7 +337,7 @@ export function PositionPage() {
   const { chainId, account, provider } = useWeb3React()
   const theme = useTheme()
 
-  const XXXFactoryContract = useXXXFactoryContract()
+  const DotoliFactoryContract = useDotoliFactoryContract()
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined
   const { loading, position: positionDetails } = useV3PositionFromTokenId(
     fund ?? NULL_ADDRESS,
@@ -463,7 +463,7 @@ export function PositionPage() {
 
     setCollecting(true)
 
-    const { calldata, value } = XXXFund2.collectPositionFeeCallParameters(investor, {
+    const { calldata, value } = DotoliFund.collectPositionFeeCallParameters(investor, {
       tokenId: tokenId.toString(),
       expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(currency0ForFeeCollectionPurposes, 0),
       expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(currency1ForFeeCollectionPurposes, 0),
@@ -527,7 +527,7 @@ export function PositionPage() {
   ])
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )

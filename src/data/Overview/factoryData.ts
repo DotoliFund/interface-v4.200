@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { Factory, FactoryFields } from 'types/fund'
@@ -21,7 +21,7 @@ interface FactoryResponse {
 }
 
 /**
- * Fetch xxx factory data
+ * Fetch dotoli factory data
  */
 export function useFactoryData(): {
   loading: boolean
@@ -30,7 +30,7 @@ export function useFactoryData(): {
 } {
   // get client
   const { dataClient } = useClients()
-  const factory = XXXFACTORY_ADDRESSES
+  const factory = DOTOLI_FACTORY_ADDRESSES
 
   const { loading, error, data } = useQuery<FactoryResponse>(FACTORY_DATA_BULK, {
     variables: { factory },

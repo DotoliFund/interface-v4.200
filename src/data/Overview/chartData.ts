@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { XXXFund2Snapshot, XXXFund2SnapshotFields } from 'types/fund'
+import { DotoliFundSnapshot, DotoliFundSnapshotFields } from 'types/fund'
 
 export const FUND_CHART_DATA_BULK = () => {
   const queryString = `
-    query xxxfund2Snapshots {
-      xxxfund2Snapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
+    query dotoliFundSnapshots {
+      dotoliFundSnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
         id
         timestamp
         fundCount
@@ -21,26 +21,26 @@ export const FUND_CHART_DATA_BULK = () => {
   return gql(queryString)
 }
 
-interface XXXFund2SnapshotResponse {
-  xxxfund2Snapshots: XXXFund2SnapshotFields[]
+interface DotoliFundSnapshotResponse {
+  dotoliFundSnapshots: DotoliFundSnapshotFields[]
 }
 
 /**
- * Fetch xxx chart data
+ * Fetch dotoli chart data
  */
-export function useXXXFund2ChartData(): {
+export function useDotoliFundChartData(): {
   loading: boolean
   error: boolean
-  data: XXXFund2Snapshot[]
+  data: DotoliFundSnapshot[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<XXXFund2SnapshotResponse>(FUND_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<DotoliFundSnapshotResponse>(FUND_CHART_DATA_BULK(), {
     client: dataClient,
   })
 
-  if (!data || (data && !data.xxxfund2Snapshots)) return { data: [], error: false, loading: false }
+  if (!data || (data && !data.dotoliFundSnapshots)) return { data: [], error: false, loading: false }
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
@@ -54,18 +54,18 @@ export function useXXXFund2ChartData(): {
     }
   }
 
-  const formatted: XXXFund2Snapshot[] = data
-    ? data.xxxfund2Snapshots.map((value, index) => {
-        const xxxfund2SnapshotFields = data.xxxfund2Snapshots[index]
-        const fundSnapshotData: XXXFund2Snapshot = {
-          id: xxxfund2SnapshotFields.id,
-          timestamp: parseFloat(xxxfund2SnapshotFields.timestamp),
-          fundCount: parseFloat(xxxfund2SnapshotFields.fundCount),
-          investorCount: parseFloat(xxxfund2SnapshotFields.investorCount),
-          totalVolumeETH: parseFloat(xxxfund2SnapshotFields.totalVolumeETH),
-          totalVolumeUSD: parseFloat(xxxfund2SnapshotFields.totalVolumeUSD),
-          totalLiquidityVolumeETH: parseFloat(xxxfund2SnapshotFields.totalLiquidityVolumeETH),
-          totalLiquidityVolumeUSD: parseFloat(xxxfund2SnapshotFields.totalLiquidityVolumeUSD),
+  const formatted: DotoliFundSnapshot[] = data
+    ? data.dotoliFundSnapshots.map((value, index) => {
+        const dotolifundSnapshotFields = data.dotoliFundSnapshots[index]
+        const fundSnapshotData: DotoliFundSnapshot = {
+          id: dotolifundSnapshotFields.id,
+          timestamp: parseFloat(dotolifundSnapshotFields.timestamp),
+          fundCount: parseFloat(dotolifundSnapshotFields.fundCount),
+          investorCount: parseFloat(dotolifundSnapshotFields.investorCount),
+          totalVolumeETH: parseFloat(dotolifundSnapshotFields.totalVolumeETH),
+          totalVolumeUSD: parseFloat(dotolifundSnapshotFields.totalVolumeUSD),
+          totalLiquidityVolumeETH: parseFloat(dotolifundSnapshotFields.totalLiquidityVolumeETH),
+          totalLiquidityVolumeUSD: parseFloat(dotolifundSnapshotFields.totalLiquidityVolumeUSD),
         }
         return fundSnapshotData
       })

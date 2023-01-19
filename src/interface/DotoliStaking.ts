@@ -1,17 +1,17 @@
 import { Interface } from '@ethersproject/abi'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import XXXStaking2Json from 'abis/XXXStaking2.json'
+import DotoliStakingJson from 'abis/DotoliStaking.json'
 import JSBI from 'jsbi'
 
 import { MethodParameters, toHex } from './utils/calldata'
 
 const MaxUint128 = toHex(JSBI.subtract(JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(128)), JSBI.BigInt(1)))
 
-export abstract class XXXStaking2 {
-  public static INTERFACE: Interface = new Interface(XXXStaking2Json.abi)
+export abstract class DotoliStaking {
+  public static INTERFACE: Interface = new Interface(DotoliStakingJson.abi)
 
   public static stakeCallParameters(amount: CurrencyAmount<Currency>): MethodParameters {
-    const calldata: string = XXXStaking2.INTERFACE.encodeFunctionData('stake', [toHex(amount.quotient)])
+    const calldata: string = DotoliStaking.INTERFACE.encodeFunctionData('stake', [toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,
@@ -20,7 +20,7 @@ export abstract class XXXStaking2 {
   }
 
   public static withdrawCallParameters(amount: CurrencyAmount<Currency>): MethodParameters {
-    const calldata: string = XXXStaking2.INTERFACE.encodeFunctionData('withdraw', [toHex(amount.quotient)])
+    const calldata: string = DotoliStaking.INTERFACE.encodeFunctionData('withdraw', [toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,
@@ -29,7 +29,7 @@ export abstract class XXXStaking2 {
   }
 
   public static claimRewardCallParameters(amount: CurrencyAmount<Currency>): MethodParameters {
-    const calldata: string = XXXStaking2.INTERFACE.encodeFunctionData('claimReward', [toHex(amount.quotient)])
+    const calldata: string = DotoliStaking.INTERFACE.encodeFunctionData('claimReward', [toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,

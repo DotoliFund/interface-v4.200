@@ -3,18 +3,18 @@ import { useCurrency } from 'hooks/Tokens'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
-import { useXXXFund2Contract } from './useContract'
+import { useDotoliFundContract } from './useContract'
 
 export default function useInvestorCurrencyBalance(
   fund: string | undefined,
   investor: string | undefined,
   token: string | undefined
 ): CurrencyAmount<Currency> | undefined {
-  const XXXFund2Contract = useXXXFund2Contract(fund)
+  const DotoliFundContract = useDotoliFundContract(fund)
   const inputCurrency = useCurrency(token)
 
   const { loading: tokenBalancesLoading, result: [tokenBalances] = [] } = useSingleCallResult(
-    XXXFund2Contract,
+    DotoliFundContract,
     'getInvestorTokenAmount',
     [investor, token]
   )

@@ -9,12 +9,7 @@
         },
         {
           "internalType": "address",
-          "name": "uni",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "xxx",
+          "name": "dotoli",
           "type": "address"
         }
       ],
@@ -144,7 +139,7 @@
     },
     {
       "inputs": [],
-      "name": "UNI",
+      "name": "DOTOLI",
       "outputs": [
         {
           "internalType": "address",
@@ -158,19 +153,6 @@
     {
       "inputs": [],
       "name": "WETH9",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "XXX",
       "outputs": [
         {
           "internalType": "address",

@@ -14,15 +14,15 @@ import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
-import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { useFundChartData } from 'data/FundPage/chartData'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
 import { useFundTransactions } from 'data/FundPage/transactions'
 import { useColor } from 'hooks/useColor'
-import { useXXXFactoryContract } from 'hooks/useContract'
-import { XXXFactory } from 'interface/XXXFactory'
+import { useDotoliFactoryContract } from 'hooks/useContract'
+import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -93,7 +93,7 @@ enum ChartView {
 export default function FundPage() {
   const params = useParams()
   const fundAddress = params.fundAddress
-  const XXXFactoryContract = useXXXFactoryContract()
+  const DotoliFactoryContract = useDotoliFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
   const navigate = useNavigate()
@@ -108,7 +108,7 @@ export default function FundPage() {
   const theme = useTheme()
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
@@ -127,7 +127,7 @@ export default function FundPage() {
   }, [isManagerLoading, myFund, fundAddress])
 
   const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'isSubscribed',
     [account, fundAddress]
   )
@@ -284,9 +284,9 @@ export default function FundPage() {
 
   async function onSubscribe() {
     if (!chainId || !provider || !account || !fundAddress) return
-    const { calldata, value } = XXXFactory.subscribeCallParameters(fundAddress)
+    const { calldata, value } = DotoliFactory.subscribeCallParameters(fundAddress)
     const txn: { to: string; data: string; value: string } = {
-      to: XXXFACTORY_ADDRESSES,
+      to: DOTOLI_FACTORY_ADDRESSES,
       data: calldata,
       value,
     }

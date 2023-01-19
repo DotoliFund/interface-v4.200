@@ -15,6 +15,7 @@
   },
   "ignorePatterns": [
     "src/types/v3",
+    "src/types/dotoli",
     "src/abis/types",
     "src/locales/**/*.js",
     "src/locales/**/en-US.po",

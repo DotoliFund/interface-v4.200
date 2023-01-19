@@ -6,7 +6,7 @@ import { FUND_INIT_CODE_HASH } from './constants'
 
 /**
  * Computes a fund address
- * @param factoryAddress The XXXFund2 factory address
+ * @param factoryAddress The DotoliFactory address
  * @param manager creater of fund
  * @param initCodeHashManualOverride Override the init code hash used to compute the fund address if necessary
  * @returns The fund address

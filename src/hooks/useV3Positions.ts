@@ -4,7 +4,7 @@ import { CallStateResult, useSingleCallResult, useSingleContractMultipleData } f
 import { useMemo } from 'react'
 import { PositionDetails } from 'types/position'
 
-import { useXXXFund2Contract } from './useContract'
+import { useDotoliFundContract } from './useContract'
 import { useV3NFTPositionManagerContract } from './useContract'
 
 interface UseV3PositionsResults {
@@ -78,10 +78,10 @@ export function useV3Positions(
   fund: string | null | undefined,
   investor: string | null | undefined
 ): UseV3PositionsResults {
-  const XXXFund2Contract = useXXXFund2Contract(fund ?? NULL_ADDRESS)
+  const DotoliFundContract = useDotoliFundContract(fund ?? NULL_ADDRESS)
 
   const { loading: tokenIdResultsLoading, result: [tokenIdResults] = [] } = useSingleCallResult(
-    XXXFund2Contract,
+    DotoliFundContract,
     'getPositionTokenIds',
     [investor ?? undefined]
   )

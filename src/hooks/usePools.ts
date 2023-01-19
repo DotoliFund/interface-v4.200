@@ -7,9 +7,9 @@ import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
+import { IUniswapV3PoolStateInterface } from 'types/v3/v3-core/artifacts/contracts/interfaces/pool/IUniswapV3PoolState'
 
 import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
-import { IUniswapV3PoolStateInterface } from '../types/v3/IUniswapV3PoolState'
 
 const POOL_STATE_INTERFACE = new Interface(IUniswapV3PoolState.abi) as IUniswapV3PoolStateInterface
 

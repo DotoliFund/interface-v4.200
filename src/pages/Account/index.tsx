@@ -8,11 +8,11 @@ import FundList from 'components/FundList'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { XXXFACTORY_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { NULL_ADDRESS } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
-import { useXXXFactoryContract } from 'hooks/useContract'
-import { XXXFactory } from 'interface/XXXFactory'
+import { useDotoliFactoryContract } from 'hooks/useContract'
+import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
@@ -184,12 +184,12 @@ function WrongNetworkCard() {
 
 export default function Account() {
   const { account, chainId, provider } = useWeb3React()
-  const XXXFactoryContract = useXXXFactoryContract()
+  const DotoliFactoryContract = useDotoliFactoryContract()
   const theme = useTheme()
   const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
 
   const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
@@ -218,7 +218,7 @@ export default function Account() {
   }, [managingFundLoading, managingFund, provider, account])
 
   const { loading: investingFundsLoading, result: [investingFunds] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'subscribedFunds',
     [account ?? undefined]
   )
@@ -288,9 +288,9 @@ export default function Account() {
   async function onCreate() {
     if (!chainId || !provider || !account) return
 
-    const { calldata, value } = XXXFactory.createCallParameters()
+    const { calldata, value } = DotoliFactory.createCallParameters()
     const txn: { to: string; data: string; value: string } = {
-      to: XXXFACTORY_ADDRESSES,
+      to: DOTOLI_FACTORY_ADDRESSES,
       data: calldata,
       value,
     }

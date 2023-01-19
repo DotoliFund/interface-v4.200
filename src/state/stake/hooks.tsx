@@ -1,11 +1,11 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { XXX_ADDRESS } from 'constants/addresses'
-import { useTokenContract, useXXXStaking2Contract } from 'hooks/useContract'
+import { DOTOLI_ADDRESS } from 'constants/addresses'
+import { useDotoliStakingContract, useTokenContract } from 'hooks/useContract'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
-import { XXX } from '../../constants/tokens'
+import { DTL } from '../../constants/tokens'
 
 export interface StakingInfo {
   stakingRewardAddress: string
@@ -32,20 +32,20 @@ export interface StakingInfo {
 // gets the staking info from the network for the active chain id
 export function useStakingInfo(): StakingInfo | undefined {
   const { chainId, account } = useWeb3React()
-  const XXXStaking2Contract = useXXXStaking2Contract()
-  const tokenContract = useTokenContract(chainId ? XXX_ADDRESS[chainId] : undefined)
-  const xxx = chainId ? XXX[chainId] : undefined
+  const DotoliStakingContract = useDotoliStakingContract()
+  const tokenContract = useTokenContract(chainId ? DOTOLI_ADDRESS[chainId] : undefined)
+  const dtl = chainId ? DTL[chainId] : undefined
 
   // get all the info from the staking rewards contracts
   const balance = useSingleCallResult(tokenContract, 'balanceOf', [account])
-  const earnedAmounts = useSingleCallResult(XXXStaking2Contract, 'earned', [account])
+  const earnedAmounts = useSingleCallResult(DotoliStakingContract, 'earned', [account])
   const totalSupplies = useSingleCallResult(tokenContract, 'totalSupply')
   // tokens per second, constants
-  const rewardRates = useSingleCallResult(XXXStaking2Contract, 'REWARD_RATE')
-  const stakedAmount = useSingleCallResult(XXXStaking2Contract, 's_balances', [account])
-  const totalStakedAmount = useSingleCallResult(XXXStaking2Contract, 's_totalStakedSupply')
+  const rewardRates = useSingleCallResult(DotoliStakingContract, 'REWARD_RATE')
+  const stakedAmount = useSingleCallResult(DotoliStakingContract, 's_balances', [account])
+  const totalStakedAmount = useSingleCallResult(DotoliStakingContract, 's_totalStakedSupply')
 
-  if (!chainId || !xxx) return undefined
+  if (!chainId || !dtl) return undefined
 
   // these two are dependent on account
   const balanceState = balance
@@ -70,7 +70,7 @@ export function useStakingInfo(): StakingInfo | undefined {
 
     // check for account, if no account set to 0
 
-    const totalRewardRate = CurrencyAmount.fromRawAmount(xxx, JSBI.BigInt(rewardRateState.result?.[0]))
+    const totalRewardRate = CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(rewardRateState.result?.[0]))
 
     const getHypotheticalRewardRate = (
       stakedAmount: CurrencyAmount<Token>,
@@ -78,7 +78,7 @@ export function useStakingInfo(): StakingInfo | undefined {
       totalRewardRate: CurrencyAmount<Token>
     ): CurrencyAmount<Token> => {
       return CurrencyAmount.fromRawAmount(
-        xxx,
+        dtl,
         JSBI.greaterThan(JSBI.BigInt(totalStakedAmount.toString()), JSBI.BigInt(0))
           ? JSBI.divide(
               JSBI.multiply(JSBI.BigInt(totalRewardRate.quotient.toString()), JSBI.BigInt(stakedAmount.toString())),
@@ -95,11 +95,11 @@ export function useStakingInfo(): StakingInfo | undefined {
     )
 
     return {
-      stakingRewardAddress: XXX_ADDRESS[chainId],
-      unStakingBalance: CurrencyAmount.fromRawAmount(xxx, JSBI.BigInt(balance?.result?.[0] ?? 0)),
-      stakedAmount: CurrencyAmount.fromRawAmount(xxx, JSBI.BigInt(stakedAmount?.result?.[0] ?? 0)),
-      earnedAmount: CurrencyAmount.fromRawAmount(xxx, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
-      totalStakedAmount: CurrencyAmount.fromRawAmount(xxx, JSBI.BigInt(totalStakedAmount?.result?.[0] ?? 0)),
+      stakingRewardAddress: DOTOLI_ADDRESS[chainId],
+      unStakingBalance: CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(balance?.result?.[0] ?? 0)),
+      stakedAmount: CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(stakedAmount?.result?.[0] ?? 0)),
+      earnedAmount: CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
+      totalStakedAmount: CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(totalStakedAmount?.result?.[0] ?? 0)),
       totalRewardRate,
       rewardRate: individualRewardRate,
       getHypotheticalRewardRate,

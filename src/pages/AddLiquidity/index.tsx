@@ -9,7 +9,7 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputP
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { NULL_ADDRESS } from 'constants/addresses'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { XXXFund2 } from 'interface/XXXFund2'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useCallback, useEffect, useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -270,12 +270,12 @@ export default function AddLiquidity() {
     if (fundAddress && investorAddress && position && account && deadline) {
       const { calldata, value } =
         hasExistingPosition && tokenId
-          ? XXXFund2.addLiquidityCallParameters(investorAddress, position, {
+          ? DotoliFund.addLiquidityCallParameters(investorAddress, position, {
               tokenId,
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
             })
-          : XXXFund2.addLiquidityCallParameters(investorAddress, position, {
+          : DotoliFund.addLiquidityCallParameters(investorAddress, position, {
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
               createPool: noLiquidity,

@@ -21,7 +21,7 @@ import { useInvestorData } from 'data/FundAccount/investorData'
 import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityTransactions'
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useColor } from 'hooks/useColor'
-import { useXXXFactoryContract } from 'hooks/useContract'
+import { useDotoliFactoryContract } from 'hooks/useContract'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
@@ -198,7 +198,7 @@ export default function FundAccount() {
   const investorAddress = params.investorAddress
   const newPositionLink = '/add/' + fundAddress + '/' + investorAddress + '/ETH'
   const navigate = useNavigate()
-  const XXXFactoryContract = useXXXFactoryContract()
+  const DotoliFactoryContract = useDotoliFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account } = useWeb3React()
   const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
@@ -212,17 +212,17 @@ export default function FundAccount() {
   const theme = useTheme()
 
   const { loading: accountManagingFundLoading, result: [accountManagingFund] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'getFundByManager',
     [account ?? undefined]
   )
   const { loading: investorManagingFundLoading, result: [investorManagingFund] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'getFundByManager',
     [investorAddress ?? undefined]
   )
   const { loading: isAccountSubscribedLoading, result: [isAccountSubscribed] = [] } = useSingleCallResult(
-    XXXFactoryContract,
+    DotoliFactoryContract,
     'isSubscribed',
     [account, fundAddress]
   )

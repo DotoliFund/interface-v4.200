@@ -24,8 +24,8 @@ export default function FailedNetworkSwitchPopup({ chainId }: { chainId: Support
       <AutoColumn gap="8px">
         <ThemedText.DeprecatedBody fontWeight={500}>
           <Trans>
-            Failed to switch networks from the XXX Interface. In order to use XXX on {chainInfo.label}, you must change
-            the network in your wallet.
+            Failed to switch networks from the Dotoli Interface. In order to use Dotoli on {chainInfo.label}, you must
+            change the network in your wallet.
           </Trans>
         </ThemedText.DeprecatedBody>
       </AutoColumn>

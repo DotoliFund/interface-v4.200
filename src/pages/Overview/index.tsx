@@ -5,7 +5,7 @@ import FundTable from 'components/funds/TopFundTable'
 import Row, { RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import TokenTable from 'components/TokensTable'
-import { useXXXFund2ChartData } from 'data/Overview/chartData'
+import { useDotoliFundChartData } from 'data/Overview/chartData'
 import { useFactoryData } from 'data/Overview/factoryData'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -79,7 +79,7 @@ export default function Overview() {
   const factoryData = useFactoryData()
   const fundListData = useFundListData()
   const tokenListData = useTokenListData()
-  const chartData = useXXXFund2ChartData().data
+  const chartData = useDotoliFundChartData().data
   const formattedTotalVolume = useMemo(() => {
     if (chartData) {
       return chartData.map((day) => {

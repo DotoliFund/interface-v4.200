@@ -16,7 +16,7 @@ import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
-import { XXXFund2 } from 'interface/XXXFund2'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useCallback, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -169,7 +169,7 @@ export default function Withdraw() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress) return
 
-    const { calldata, value } = XXXFund2.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
+    const { calldata, value } = DotoliFund.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: fundAddress,
       data: calldata,

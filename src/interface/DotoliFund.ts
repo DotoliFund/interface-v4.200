@@ -2,7 +2,7 @@ import { Interface } from '@ethersproject/abi'
 import { Protocol, RouteV3, Trade } from '@uniswap/router-sdk'
 import { BigintIsh, Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { encodeRouteToPath, Position, Trade as V3Trade } from '@uniswap/v3-sdk'
-import XXXFund2ABI from 'abis/XXXFund2.json'
+import DotoliFundABI from 'abis/DotoliFund.json'
 import { NULL_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
@@ -198,11 +198,11 @@ export interface RemoveLiquidityOptions {
   collectOptions: Omit<CollectOptions, 'tokenId'>
 }
 
-export abstract class XXXFund2 {
-  public static INTERFACE: Interface = new Interface(XXXFund2ABI.abi)
+export abstract class DotoliFund {
+  public static INTERFACE: Interface = new Interface(DotoliFundABI.abi)
 
   public static depositCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('deposit', [token, toHex(amount.quotient)])
+    const calldata: string = DotoliFund.INTERFACE.encodeFunctionData('deposit', [token, toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,
@@ -211,7 +211,7 @@ export abstract class XXXFund2 {
   }
 
   public static withdrawCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('withdraw', [token, toHex(amount.quotient)])
+    const calldata: string = DotoliFund.INTERFACE.encodeFunctionData('withdraw', [token, toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,
@@ -220,7 +220,7 @@ export abstract class XXXFund2 {
   }
 
   public static feeOutCallParameters(token: string, amount: CurrencyAmount<Currency>): MethodParameters {
-    const calldata: string = XXXFund2.INTERFACE.encodeFunctionData('feeOut', [token, toHex(amount.quotient)])
+    const calldata: string = DotoliFund.INTERFACE.encodeFunctionData('feeOut', [token, toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
       calldata,
@@ -394,7 +394,7 @@ export abstract class XXXFund2 {
 
     for (const trade of trades) {
       if (trade instanceof V3Trade) {
-        for (const param of XXXFund2.encodeV3Swap(fundAddress, investor, trade, options)) {
+        for (const param of DotoliFund.encodeV3Swap(fundAddress, investor, trade, options)) {
           params.push(param)
         }
       } else {
@@ -418,10 +418,10 @@ export abstract class XXXFund2 {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = XXXFund2.encodeSwaps(fundAddress, investorAddress, trades, options)
+    const { params } = DotoliFund.encodeSwaps(fundAddress, investorAddress, trades, options)
 
     return {
-      calldata: XXXFund2.INTERFACE.encodeFunctionData('swap', [params]),
+      calldata: DotoliFund.INTERFACE.encodeFunctionData('swap', [params]),
       value,
     }
   }
@@ -460,7 +460,7 @@ export abstract class XXXFund2 {
       }
 
       return {
-        calldata: XXXFund2.INTERFACE.encodeFunctionData('mintNewPosition', [params]),
+        calldata: DotoliFund.INTERFACE.encodeFunctionData('mintNewPosition', [params]),
         value: toHex(0),
       }
     } else {
@@ -475,7 +475,7 @@ export abstract class XXXFund2 {
         deadline,
       }
       return {
-        calldata: XXXFund2.INTERFACE.encodeFunctionData('increaseLiquidity', [params]),
+        calldata: DotoliFund.INTERFACE.encodeFunctionData('increaseLiquidity', [params]),
         value: toHex(0),
       }
     }
@@ -493,7 +493,7 @@ export abstract class XXXFund2 {
     }
 
     return {
-      calldata: XXXFund2.INTERFACE.encodeFunctionData('collectPositionFee', [params]),
+      calldata: DotoliFund.INTERFACE.encodeFunctionData('collectPositionFee', [params]),
       value: toHex(0),
     }
   }
@@ -531,7 +531,7 @@ export abstract class XXXFund2 {
     }
 
     return {
-      calldata: XXXFund2.INTERFACE.encodeFunctionData('decreaseLiquidity', [params]),
+      calldata: DotoliFund.INTERFACE.encodeFunctionData('decreaseLiquidity', [params]),
       value: toHex(0),
     }
   }

@@ -14,10 +14,10 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
-import { useXXXFund2Contract } from 'hooks/useContract'
+import { useDotoliFundContract } from 'hooks/useContract'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
-import { XXXFund2 } from 'interface/XXXFund2'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useCallback, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
@@ -126,9 +126,9 @@ export default function Fee() {
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
-  const XXXFund2Contract = useXXXFund2Contract(fundAddress)
+  const DotoliFundContract = useDotoliFundContract(fundAddress)
   const { loading: getFeeTokensLoading, result: [getFeeTokens] = [] } = useSingleCallResult(
-    XXXFund2Contract,
+    DotoliFundContract,
     'getFeeTokens',
     []
   )
@@ -169,7 +169,7 @@ export default function Fee() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress) return
 
-    const { calldata, value } = XXXFund2.feeOutCallParameters(currency?.wrapped.address, parsedAmount)
+    const { calldata, value } = DotoliFund.feeOutCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: fundAddress,
       data: calldata,

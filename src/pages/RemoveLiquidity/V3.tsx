@@ -22,7 +22,7 @@ import { useV3NFTPositionManagerContract } from 'hooks/useContract'
 import useDebouncedChangeHandler from 'hooks/useDebouncedChangeHandler'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
-import { XXXFund2 } from 'interface/XXXFund2'
+import { DotoliFund } from 'interface/DotoliFund'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useCallback, useMemo, useState } from 'react'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
@@ -131,7 +131,7 @@ function Remove({
       return
     }
 
-    const { calldata, value } = XXXFund2.decreaseLiquidityCallParameters(investorAddress, positionSDK, {
+    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(investorAddress, positionSDK, {
       tokenId: tokenId.toString(),
       liquidityPercentage,
       slippageTolerance: allowedSlippage,

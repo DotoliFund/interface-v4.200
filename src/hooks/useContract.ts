@@ -6,9 +6,11 @@ import QuoterJson from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.so
 import TickLensJson from '@uniswap/v3-periphery/artifacts/contracts/lens/TickLens.sol/TickLens.json'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
 import NonfungiblePositionManagerJson from '@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json'
-import V3MigratorJson from '@uniswap/v3-periphery/artifacts/contracts/V3Migrator.sol/V3Migrator.json'
 import { useWeb3React } from '@web3-react/core'
 import ARGENT_WALLET_DETECTOR_ABI from 'abis/argent-wallet-detector.json'
+import DotoliFactoryJson from 'abis/DotoliFactory.json'
+import DotoliFundJson from 'abis/DotoliFund.json'
+import DotoliStakingJson from 'abis/DotoliStaking.json'
 import EIP_2612 from 'abis/eip_2612.json'
 import ENS_PUBLIC_RESOLVER_ABI from 'abis/ens-public-resolver.json'
 import ENS_ABI from 'abis/ens-registrar.json'
@@ -18,28 +20,23 @@ import ERC721_ABI from 'abis/erc721.json'
 import ERC1155_ABI from 'abis/erc1155.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
-import XXXFactoryJson from 'abis/XXXFactory.json'
-import XXXFund2Json from 'abis/XXXFund2.json'
-import XXXStaking2Json from 'abis/XXXStaking2.json'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
+  DOTOLI_FACTORY_ADDRESSES,
+  DOTOLI_STAKING_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
   MULTICALL_ADDRESS,
   NONFUNGIBLE_POSITION_MANAGER_ADDRESSES,
   QUOTER_ADDRESSES,
   TICK_LENS_ADDRESSES,
   V2_ROUTER_ADDRESS,
-  V3_MIGRATOR_ADDRESSES,
-  XXXFACTORY_ADDRESSES,
-  XXXSTAKING2_ADDRESS,
 } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
-import { XXXFactory } from 'types/fund/XXXFactory'
-import { XXXFund2 } from 'types/fund/XXXFund2'
-import { XXXStaking2 } from 'types/fund/XXXStaking2'
+import { DotoliFactory } from 'types/dotoli/DotoliFactory'
+import { DotoliFund } from 'types/dotoli/DotoliFund'
+import { DotoliStaking } from 'types/dotoli/DotoliStaking'
 import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall } from 'types/v3'
-import { V3Migrator } from 'types/v3/V3Migrator'
 
 import { getContract } from '../utils'
 
@@ -50,10 +47,9 @@ const { abi: QuoterV2ABI } = QuoterV2Json
 const { abi: TickLensABI } = TickLensJson
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 const { abi: NFTPositionManagerABI } = NonfungiblePositionManagerJson
-const { abi: V2MigratorABI } = V3MigratorJson
-const { abi: XXXFactoryABI } = XXXFactoryJson
-const { abi: XXXFund2ABI } = XXXFund2Json
-const { abi: XXXStaking2ABI } = XXXStaking2Json
+const { abi: DotoliFactoryABI } = DotoliFactoryJson
+const { abi: DotoliFundABI } = DotoliFundJson
+const { abi: DotoliStakingABI } = DotoliStakingJson
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
@@ -76,10 +72,6 @@ export function useContract<T extends Contract = Contract>(
       return null
     }
   }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as T
-}
-
-export function useV2MigratorContract() {
-  return useContract<V3Migrator>(V3_MIGRATOR_ADDRESSES, V2MigratorABI, true)
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
@@ -153,14 +145,17 @@ export function useTickLens(): TickLens | null {
   return useContract(address, TickLensABI) as TickLens | null
 }
 
-export function useXXXFactoryContract(withSignerIfPossible?: boolean): XXXFactory | null {
-  return useContract<XXXFactory>(XXXFACTORY_ADDRESSES, XXXFactoryABI, withSignerIfPossible)
+export function useDotoliFactoryContract(withSignerIfPossible?: boolean): DotoliFactory | null {
+  return useContract<DotoliFactory>(DOTOLI_FACTORY_ADDRESSES, DotoliFactoryABI, withSignerIfPossible)
 }
 
-export function useXXXFund2Contract(fundAddress: string | undefined, withSignerIfPossible?: boolean): XXXFund2 | null {
-  return useContract<XXXFund2>(fundAddress, XXXFund2ABI, withSignerIfPossible)
+export function useDotoliFundContract(
+  fundAddress: string | undefined,
+  withSignerIfPossible?: boolean
+): DotoliFund | null {
+  return useContract<DotoliFund>(fundAddress, DotoliFundABI, withSignerIfPossible)
 }
 
-export function useXXXStaking2Contract(withSignerIfPossible?: boolean): XXXStaking2 | null {
-  return useContract<XXXStaking2>(XXXSTAKING2_ADDRESS, XXXStaking2ABI, withSignerIfPossible)
+export function useDotoliStakingContract(withSignerIfPossible?: boolean): DotoliStaking | null {
+  return useContract<DotoliStaking>(DOTOLI_STAKING_ADDRESS, DotoliStakingABI, withSignerIfPossible)
 }

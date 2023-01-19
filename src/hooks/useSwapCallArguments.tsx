@@ -4,7 +4,7 @@ import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 //import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { XXXFund2 } from 'interface/XXXFund2'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useMemo } from 'react'
 //import useENS from './useENS'
 
@@ -25,7 +25,7 @@ export function useSwapCallArguments(
   return useMemo(() => {
     if (!fundAddress || !investorAddress || !trade || !provider || !account || !chainId) return []
 
-    const { value, calldata } = XXXFund2.swapCallParameters(fundAddress, investorAddress, trade, {
+    const { value, calldata } = DotoliFund.swapCallParameters(fundAddress, investorAddress, trade, {
       slippageTolerance: allowedSlippage,
     })
 

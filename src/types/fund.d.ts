@@ -140,7 +140,7 @@ export interface InvestorFields {
   profitRatio: string
 }
 
-export interface XXXFund2Snapshot {
+export interface DotoliFundSnapshot {
   id: string
   timestamp: number
   fundCount: number
@@ -151,7 +151,7 @@ export interface XXXFund2Snapshot {
   totalLiquidityVolumeUSD: number
 }
 
-export interface XXXFund2SnapshotFields {
+export interface DotoliFundSnapshotFields {
   id: string
   timestamp: string
   fundCount: string

@@ -20,8 +20,8 @@ import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
+import { DotoliFund } from 'interface/DotoliFund'
 import { toHex } from 'interface/utils/calldata'
-import { XXXFund2 } from 'interface/XXXFund2'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
@@ -210,7 +210,7 @@ export default function Deposit() {
         value: toHex(parsedAmount.quotient),
       }
     } else {
-      const { calldata, value } = XXXFund2.depositCallParameters(tokenAddress, parsedAmount)
+      const { calldata, value } = DotoliFund.depositCallParameters(tokenAddress, parsedAmount)
       txn = {
         to: fundAddress,
         data: calldata,
@@ -331,7 +331,7 @@ export default function Deposit() {
                             {approvalState === ApprovalState.APPROVED ? (
                               <Trans>You can now deposit {currencies[Field.INPUT]?.symbol}</Trans>
                             ) : (
-                              <Trans>Allow the XXX Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
+                              <Trans>Allow the Dotoli Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
                             )}
                           </span>
                           {approvalState === ApprovalState.PENDING ? (
@@ -342,7 +342,7 @@ export default function Deposit() {
                             <MouseoverTooltip
                               text={
                                 <Trans>
-                                  You must give the XXX smart contracts permission to use your{' '}
+                                  You must give the Dotoli smart contracts permission to use your{' '}
                                   {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
                                 </Trans>
                               }

@@ -17,10 +17,10 @@ import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { XXX_ADDRESS, XXXSTAKING2_ADDRESS } from 'constants/addresses'
+import { DOTOLI_ADDRESS, DOTOLI_STAKING_ADDRESS } from 'constants/addresses'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { XXXStaking2 } from 'interface/XXXStaking2'
+import { DotoliStaking } from 'interface/DotoliStaking'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
@@ -34,7 +34,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
-import { XXX } from '../../constants/tokens'
+import { DTL } from '../../constants/tokens'
 
 const StyledStakingHeader = styled.div`
   padding: 8px 12px;
@@ -99,7 +99,7 @@ enum StakeView {
 
 export default function Staking() {
   const { account, chainId, provider } = useWeb3React()
-  const xxx = chainId ? XXX[chainId] : undefined
+  const dtl = chainId ? DTL[chainId] : undefined
 
   const theme = useTheme()
 
@@ -121,8 +121,8 @@ export default function Staking() {
   )
 
   const stakingInfo = useStakingInfo()
-  const currency = useCurrency(chainId ? XXX_ADDRESS[chainId] : undefined)
-  const parsedAmount = useMemo(() => (xxx ? tryParseCurrencyAmount(typedValue, xxx) : undefined), [xxx, typedValue])
+  const currency = useCurrency(chainId ? DOTOLI_ADDRESS[chainId] : undefined)
+  const parsedAmount = useMemo(() => (dtl ? tryParseCurrencyAmount(typedValue, dtl) : undefined), [dtl, typedValue])
   const formattedAmounts = useMemo(() => typedValue, [typedValue])
 
   const maxStakingInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
@@ -151,7 +151,7 @@ export default function Staking() {
 
   const [approvalState, approveCallback] = useApproveCallback(
     parsedAmount,
-    chainId ? XXXSTAKING2_ADDRESS[chainId] : undefined
+    chainId ? DOTOLI_STAKING_ADDRESS[chainId] : undefined
   )
 
   const handleApprove = useCallback(async () => {
@@ -179,9 +179,9 @@ export default function Staking() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount) return
 
-    const { calldata, value } = XXXStaking2.stakeCallParameters(parsedAmount)
+    const { calldata, value } = DotoliStaking.stakeCallParameters(parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: XXXSTAKING2_ADDRESS[chainId],
+      to: DOTOLI_STAKING_ADDRESS[chainId],
       data: calldata,
       value,
     }
@@ -213,10 +213,10 @@ export default function Staking() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount) return
 
-    const { calldata, value } = XXXStaking2.claimRewardCallParameters(parsedAmount)
+    const { calldata, value } = DotoliStaking.claimRewardCallParameters(parsedAmount)
 
     const txn: { to: string; data: string; value: string } = {
-      to: XXXSTAKING2_ADDRESS[chainId],
+      to: DOTOLI_STAKING_ADDRESS[chainId],
       data: calldata,
       value,
     }
@@ -248,9 +248,9 @@ export default function Staking() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount) return
 
-    const { calldata, value } = XXXStaking2.withdrawCallParameters(parsedAmount)
+    const { calldata, value } = DotoliStaking.withdrawCallParameters(parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: XXXSTAKING2_ADDRESS[chainId],
+      to: DOTOLI_STAKING_ADDRESS[chainId],
       data: calldata,
       value,
     }
@@ -405,7 +405,7 @@ export default function Staking() {
                                   {approvalState === ApprovalState.APPROVED ? (
                                     <Trans>You can now stake {currency?.symbol}</Trans>
                                   ) : (
-                                    <Trans>Allow the XXX Protocol to use your {currency?.symbol}</Trans>
+                                    <Trans>Allow the Dotoli Protocol to use your {currency?.symbol}</Trans>
                                   )}
                                 </span>
                                 {approvalState === ApprovalState.PENDING ? (
@@ -416,8 +416,8 @@ export default function Staking() {
                                   <MouseoverTooltip
                                     text={
                                       <Trans>
-                                        You must give the XXX smart contracts permission to use your {currency?.symbol}.
-                                        You only have to do this once per token.
+                                        You must give the Dotoli smart contracts permission to use your{' '}
+                                        {currency?.symbol}. You only have to do this once per token.
                                       </Trans>
                                     }
                                   >
