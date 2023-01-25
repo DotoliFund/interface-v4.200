@@ -1,9 +1,10 @@
 import { Interface } from '@ethersproject/abi'
-import { BigintIsh, Currency, Token } from '@uniswap/sdk-core'
+import { BigintIsh, Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import IUniswapV3PoolState from '@uniswap/v3-core/artifacts/contracts/interfaces/pool/IUniswapV3PoolState.sol/IUniswapV3PoolState.json'
 import { computePoolAddress } from '@uniswap/v3-sdk'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 import JSBI from 'jsbi'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
@@ -152,4 +153,71 @@ export function usePool(
   )
 
   return usePools(poolKeys)[0]
+}
+
+export function useTokensPriceInETH(
+  poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][]
+): [Token, number][] {
+  const weth9 = new Token(SupportedChainId.GOERLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 6)
+  const pools = usePools(poolKeys)
+
+  const latestTokenPools: Pool[] = []
+
+  pools.map((data, index) => {
+    const poolState = data[0]
+    const pool = data[1]
+    if (poolState === PoolState.EXISTS && pool) {
+      if (latestTokenPools.length === 0) {
+        latestTokenPools.push(pool)
+      } else {
+        const lastPoolToken0 = latestTokenPools[latestTokenPools.length - 1].token0
+        const lastPoolToken1 = latestTokenPools[latestTokenPools.length - 1].token1
+        const token0 = pool.token0
+        const token1 = pool.token1
+
+        if (lastPoolToken0.equals(token0) && lastPoolToken1.equals(token1)) {
+          const lastPoolLiquidity = latestTokenPools[latestTokenPools.length - 1].liquidity
+          const liquidity = pool.liquidity
+
+          if (JSBI.lessThan(lastPoolLiquidity, liquidity)) {
+            latestTokenPools.pop()
+            latestTokenPools.push(pool)
+            console.log(3, latestTokenPools)
+            console.log(4, latestTokenPools?.length)
+          }
+        } else {
+          latestTokenPools.push(pool)
+        }
+      }
+    }
+  })
+
+  const tokenPricesInETH: [Token, number][] = []
+
+  for (let i = 0; i < latestTokenPools.length; i++) {
+    if (latestTokenPools[i].token0.equals(weth9)) {
+      const token1Price = latestTokenPools[i].token1Price.quote(
+        CurrencyAmount.fromRawAmount(
+          latestTokenPools[i].token1,
+          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(latestTokenPools[i].token1.decimals))
+        )
+      ).quotient
+      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
+      const ethDecimal = Math.pow(10, 18).toFixed(18)
+      const priceInETH = parseFloat(token1PriceDecimal) / parseFloat(ethDecimal)
+      tokenPricesInETH.push([latestTokenPools[i].token1, priceInETH])
+    } else {
+      const token0Price = latestTokenPools[i]?.token0Price.quote(
+        CurrencyAmount.fromRawAmount(
+          latestTokenPools[i].token0,
+          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(latestTokenPools[i].token0.decimals))
+        )
+      ).quotient
+      const token0PriceDecimal = parseFloat(token0Price.toString()).toFixed(18)
+      const ethDecimal = Math.pow(10, 18).toFixed(18)
+      const priceInETH = parseFloat(token0PriceDecimal) / parseFloat(ethDecimal)
+      tokenPricesInETH.push([latestTokenPools[i].token0, priceInETH])
+    }
+  }
+  return tokenPricesInETH
 }

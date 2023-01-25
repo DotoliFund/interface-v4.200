@@ -4,11 +4,11 @@ import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
-import { Bar, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Bar, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled, { css } from 'styled-components/macro'
-import { formatTime, unixToDate } from 'utils/date'
+import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
 
@@ -73,10 +73,7 @@ const Chart = ({
   topLeft,
   topRight,
 }: ComposedChartProps) => {
-  const [presentCursor, setPresentCursor] = useState<boolean | true>()
-
   const CustomTooltip = (props: any) => {
-    const active = props.active ? false : true
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
     const time = payload ? payload.payload.time : undefined
     const value = payload ? payload.value : undefined
@@ -87,7 +84,6 @@ const Chart = ({
     const tokensVolume = payload ? payload.payload.tokensVolume : undefined
 
     useEffect(() => {
-      setPresentCursor(active)
       setLabel(time)
       setValue(value)
       setLiquidityVolume(liquidityVolume)
@@ -95,17 +91,9 @@ const Chart = ({
       setTokens(tokens)
       setSymbols(symbols)
       setTokensVolumeUSD(tokensVolume)
-    }, [active, time, value, liquidityVolume, principal, tokens, symbols, tokensVolume])
+    }, [time, value, liquidityVolume, principal, tokens, symbols, tokensVolume])
 
     return null
-  }
-
-  const CustomizedLabel = (props: any) => {
-    return (
-      <text x={props.viewBox.x - 10} y={props.viewBox.height / 12} fill="yellow" fontSize={14} textAnchor="end">
-        {formatTime(props.date.toString(), 8)}
-      </text>
-    )
   }
 
   return (
@@ -161,15 +149,7 @@ const Chart = ({
             />
             <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
             <Legend />
-            {presentCursor ? (
-              <ReferenceLine
-                x={data[data.length - 1].time}
-                stroke="yellow"
-                strokeWidth={1}
-                label={<CustomizedLabel date={data[data.length - 1].time} />}
-                strokeDasharray="3 3"
-              />
-            ) : null}
+
             <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
             <Bar dataKey="Liquidity" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
             <Line dataKey="Principal" type="monotone" stroke={color3} />

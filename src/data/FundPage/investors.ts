@@ -20,11 +20,13 @@ const FUND_INVESTORS = gql`
       liquidityVolumeUSD
       tokens
       symbols
+      decimals
       tokensAmount
       tokensVolumeETH
       tokensVolumeUSD
       liquidityTokens
       liquiditySymbols
+      liquidityDecimals
       liquidityTokensAmount
       liquidityTokensVolumeETH
       liquidityTokensVolumeUSD
@@ -87,6 +89,9 @@ export function useFundInvestors(fund: string | undefined): {
           liquidityVolumeUSD: parseFloat(investorDataFields.liquidityVolumeUSD),
           tokens: investorDataFields.tokens,
           symbols: investorDataFields.symbols,
+          decimals: investorDataFields.decimals.map((value) => {
+            return parseFloat(value)
+          }),
           tokensAmount: investorDataFields.tokensAmount.map((value) => {
             return parseFloat(value)
           }),
@@ -96,8 +101,11 @@ export function useFundInvestors(fund: string | undefined): {
           tokensVolumeUSD: investorDataFields.tokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),
-          liquidityTokens: investorDataFields.tokens,
-          liquiditySymbols: investorDataFields.symbols,
+          liquidityTokens: investorDataFields.liquidityTokens,
+          liquiditySymbols: investorDataFields.liquiditySymbols,
+          liquidityDecimals: investorDataFields.liquidityDecimals.map((value) => {
+            return parseFloat(value)
+          }),
           liquidityTokensAmount: investorDataFields.liquidityTokensAmount.map((value) => {
             return parseFloat(value)
           }),

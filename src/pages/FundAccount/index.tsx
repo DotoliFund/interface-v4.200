@@ -1,4 +1,6 @@
 import { Trans } from '@lingui/macro'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import BarChart from 'components/BarChart/stacked'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
@@ -15,6 +17,7 @@ import { MonoSpace } from 'components/shared'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
 import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
+import { SupportedChainId } from 'constants/chains'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { useInvestorChartData } from 'data/FundAccount/chartData'
 import { useInvestorData } from 'data/FundAccount/investorData'
@@ -22,7 +25,10 @@ import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityT
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
+import { useTokensPriceInETH } from 'hooks/usePools'
+import useStablecoinPrice from 'hooks/useStablecoinPrice'
 import { useV3Positions } from 'hooks/useV3Positions'
+import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
@@ -312,6 +318,33 @@ export default function FundAccount() {
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
   const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
+  // const weth9 = new Token(SupportedChainId.GOERLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 6)
+  // const uni = new Token(SupportedChainId.GOERLI, '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', 6)
+  // const usdc = new Token(SupportedChainId.GOERLI, '0x07865c6E87B9F70255377e024ace6630C1Eaa37F', 6)
+  // const wbtc = new Token(SupportedChainId.GOERLI, '0xC04B0d3107736C32e19F1c62b2aF67BE61d63a05', 6)
+  // const dai = new Token(SupportedChainId.GOERLI, '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844', 6)
+
+  // const pools = usePools([
+  //   [uni ? uni : undefined, weth9 ? weth9 : undefined, FeeAmount.LOWEST],
+  //   [usdc ? usdc : undefined, weth9 ? weth9 : undefined, FeeAmount.LOW],
+  //   [wbtc ? wbtc : undefined, weth9 ? weth9 : undefined, FeeAmount.MEDIUM],
+  //   [dai ? dai : undefined, weth9 ? weth9 : undefined, FeeAmount.HIGH],
+  // ])
+  // const token0 = new Token(SupportedChainId.GOERLI, '0x07865c6E87B9F70255377e024ace6630C1Eaa37F', 6)
+  // console.log(pools[0][1]?.token1)
+  // const test = pools[1][1]?.token0Price.quote(CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(1000000))).quotient
+  // console.log(test ? test.toString() : undefined)
+
+  //TODO : Test  get tokens eth price and usd price with formattedLatestTokensData
+  // 1. get pool address ex)usePools.ts  - token + eth pools
+  // 2. useMultipleContractSingleData - get price eth
+  // 3. sum eth price
+  // 4. get price eth in usd with quote or stablecoin~~()
+
+  // 1. usePools() (eth + token) => return pools[]
+  // 2. map() -> pool.getPrice() getPriceETH => return prices[]
+  // 3. sum prices -> getPriceUSD
+
   const [view, setView] = useState(ChartView.VOL_USD)
   // Composed chart hover
   const [dateHover, setDateHover] = useState<string | undefined>()
@@ -378,6 +411,7 @@ export default function FundAccount() {
         return {
           token: data,
           symbol: investorData.symbols[index],
+          decimal: investorData.decimals[index],
           amount: investorData.tokensAmount[index],
           Volume: investorData.tokensVolumeUSD[index],
           Liquidity: investorData.liquidityTokensVolumeUSD[index],
@@ -401,6 +435,79 @@ export default function FundAccount() {
       return undefined
     }
   }, [investorData, chartData])
+
+  const weth9 = new Token(SupportedChainId.GOERLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 18)
+  const usdc = new Token(SupportedChainId.GOERLI, '0x07865c6E87B9F70255377e024ace6630C1Eaa37F', 6)
+
+  const ethPriceInUSDC = useStablecoinPrice(weth9)
+  let ethPriceInUSD = 0
+  if (ethPriceInUSDC) {
+    const _ethPriceInUSDC = ethPriceInUSDC
+      .quote(CurrencyAmount.fromRawAmount(weth9, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(weth9.decimals))))
+      .quotient.toString()
+
+    ethPriceInUSD =
+      parseFloat(_ethPriceInUSDC) /
+      parseFloat(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(usdc.decimals)).toString())
+  }
+
+  const latestTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
+  const latestTokensAmount: [Token, number][] = []
+
+  if (formattedLatestTokensData) {
+    formattedLatestTokensData.map((data, index) => {
+      latestTokenPools.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), weth9, FeeAmount.HIGH])
+      latestTokenPools.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
+      latestTokenPools.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), weth9, FeeAmount.LOW])
+      latestTokensAmount.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), data.amount])
+    })
+  }
+
+  const tokensPriceInETH = useTokensPriceInETH(latestTokenPools)
+  const volumeTokensPriceInUSD: [Token, number][] = []
+
+  if (tokensPriceInETH) {
+    latestTokensAmount.map((data, index) => {
+      const token = data[0].address
+      const tokenAmount = data[1]
+
+      if (token.toUpperCase() === weth9.address.toUpperCase()) {
+        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSD])
+      } else {
+        tokensPriceInETH.map((data2, index2) => {
+          const token2 = data2[0].address
+          const priceInETH = data2[1]
+          if (token.toUpperCase() === token2.toUpperCase()) {
+            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSD])
+          }
+        })
+      }
+    })
+  }
+
+  // update formattedVolumeUSD -> Volume, Liquidity
+  if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
+    let totalVolumeUSD = 0
+    volumeTokensPriceInUSD.map((value, index) => {
+      const volumeUSD = value[1]
+      totalVolumeUSD += volumeUSD
+    })
+
+    formattedVolumeUSD.push({
+      time: formattedVolumeUSD[formattedVolumeUSD.length - 1].time,
+      Volume: totalVolumeUSD,
+      Principal: formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal,
+      tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
+      symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
+      tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
+      Liquidity: formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity,
+    })
+  }
+
+  // update formattedLatestTokensData -> Volume USD
+  // if (formattedLatestTokensData) {
+  //   formattedLatestTokensData.map((data, index) => {})
+  // }
 
   const ratio = useMemo(() => {
     return volumeHover !== undefined &&
