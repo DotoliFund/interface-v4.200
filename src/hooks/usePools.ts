@@ -182,8 +182,6 @@ export function useTokensPriceInETH(
           if (JSBI.lessThan(lastPoolLiquidity, liquidity)) {
             latestTokenPools.pop()
             latestTokenPools.push(pool)
-            console.log(3, latestTokenPools)
-            console.log(4, latestTokenPools?.length)
           }
         } else {
           latestTokenPools.push(pool)

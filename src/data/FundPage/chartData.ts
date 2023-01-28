@@ -12,14 +12,11 @@ const FUND_CHART = gql`
       fund
       manager
       investorCount
-      principalETH
-      principalUSD
       volumeETH
       volumeUSD
-      liquidityVolumeETH
-      liquidityVolumeUSD
       tokens
       symbols
+      decimals
       tokensVolumeETH
       tokensVolumeUSD
     }
@@ -72,14 +69,13 @@ export function useFundChartData(fund: string | undefined): {
           fund: fundSnapshotFields.fund,
           manager: fundSnapshotFields.manager,
           investorCount: parseFloat(fundSnapshotFields.investorCount),
-          principalETH: parseFloat(fundSnapshotFields.principalETH),
-          principalUSD: parseFloat(fundSnapshotFields.principalUSD),
           volumeETH: parseFloat(fundSnapshotFields.volumeETH),
           volumeUSD: parseFloat(fundSnapshotFields.volumeUSD),
-          liquidityVolumeETH: parseFloat(fundSnapshotFields.liquidityVolumeETH),
-          liquidityVolumeUSD: parseFloat(fundSnapshotFields.liquidityVolumeUSD),
           tokens: fundSnapshotFields.tokens,
           symbols: fundSnapshotFields.symbols,
+          decimals: fundSnapshotFields.decimals.map((value) => {
+            return parseFloat(value)
+          }),
           tokensVolumeETH: fundSnapshotFields.tokensVolumeETH.map((value) => {
             return parseFloat(value)
           }),

@@ -98,7 +98,7 @@ export default function Overview() {
       return chartData.map((day) => {
         return {
           time: day.timestamp,
-          value: day.totalLiquidityVolumeUSD,
+          value: day.totalVolumeUSD,
         }
       })
     } else {
@@ -121,7 +121,7 @@ export default function Overview() {
     if (chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].totalLiquidityVolumeUSD,
+        value: chartData[chartData.length - 1].totalVolumeUSD,
       }
     } else {
       return undefined

@@ -39,13 +39,7 @@ export type ComposedChartProps = {
   color2?: string | undefined
   color3?: string | undefined
   minHeight?: number
-  setLabel: Dispatch<SetStateAction<string | undefined>>
-  setValue: Dispatch<SetStateAction<number | undefined>>
-  setLiquidityVolume: Dispatch<SetStateAction<number | undefined>>
-  setPrincipal: Dispatch<SetStateAction<number | undefined>>
-  setTokens: Dispatch<SetStateAction<string[] | undefined>>
-  setSymbols: Dispatch<SetStateAction<string[] | undefined>>
-  setTokensVolumeUSD: Dispatch<SetStateAction<number[] | undefined>>
+  setIndex: Dispatch<SetStateAction<number | undefined>>
   label?: string
   symbol?: string
   value?: number
@@ -63,35 +57,17 @@ const Chart = ({
   color = '#56B2A4',
   color2 = '#1E90FF',
   color3 = '#99FF99',
-  setLabel,
-  setValue,
-  setLiquidityVolume,
-  setPrincipal,
-  setTokens,
-  setSymbols,
-  setTokensVolumeUSD,
+  setIndex,
   topLeft,
   topRight,
 }: ComposedChartProps) => {
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
-    const time = payload ? payload.payload.time : undefined
-    const value = payload ? payload.value : undefined
-    const liquidityVolume = payload ? payload.payload.Liquidity : undefined
-    const principal = payload ? payload.payload.Principal : undefined
-    const tokens = payload ? payload.payload.tokens : undefined
-    const symbols = payload ? payload.payload.symbols : undefined
-    const tokensVolume = payload ? payload.payload.tokensVolume : undefined
+    const index = payload ? payload.payload.index : undefined
 
     useEffect(() => {
-      setLabel(time)
-      setValue(value)
-      setLiquidityVolume(liquidityVolume)
-      setPrincipal(principal)
-      setTokens(tokens)
-      setSymbols(symbols)
-      setTokensVolumeUSD(tokensVolume)
-    }, [time, value, liquidityVolume, principal, tokens, symbols, tokensVolume])
+      setIndex(index)
+    }, [index])
 
     return null
   }
@@ -118,15 +94,6 @@ const Chart = ({
               left: 5,
               bottom: 5,
             }}
-            onMouseLeave={() => {
-              setLabel && setLabel(undefined)
-              setValue && setValue(undefined)
-              setLiquidityVolume && setLiquidityVolume(undefined)
-              setPrincipal && setPrincipal(undefined)
-              setTokens && setTokens(undefined)
-              setSymbols && setSymbols(undefined)
-              setTokensVolumeUSD && setTokensVolumeUSD(undefined)
-            }}
           >
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
@@ -147,7 +114,7 @@ const Chart = ({
               tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
               minTickGap={10}
             />
-            <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
+            <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
 
             <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />

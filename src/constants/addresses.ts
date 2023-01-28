@@ -12,26 +12,26 @@ export const V2_FACTORY_ADDRESSES: AddressMap = constructSameAddressMap(V2_FACTO
 export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D')
 
 //mainnet
+// export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+// export const DOTOLI_ADDRESS: AddressMap = {
+//   ...constructSameAddressMap('0x5D8aa1475Fb7A56229fafcB4e7F2B31264dc0C11', [SupportedChainId.MAINNET]),
+// }
+// export const DOTOLI_STAKING_ADDRESS: AddressMap = {
+//   ...constructSameAddressMap('0x504912B686B474Ed956F90c8562Fd7bD8F09Ca02', [SupportedChainId.MAINNET]),
+// }
+// export const DOTOLI_FACTORY_ADDRESSES = '0x44152A09350f61167403b34AC88523d24a74DFA2'
+// export const DOTOLI_FUND_ADDRESSES = '0xd6AcfcAf3a5a51bF821Cf93cf2AB09646fAD667F'
+
+//goerli testnet
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const DOTOLI_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x5D8aa1475Fb7A56229fafcB4e7F2B31264dc0C11', [SupportedChainId.MAINNET]),
+  ...constructSameAddressMap('0x5D8aa1475Fb7A56229fafcB4e7F2B31264dc0C11', [SupportedChainId.GOERLI]),
 }
 export const DOTOLI_STAKING_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x504912B686B474Ed956F90c8562Fd7bD8F09Ca02', [SupportedChainId.MAINNET]),
+  ...constructSameAddressMap('0x504912B686B474Ed956F90c8562Fd7bD8F09Ca02', [SupportedChainId.GOERLI]),
 }
 export const DOTOLI_FACTORY_ADDRESSES = '0x44152A09350f61167403b34AC88523d24a74DFA2'
 export const DOTOLI_FUND_ADDRESSES = '0xd6AcfcAf3a5a51bF821Cf93cf2AB09646fAD667F'
-
-//goerli testnet
-// export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
-// export const DOTOLI_ADDRESS: AddressMap = {
-//   ...constructSameAddressMap('0xb1A79fFFBEf247893E9Ae3A094B75DF262e980A6', [SupportedChainId.GOERLI]),
-// }
-// export const DOTOLI_STAKING_ADDRESS: AddressMap = {
-//   ...constructSameAddressMap('0x64eC2D9932d08963840E04254D3Aa29B21E4241D', [SupportedChainId.GOERLI]),
-// }
-// export const DOTOLI_FACTORY_ADDRESSES = '0x67Aa3133070fDbA0A70Ad4D642A8b9cF47Cd214e'
-// export const DOTOLI_FUND_ADDRESSES = '0xf3EF25091831a4d0E9D69D2eB45a8C133f925Db3'
 
 export const VOTE_URL = 'https://www.tally.xyz/gov/eip155:5:0xfbD4900923647c69941c0819B410E3e44c9d024B'
 

@@ -13,8 +13,6 @@ export const FUND_CHART_DATA_BULK = () => {
         investorCount
         totalVolumeETH
         totalVolumeUSD
-        totalLiquidityVolumeETH
-        totalLiquidityVolumeUSD
       }
     }
   `
@@ -64,8 +62,6 @@ export function useDotoliFundChartData(): {
           investorCount: parseFloat(dotolifundSnapshotFields.investorCount),
           totalVolumeETH: parseFloat(dotolifundSnapshotFields.totalVolumeETH),
           totalVolumeUSD: parseFloat(dotolifundSnapshotFields.totalVolumeUSD),
-          totalLiquidityVolumeETH: parseFloat(dotolifundSnapshotFields.totalLiquidityVolumeETH),
-          totalLiquidityVolumeUSD: parseFloat(dotolifundSnapshotFields.totalLiquidityVolumeUSD),
         }
         return fundSnapshotData
       })

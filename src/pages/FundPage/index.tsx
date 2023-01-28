@@ -1,14 +1,15 @@
 import { Trans } from '@lingui/macro'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import BarChart from 'components/BarChart'
 import FeeBarChart from 'components/BarChart/fee'
+import BarChartVolume from 'components/BarChart/volume'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import ComposedChart from 'components/ComposedChart'
 import InvestorTable from 'components/funds/InvestorTable'
 import { LoadingRows } from 'components/Loader/styled'
-import Percent from 'components/Percent'
 import PieChart from 'components/PieChart'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
@@ -16,13 +17,17 @@ import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
 import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
+import { USDC, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useFundChartData } from 'data/FundPage/chartData'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
 import { useFundTransactions } from 'data/FundPage/transactions'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
+import { useTokensPriceInETH } from 'hooks/usePools'
+import useStablecoinPrice from 'hooks/useStablecoinPrice'
 import { DotoliFactory } from 'interface/DotoliFactory'
+import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -153,15 +158,9 @@ export default function FundPage() {
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
-  // Composed chart hover
-  const [dateHover, setDateHover] = useState<string | undefined>()
-  const [volumeHover, setVolumeHover] = useState<number | undefined>()
-  const [liquidityHover, setLiquidityHover] = useState<number>()
-  const [principalHover, setPrincipalHover] = useState<number | undefined>()
-  const [tokensHover, setTokensHover] = useState<string[] | undefined>()
-  const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
-  const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
-  // Bar chart hover
+  // volume chart hover
+  const [indexHover, setIndexHover] = useState<number | undefined>()
+  // token chart hover
   const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
   const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
   const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
@@ -170,15 +169,14 @@ export default function FundPage() {
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
-      return chartData.map((data) => {
+      return chartData.map((data, index) => {
         return {
           time: data.timestamp,
           Volume: data.volumeUSD,
-          Principal: data.principalUSD,
           tokens: data.tokens,
           symbols: data.symbols,
           tokensVolume: data.tokensVolumeUSD,
-          Liquidity: data.liquidityVolumeUSD,
+          index,
         }
       })
     } else {
@@ -186,46 +184,17 @@ export default function FundPage() {
     }
   }, [chartData])
 
-  const formattedHoverData = useMemo(() => {
-    if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
-      const hoverData = tokensHover.map((data, index) => {
-        return {
-          token: data,
-          symbol: symbolsHover[index],
-          Volume: tokensVolumeUSDHover[index],
-        }
-      })
-      if (liquidityHover && liquidityHover > 0) {
-        hoverData.push({
-          token: 'Liquidity',
-          symbol: 'Liquidity',
-          Volume: liquidityHover,
-        })
-      }
-      return hoverData
-    } else {
-      return undefined
-    }
-  }, [chartData, tokensHover, symbolsHover, liquidityHover, tokensVolumeUSDHover])
-
   const formattedLatestTokensData = useMemo(() => {
     if (fundData) {
       const fundTokenData = fundData.tokens.map((data, index) => {
         return {
           token: data,
           symbol: fundData.symbols[index],
+          decimal: fundData.decimals[index],
           amount: fundData.tokensAmount[index],
           Volume: fundData.tokensVolumeUSD[index],
         }
       })
-      if (fundData.liquidityVolumeUSD > 0) {
-        fundTokenData.push({
-          token: 'Liquidity',
-          symbol: 'Liquidity',
-          amount: 0,
-          Volume: fundData.liquidityVolumeUSD,
-        })
-      }
       return fundTokenData
     } else {
       return []
@@ -237,8 +206,6 @@ export default function FundPage() {
       return {
         time: chartData[chartData.length - 1].timestamp,
         Volume: fundData.volumeUSD,
-        Liquidity: chartData[chartData.length - 1].liquidityVolumeUSD,
-        Principal: fundData.principalUSD,
       }
     } else {
       return undefined
@@ -259,24 +226,108 @@ export default function FundPage() {
     }
   }, [fundData])
 
-  const ratio = useMemo(() => {
-    return volumeHover !== undefined &&
-      liquidityHover !== undefined &&
-      principalHover !== undefined &&
-      principalHover > 0
-      ? Number((((volumeHover + liquidityHover - principalHover) / principalHover) * 100).toFixed(2))
-      : principalHover === 0
-      ? Number(0)
-      : latestVolumeData && latestVolumeData.Principal > 0
-      ? Number(
-          (
-            ((latestVolumeData.Volume + latestVolumeData.Liquidity - latestVolumeData.Principal) /
-              latestVolumeData.Principal) *
-            100
-          ).toFixed(2)
-        )
-      : Number(0)
-  }, [volumeHover, liquidityHover, principalHover, latestVolumeData])
+  const weth9 = WRAPPED_NATIVE_CURRENCY[chainId ? chainId : 0]
+  const usdc = USDC[chainId ? chainId : 0]
+
+  const ethPriceInUSDC = useStablecoinPrice(weth9)
+  let ethPriceInUSD = 0
+  if (ethPriceInUSDC) {
+    const _ethPriceInUSDC = ethPriceInUSDC
+      .quote(CurrencyAmount.fromRawAmount(weth9, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(weth9.decimals))))
+      .quotient.toString()
+
+    ethPriceInUSD =
+      parseFloat(_ethPriceInUSDC) /
+      parseFloat(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(usdc.decimals)).toString())
+  }
+
+  const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
+  const volumeTokensAmount: [Token, number][] = []
+
+  if (formattedLatestTokensData) {
+    formattedLatestTokensData.map((data, index) => {
+      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
+      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
+      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
+      volumeTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
+    })
+  }
+
+  const volumeTokensPriceInETH = useTokensPriceInETH(volumeTokenPools)
+  const volumeTokensPriceInUSD: [Token, number][] = []
+
+  if (volumeTokensPriceInETH) {
+    volumeTokensAmount.map((data, index) => {
+      const token = data[0].address
+      const tokenAmount = data[1]
+
+      if (token.toUpperCase() === weth9.address.toUpperCase()) {
+        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSD])
+      } else {
+        volumeTokensPriceInETH.map((data2: any, index2: any) => {
+          const token2 = data2[0].address
+          const priceInETH = data2[1]
+          if (token.toUpperCase() === token2.toUpperCase()) {
+            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSD])
+          }
+        })
+      }
+    })
+  }
+
+  // update formattedVolumeUSD -> Volume, Liquidity
+  if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
+    let totalVolumeUSD = 0
+    volumeTokensPriceInUSD.map((value, index) => {
+      const volumeUSD = value[1]
+      totalVolumeUSD += volumeUSD
+    })
+
+    formattedVolumeUSD.push({
+      time: Math.floor(new Date().getTime() / 1000),
+      Volume: totalVolumeUSD,
+      tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
+      symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
+      tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
+      index: formattedVolumeUSD.length,
+    })
+  }
+
+  const volumeChartHoverIndex = indexHover !== undefined ? indexHover : undefined
+
+  const dateHover = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      return volumeUSDData.time
+    } else {
+      return latestVolumeData?.time
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+
+  const volumeHover = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      return volumeUSDData.Volume
+    } else {
+      return latestVolumeData?.Volume
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+
+  const formattedHoverTokenData = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      const tokens = volumeUSDData.tokens
+      return tokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: volumeUSDData.symbols[index],
+          Volume: volumeUSDData.tokensVolume[index],
+        }
+      })
+    } else {
+      return undefined
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   function onAccount(fund: string, account: string) {
     navigate(`/fund/${fund}/${account}`)
@@ -408,7 +459,7 @@ export default function FundPage() {
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
-                  data={formattedHoverData ? formattedHoverData : formattedLatestTokensData}
+                  data={formattedHoverTokenData ? formattedHoverTokenData : formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
                 />
               </AutoColumn>
@@ -444,69 +495,23 @@ export default function FundPage() {
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_USD ? (
-                <ComposedChart
+                <BarChartVolume
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
-                  setLabel={setDateHover}
-                  setValue={setVolumeHover}
-                  setLiquidityVolume={setLiquidityHover}
-                  setPrincipal={setPrincipalHover}
-                  setTokens={setTokensHover}
-                  setSymbols={setSymbolsHover}
-                  setTokensVolumeUSD={setTokensVolumeUSDHover}
+                  setIndex={setIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(
-                            volumeHover !== undefined && liquidityHover !== undefined
-                              ? volumeHover + liquidityHover
-                              : latestVolumeData
-                              ? latestVolumeData.Volume + latestVolumeData.Liquidity
-                              : 0
+                            volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.Volume : 0
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
-                      <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                        <Percent value={ratio} wrap={false} fontSize="22px" />
-                      </ThemedText.DeprecatedMediumHeader>
                     </AutoColumn>
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      <AutoRow justify="end">
-                        <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
-                          <MonoSpace>
-                            {formatDollarAmount(
-                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.Volume : 0
-                            )}
-                          </MonoSpace>
-                        </ThemedText.DeprecatedMediumHeader>
-                        &nbsp;&nbsp;
-                        <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#3377ff'}>
-                          <MonoSpace>
-                            {formatDollarAmount(
-                              liquidityHover !== undefined
-                                ? liquidityHover
-                                : latestVolumeData
-                                ? latestVolumeData.Liquidity
-                                : 0
-                            )}
-                          </MonoSpace>
-                        </ThemedText.DeprecatedMediumHeader>
-                        &nbsp;&nbsp;
-                        <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#99FF99'}>
-                          <MonoSpace>
-                            {formatDollarAmount(
-                              principalHover !== undefined
-                                ? principalHover
-                                : latestVolumeData
-                                ? latestVolumeData.Principal
-                                : 0
-                            )}
-                          </MonoSpace>
-                        </ThemedText.DeprecatedMediumHeader>
-                      </AutoRow>
                       <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
                         {dateHover ? (
                           <MonoSpace>

@@ -98,7 +98,7 @@ export const DAI_OPTIMISM = new Token(
   'DAI',
   'Dai stable coin'
 )
-export const USDC: { [chainId in SupportedChainId]: Token } = {
+export const USDC: { [chainId: number]: Token } = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM,
   [SupportedChainId.OPTIMISM]: USDC_OPTIMISM,
@@ -109,6 +109,7 @@ export const USDC: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.CELO_ALFAJORES]: USDC_CELO_ALFAJORES,
   [SupportedChainId.GOERLI]: USDC_GOERLI,
 }
+
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
   '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
@@ -317,7 +318,7 @@ export const DTL: { [chainId: number]: Token } = {
   [SupportedChainId.GOERLI]: new Token(SupportedChainId.GOERLI, DOTOLI_ADDRESS[5], 18, 'DTL', 'Dotoli'),
 }
 
-export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } = {
+export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token } = {
   ...(WETH9 as Record<SupportedChainId, Token>),
   [SupportedChainId.OPTIMISM]: new Token(
     SupportedChainId.OPTIMISM,

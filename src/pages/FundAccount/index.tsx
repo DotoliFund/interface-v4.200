@@ -17,8 +17,8 @@ import { MonoSpace } from 'components/shared'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
 import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
-import { SupportedChainId } from 'constants/chains'
 import { EthereumNetworkInfo } from 'constants/networks'
+import { USDC, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useInvestorChartData } from 'data/FundAccount/chartData'
 import { useInvestorData } from 'data/FundAccount/investorData'
 import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityTransactions'
@@ -206,7 +206,7 @@ export default function FundAccount() {
   const navigate = useNavigate()
   const DotoliFactoryContract = useDotoliFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
-  const { account } = useWeb3React()
+  const { chainId, account } = useWeb3React()
   const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
 
   useEffect(() => {
@@ -318,42 +318,10 @@ export default function FundAccount() {
   const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
   const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
-  // const weth9 = new Token(SupportedChainId.GOERLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 6)
-  // const uni = new Token(SupportedChainId.GOERLI, '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', 6)
-  // const usdc = new Token(SupportedChainId.GOERLI, '0x07865c6E87B9F70255377e024ace6630C1Eaa37F', 6)
-  // const wbtc = new Token(SupportedChainId.GOERLI, '0xC04B0d3107736C32e19F1c62b2aF67BE61d63a05', 6)
-  // const dai = new Token(SupportedChainId.GOERLI, '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844', 6)
-
-  // const pools = usePools([
-  //   [uni ? uni : undefined, weth9 ? weth9 : undefined, FeeAmount.LOWEST],
-  //   [usdc ? usdc : undefined, weth9 ? weth9 : undefined, FeeAmount.LOW],
-  //   [wbtc ? wbtc : undefined, weth9 ? weth9 : undefined, FeeAmount.MEDIUM],
-  //   [dai ? dai : undefined, weth9 ? weth9 : undefined, FeeAmount.HIGH],
-  // ])
-  // const token0 = new Token(SupportedChainId.GOERLI, '0x07865c6E87B9F70255377e024ace6630C1Eaa37F', 6)
-  // console.log(pools[0][1]?.token1)
-  // const test = pools[1][1]?.token0Price.quote(CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(1000000))).quotient
-  // console.log(test ? test.toString() : undefined)
-
-  //TODO : Test  get tokens eth price and usd price with formattedLatestTokensData
-  // 1. get pool address ex)usePools.ts  - token + eth pools
-  // 2. useMultipleContractSingleData - get price eth
-  // 3. sum eth price
-  // 4. get price eth in usd with quote or stablecoin~~()
-
-  // 1. usePools() (eth + token) => return pools[]
-  // 2. map() -> pool.getPrice() getPriceETH => return prices[]
-  // 3. sum prices -> getPriceUSD
-
   const [view, setView] = useState(ChartView.VOL_USD)
   // Composed chart hover
-  const [dateHover, setDateHover] = useState<string | undefined>()
-  const [volumeHover, setVolumeHover] = useState<number | undefined>()
-  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
-  const [principalHover, setPrincipalHover] = useState<number | undefined>()
-  const [tokensHover, setTokensHover] = useState<string[] | undefined>()
-  const [symbolsHover, setSymbolsHover] = useState<string[] | undefined>()
-  const [tokensVolumeUSDHover, setTokensVolumeUSDHover] = useState<number[] | undefined>()
+  const [indexHover, setIndexHover] = useState<number | undefined>()
+
   // Bar chart hover
   const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
   const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
@@ -375,35 +343,22 @@ export default function FundAccount() {
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
-      return chartData.map((data) => {
+      return chartData.map((data, index) => {
         return {
           time: data.timestamp,
           Volume: data.volumeUSD,
+          Liquidity: data.liquidityVolumeUSD,
           Principal: data.principalUSD,
           tokens: data.tokens,
           symbols: data.symbols,
           tokensVolume: data.tokensVolumeUSD,
-          Liquidity: data.liquidityVolumeUSD,
+          index,
         }
       })
     } else {
       return []
     }
   }, [chartData])
-
-  const formattedHoverTokenData = useMemo(() => {
-    if (chartData && tokensHover && symbolsHover && tokensVolumeUSDHover) {
-      return tokensHover.map((data, index) => {
-        return {
-          token: data,
-          symbol: symbolsHover[index],
-          Volume: tokensVolumeUSDHover[index],
-        }
-      })
-    } else {
-      return undefined
-    }
-  }, [chartData, tokensHover, symbolsHover, tokensVolumeUSDHover])
 
   const formattedLatestTokensData = useMemo(() => {
     if (investorData) {
@@ -414,8 +369,8 @@ export default function FundAccount() {
           decimal: investorData.decimals[index],
           amount: investorData.tokensAmount[index],
           Volume: investorData.tokensVolumeUSD[index],
-          Liquidity: investorData.liquidityTokensVolumeUSD[index],
-          liquidityAmount: investorData.liquidityTokensAmount[index],
+          //LiquidityTokenIds: investorData.liquidityTokenIds[index],
+          Liquidity: investorData.tokensVolumeUSD[index],
         }
       })
     } else {
@@ -427,17 +382,17 @@ export default function FundAccount() {
     if (investorData && chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        Volume: investorData.volumeUSD,
+        Volume: chartData[chartData.length - 1].volumeUSD,
         Liquidity: chartData[chartData.length - 1].liquidityVolumeUSD,
-        Principal: investorData.principalUSD,
+        Principal: chartData[chartData.length - 1].principalUSD,
       }
     } else {
       return undefined
     }
   }, [investorData, chartData])
 
-  const weth9 = new Token(SupportedChainId.GOERLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 18)
-  const usdc = new Token(SupportedChainId.GOERLI, '0x07865c6E87B9F70255377e024ace6630C1Eaa37F', 6)
+  const weth9 = WRAPPED_NATIVE_CURRENCY[chainId ? chainId : 0]
+  const usdc = USDC[chainId ? chainId : 0]
 
   const ethPriceInUSDC = useStablecoinPrice(weth9)
   let ethPriceInUSD = 0
@@ -451,30 +406,30 @@ export default function FundAccount() {
       parseFloat(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(usdc.decimals)).toString())
   }
 
-  const latestTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
-  const latestTokensAmount: [Token, number][] = []
+  const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
+  const volumeTokensAmount: [Token, number][] = []
 
   if (formattedLatestTokensData) {
     formattedLatestTokensData.map((data, index) => {
-      latestTokenPools.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), weth9, FeeAmount.HIGH])
-      latestTokenPools.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
-      latestTokenPools.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), weth9, FeeAmount.LOW])
-      latestTokensAmount.push([new Token(SupportedChainId.GOERLI, data.token, data.decimal), data.amount])
+      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
+      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
+      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
+      volumeTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
     })
   }
 
-  const tokensPriceInETH = useTokensPriceInETH(latestTokenPools)
+  const volumeTokensPriceInETH = useTokensPriceInETH(volumeTokenPools)
   const volumeTokensPriceInUSD: [Token, number][] = []
 
-  if (tokensPriceInETH) {
-    latestTokensAmount.map((data, index) => {
+  if (volumeTokensPriceInETH) {
+    volumeTokensAmount.map((data, index) => {
       const token = data[0].address
       const tokenAmount = data[1]
 
       if (token.toUpperCase() === weth9.address.toUpperCase()) {
         volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSD])
       } else {
-        tokensPriceInETH.map((data2, index2) => {
+        volumeTokensPriceInETH.map((data2: any, index2: any) => {
           const token2 = data2[0].address
           const priceInETH = data2[1]
           if (token.toUpperCase() === token2.toUpperCase()) {
@@ -494,20 +449,70 @@ export default function FundAccount() {
     })
 
     formattedVolumeUSD.push({
-      time: formattedVolumeUSD[formattedVolumeUSD.length - 1].time,
+      time: Math.floor(new Date().getTime() / 1000),
       Volume: totalVolumeUSD,
       Principal: formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal,
       tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
       symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
       tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
       Liquidity: formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity,
+      index: formattedVolumeUSD.length,
     })
   }
 
-  // update formattedLatestTokensData -> Volume USD
-  // if (formattedLatestTokensData) {
-  //   formattedLatestTokensData.map((data, index) => {})
-  // }
+  const volumeChartHoverIndex = indexHover !== undefined ? indexHover : undefined
+
+  const dateHover = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      return volumeUSDData.time
+    } else {
+      return latestVolumeData?.time
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+
+  const volumeHover = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      return volumeUSDData.Volume
+    } else {
+      return latestVolumeData?.Volume
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+
+  const liquidityHover = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      return volumeUSDData.Liquidity
+    } else {
+      return latestVolumeData?.Liquidity
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+
+  const principalHover = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      return volumeUSDData.Principal
+    } else {
+      return latestVolumeData?.Principal
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+
+  const formattedHoverTokenData = useMemo(() => {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
+      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+      const tokens = volumeUSDData.tokens
+      return tokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: volumeUSDData.symbols[index],
+          Volume: volumeUSDData.tokensVolume[index],
+        }
+      })
+    } else {
+      return undefined
+    }
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const ratio = useMemo(() => {
     return volumeHover !== undefined &&
@@ -717,13 +722,7 @@ export default function FundAccount() {
                 <ComposedChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
-                  setLabel={setDateHover}
-                  setValue={setVolumeHover}
-                  setLiquidityVolume={setLiquidityHover}
-                  setPrincipal={setPrincipalHover}
-                  setTokens={setTokensHover}
-                  setSymbols={setSymbolsHover}
-                  setTokensVolumeUSD={setTokensVolumeUSDHover}
+                  setIndex={setIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">

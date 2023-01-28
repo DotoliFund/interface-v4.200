@@ -21,6 +21,24 @@ export interface TokenFields {
   updatedTimestamp: string
 }
 
+export interface DotoliFundSnapshot {
+  id: string
+  timestamp: number
+  fundCount: number
+  investorCount: number
+  totalVolumeETH: number
+  totalVolumeUSD: number
+}
+
+export interface DotoliFundSnapshotFields {
+  id: string
+  timestamp: string
+  fundCount: string
+  investorCount: string
+  totalVolumeETH: string
+  totalVolumeUSD: string
+}
+
 export interface Factory {
   id: string
   fundCount: number
@@ -42,23 +60,17 @@ export interface Fund {
   createdAtTimestamp: number
   manager: string
   investorCount: number
-  principalETH: number
-  principalUSD: number
   volumeETH: number
   volumeUSD: number
-  liquidityVolumeETH: number
-  liquidityVolumeUSD: number
   tokens: string[]
   symbols: string[]
+  decimals: number[]
   tokensAmount: number[]
   tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
   feeTokens: string[]
   feeSymbols: string[]
   feeTokensAmount: number[]
-  profitETH: number
-  profitUSD: number
-  profitRatio: number
 }
 
 export interface FundFields {
@@ -67,23 +79,17 @@ export interface FundFields {
   createdAtTimestamp: string
   manager: string
   investorCount: string
-  principalETH: string
-  principalUSD: string
   volumeETH: string
   volumeUSD: string
-  liquidityVolumeETH: string
-  liquidityVolumeUSD: string
   tokens: string[]
   symbols: string[]
+  decimals: string[]
   tokensAmount: string[]
   tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
   feeTokens: string[]
   feeSymbols: string[]
   feeTokensAmount: string[]
-  profitETH: string
-  profitUSD: string
-  profitRatio: string
 }
 
 export interface Investor {
@@ -108,8 +114,6 @@ export interface Investor {
   liquiditySymbols: string[]
   liquidityDecimals: number[]
   liquidityTokensAmount: number[]
-  liquidityTokensVolumeETH: number[]
-  liquidityTokensVolumeUSD: number[]
   profitETH: number
   profitUSD: number
   profitRatio: number
@@ -137,33 +141,9 @@ export interface InvestorFields {
   liquiditySymbols: string[]
   liquidityDecimals: string[]
   liquidityTokensAmount: string[]
-  liquidityTokensVolumeETH: string[]
-  liquidityTokensVolumeUSD: string[]
   profitETH: string
   profitUSD: string
   profitRatio: string
-}
-
-export interface DotoliFundSnapshot {
-  id: string
-  timestamp: number
-  fundCount: number
-  investorCount: number
-  totalVolumeETH: number
-  totalVolumeUSD: number
-  totalLiquidityVolumeETH: number
-  totalLiquidityVolumeUSD: number
-}
-
-export interface DotoliFundSnapshotFields {
-  id: string
-  timestamp: string
-  fundCount: string
-  investorCount: string
-  totalVolumeETH: string
-  totalVolumeUSD: string
-  totalLiquidityVolumeETH: string
-  totalLiquidityVolumeUSD: string
 }
 
 export interface FundSnapshot {
@@ -172,14 +152,11 @@ export interface FundSnapshot {
   fund: string
   manager: string
   investorCount: number
-  principalETH: number
-  principalUSD: number
   volumeETH: number
   volumeUSD: number
-  liquidityVolumeETH: number
-  liquidityVolumeUSD: number
   tokens: string[]
   symbols: string[]
+  decimals: number[]
   tokensVolumeETH: number[]
   tokensVolumeUSD: number[]
 }
@@ -190,14 +167,11 @@ export interface FundSnapshotFields {
   fund: string
   manager: string
   investorCount: string
-  principalETH: string
-  principalUSD: string
   volumeETH: string
   volumeUSD: string
-  liquidityVolumeETH: string
-  liquidityVolumeUSD: string
   tokens: string[]
   symbols: string[]
+  decimals: string[]
   tokensVolumeETH: string[]
   tokensVolumeUSD: string[]
 }

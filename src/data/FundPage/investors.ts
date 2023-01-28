@@ -28,8 +28,6 @@ const FUND_INVESTORS = gql`
       liquiditySymbols
       liquidityDecimals
       liquidityTokensAmount
-      liquidityTokensVolumeETH
-      liquidityTokensVolumeUSD
       profitETH
       profitUSD
       profitRatio
@@ -107,12 +105,6 @@ export function useFundInvestors(fund: string | undefined): {
             return parseFloat(value)
           }),
           liquidityTokensAmount: investorDataFields.liquidityTokensAmount.map((value) => {
-            return parseFloat(value)
-          }),
-          liquidityTokensVolumeETH: investorDataFields.liquidityTokensVolumeETH.map((value) => {
-            return parseFloat(value)
-          }),
-          liquidityTokensVolumeUSD: investorDataFields.liquidityTokensVolumeUSD.map((value) => {
             return parseFloat(value)
           }),
           profitETH: parseFloat(investorDataFields.profitETH),

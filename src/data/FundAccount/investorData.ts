@@ -28,8 +28,6 @@ const INVESTOR_DATA = gql`
       liquiditySymbols
       liquidityDecimals
       liquidityTokensAmount
-      liquidityTokensVolumeETH
-      liquidityTokensVolumeUSD
       profitETH
       profitUSD
       profitRatio
@@ -114,12 +112,6 @@ export function useInvestorData(
           return parseFloat(value)
         }),
         liquidityTokensAmount: data.investor.liquidityTokensAmount.map((value) => {
-          return parseFloat(value)
-        }),
-        liquidityTokensVolumeETH: data.investor.liquidityTokensVolumeETH.map((value) => {
-          return parseFloat(value)
-        }),
-        liquidityTokensVolumeUSD: data.investor.liquidityTokensVolumeUSD.map((value) => {
           return parseFloat(value)
         }),
         profitETH: parseFloat(data.investor.profitETH),

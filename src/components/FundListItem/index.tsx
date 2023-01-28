@@ -1,9 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
-import Badge from 'components/Badge'
 import { LoadingRows } from 'components/Loader/styled'
-import Percent from 'components/Percent'
 import { RowBetween } from 'components/Row'
 import { useFundData } from 'data/FundPage/fundData'
 import { Link } from 'react-router-dom'
@@ -181,12 +179,6 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
           <RowBetween>
             <PrimaryPositionIdData>
               <DataText>{shortenAddress(fundData.address)}</DataText>
-              &nbsp;
-              <Badge>
-                <BadgeText>
-                  <Percent value={fundData.profitRatio} wrap={false} fontSize="14px" />
-                </BadgeText>
-              </Badge>
             </PrimaryPositionIdData>
           </RowBetween>
 
@@ -201,14 +193,14 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <ExtentsText>
                 <Trans>Principal : </Trans>
               </ExtentsText>
-              {formatDollarAmount(fundData.principalUSD)}
+              removed
             </RangeText>
             <RangeText>
               <RangeText>
                 <ExtentsText>
                   <Trans>Profit : </Trans>
                 </ExtentsText>
-                {formatDollarAmount(fundData.profitUSD)}
+                removed
               </RangeText>
               <RangeText></RangeText>
               <ExtentsText>

@@ -12,23 +12,17 @@ const FUND_DATA = gql`
       createdAtTimestamp
       manager
       investorCount
-      principalETH
-      principalUSD
       volumeETH
       volumeUSD
-      liquidityVolumeETH
-      liquidityVolumeUSD
       tokens
       symbols
+      decimals
       tokensAmount
       tokensVolumeETH
       tokensVolumeUSD
       feeTokens
       feeSymbols
       feeTokensAmount
-      profitETH
-      profitUSD
-      profitRatio
     }
   }
 `
@@ -76,14 +70,13 @@ export function useFundData(fund: string | undefined): {
         createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),
-        principalETH: parseFloat(data.fund.principalETH),
-        principalUSD: parseFloat(data.fund.principalUSD),
         volumeETH: parseFloat(data.fund.volumeETH),
         volumeUSD: parseFloat(data.fund.volumeUSD),
-        liquidityVolumeETH: parseFloat(data.fund.liquidityVolumeETH),
-        liquidityVolumeUSD: parseFloat(data.fund.liquidityVolumeUSD),
         tokens: data.fund.tokens,
         symbols: data.fund.symbols,
+        decimals: data.fund.decimals.map((value) => {
+          return parseFloat(value)
+        }),
         tokensAmount: data.fund.tokensAmount.map((value) => {
           return parseFloat(value)
         }),
@@ -98,9 +91,6 @@ export function useFundData(fund: string | undefined): {
         feeTokensAmount: data.fund.feeTokensAmount.map((value) => {
           return parseFloat(value)
         }),
-        profitETH: parseFloat(data.fund.profitETH),
-        profitUSD: parseFloat(data.fund.profitUSD),
-        profitRatio: parseFloat(data.fund.profitRatio),
       }
     : undefined
 

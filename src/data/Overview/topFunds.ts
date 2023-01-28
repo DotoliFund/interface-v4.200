@@ -6,29 +6,23 @@ import { Fund, FundFields } from 'types/fund'
 export const FUNDS_BULK = () => {
   const queryString = `
     query funds {
-      funds(orderBy: profitUSD, orderDirection: desc, subgraphError: allow) {
+      funds(orderBy: volumeUSD, orderDirection: desc, subgraphError: allow) {
         id
         address
         createdAtTimestamp
         manager
         investorCount
-        principalETH
-        principalUSD
         volumeETH
         volumeUSD
-        liquidityVolumeETH
-        liquidityVolumeUSD
         tokens
         symbols
+        decimals
         tokensAmount
         tokensVolumeETH
         tokensVolumeUSD
         feeTokens
         feeSymbols
         feeTokensAmount
-        profitETH
-        profitUSD
-        profitRatio
       }
     }
   `
@@ -40,7 +34,7 @@ interface FundDataResponse {
 }
 
 /**
- * Fetch top funds by profit
+ * Fetch top funds by volumeUSD
  */
 export function useTopFunds(): {
   loading: boolean
@@ -74,14 +68,13 @@ export function useTopFunds(): {
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
           manager: fundFields.manager,
           investorCount: parseInt(fundFields.investorCount),
-          principalETH: parseFloat(fundFields.principalETH),
-          principalUSD: parseFloat(fundFields.principalUSD),
           volumeETH: parseFloat(fundFields.volumeETH),
           volumeUSD: parseFloat(fundFields.volumeUSD),
-          liquidityVolumeETH: parseFloat(fundFields.liquidityVolumeETH),
-          liquidityVolumeUSD: parseFloat(fundFields.liquidityVolumeUSD),
           tokens: fundFields.tokens,
           symbols: fundFields.symbols,
+          decimals: fundFields.decimals.map((value) => {
+            return parseFloat(value)
+          }),
           tokensAmount: fundFields.tokensAmount.map((value) => {
             return parseFloat(value)
           }),
@@ -96,9 +89,6 @@ export function useTopFunds(): {
           feeTokensAmount: fundFields.feeTokensAmount.map((value) => {
             return parseFloat(value)
           }),
-          profitETH: parseFloat(fundFields.profitETH),
-          profitUSD: parseFloat(fundFields.profitUSD),
-          profitRatio: parseFloat(fundFields.profitRatio),
         }
         return fundData
       })
