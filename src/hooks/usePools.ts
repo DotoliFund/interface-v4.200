@@ -4,7 +4,7 @@ import IUniswapV3PoolState from '@uniswap/v3-core/artifacts/contracts/interfaces
 import { computePoolAddress } from '@uniswap/v3-sdk'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { SupportedChainId } from 'constants/chains'
+import { USDC, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import JSBI from 'jsbi'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
@@ -156,11 +156,14 @@ export function usePool(
 }
 
 export function useTokensPriceInETH(
+  chainId: number | undefined,
   poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][]
-): [Token, number][] {
-  const weth9 = new Token(SupportedChainId.GOERLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 6)
+): [Token, number][] | undefined {
   const pools = usePools(poolKeys)
 
+  if (chainId === undefined) return undefined
+
+  const weth9 = WRAPPED_NATIVE_CURRENCY[chainId]
   const latestTokenPools: Pool[] = []
 
   pools.map((data, index) => {
@@ -218,4 +221,56 @@ export function useTokensPriceInETH(
     }
   }
   return tokenPricesInETH
+}
+
+export function useETHPriceInUSD(chainId: number | undefined): number | undefined {
+  const poolTokens: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
+  if (chainId !== undefined) {
+    poolTokens.push([WRAPPED_NATIVE_CURRENCY[chainId], USDC[chainId], FeeAmount.HIGH])
+    poolTokens.push([WRAPPED_NATIVE_CURRENCY[chainId], USDC[chainId], FeeAmount.MEDIUM])
+    poolTokens.push([WRAPPED_NATIVE_CURRENCY[chainId], USDC[chainId], FeeAmount.LOW])
+  }
+
+  const pools = usePools(poolTokens)
+
+  if (chainId === undefined) return undefined
+
+  let largestLiquidity = '0'
+  let largestPool = 0
+
+  pools.map((data, index) => {
+    const poolState = data[0]
+    const pool = data[1]
+    if (poolState === PoolState.EXISTS && pool) {
+      if (JSBI.GT(pool.liquidity, JSBI.BigInt(largestLiquidity))) {
+        largestLiquidity = pool.liquidity.toString()
+        largestPool = index
+      }
+    }
+  })
+
+  const poolState = pools[largestPool][0]
+  const pool = pools[largestPool][1]
+  if (poolState === PoolState.EXISTS && pool) {
+    const token0 = pool.token0
+    if (token0.equals(USDC[chainId])) {
+      const token1Price = pool.token1Price.quote(
+        CurrencyAmount.fromRawAmount(pool.token1, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(pool.token1.decimals)))
+      ).quotient
+      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
+      const usdcDecimal = Math.pow(10, USDC[chainId].decimals).toFixed(18)
+      const priceInUSD = parseFloat(token1PriceDecimal) / parseFloat(usdcDecimal)
+      return priceInUSD
+    } else {
+      const token0Price = pool.token0Price.quote(
+        CurrencyAmount.fromRawAmount(pool.token0, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(pool.token0.decimals)))
+      ).quotient
+      const token0PriceDecimal = parseFloat(token0Price.toString()).toFixed(18)
+      const usdcDecimal = Math.pow(10, USDC[chainId].decimals).toFixed(18)
+      const priceInUSD = parseFloat(token0PriceDecimal) / parseFloat(usdcDecimal)
+      return priceInUSD
+    }
+  } else {
+    return undefined
+  }
 }

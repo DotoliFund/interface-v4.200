@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import BarChart from 'components/BarChart/stacked'
@@ -18,17 +18,15 @@ import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
 import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
 import { EthereumNetworkInfo } from 'constants/networks'
-import { USDC, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useInvestorChartData } from 'data/FundAccount/chartData'
 import { useInvestorData } from 'data/FundAccount/investorData'
 import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityTransactions'
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useTokensPriceInETH } from 'hooks/usePools'
-import useStablecoinPrice from 'hooks/useStablecoinPrice'
+import { useETHPriceInUSD, useTokensPriceInETH } from 'hooks/usePools'
 import { useV3Positions } from 'hooks/useV3Positions'
-import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
@@ -378,34 +376,10 @@ export default function FundAccount() {
     }
   }, [investorData])
 
-  const latestVolumeData = useMemo(() => {
-    if (investorData && chartData && chartData.length > 0) {
-      return {
-        time: chartData[chartData.length - 1].timestamp,
-        Volume: chartData[chartData.length - 1].volumeUSD,
-        Liquidity: chartData[chartData.length - 1].liquidityVolumeUSD,
-        Principal: chartData[chartData.length - 1].principalUSD,
-      }
-    } else {
-      return undefined
-    }
-  }, [investorData, chartData])
+  const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
+  const ethPriceInUSDC = useETHPriceInUSD(chainId)
 
-  const weth9 = WRAPPED_NATIVE_CURRENCY[chainId ? chainId : 0]
-  const usdc = USDC[chainId ? chainId : 0]
-
-  const ethPriceInUSDC = useStablecoinPrice(weth9)
-  let ethPriceInUSD = 0
-  if (ethPriceInUSDC) {
-    const _ethPriceInUSDC = ethPriceInUSDC
-      .quote(CurrencyAmount.fromRawAmount(weth9, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(weth9.decimals))))
-      .quotient.toString()
-
-    ethPriceInUSD =
-      parseFloat(_ethPriceInUSDC) /
-      parseFloat(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(usdc.decimals)).toString())
-  }
-
+  // get current volume token's price
   const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
   const volumeTokensAmount: [Token, number][] = []
 
@@ -418,22 +392,21 @@ export default function FundAccount() {
     })
   }
 
-  const volumeTokensPriceInETH = useTokensPriceInETH(volumeTokenPools)
+  const volumeTokensPriceInETH = useTokensPriceInETH(chainId, volumeTokenPools)
   const volumeTokensPriceInUSD: [Token, number][] = []
-
-  if (volumeTokensPriceInETH) {
+  if (ethPriceInUSDC && volumeTokensPriceInETH && weth9 !== undefined) {
     volumeTokensAmount.map((data, index) => {
       const token = data[0].address
       const tokenAmount = data[1]
 
       if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSD])
+        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
       } else {
         volumeTokensPriceInETH.map((data2: any, index2: any) => {
           const token2 = data2[0].address
           const priceInETH = data2[1]
           if (token.toUpperCase() === token2.toUpperCase()) {
-            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSD])
+            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
           }
         })
       }
@@ -463,40 +436,48 @@ export default function FundAccount() {
   const volumeChartHoverIndex = indexHover !== undefined ? indexHover : undefined
 
   const dateHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       return volumeUSDData.time
+    } else if (formattedVolumeUSD.length > 0) {
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].time
     } else {
-      return latestVolumeData?.time
+      return undefined
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const volumeHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       return volumeUSDData.Volume
+    } else if (formattedVolumeUSD.length > 0) {
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume
     } else {
-      return latestVolumeData?.Volume
+      return undefined
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const liquidityHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       return volumeUSDData.Liquidity
+    } else if (formattedVolumeUSD.length > 0) {
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity
     } else {
-      return latestVolumeData?.Liquidity
+      return undefined
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const principalHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       return volumeUSDData.Principal
+    } else if (formattedVolumeUSD.length > 0) {
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal
     } else {
-      return latestVolumeData?.Principal
+      return undefined
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const formattedHoverTokenData = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
@@ -522,16 +503,18 @@ export default function FundAccount() {
       ? Number((((volumeHover + liquidityHover - principalHover) / principalHover) * 100).toFixed(2))
       : principalHover === 0
       ? Number(0)
-      : latestVolumeData && latestVolumeData.Principal > 0
+      : formattedVolumeUSD && formattedVolumeUSD.length > 0
       ? Number(
           (
-            ((latestVolumeData.Volume + latestVolumeData.Liquidity - latestVolumeData.Principal) /
-              latestVolumeData.Principal) *
+            ((formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume +
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity -
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal) /
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal) *
             100
           ).toFixed(2)
         )
       : Number(0)
-  }, [volumeHover, liquidityHover, principalHover, latestVolumeData])
+  }, [volumeHover, liquidityHover, principalHover, formattedVolumeUSD])
 
   const menuItems1 = [
     {
@@ -728,11 +711,7 @@ export default function FundAccount() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(
-                            volumeHover !== undefined && liquidityHover !== undefined
-                              ? volumeHover + liquidityHover
-                              : latestVolumeData
-                              ? latestVolumeData.Volume + latestVolumeData.Liquidity
-                              : 0
+                            volumeHover !== undefined && liquidityHover !== undefined ? volumeHover + liquidityHover : 0
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
@@ -747,7 +726,11 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.Volume : 0
+                              volumeHover !== undefined
+                                ? volumeHover
+                                : formattedVolumeUSD && formattedVolumeUSD.length > 0
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume
+                                : 0
                             )}
                           </MonoSpace>
                         </ThemedText.DeprecatedMediumHeader>
@@ -757,8 +740,8 @@ export default function FundAccount() {
                             {formatDollarAmount(
                               liquidityHover !== undefined
                                 ? liquidityHover
-                                : latestVolumeData
-                                ? latestVolumeData.Liquidity
+                                : formattedVolumeUSD && formattedVolumeUSD.length > 0
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity
                                 : 0
                             )}
                           </MonoSpace>
@@ -769,8 +752,8 @@ export default function FundAccount() {
                             {formatDollarAmount(
                               principalHover !== undefined
                                 ? principalHover
-                                : latestVolumeData
-                                ? latestVolumeData.Principal
+                                : formattedVolumeUSD && formattedVolumeUSD.length > 0
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal
                                 : 0
                             )}
                           </MonoSpace>
@@ -781,9 +764,10 @@ export default function FundAccount() {
                           <MonoSpace>
                             {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
                           </MonoSpace>
-                        ) : latestVolumeData ? (
+                        ) : formattedVolumeUSD && formattedVolumeUSD.length > 0 ? (
                           <MonoSpace>
-                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
+                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} (
+                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
                           </MonoSpace>
                         ) : null}
                       </ThemedText.DeprecatedMain>

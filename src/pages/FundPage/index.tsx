@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import BarChart from 'components/BarChart'
@@ -17,17 +17,15 @@ import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import TransactionTable from 'components/TransactionsTable'
 import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
-import { USDC, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useFundChartData } from 'data/FundPage/chartData'
 import { useFundData } from 'data/FundPage/fundData'
 import { useFundInvestors } from 'data/FundPage/investors'
 import { useFundTransactions } from 'data/FundPage/transactions'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useTokensPriceInETH } from 'hooks/usePools'
-import useStablecoinPrice from 'hooks/useStablecoinPrice'
+import { useETHPriceInUSD, useTokensPriceInETH } from 'hooks/usePools'
 import { DotoliFactory } from 'interface/DotoliFactory'
-import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -201,17 +199,6 @@ export default function FundPage() {
     }
   }, [fundData])
 
-  const latestVolumeData = useMemo(() => {
-    if (fundData && chartData && chartData.length > 0) {
-      return {
-        time: chartData[chartData.length - 1].timestamp,
-        Volume: fundData.volumeUSD,
-      }
-    } else {
-      return undefined
-    }
-  }, [fundData, chartData])
-
   const formattedFeesData = useMemo(() => {
     if (fundData) {
       return fundData.feeTokens.map((data, index) => {
@@ -226,24 +213,11 @@ export default function FundPage() {
     }
   }, [fundData])
 
-  const weth9 = WRAPPED_NATIVE_CURRENCY[chainId ? chainId : 0]
-  const usdc = USDC[chainId ? chainId : 0]
-
-  const ethPriceInUSDC = useStablecoinPrice(weth9)
-  let ethPriceInUSD = 0
-  if (ethPriceInUSDC) {
-    const _ethPriceInUSDC = ethPriceInUSDC
-      .quote(CurrencyAmount.fromRawAmount(weth9, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(weth9.decimals))))
-      .quotient.toString()
-
-    ethPriceInUSD =
-      parseFloat(_ethPriceInUSDC) /
-      parseFloat(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(usdc.decimals)).toString())
-  }
+  const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
+  const ethPriceInUSDC = useETHPriceInUSD(chainId)
 
   const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
   const volumeTokensAmount: [Token, number][] = []
-
   if (formattedLatestTokensData) {
     formattedLatestTokensData.map((data, index) => {
       volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
@@ -253,22 +227,21 @@ export default function FundPage() {
     })
   }
 
-  const volumeTokensPriceInETH = useTokensPriceInETH(volumeTokenPools)
+  const volumeTokensPriceInETH = useTokensPriceInETH(chainId, volumeTokenPools)
   const volumeTokensPriceInUSD: [Token, number][] = []
-
-  if (volumeTokensPriceInETH) {
+  if (ethPriceInUSDC && volumeTokensPriceInETH && weth9 !== undefined) {
     volumeTokensAmount.map((data, index) => {
       const token = data[0].address
       const tokenAmount = data[1]
 
       if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSD])
+        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
       } else {
         volumeTokensPriceInETH.map((data2: any, index2: any) => {
           const token2 = data2[0].address
           const priceInETH = data2[1]
           if (token.toUpperCase() === token2.toUpperCase()) {
-            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSD])
+            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
           }
         })
       }
@@ -282,7 +255,6 @@ export default function FundPage() {
       const volumeUSD = value[1]
       totalVolumeUSD += volumeUSD
     })
-
     formattedVolumeUSD.push({
       time: Math.floor(new Date().getTime() / 1000),
       Volume: totalVolumeUSD,
@@ -296,28 +268,32 @@ export default function FundPage() {
   const volumeChartHoverIndex = indexHover !== undefined ? indexHover : undefined
 
   const dateHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       return volumeUSDData.time
+    } else if (formattedVolumeUSD.length > 0) {
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].time
     } else {
-      return latestVolumeData?.time
+      return undefined
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const volumeHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD && latestVolumeData) {
+    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       return volumeUSDData.Volume
+    } else if (formattedVolumeUSD.length > 0) {
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume
     } else {
-      return latestVolumeData?.Volume
+      return undefined
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, latestVolumeData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const formattedHoverTokenData = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       const tokens = volumeUSDData.tokens
-      return tokens.map((data, index) => {
+      return tokens.map((data: any, index: any) => {
         return {
           token: data,
           symbol: volumeUSDData.symbols[index],
@@ -502,11 +478,7 @@ export default function FundPage() {
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {formatDollarAmount(
-                            volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.Volume : 0
-                          )}
-                        </MonoSpace>
+                        <MonoSpace>{formatDollarAmount(volumeHover !== undefined ? volumeHover : 0)}</MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
@@ -516,10 +488,6 @@ export default function FundPage() {
                         {dateHover ? (
                           <MonoSpace>
                             {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
-                          </MonoSpace>
-                        ) : latestVolumeData ? (
-                          <MonoSpace>
-                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
                           </MonoSpace>
                         ) : null}
                       </ThemedText.DeprecatedMain>
@@ -564,10 +532,11 @@ export default function FundPage() {
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      {latestVolumeData ? (
+                      {formattedVolumeUSD ? (
                         <ThemedText.DeprecatedMain fontSize="14px">
                           <MonoSpace>
-                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
+                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} (
+                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
                           </MonoSpace>
                         </ThemedText.DeprecatedMain>
                       ) : null}
@@ -620,10 +589,11 @@ export default function FundPage() {
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      {latestVolumeData ? (
+                      {formattedVolumeUSD ? (
                         <ThemedText.DeprecatedMain fontSize="14px">
                           <MonoSpace>
-                            {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)})
+                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} ({' '}
+                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
                           </MonoSpace>
                         </ThemedText.DeprecatedMain>
                       ) : null}

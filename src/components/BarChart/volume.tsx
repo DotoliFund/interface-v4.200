@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import Card from 'components/Card'
+import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -20,7 +21,7 @@ const Wrapper = styled(Card)`
   padding: 1rem;
   padding-right: 1rem;
   display: flex;
-
+  background-color: ${({ theme }) => theme.deprecated_bg0};
   flex-direction: column;
   > * {
     font-size: 1rem;
@@ -65,7 +66,7 @@ const Chart = ({
   }
 
   return (
-    <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
+    <Wrapper>
       <RowBetween>
         {isEmptyData ? null : (
           <>
@@ -74,7 +75,11 @@ const Chart = ({
           </>
         )}
       </RowBetween>
-      {
+      {data?.length === 0 ? (
+        <LoadingRows>
+          <div style={{ height: '250px' }} />
+        </LoadingRows>
+      ) : (
         <ResponsiveContainer width="100%" height="100%">
           {isEmptyData ? (
             <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
@@ -89,8 +94,8 @@ const Chart = ({
               data={data}
               margin={{
                 top: 5,
-                right: 10,
-                left: 10,
+                right: 5,
+                left: 5,
                 bottom: 5,
               }}
             >
@@ -112,11 +117,7 @@ const Chart = ({
             </BarChart>
           )}
         </ResponsiveContainer>
-      }
-      <RowBetween>
-        {bottomLeft ?? null}
-        {bottomRight ?? null}
-      </RowBetween>
+      )}
     </Wrapper>
   )
 }

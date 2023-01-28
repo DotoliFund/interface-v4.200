@@ -7,7 +7,7 @@ import { darken } from 'polished'
 import { useEffect } from 'react'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 import { Bar, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
@@ -25,12 +25,6 @@ const Wrapper = styled(Card)`
   > * {
     font-size: 1rem;
   }
-`
-
-const IconStyle = css`
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0.5rem;
 `
 
 export type ComposedChartProps = {
@@ -116,7 +110,6 @@ const Chart = ({
             />
             <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
-
             <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
             <Bar dataKey="Liquidity" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
             <Line dataKey="Principal" type="monotone" stroke={color3} />
