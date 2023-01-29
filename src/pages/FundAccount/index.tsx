@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
-import { FeeAmount } from '@uniswap/v3-sdk'
+import { FeeAmount, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import BarChart from 'components/BarChart/stacked'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
@@ -25,7 +25,8 @@ import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityT
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useETHPriceInUSD, useTokensPriceInETH } from 'hooks/usePools'
+import { useETHPriceInUSD, usePools } from 'hooks/usePools'
+import { useTokensPriceInUSD } from 'hooks/useTokensPriceInUSD'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
@@ -358,7 +359,7 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const formattedLatestTokensData = useMemo(() => {
+  const currentVolumeTokensData = useMemo(() => {
     if (investorData) {
       return investorData.tokens.map((data, index) => {
         return {
@@ -366,9 +367,6 @@ export default function FundAccount() {
           symbol: investorData.symbols[index],
           decimal: investorData.decimals[index],
           amount: investorData.tokensAmount[index],
-          Volume: investorData.tokensVolumeUSD[index],
-          //LiquidityTokenIds: investorData.liquidityTokenIds[index],
-          Liquidity: investorData.tokensVolumeUSD[index],
         }
       })
     } else {
@@ -376,49 +374,126 @@ export default function FundAccount() {
     }
   }, [investorData])
 
-  const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
-  const ethPriceInUSDC = useETHPriceInUSD(chainId)
+  const positionTokens: [Token | undefined, Token | undefined, FeeAmount | undefined][] = useMemo(() => {
+    if (chainId && openPositions && openPositions.length > 0 && investorData) {
+      return openPositions.map((data, index) => {
+        const token0 = data.token0
+        const token1 = data.token1
+        const fee = data.fee
 
-  // get current volume token's price
-  const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
-  const volumeTokensAmount: [Token, number][] = []
-
-  if (formattedLatestTokensData) {
-    formattedLatestTokensData.map((data, index) => {
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
-      volumeTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
-    })
-  }
-
-  const volumeTokensPriceInETH = useTokensPriceInETH(chainId, volumeTokenPools)
-  const volumeTokensPriceInUSD: [Token, number][] = []
-  if (ethPriceInUSDC && volumeTokensPriceInETH && weth9 !== undefined) {
-    volumeTokensAmount.map((data, index) => {
-      const token = data[0].address
-      const tokenAmount = data[1]
-
-      if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
-      } else {
-        volumeTokensPriceInETH.map((data2: any, index2: any) => {
-          const token2 = data2[0].address
-          const priceInETH = data2[1]
-          if (token.toUpperCase() === token2.toUpperCase()) {
-            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
+        let token0Symbol = ''
+        let token1Symbol = ''
+        let token0Decimals = 0
+        let token1Decimals = 0
+        investorData.liquidityTokens.map((token, index) => {
+          if (token.toUpperCase() === token0.toUpperCase()) {
+            token0Symbol = investorData.liquiditySymbols[index]
+            token0Decimals = investorData.liquidityDecimals[index]
+          } else if (token.toUpperCase() === token1.toUpperCase()) {
+            token1Symbol = investorData.liquiditySymbols[index]
+            token1Decimals = investorData.liquidityDecimals[index]
           }
         })
+
+        return [
+          new Token(chainId, token0, token0Decimals, token0Symbol),
+          new Token(chainId, token1, token1Decimals, token1Symbol),
+          fee,
+        ]
+      })
+    } else {
+      return []
+    }
+  }, [chainId, openPositions, investorData])
+
+  const positionPools = usePools(positionTokens)
+
+  const currentLiquidityPositions: Position[] = []
+  if (openPositions && openPositions.length > 0 && positionPools && positionPools.length > 0) {
+    for (let i = 0; i < openPositions.length; i++) {
+      const liquidity = openPositions[i].liquidity
+      const tickLower = openPositions[i].tickLower
+      const tickUpper = openPositions[i].tickUpper
+      const pool: Pool | null = positionPools[i][1]
+
+      if (pool && liquidity) {
+        currentLiquidityPositions.push(new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper }))
       }
-    })
+    }
   }
 
-  // update formattedVolumeUSD -> Volume, Liquidity
+  const currentLiquidityTokensData = []
+  if (currentLiquidityPositions) {
+    for (let i = 0; i < currentLiquidityPositions.length; i++) {
+      const token0 = currentLiquidityPositions[i].pool.token0.address
+      const token0Symbol = currentLiquidityPositions[i].pool.token0.symbol
+      const token0Decimal = currentLiquidityPositions[i].pool.token0.decimals
+      const token0Amount = parseFloat(currentLiquidityPositions[i].amount0.quotient.toString())
+      const token0AmountDecimal = Number(token0Amount / parseFloat((10 ** token0Decimal).toString()))
+
+      const token1 = currentLiquidityPositions[i].pool.token1.address
+      const token1Symbol = currentLiquidityPositions[i].pool.token1.symbol
+      const token1Decimal = currentLiquidityPositions[i].pool.token1.decimals
+      const token1Amount = Number(currentLiquidityPositions[i].amount1.quotient.toString())
+      const token1AmountDecimal = Number(token1Amount / parseFloat((10 ** token1Decimal).toString()))
+
+      if (token0Symbol && token1Symbol) {
+        currentLiquidityTokensData.push({
+          token: token0,
+          symbol: token0Symbol,
+          decimal: token0Decimal,
+          amount: token0AmountDecimal,
+        })
+        currentLiquidityTokensData.push({
+          token: token1,
+          symbol: token1Symbol,
+          decimal: token1Decimal,
+          amount: token1AmountDecimal,
+        })
+      }
+    }
+  }
+
+  const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
+  const ethPriceInUSDC = useETHPriceInUSD(chainId)
+  const volumeTokensPriceInUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, currentVolumeTokensData)
+  const DuplicatedliquidityTokensPriceInUSD = useTokensPriceInUSD(
+    chainId,
+    weth9,
+    ethPriceInUSDC,
+    currentLiquidityTokensData
+  )
+
+  const liquidityTokensPriceInUSD: [Token, number][] = []
+  if (DuplicatedliquidityTokensPriceInUSD) {
+    for (let i = 0; i < DuplicatedliquidityTokensPriceInUSD.length; i++) {
+      const token = DuplicatedliquidityTokensPriceInUSD[i][0]
+      const amount = DuplicatedliquidityTokensPriceInUSD[i][1]
+      let isNew = true
+      for (let j = 0; j < liquidityTokensPriceInUSD.length; j++) {
+        const _token = liquidityTokensPriceInUSD[j][0]
+        if (token.address.toUpperCase() === _token.address.toUpperCase()) {
+          liquidityTokensPriceInUSD[j][1] += amount
+          isNew = false
+          break
+        }
+      }
+      if (isNew) {
+        liquidityTokensPriceInUSD.push([token, amount])
+      }
+    }
+  }
+
   if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
     let totalVolumeUSD = 0
     volumeTokensPriceInUSD.map((value, index) => {
       const volumeUSD = value[1]
       totalVolumeUSD += volumeUSD
+    })
+    let totalLiquidityUSD = 0
+    liquidityTokensPriceInUSD.map((value, index) => {
+      const liquidityUSD = value[1]
+      totalLiquidityUSD += liquidityUSD
     })
 
     formattedVolumeUSD.push({
@@ -428,7 +503,7 @@ export default function FundAccount() {
       tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
       symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
       tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
-      Liquidity: formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity,
+      Liquidity: totalLiquidityUSD,
       index: formattedVolumeUSD.length,
     })
   }
@@ -491,9 +566,19 @@ export default function FundAccount() {
         }
       })
     } else {
-      return undefined
+      if (investorData) {
+        return investorData.tokens.map((data, index) => {
+          return {
+            token: data,
+            symbol: investorData.symbols[index],
+            Volume: investorData.tokensVolumeUSD[index],
+          }
+        })
+      } else {
+        return []
+      }
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD])
+  }, [volumeChartHoverIndex, formattedVolumeUSD, investorData])
 
   const ratio = useMemo(() => {
     return volumeHover !== undefined &&
@@ -677,7 +762,7 @@ export default function FundAccount() {
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
-                  data={formattedHoverTokenData ? formattedHoverTokenData : formattedLatestTokensData}
+                  data={formattedHoverTokenData ? formattedHoverTokenData : currentVolumeTokensData}
                   color={activeNetwork.primaryColor}
                 />
               </AutoColumn>
@@ -776,7 +861,7 @@ export default function FundAccount() {
                 />
               ) : view === ChartView.TOKENS ? (
                 <BarChart
-                  data={formattedLatestTokensData}
+                  data={currentVolumeTokensData}
                   color={activeNetwork.primaryColor}
                   setLabel={setTokenAddressHover}
                   setSymbol={setTokenSymbolHover}
