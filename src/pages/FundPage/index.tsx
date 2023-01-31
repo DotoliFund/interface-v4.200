@@ -156,14 +156,10 @@ export default function FundPage() {
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
-  // volume chart hover
-  const [indexHover, setIndexHover] = useState<number | undefined>()
-  // token chart hover
-  const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
-  const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
-  const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
-  const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
-  const [feeTokenAmountHover, setFeeTokenAmountHover] = useState<number | undefined>()
+  // chart hover index
+  const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
+  const [tokenIndexHover, setTokenIndexHover] = useState<number | undefined>()
+  const [feeIndexHover, setFeeIndexHover] = useState<number | undefined>()
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
@@ -182,7 +178,7 @@ export default function FundPage() {
     }
   }, [chartData])
 
-  const formattedLatestTokensData = useMemo(() => {
+  const formattedLatestTokens = useMemo(() => {
     if (fundData) {
       const fundTokenData = fundData.currentTokens.map((data, index) => {
         return {
@@ -191,6 +187,7 @@ export default function FundPage() {
           decimal: fundData.currentTokensDecimals[index],
           amount: fundData.currentTokensAmount[index],
           volume: fundData.currentTokensAmountUSD[index],
+          index,
         }
       })
       return fundTokenData
@@ -199,13 +196,14 @@ export default function FundPage() {
     }
   }, [fundData])
 
-  const formattedFeesData = useMemo(() => {
+  const formattedFeeTokens = useMemo(() => {
     if (fundData) {
       return fundData.feeTokens.map((data, index) => {
         return {
           token: data,
           symbol: fundData.feeSymbols[index],
           amount: fundData.feeTokensAmount[index],
+          index,
         }
       })
     } else {
@@ -218,8 +216,8 @@ export default function FundPage() {
 
   const currentTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
   const currentTokensAmount: [Token, number][] = []
-  if (formattedLatestTokensData) {
-    formattedLatestTokensData.map((data, index) => {
+  if (formattedLatestTokens) {
+    formattedLatestTokens.map((data, index) => {
       currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
       currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
       currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
@@ -264,31 +262,9 @@ export default function FundPage() {
     })
   }
 
-  const volumeChartHoverIndex = indexHover !== undefined ? indexHover : undefined
+  const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
-  const dateHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
-      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.time
-    } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].time
-    } else {
-      return undefined
-    }
-  }, [volumeChartHoverIndex, formattedVolumeUSD])
-
-  const volumeHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
-      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.volume
-    } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].volume
-    } else {
-      return undefined
-    }
-  }, [volumeChartHoverIndex, formattedVolumeUSD])
-
-  const formattedHoverTokenData = useMemo(() => {
+  const formattedHoverToken = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       const tokens = volumeUSDData.tokens
@@ -434,7 +410,7 @@ export default function FundPage() {
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
-                  data={formattedHoverTokenData ? formattedHoverTokenData : formattedLatestTokensData}
+                  data={formattedHoverToken ? formattedHoverToken : formattedLatestTokens}
                   color={activeNetwork.primaryColor}
                 />
               </AutoColumn>
@@ -473,20 +449,25 @@ export default function FundPage() {
                 <VolumeBarChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
-                  setIndex={setIndexHover}
+                  setIndex={setVolumeIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>{formatDollarAmount(volumeHover !== undefined ? volumeHover : 0)}</MonoSpace>
+                        <MonoSpace>
+                          {formatDollarAmount(
+                            volumeIndexHover !== undefined ? formattedVolumeUSD[volumeIndexHover].volume : 0
+                          )}
+                        </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
                       <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
-                        {dateHover ? (
+                        {volumeIndexHover !== undefined ? (
                           <MonoSpace>
-                            {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
+                            {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} ({' '}
+                            {formatTime(formattedVolumeUSD[volumeIndexHover].time.toString(), 8)} )
                           </MonoSpace>
                         ) : null}
                       </ThemedText.DeprecatedMain>
@@ -495,31 +476,28 @@ export default function FundPage() {
                 />
               ) : view === ChartView.TOKENS ? (
                 <TokenBarChart
-                  data={formattedLatestTokensData}
+                  data={formattedLatestTokens}
                   color={activeNetwork.primaryColor}
-                  setLabel={setTokenAddressHover}
-                  setSymbol={setTokenSymbolHover}
-                  setValue={setTokenVolumeHover}
-                  setAmount={setTokenAmountHover}
+                  setIndex={setTokenIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          {tokenIndexHover !== undefined ? formattedLatestTokens[tokenIndexHover].symbol : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {tokenAddressHover === 'Liquidity' ? null : tokenAddressHover ? (
+                        {tokenIndexHover !== undefined ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
                             </Link>
                           </ThemedText.DeprecatedMain>
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
-                            tokenAmountHover
+                          {tokenIndexHover !== undefined ? (
+                            formattedLatestTokens[tokenIndexHover].amount
                           ) : (
                             <>
                               <br />
@@ -540,8 +518,8 @@ export default function FundPage() {
                         </ThemedText.DeprecatedMain>
                       ) : null}
                       <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                        {tokenVolumeHover ? (
-                          <MonoSpace>{formatDollarAmount(tokenVolumeHover)}</MonoSpace>
+                        {tokenIndexHover !== undefined ? (
+                          formattedLatestTokens[tokenIndexHover].volume
                         ) : (
                           <>
                             <br />
@@ -553,30 +531,28 @@ export default function FundPage() {
                 />
               ) : isManager && view === ChartView.FEES ? (
                 <FeeBarChart
-                  data={formattedFeesData}
+                  data={formattedFeeTokens}
                   color={activeNetwork.primaryColor}
-                  setLabel={setTokenAddressHover}
-                  setSymbol={setTokenSymbolHover}
-                  setValue={setFeeTokenAmountHover}
+                  setIndex={setFeeIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          {feeIndexHover !== undefined ? formattedFeeTokens[feeIndexHover].symbol : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {tokenAddressHover === 'Liquidity' ? null : tokenAddressHover ? (
+                        {feeIndexHover !== undefined ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                              <MonoSpace>{shortenAddress(formattedFeeTokens[feeIndexHover].token)}</MonoSpace>
                             </Link>
                           </ThemedText.DeprecatedMain>
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {tokenAddressHover && tokenAddressHover !== 'Liquidity' ? (
-                            feeTokenAmountHover
+                          {feeIndexHover !== undefined ? (
+                            formattedFeeTokens[feeIndexHover].amount
                           ) : (
                             <>
                               <br />

@@ -38,9 +38,7 @@ export type BarChartProps = {
   color?: string | undefined
   color2?: string | undefined
   minHeight?: number
-  setLabel: Dispatch<SetStateAction<string | undefined>>
-  setSymbol: Dispatch<SetStateAction<string | undefined>>
-  setValue: Dispatch<SetStateAction<number | undefined>>
+  setIndex: Dispatch<SetStateAction<number | undefined>>
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -51,9 +49,7 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#4A2B65',
-  setLabel,
-  setSymbol,
-  setValue,
+  setIndex,
   topLeft,
   topRight,
   bottomLeft,
@@ -66,15 +62,11 @@ const Chart = ({
 
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
-    const token = payload ? payload.payload.token : undefined
-    const symbol = payload ? payload.payload.symbol : undefined
-    const value = payload ? payload.value : undefined
+    const index = payload ? payload.payload.index : undefined
 
     useEffect(() => {
-      setLabel(token)
-      setSymbol(symbol)
-      setValue(value)
-    }, [token, symbol, value])
+      setIndex(index)
+    }, [index])
 
     return null
   }

@@ -318,16 +318,11 @@ export default function FundAccount() {
   const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
-  // Volume chart hover
-  const [indexHover, setIndexHover] = useState<number | undefined>()
 
-  // Token chart hover
-  const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
-  const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
-  const [liquidityVolumeHover, setLiquidityVolumeHover] = useState<number | undefined>()
-  const [liquidityAmountHover, setLiquidityAmountHover] = useState<number | undefined>()
-  const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
-  const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
+  // chart hover index
+  const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
+  const [tokenIndexHover, setTokenIndexHover] = useState<number | undefined>()
+  const [feeIndexHover, setFeeIndexHover] = useState<number | undefined>()
 
   const { positions, loading: positionsLoading } = useV3Positions(fundAddress, investorAddress)
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
@@ -339,6 +334,8 @@ export default function FundAccount() {
   ) ?? [[], []]
 
   const filteredPositions = [...openPositions, ...(userHideClosedPositions ? [] : closedPositions)]
+
+  //TODO : get pool tokens with tokenIds
 
   const formattedVolumeUSD = useMemo(() => {
     if (chartData) {
@@ -359,7 +356,37 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const latestCurrentTokensData = useMemo(() => {
+  const formattedLatestTokens = useMemo(() => {
+    if (investorData) {
+      // 1. get current tokens
+      const tokensData = investorData.currentTokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: investorData.currentTokensSymbols[index],
+          decimal: investorData.currentTokensDecimals[index],
+          current: investorData.currentTokensAmount[index],
+          pool: 0,
+          index,
+        }
+      })
+      // 2. get pool tokens
+      //TODO get pool tokens from tokenId
+      const poolTokens = investorData.poolTokens
+      for (let i = 0; i < poolTokens.length; i++) {
+        for (let j = 0; j < tokensData.length; j++) {
+          if (poolTokens[i].toUpperCase() === tokensData[j].token) {
+            tokensData[j].pool += investorData.poolTokensAmount[i]
+          }
+        }
+      }
+
+      return tokensData
+    } else {
+      return []
+    }
+  }, [investorData])
+
+  const currentTokensData = useMemo(() => {
     if (investorData) {
       return investorData.currentTokens.map((data, index) => {
         return {
@@ -456,7 +483,7 @@ export default function FundAccount() {
 
   const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
-  const currentTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, latestCurrentTokensData)
+  const currentTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, currentTokensData)
   const DuplicatedPoolTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, poolTokensData)
 
   const poolTokensAmountUSD: [Token, number][] = []
@@ -503,40 +530,18 @@ export default function FundAccount() {
     })
   }
 
-  const volumeChartHoverIndex = indexHover !== undefined ? indexHover : undefined
+  const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
-  const dateHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
-      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.time
-    } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].time
-    } else {
-      return undefined
-    }
-  }, [volumeChartHoverIndex, formattedVolumeUSD])
-
-  const volumeHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
-      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.current
-    } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].current
-    } else {
-      return undefined
-    }
-  }, [volumeChartHoverIndex, formattedVolumeUSD])
-
-  const poolHover = useMemo(() => {
-    if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
-      const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.pool
-    } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].pool
-    } else {
-      return undefined
-    }
-  }, [volumeChartHoverIndex, formattedVolumeUSD])
+  // const poolHover = useMemo(() => {
+  //   if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
+  //     const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
+  //     return volumeUSDData.pool
+  //   } else if (formattedVolumeUSD.length > 0) {
+  //     return formattedVolumeUSD[formattedVolumeUSD.length - 1].pool
+  //   } else {
+  //     return undefined
+  //   }
+  // }, [volumeChartHoverIndex, formattedVolumeUSD])
 
   const investAmountHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
@@ -576,12 +581,17 @@ export default function FundAccount() {
   }, [volumeChartHoverIndex, formattedVolumeUSD, investorData])
 
   const ratio = useMemo(() => {
-    return volumeHover !== undefined &&
-      poolHover !== undefined &&
-      investAmountHover !== undefined &&
-      investAmountHover > 0
-      ? Number((((volumeHover + poolHover - investAmountHover) / investAmountHover) * 100).toFixed(2))
-      : investAmountHover === 0
+    return volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].invest > 0
+      ? Number(
+          (
+            ((formattedVolumeUSD[volumeChartHoverIndex].current +
+              formattedVolumeUSD[volumeChartHoverIndex].pool -
+              formattedVolumeUSD[volumeChartHoverIndex].invest) /
+              formattedVolumeUSD[volumeChartHoverIndex].invest) *
+            100
+          ).toFixed(2)
+        )
+      : volumeChartHoverIndex && formattedVolumeUSD[volumeChartHoverIndex].invest === 0
       ? Number(0)
       : formattedVolumeUSD && formattedVolumeUSD.length > 0
       ? Number(
@@ -594,7 +604,28 @@ export default function FundAccount() {
           ).toFixed(2)
         )
       : Number(0)
-  }, [volumeHover, poolHover, investAmountHover, formattedVolumeUSD])
+  }, [volumeChartHoverIndex, formattedVolumeUSD])
+
+  // const ratio = useMemo(() => {
+  //   return volumeHover !== undefined &&
+  //     poolHover !== undefined &&
+  //     investAmountHover !== undefined &&
+  //     investAmountHover > 0
+  //     ? Number((((volumeHover + poolHover - investAmountHover) / investAmountHover) * 100).toFixed(2))
+  //     : investAmountHover === 0
+  //     ? Number(0)
+  //     : formattedVolumeUSD && formattedVolumeUSD.length > 0
+  //     ? Number(
+  //         (
+  //           ((formattedVolumeUSD[formattedVolumeUSD.length - 1].current +
+  //             formattedVolumeUSD[formattedVolumeUSD.length - 1].pool -
+  //             formattedVolumeUSD[formattedVolumeUSD.length - 1].invest) /
+  //             formattedVolumeUSD[formattedVolumeUSD.length - 1].invest) *
+  //           100
+  //         ).toFixed(2)
+  //       )
+  //     : Number(0)
+  // }, [volumeHover, poolHover, investAmountHover, formattedVolumeUSD])
 
   const menuItems1 = [
     {
@@ -756,7 +787,7 @@ export default function FundAccount() {
                     {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                <PieChart data={tokenHover ? tokenHover : latestCurrentTokensData} color={activeNetwork.primaryColor} />
+                <PieChart data={tokenHover ? tokenHover : currentTokensData} color={activeNetwork.primaryColor} />
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
@@ -782,13 +813,15 @@ export default function FundAccount() {
                 <ComposedChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
-                  setIndex={setIndexHover}
+                  setIndex={setVolumeIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(
-                            volumeHover !== undefined && poolHover !== undefined ? volumeHover + poolHover : 0
+                            volumeIndexHover !== undefined
+                              ? formattedVolumeUSD[volumeIndexHover].current + formattedVolumeUSD[volumeIndexHover].pool
+                              : 0
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
@@ -803,8 +836,8 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              volumeHover !== undefined
-                                ? volumeHover
+                              volumeIndexHover !== undefined
+                                ? formattedVolumeUSD[volumeIndexHover].current
                                 : formattedVolumeUSD && formattedVolumeUSD.length > 0
                                 ? formattedVolumeUSD[formattedVolumeUSD.length - 1].current
                                 : 0
@@ -815,8 +848,8 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#3377ff'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              poolHover !== undefined
-                                ? poolHover
+                              volumeIndexHover !== undefined
+                                ? formattedVolumeUSD[volumeIndexHover].pool
                                 : formattedVolumeUSD && formattedVolumeUSD.length > 0
                                 ? formattedVolumeUSD[formattedVolumeUSD.length - 1].pool
                                 : 0
@@ -837,9 +870,10 @@ export default function FundAccount() {
                         </ThemedText.DeprecatedMediumHeader>
                       </AutoRow>
                       <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
-                        {dateHover ? (
+                        {volumeIndexHover !== undefined ? (
                           <MonoSpace>
-                            {unixToDate(Number(dateHover))} ( {formatTime(dateHover.toString(), 8)} )
+                            {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} (
+                            {formatTime(formattedVolumeUSD[volumeIndexHover].time.toString(), 8)} )
                           </MonoSpace>
                         ) : formattedVolumeUSD && formattedVolumeUSD.length > 0 ? (
                           <MonoSpace>
@@ -853,36 +887,30 @@ export default function FundAccount() {
                 />
               ) : view === ChartView.TOKENS ? (
                 <TokenBarChart
-                  data={latestCurrentTokensData}
+                  data={formattedLatestTokens}
                   color={activeNetwork.primaryColor}
-                  setLabel={setTokenAddressHover}
-                  setSymbol={setTokenSymbolHover}
-                  setValue={setTokenVolumeHover}
-                  setAmount={setTokenAmountHover}
-                  setLiquidityValue={setLiquidityVolumeHover}
-                  setLiquidityAmount={setLiquidityAmountHover}
+                  setIndex={setTokenIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="18px">
-                          {tokenSymbolHover ? tokenSymbolHover : null}
+                          {tokenIndexHover !== undefined ? formattedLatestTokens[tokenIndexHover].symbol : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {tokenAddressHover ? (
+                        {tokenIndexHover !== undefined ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(tokenAddressHover)}</MonoSpace>
+                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
                             </Link>
                           </ThemedText.DeprecatedMain>
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {tokenAmountHover !== undefined && liquidityAmountHover !== undefined ? (
-                          <MonoSpace>{tokenAmountHover + liquidityAmountHover}</MonoSpace>
-                        ) : tokenAmountHover !== undefined && liquidityAmountHover === undefined ? (
-                          <MonoSpace>{tokenAmountHover}</MonoSpace>
-                        ) : tokenAmountHover === undefined && liquidityAmountHover !== undefined ? (
-                          <MonoSpace>{liquidityAmountHover}</MonoSpace>
+                        {tokenIndexHover !== undefined ? (
+                          <MonoSpace>
+                            {formattedLatestTokens[tokenIndexHover].current +
+                              formattedLatestTokens[tokenIndexHover].pool}
+                          </MonoSpace>
                         ) : (
                           <>
                             <br />
@@ -894,25 +922,25 @@ export default function FundAccount() {
                   topRight={
                     <AutoColumn gap="4px">
                       <AutoRow justify="end">
-                        {tokenAmountHover && tokenVolumeHover ? (
+                        {tokenIndexHover !== undefined ? (
                           <>
                             <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
-                              <MonoSpace>{formatAmount(tokenAmountHover)}</MonoSpace>
+                              <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].current)}</MonoSpace>
                             </ThemedText.DeprecatedMediumHeader>
                             <ThemedText.DeprecatedMain fontSize="20px">
-                              <MonoSpace>({formatDollarAmount(tokenVolumeHover)})</MonoSpace>
+                              <MonoSpace>(current USD)</MonoSpace>
                             </ThemedText.DeprecatedMain>
                           </>
                         ) : null}
                       </AutoRow>
                       <AutoRow justify="end">
-                        {liquidityAmountHover && liquidityVolumeHover ? (
+                        {tokenIndexHover !== undefined ? (
                           <>
                             <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
-                              <MonoSpace>{formatAmount(liquidityAmountHover)}</MonoSpace>
+                              <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].pool)}</MonoSpace>
                             </ThemedText.DeprecatedMediumHeader>
                             <ThemedText.DeprecatedMain fontSize="20px">
-                              <MonoSpace>({formatDollarAmount(liquidityVolumeHover)})</MonoSpace>
+                              <MonoSpace>(pool USD)</MonoSpace>
                             </ThemedText.DeprecatedMain>
                           </>
                         ) : null}

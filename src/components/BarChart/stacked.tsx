@@ -38,12 +38,7 @@ export type BarChartProps = {
   color?: string | undefined
   color2?: string | undefined
   minHeight?: number
-  setLabel: Dispatch<SetStateAction<string | undefined>>
-  setSymbol: Dispatch<SetStateAction<string | undefined>>
-  setValue: Dispatch<SetStateAction<number | undefined>>
-  setAmount: Dispatch<SetStateAction<number | undefined>>
-  setLiquidityValue: Dispatch<SetStateAction<number | undefined>>
-  setLiquidityAmount: Dispatch<SetStateAction<number | undefined>>
+  setIndex: Dispatch<SetStateAction<number | undefined>>
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
@@ -54,12 +49,7 @@ const Chart = ({
   data,
   color = '#56B2A4',
   color2 = '#1E90FF',
-  setLabel,
-  setSymbol,
-  setValue,
-  setAmount,
-  setLiquidityValue,
-  setLiquidityAmount,
+  setIndex,
   topLeft,
   topRight,
   bottomLeft,
@@ -71,21 +61,11 @@ const Chart = ({
 
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
-    const token = payload ? payload.payload.token : undefined
-    const symbol = payload ? payload.payload.symbol : undefined
-    const value = payload ? payload.value : undefined
-    const amount = payload ? payload.payload.amount : undefined
-    const liquidity = payload ? payload.payload.Liquidity : undefined
-    const liquidityAmount = payload ? payload.payload.liquidityAmount : undefined
+    const index = payload ? payload.payload.index : undefined
 
     useEffect(() => {
-      setLabel(token)
-      setSymbol(symbol)
-      setValue(value)
-      setAmount(amount)
-      setLiquidityValue(liquidity)
-      setLiquidityAmount(liquidityAmount)
-    }, [token, symbol, value, amount, liquidity, liquidityAmount])
+      setIndex(index)
+    }, [index])
 
     return null
   }
