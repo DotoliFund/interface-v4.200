@@ -12,14 +12,14 @@ const FUND_DATA = gql`
       createdAtTimestamp
       manager
       investorCount
-      volumeETH
-      volumeUSD
-      tokens
-      symbols
-      decimals
-      tokensAmount
-      tokensVolumeETH
-      tokensVolumeUSD
+      currentETH
+      currentUSD
+      currentTokens
+      currentTokensSymbols
+      currentTokensDecimals
+      currentTokensAmount
+      currentTokensAmountETH
+      currentTokensAmountUSD
       feeTokens
       feeSymbols
       feeTokensAmount
@@ -70,20 +70,20 @@ export function useFundData(fund: string | undefined): {
         createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),
-        volumeETH: parseFloat(data.fund.volumeETH),
-        volumeUSD: parseFloat(data.fund.volumeUSD),
-        tokens: data.fund.tokens,
-        symbols: data.fund.symbols,
-        decimals: data.fund.decimals.map((value) => {
+        currentETH: parseFloat(data.fund.currentETH),
+        currentUSD: parseFloat(data.fund.currentUSD),
+        currentTokens: data.fund.currentTokens,
+        currentTokensSymbols: data.fund.currentTokensSymbols,
+        currentTokensDecimals: data.fund.currentTokensDecimals.map((value) => {
           return parseFloat(value)
         }),
-        tokensAmount: data.fund.tokensAmount.map((value) => {
+        currentTokensAmount: data.fund.currentTokensAmount.map((value) => {
           return parseFloat(value)
         }),
-        tokensVolumeETH: data.fund.tokensVolumeETH.map((value) => {
+        currentTokensAmountETH: data.fund.currentTokensAmountETH.map((value) => {
           return parseFloat(value)
         }),
-        tokensVolumeUSD: data.fund.tokensVolumeUSD.map((value) => {
+        currentTokensAmountUSD: data.fund.currentTokensAmountUSD.map((value) => {
           return parseFloat(value)
         }),
         feeTokens: data.fund.feeTokens,

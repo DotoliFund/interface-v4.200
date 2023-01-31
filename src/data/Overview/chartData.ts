@@ -1,44 +1,44 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { DotoliFundSnapshot, DotoliFundSnapshotFields } from 'types/fund'
+import { FactorySnapshot, FactorySnapshotFields } from 'types/fund'
 
 export const FUND_CHART_DATA_BULK = () => {
   const queryString = `
-    query dotoliFundSnapshots {
-      dotoliFundSnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
+    query factorySnapshots {
+      factorySnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
         id
         timestamp
         fundCount
         investorCount
-        totalVolumeETH
-        totalVolumeUSD
+        totalCurrentETH
+        totalCurrentUSD
       }
     }
   `
   return gql(queryString)
 }
 
-interface DotoliFundSnapshotResponse {
-  dotoliFundSnapshots: DotoliFundSnapshotFields[]
+interface FactorySnapshotResponse {
+  factorySnapshots: FactorySnapshotFields[]
 }
 
 /**
- * Fetch dotoli chart data
+ * Fetch DotoliFund Factory chart data
  */
-export function useDotoliFundChartData(): {
+export function useFactoryChartData(): {
   loading: boolean
   error: boolean
-  data: DotoliFundSnapshot[]
+  data: FactorySnapshot[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<DotoliFundSnapshotResponse>(FUND_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<FactorySnapshotResponse>(FUND_CHART_DATA_BULK(), {
     client: dataClient,
   })
 
-  if (!data || (data && !data.dotoliFundSnapshots)) return { data: [], error: false, loading: false }
+  if (!data || (data && !data.factorySnapshots)) return { data: [], error: false, loading: false }
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
@@ -52,16 +52,16 @@ export function useDotoliFundChartData(): {
     }
   }
 
-  const formatted: DotoliFundSnapshot[] = data
-    ? data.dotoliFundSnapshots.map((value, index) => {
-        const dotolifundSnapshotFields = data.dotoliFundSnapshots[index]
-        const fundSnapshotData: DotoliFundSnapshot = {
-          id: dotolifundSnapshotFields.id,
-          timestamp: parseFloat(dotolifundSnapshotFields.timestamp),
-          fundCount: parseFloat(dotolifundSnapshotFields.fundCount),
-          investorCount: parseFloat(dotolifundSnapshotFields.investorCount),
-          totalVolumeETH: parseFloat(dotolifundSnapshotFields.totalVolumeETH),
-          totalVolumeUSD: parseFloat(dotolifundSnapshotFields.totalVolumeUSD),
+  const formatted: FactorySnapshot[] = data
+    ? data.factorySnapshots.map((value, index) => {
+        const factorySnapshotFields = data.factorySnapshots[index]
+        const fundSnapshotData: FactorySnapshot = {
+          id: factorySnapshotFields.id,
+          timestamp: parseFloat(factorySnapshotFields.timestamp),
+          fundCount: parseFloat(factorySnapshotFields.fundCount),
+          investorCount: parseFloat(factorySnapshotFields.investorCount),
+          totalCurrentETH: parseFloat(factorySnapshotFields.totalCurrentETH),
+          totalCurrentUSD: parseFloat(factorySnapshotFields.totalCurrentUSD),
         }
         return fundSnapshotData
       })

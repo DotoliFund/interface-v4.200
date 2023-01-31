@@ -12,22 +12,22 @@ const INVESTOR_DATA = gql`
       fund
       manager
       investor
-      principalETH
-      principalUSD
-      volumeETH
-      volumeUSD
-      liquidityVolumeETH
-      liquidityVolumeUSD
-      tokens
-      symbols
-      decimals
-      tokensAmount
-      tokensVolumeETH
-      tokensVolumeUSD
-      liquidityTokens
-      liquiditySymbols
-      liquidityDecimals
-      liquidityTokensAmount
+      investAmountETH
+      investAmountUSD
+      currentETH
+      currentUSD
+      currentTokens
+      currentTokensSymbols
+      currentTokensDecimals
+      currentTokensAmount
+      currentTokensAmountETH
+      currentTokensAmountUSD
+      poolETH
+      poolUSD
+      poolTokens
+      poolTokensSymbols
+      poolTokensDecimals
+      poolTokensAmount
       profitETH
       profitUSD
       profitRatio
@@ -86,32 +86,32 @@ export function useInvestorData(
         fund: data.investor.fund,
         manager: data.investor.manager,
         investor: data.investor.investor,
-        principalETH: parseFloat(data.investor.principalETH),
-        principalUSD: parseFloat(data.investor.principalUSD),
-        volumeETH: parseFloat(data.investor.volumeETH),
-        volumeUSD: parseFloat(data.investor.volumeUSD),
-        liquidityVolumeETH: parseFloat(data.investor.liquidityVolumeETH),
-        liquidityVolumeUSD: parseFloat(data.investor.liquidityVolumeUSD),
-        tokens: data.investor.tokens,
-        symbols: data.investor.symbols,
-        decimals: data.investor.decimals.map((value) => {
+        investAmountETH: parseFloat(data.investor.investAmountETH),
+        investAmountUSD: parseFloat(data.investor.investAmountUSD),
+        currentETH: parseFloat(data.investor.currentETH),
+        currentUSD: parseFloat(data.investor.currentUSD),
+        currentTokens: data.investor.currentTokens,
+        currentTokensSymbols: data.investor.currentTokensSymbols,
+        currentTokensDecimals: data.investor.currentTokensDecimals.map((value) => {
           return parseFloat(value)
         }),
-        tokensAmount: data.investor.tokensAmount.map((value) => {
+        currentTokensAmount: data.investor.currentTokensAmount.map((value) => {
           return parseFloat(value)
         }),
-        tokensVolumeETH: data.investor.tokensVolumeETH.map((value) => {
+        currentTokensAmountETH: data.investor.currentTokensAmountETH.map((value) => {
           return parseFloat(value)
         }),
-        tokensVolumeUSD: data.investor.tokensVolumeUSD.map((value) => {
+        currentTokensAmountUSD: data.investor.currentTokensAmountUSD.map((value) => {
           return parseFloat(value)
         }),
-        liquidityTokens: data.investor.liquidityTokens,
-        liquiditySymbols: data.investor.liquiditySymbols,
-        liquidityDecimals: data.investor.liquidityDecimals.map((value) => {
+        poolETH: parseFloat(data.investor.poolETH),
+        poolUSD: parseFloat(data.investor.poolUSD),
+        poolTokens: data.investor.poolTokens,
+        poolTokensSymbols: data.investor.poolTokensSymbols,
+        poolTokensDecimals: data.investor.poolTokensDecimals.map((value) => {
           return parseFloat(value)
         }),
-        liquidityTokensAmount: data.investor.liquidityTokensAmount.map((value) => {
+        poolTokensAmount: data.investor.poolTokensAmount.map((value) => {
           return parseFloat(value)
         }),
         profitETH: parseFloat(data.investor.profitETH),

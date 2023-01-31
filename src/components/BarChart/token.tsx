@@ -122,7 +122,7 @@ const Chart = ({
               </defs>
               <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
               <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
-              <Bar dataKey="Volume" type="monotone" stroke={color} fill="url(#gradient)" maxBarSize={80} />
+              <Bar dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" maxBarSize={80} />
             </BarChart>
           )}
         </ResponsiveContainer>

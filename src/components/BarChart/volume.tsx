@@ -113,7 +113,7 @@ const Chart = ({
                 minTickGap={10}
               />
               <Tooltip cursor={false} content={<CustomTooltip />} />
-              <Bar dataKey="Volume" type="monotone" stroke={color} fill={color} maxBarSize={80} />
+              <Bar dataKey="volume" type="monotone" stroke={color} fill={color} maxBarSize={80} />
             </BarChart>
           )}
         </ResponsiveContainer>

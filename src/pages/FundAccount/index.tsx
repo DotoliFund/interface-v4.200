@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { FeeAmount, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import BarChart from 'components/BarChart/stacked'
+import TokenBarChart from 'components/BarChart/stacked'
 import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -318,10 +318,10 @@ export default function FundAccount() {
   const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
-  // Composed chart hover
+  // Volume chart hover
   const [indexHover, setIndexHover] = useState<number | undefined>()
 
-  // Bar chart hover
+  // Token chart hover
   const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
   const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
   const [liquidityVolumeHover, setLiquidityVolumeHover] = useState<number | undefined>()
@@ -345,12 +345,12 @@ export default function FundAccount() {
       return chartData.map((data, index) => {
         return {
           time: data.timestamp,
-          Volume: data.volumeUSD,
-          Liquidity: data.liquidityVolumeUSD,
-          Principal: data.principalUSD,
-          tokens: data.tokens,
-          symbols: data.symbols,
-          tokensVolume: data.tokensVolumeUSD,
+          current: data.currentUSD,
+          pool: data.poolUSD,
+          invest: data.investAmountUSD,
+          tokens: data.currentTokens,
+          symbols: data.currentTokensSymbols,
+          tokensVolume: data.currentTokensAmountUSD,
           index,
         }
       })
@@ -359,14 +359,14 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const currentVolumeTokensData = useMemo(() => {
+  const latestCurrentTokensData = useMemo(() => {
     if (investorData) {
-      return investorData.tokens.map((data, index) => {
+      return investorData.currentTokens.map((data, index) => {
         return {
           token: data,
-          symbol: investorData.symbols[index],
-          decimal: investorData.decimals[index],
-          amount: investorData.tokensAmount[index],
+          symbol: investorData.currentTokensSymbols[index],
+          decimal: investorData.currentTokensDecimals[index],
+          amount: investorData.currentTokensAmount[index],
         }
       })
     } else {
@@ -385,13 +385,13 @@ export default function FundAccount() {
         let token1Symbol = ''
         let token0Decimals = 0
         let token1Decimals = 0
-        investorData.liquidityTokens.map((token, index) => {
+        investorData.poolTokens.map((token, index) => {
           if (token.toUpperCase() === token0.toUpperCase()) {
-            token0Symbol = investorData.liquiditySymbols[index]
-            token0Decimals = investorData.liquidityDecimals[index]
+            token0Symbol = investorData.poolTokensSymbols[index]
+            token0Decimals = investorData.poolTokensDecimals[index]
           } else if (token.toUpperCase() === token1.toUpperCase()) {
-            token1Symbol = investorData.liquiditySymbols[index]
-            token1Decimals = investorData.liquidityDecimals[index]
+            token1Symbol = investorData.poolTokensSymbols[index]
+            token1Decimals = investorData.poolTokensDecimals[index]
           }
         })
 
@@ -408,7 +408,7 @@ export default function FundAccount() {
 
   const positionPools = usePools(positionTokens)
 
-  const currentLiquidityPositions: Position[] = []
+  const poolPositions: Position[] = []
   if (openPositions && openPositions.length > 0 && positionPools && positionPools.length > 0) {
     for (let i = 0; i < openPositions.length; i++) {
       const liquidity = openPositions[i].liquidity
@@ -417,34 +417,34 @@ export default function FundAccount() {
       const pool: Pool | null = positionPools[i][1]
 
       if (pool && liquidity) {
-        currentLiquidityPositions.push(new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper }))
+        poolPositions.push(new Position({ pool, liquidity: liquidity.toString(), tickLower, tickUpper }))
       }
     }
   }
 
-  const currentLiquidityTokensData = []
-  if (currentLiquidityPositions) {
-    for (let i = 0; i < currentLiquidityPositions.length; i++) {
-      const token0 = currentLiquidityPositions[i].pool.token0.address
-      const token0Symbol = currentLiquidityPositions[i].pool.token0.symbol
-      const token0Decimal = currentLiquidityPositions[i].pool.token0.decimals
-      const token0Amount = parseFloat(currentLiquidityPositions[i].amount0.quotient.toString())
+  const poolTokensData = []
+  if (poolPositions) {
+    for (let i = 0; i < poolPositions.length; i++) {
+      const token0 = poolPositions[i].pool.token0.address
+      const token0Symbol = poolPositions[i].pool.token0.symbol
+      const token0Decimal = poolPositions[i].pool.token0.decimals
+      const token0Amount = parseFloat(poolPositions[i].amount0.quotient.toString())
       const token0AmountDecimal = Number(token0Amount / parseFloat((10 ** token0Decimal).toString()))
 
-      const token1 = currentLiquidityPositions[i].pool.token1.address
-      const token1Symbol = currentLiquidityPositions[i].pool.token1.symbol
-      const token1Decimal = currentLiquidityPositions[i].pool.token1.decimals
-      const token1Amount = Number(currentLiquidityPositions[i].amount1.quotient.toString())
+      const token1 = poolPositions[i].pool.token1.address
+      const token1Symbol = poolPositions[i].pool.token1.symbol
+      const token1Decimal = poolPositions[i].pool.token1.decimals
+      const token1Amount = Number(poolPositions[i].amount1.quotient.toString())
       const token1AmountDecimal = Number(token1Amount / parseFloat((10 ** token1Decimal).toString()))
 
       if (token0Symbol && token1Symbol) {
-        currentLiquidityTokensData.push({
+        poolTokensData.push({
           token: token0,
           symbol: token0Symbol,
           decimal: token0Decimal,
           amount: token0AmountDecimal,
         })
-        currentLiquidityTokensData.push({
+        poolTokensData.push({
           token: token1,
           symbol: token1Symbol,
           decimal: token1Decimal,
@@ -456,54 +456,49 @@ export default function FundAccount() {
 
   const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
-  const volumeTokensPriceInUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, currentVolumeTokensData)
-  const DuplicatedliquidityTokensPriceInUSD = useTokensPriceInUSD(
-    chainId,
-    weth9,
-    ethPriceInUSDC,
-    currentLiquidityTokensData
-  )
+  const currentTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, latestCurrentTokensData)
+  const DuplicatedPoolTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, poolTokensData)
 
-  const liquidityTokensPriceInUSD: [Token, number][] = []
-  if (DuplicatedliquidityTokensPriceInUSD) {
-    for (let i = 0; i < DuplicatedliquidityTokensPriceInUSD.length; i++) {
-      const token = DuplicatedliquidityTokensPriceInUSD[i][0]
-      const amount = DuplicatedliquidityTokensPriceInUSD[i][1]
+  const poolTokensAmountUSD: [Token, number][] = []
+  if (DuplicatedPoolTokensAmountUSD) {
+    for (let i = 0; i < DuplicatedPoolTokensAmountUSD.length; i++) {
+      const token = DuplicatedPoolTokensAmountUSD[i][0]
+      const amount = DuplicatedPoolTokensAmountUSD[i][1]
       let isNew = true
-      for (let j = 0; j < liquidityTokensPriceInUSD.length; j++) {
-        const _token = liquidityTokensPriceInUSD[j][0]
+      for (let j = 0; j < poolTokensAmountUSD.length; j++) {
+        const _token = poolTokensAmountUSD[j][0]
         if (token.address.toUpperCase() === _token.address.toUpperCase()) {
-          liquidityTokensPriceInUSD[j][1] += amount
+          poolTokensAmountUSD[j][1] += amount
           isNew = false
           break
         }
       }
       if (isNew) {
-        liquidityTokensPriceInUSD.push([token, amount])
+        poolTokensAmountUSD.push([token, amount])
       }
     }
   }
 
   if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
-    let totalVolumeUSD = 0
-    volumeTokensPriceInUSD.map((value, index) => {
-      const volumeUSD = value[1]
-      totalVolumeUSD += volumeUSD
+    let totalCurrentAmountUSD = 0
+    currentTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[1]
+      totalCurrentAmountUSD += tokenAmountUSD
     })
-    let totalLiquidityUSD = 0
-    liquidityTokensPriceInUSD.map((value, index) => {
-      const liquidityUSD = value[1]
-      totalLiquidityUSD += liquidityUSD
+    let totalPoolAmountUSD = 0
+    poolTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[1]
+      totalPoolAmountUSD += tokenAmountUSD
     })
 
     formattedVolumeUSD.push({
       time: Math.floor(new Date().getTime() / 1000),
-      Volume: totalVolumeUSD,
-      Principal: formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal,
+      current: totalCurrentAmountUSD,
+      pool: totalPoolAmountUSD,
+      invest: formattedVolumeUSD[formattedVolumeUSD.length - 1].invest,
       tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
       symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
       tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
-      Liquidity: totalLiquidityUSD,
       index: formattedVolumeUSD.length,
     })
   }
@@ -524,37 +519,37 @@ export default function FundAccount() {
   const volumeHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.Volume
+      return volumeUSDData.current
     } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].current
     } else {
       return undefined
     }
   }, [volumeChartHoverIndex, formattedVolumeUSD])
 
-  const liquidityHover = useMemo(() => {
+  const poolHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.Liquidity
+      return volumeUSDData.pool
     } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].pool
     } else {
       return undefined
     }
   }, [volumeChartHoverIndex, formattedVolumeUSD])
 
-  const principalHover = useMemo(() => {
+  const investAmountHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.Principal
+      return volumeUSDData.invest
     } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].invest
     } else {
       return undefined
     }
   }, [volumeChartHoverIndex, formattedVolumeUSD])
 
-  const formattedHoverTokenData = useMemo(() => {
+  const tokenHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       const tokens = volumeUSDData.tokens
@@ -562,16 +557,16 @@ export default function FundAccount() {
         return {
           token: data,
           symbol: volumeUSDData.symbols[index],
-          Volume: volumeUSDData.tokensVolume[index],
+          volume: volumeUSDData.tokensVolume[index],
         }
       })
     } else {
       if (investorData) {
-        return investorData.tokens.map((data, index) => {
+        return investorData.currentTokens.map((data, index) => {
           return {
             token: data,
-            symbol: investorData.symbols[index],
-            Volume: investorData.tokensVolumeUSD[index],
+            symbol: investorData.currentTokensSymbols[index],
+            Volume: investorData.currentTokensAmountUSD[index],
           }
         })
       } else {
@@ -582,24 +577,24 @@ export default function FundAccount() {
 
   const ratio = useMemo(() => {
     return volumeHover !== undefined &&
-      liquidityHover !== undefined &&
-      principalHover !== undefined &&
-      principalHover > 0
-      ? Number((((volumeHover + liquidityHover - principalHover) / principalHover) * 100).toFixed(2))
-      : principalHover === 0
+      poolHover !== undefined &&
+      investAmountHover !== undefined &&
+      investAmountHover > 0
+      ? Number((((volumeHover + poolHover - investAmountHover) / investAmountHover) * 100).toFixed(2))
+      : investAmountHover === 0
       ? Number(0)
       : formattedVolumeUSD && formattedVolumeUSD.length > 0
       ? Number(
           (
-            ((formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume +
-              formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity -
-              formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal) /
-              formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal) *
+            ((formattedVolumeUSD[formattedVolumeUSD.length - 1].current +
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].pool -
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].invest) /
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].invest) *
             100
           ).toFixed(2)
         )
       : Number(0)
-  }, [volumeHover, liquidityHover, principalHover, formattedVolumeUSD])
+  }, [volumeHover, poolHover, investAmountHover, formattedVolumeUSD])
 
   const menuItems1 = [
     {
@@ -761,10 +756,7 @@ export default function FundAccount() {
                     {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                <PieChart
-                  data={formattedHoverTokenData ? formattedHoverTokenData : currentVolumeTokensData}
-                  color={activeNetwork.primaryColor}
-                />
+                <PieChart data={tokenHover ? tokenHover : latestCurrentTokensData} color={activeNetwork.primaryColor} />
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
@@ -796,7 +788,7 @@ export default function FundAccount() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(
-                            volumeHover !== undefined && liquidityHover !== undefined ? volumeHover + liquidityHover : 0
+                            volumeHover !== undefined && poolHover !== undefined ? volumeHover + poolHover : 0
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
@@ -814,7 +806,7 @@ export default function FundAccount() {
                               volumeHover !== undefined
                                 ? volumeHover
                                 : formattedVolumeUSD && formattedVolumeUSD.length > 0
-                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].current
                                 : 0
                             )}
                           </MonoSpace>
@@ -823,10 +815,10 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#3377ff'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              liquidityHover !== undefined
-                                ? liquidityHover
+                              poolHover !== undefined
+                                ? poolHover
                                 : formattedVolumeUSD && formattedVolumeUSD.length > 0
-                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].Liquidity
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].pool
                                 : 0
                             )}
                           </MonoSpace>
@@ -835,10 +827,10 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#99FF99'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              principalHover !== undefined
-                                ? principalHover
+                              investAmountHover !== undefined
+                                ? investAmountHover
                                 : formattedVolumeUSD && formattedVolumeUSD.length > 0
-                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].Principal
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].invest
                                 : 0
                             )}
                           </MonoSpace>
@@ -860,8 +852,8 @@ export default function FundAccount() {
                   }
                 />
               ) : view === ChartView.TOKENS ? (
-                <BarChart
-                  data={currentVolumeTokensData}
+                <TokenBarChart
+                  data={latestCurrentTokensData}
                   color={activeNetwork.primaryColor}
                   setLabel={setTokenAddressHover}
                   setSymbol={setTokenSymbolHover}

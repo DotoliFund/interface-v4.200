@@ -6,20 +6,20 @@ import { Fund, FundFields } from 'types/fund'
 export const FUNDS_BULK = () => {
   const queryString = `
     query funds {
-      funds(orderBy: volumeUSD, orderDirection: desc, subgraphError: allow) {
+      funds(orderBy: currentUSD, orderDirection: desc, subgraphError: allow) {
         id
         address
         createdAtTimestamp
         manager
         investorCount
-        volumeETH
-        volumeUSD
-        tokens
-        symbols
-        decimals
-        tokensAmount
-        tokensVolumeETH
-        tokensVolumeUSD
+        currentETH
+        currentUSD
+        currentTokens
+        currentTokensSymbols
+        currentTokensDecimals
+        currentTokensAmount
+        currentTokensAmountETH
+        currentTokensAmountUSD
         feeTokens
         feeSymbols
         feeTokensAmount
@@ -34,7 +34,7 @@ interface FundDataResponse {
 }
 
 /**
- * Fetch top funds by volumeUSD
+ * Fetch top funds by currentUSD
  */
 export function useTopFunds(): {
   loading: boolean
@@ -68,20 +68,20 @@ export function useTopFunds(): {
           createdAtTimestamp: parseFloat(fundFields.createdAtTimestamp),
           manager: fundFields.manager,
           investorCount: parseInt(fundFields.investorCount),
-          volumeETH: parseFloat(fundFields.volumeETH),
-          volumeUSD: parseFloat(fundFields.volumeUSD),
-          tokens: fundFields.tokens,
-          symbols: fundFields.symbols,
-          decimals: fundFields.decimals.map((value) => {
+          currentETH: parseFloat(fundFields.currentETH),
+          currentUSD: parseFloat(fundFields.currentUSD),
+          currentTokens: fundFields.currentTokens,
+          currentTokensSymbols: fundFields.currentTokensSymbols,
+          currentTokensDecimals: fundFields.currentTokensDecimals.map((value) => {
             return parseFloat(value)
           }),
-          tokensAmount: fundFields.tokensAmount.map((value) => {
+          currentTokensAmount: fundFields.currentTokensAmount.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeETH: fundFields.tokensVolumeETH.map((value) => {
+          currentTokensAmountETH: fundFields.currentTokensAmountETH.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeUSD: fundFields.tokensVolumeUSD.map((value) => {
+          currentTokensAmountUSD: fundFields.currentTokensAmountUSD.map((value) => {
             return parseFloat(value)
           }),
           feeTokens: fundFields.feeTokens,

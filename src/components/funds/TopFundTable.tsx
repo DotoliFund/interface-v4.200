@@ -68,7 +68,7 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(fundData.address)}</Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(fundData.volumeUSD)}
+          {formatDollarAmount(fundData.currentUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
           {fundData.investorCount}

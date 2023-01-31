@@ -18,16 +18,16 @@ const INVESTOR_CHART = gql`
       fund
       manager
       investor
-      principalETH
-      principalUSD
-      volumeETH
-      volumeUSD
-      liquidityVolumeETH
-      liquidityVolumeUSD
-      tokens
-      symbols
-      tokensVolumeETH
-      tokensVolumeUSD
+      investAmountETH
+      investAmountUSD
+      currentETH
+      currentUSD
+      currentTokens
+      currentTokensSymbols
+      currentTokensAmountETH
+      currentTokensAmountUSD
+      poolETH
+      poolUSD
     }
   }
 `
@@ -84,20 +84,20 @@ export function useInvestorChartData(
           fund: investorSnapshotFields.fund,
           manager: investorSnapshotFields.manager,
           investor: investorSnapshotFields.investor,
-          principalETH: parseFloat(investorSnapshotFields.principalETH),
-          principalUSD: parseFloat(investorSnapshotFields.principalUSD),
-          volumeETH: parseFloat(investorSnapshotFields.volumeETH),
-          volumeUSD: parseFloat(investorSnapshotFields.volumeUSD),
-          liquidityVolumeETH: parseFloat(investorSnapshotFields.liquidityVolumeETH),
-          liquidityVolumeUSD: parseFloat(investorSnapshotFields.liquidityVolumeUSD),
-          tokens: investorSnapshotFields.tokens,
-          symbols: investorSnapshotFields.symbols,
-          tokensVolumeETH: investorSnapshotFields.tokensVolumeETH.map((value) => {
+          investAmountETH: parseFloat(investorSnapshotFields.investAmountETH),
+          investAmountUSD: parseFloat(investorSnapshotFields.investAmountUSD),
+          currentETH: parseFloat(investorSnapshotFields.currentETH),
+          currentUSD: parseFloat(investorSnapshotFields.currentUSD),
+          currentTokens: investorSnapshotFields.currentTokens,
+          currentTokensSymbols: investorSnapshotFields.currentTokensSymbols,
+          currentTokensAmountETH: investorSnapshotFields.currentTokensAmountETH.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeUSD: investorSnapshotFields.tokensVolumeUSD.map((value) => {
+          currentTokensAmountUSD: investorSnapshotFields.currentTokensAmountUSD.map((value) => {
             return parseFloat(value)
           }),
+          poolETH: parseFloat(investorSnapshotFields.poolETH),
+          poolUSD: parseFloat(investorSnapshotFields.poolUSD),
         }
         return investorSnapshotData
       })

@@ -135,8 +135,8 @@ const Chart = ({
             <XAxis dataKey="symbol" axisLine={false} tickLine={false} />
             <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
-            <Bar dataKey="Liquidity" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
+            <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
+            <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
           </BarChart>
         )}
       </ResponsiveContainer>

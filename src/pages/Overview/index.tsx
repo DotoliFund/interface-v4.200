@@ -5,7 +5,7 @@ import FundTable from 'components/funds/TopFundTable'
 import Row, { RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import TokenTable from 'components/TokensTable'
-import { useDotoliFundChartData } from 'data/Overview/chartData'
+import { useFactoryChartData } from 'data/Overview/chartData'
 import { useFactoryData } from 'data/Overview/factoryData'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -71,21 +71,21 @@ export default function Overview() {
 
   const [activeNetwork] = useActiveNetworkVersion()
 
-  const [volumeDateHover, setVolumeDateHover] = useState<string | undefined>()
-  const [volumeHover, setVolumeHover] = useState<number | undefined>()
+  const [volumeDateHover, setCurrentDateHover] = useState<string | undefined>()
+  const [volumeHover, setCurrentHover] = useState<number | undefined>()
   const [liquidityDateHover, setLiquidityDateHover] = useState<string | undefined>()
   const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
 
   const factoryData = useFactoryData()
   const fundListData = useFundListData()
   const tokenListData = useTokenListData()
-  const chartData = useDotoliFundChartData().data
-  const formattedTotalVolume = useMemo(() => {
+  const chartData = useFactoryChartData().data
+  const formattedTotalCurrent = useMemo(() => {
     if (chartData) {
       return chartData.map((day) => {
         return {
           time: day.timestamp,
-          value: day.totalVolumeUSD,
+          value: day.totalCurrentUSD,
         }
       })
     } else {
@@ -93,12 +93,12 @@ export default function Overview() {
     }
   }, [chartData])
 
-  const formattedTotalLiquidityVolume = useMemo(() => {
+  const formattedTotalLiquidityCurrent = useMemo(() => {
     if (chartData) {
       return chartData.map((day) => {
         return {
           time: day.timestamp,
-          value: day.totalVolumeUSD,
+          value: day.totalCurrentUSD,
         }
       })
     } else {
@@ -106,11 +106,11 @@ export default function Overview() {
     }
   }, [chartData])
 
-  const latestVolumeData = useMemo(() => {
+  const latestCurrentData = useMemo(() => {
     if (chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].totalVolumeUSD,
+        value: chartData[chartData.length - 1].totalCurrentUSD,
       }
     } else {
       return undefined
@@ -121,7 +121,7 @@ export default function Overview() {
     if (chartData && chartData.length > 0) {
       return {
         time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].totalVolumeUSD,
+        value: chartData[chartData.length - 1].totalCurrentUSD,
       }
     } else {
       return undefined
@@ -138,17 +138,17 @@ export default function Overview() {
         <ResponsiveRow>
           <ChartWrapper>
             <AreaChart
-              data={formattedTotalVolume}
+              data={formattedTotalCurrent}
               color={activeNetwork.primaryColor}
-              setLabel={setVolumeDateHover}
-              setValue={setVolumeHover}
+              setLabel={setCurrentDateHover}
+              setValue={setCurrentHover}
               topLeft={
                 <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">Volume</ThemedText.MediumHeader>
+                  <ThemedText.MediumHeader fontSize="16px">Current</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
                       {formatDollarAmount(
-                        volumeHover !== undefined ? volumeHover : latestVolumeData ? latestVolumeData.value : 0
+                        volumeHover !== undefined ? volumeHover : latestCurrentData ? latestCurrentData.value : 0
                       )}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
@@ -161,9 +161,9 @@ export default function Overview() {
                       <MonoSpace>
                         {unixToDate(Number(volumeDateHover))} ( {formatTime(volumeDateHover.toString(), 8)} )
                       </MonoSpace>
-                    ) : latestVolumeData ? (
+                    ) : latestCurrentData ? (
                       <MonoSpace>
-                        {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)} )
+                        {unixToDate(latestCurrentData.time)} ( {formatTime(latestCurrentData.time.toString(), 8)} )
                       </MonoSpace>
                     ) : null}
                   </ThemedText.DeprecatedMain>
@@ -175,7 +175,7 @@ export default function Overview() {
           </ChartWrapper>
           <ChartWrapper>
             <AreaChart
-              data={formattedTotalLiquidityVolume}
+              data={formattedTotalLiquidityCurrent}
               color={activeNetwork.primaryColor}
               setLabel={setLiquidityDateHover}
               setValue={setLiquidityHover}
@@ -202,9 +202,9 @@ export default function Overview() {
                       <MonoSpace>
                         {unixToDate(Number(liquidityDateHover))} ( {formatTime(liquidityDateHover.toString(), 8)} )
                       </MonoSpace>
-                    ) : latestVolumeData ? (
+                    ) : latestCurrentData ? (
                       <MonoSpace>
-                        {unixToDate(latestVolumeData.time)} ( {formatTime(latestVolumeData.time.toString(), 8)} )
+                        {unixToDate(latestCurrentData.time)} ( {formatTime(latestCurrentData.time.toString(), 8)} )
                       </MonoSpace>
                     ) : null}
                   </ThemedText.DeprecatedMain>

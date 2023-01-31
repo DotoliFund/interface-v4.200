@@ -2,9 +2,9 @@ import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import BarChart from 'components/BarChart'
 import FeeBarChart from 'components/BarChart/fee'
-import BarChartVolume from 'components/BarChart/volume'
+import TokenBarChart from 'components/BarChart/token'
+import VolumeBarChart from 'components/BarChart/volume'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -159,10 +159,10 @@ export default function FundPage() {
   // volume chart hover
   const [indexHover, setIndexHover] = useState<number | undefined>()
   // token chart hover
-  const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
-  const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
   const [tokenAddressHover, setTokenAddressHover] = useState<string | undefined>()
+  const [tokenSymbolHover, setTokenSymbolHover] = useState<string | undefined>()
   const [tokenAmountHover, setTokenAmountHover] = useState<number | undefined>()
+  const [tokenVolumeHover, setTokenVolumeHover] = useState<number | undefined>()
   const [feeTokenAmountHover, setFeeTokenAmountHover] = useState<number | undefined>()
 
   const formattedVolumeUSD = useMemo(() => {
@@ -170,10 +170,10 @@ export default function FundPage() {
       return chartData.map((data, index) => {
         return {
           time: data.timestamp,
-          Volume: data.volumeUSD,
-          tokens: data.tokens,
-          symbols: data.symbols,
-          tokensVolume: data.tokensVolumeUSD,
+          volume: data.currentUSD,
+          tokens: data.currentTokens,
+          symbols: data.currentTokensSymbols,
+          tokensVolume: data.currentTokensAmountUSD,
           index,
         }
       })
@@ -184,13 +184,13 @@ export default function FundPage() {
 
   const formattedLatestTokensData = useMemo(() => {
     if (fundData) {
-      const fundTokenData = fundData.tokens.map((data, index) => {
+      const fundTokenData = fundData.currentTokens.map((data, index) => {
         return {
           token: data,
-          symbol: fundData.symbols[index],
-          decimal: fundData.decimals[index],
-          amount: fundData.tokensAmount[index],
-          Volume: fundData.tokensVolumeUSD[index],
+          symbol: fundData.currentTokensSymbols[index],
+          decimal: fundData.currentTokensDecimals[index],
+          amount: fundData.currentTokensAmount[index],
+          volume: fundData.currentTokensAmountUSD[index],
         }
       })
       return fundTokenData
@@ -216,48 +216,47 @@ export default function FundPage() {
   const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
 
-  const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
-  const volumeTokensAmount: [Token, number][] = []
+  const currentTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
+  const currentTokensAmount: [Token, number][] = []
   if (formattedLatestTokensData) {
     formattedLatestTokensData.map((data, index) => {
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
-      volumeTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
+      currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
+      currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
+      currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
+      currentTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
     })
   }
 
-  const volumeTokensPriceInETH = useTokensPriceInETH(chainId, volumeTokenPools)
-  const volumeTokensPriceInUSD: [Token, number][] = []
-  if (ethPriceInUSDC && volumeTokensPriceInETH && weth9 !== undefined) {
-    volumeTokensAmount.map((data, index) => {
+  const currentTokensPriceInETH = useTokensPriceInETH(chainId, currentTokenPools)
+  const currentTokensAmountUSD: [Token, number][] = []
+  if (ethPriceInUSDC && currentTokensPriceInETH && weth9 !== undefined) {
+    currentTokensAmount.map((data, index) => {
       const token = data[0].address
       const tokenAmount = data[1]
 
       if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
+        currentTokensAmountUSD.push([weth9, tokenAmount * ethPriceInUSDC])
       } else {
-        volumeTokensPriceInETH.map((data2: any, index2: any) => {
+        currentTokensPriceInETH.map((data2: any, index2: any) => {
           const token2 = data2[0].address
           const priceInETH = data2[1]
           if (token.toUpperCase() === token2.toUpperCase()) {
-            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
+            currentTokensAmountUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
           }
         })
       }
     })
   }
 
-  // update formattedVolumeUSD -> Volume, Liquidity
   if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
-    let totalVolumeUSD = 0
-    volumeTokensPriceInUSD.map((value, index) => {
-      const volumeUSD = value[1]
-      totalVolumeUSD += volumeUSD
+    let totalCurrentAmountUSD = 0
+    currentTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[1]
+      totalCurrentAmountUSD += tokenAmountUSD
     })
     formattedVolumeUSD.push({
       time: Math.floor(new Date().getTime() / 1000),
-      Volume: totalVolumeUSD,
+      volume: totalCurrentAmountUSD,
       tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
       symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
       tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
@@ -281,9 +280,9 @@ export default function FundPage() {
   const volumeHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.Volume
+      return volumeUSDData.volume
     } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].Volume
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].volume
     } else {
       return undefined
     }
@@ -297,7 +296,7 @@ export default function FundPage() {
         return {
           token: data,
           symbol: volumeUSDData.symbols[index],
-          Volume: volumeUSDData.tokensVolume[index],
+          volume: volumeUSDData.tokensVolume[index],
         }
       })
     } else {
@@ -471,7 +470,7 @@ export default function FundPage() {
                 </ToggleWrapper>
               </ToggleRow>
               {view === ChartView.VOL_USD ? (
-                <BarChartVolume
+                <VolumeBarChart
                   data={formattedVolumeUSD}
                   color={activeNetwork.primaryColor}
                   setIndex={setIndexHover}
@@ -495,7 +494,7 @@ export default function FundPage() {
                   }
                 />
               ) : view === ChartView.TOKENS ? (
-                <BarChart
+                <TokenBarChart
                   data={formattedLatestTokensData}
                   color={activeNetwork.primaryColor}
                   setLabel={setTokenAddressHover}

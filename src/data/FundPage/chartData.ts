@@ -12,13 +12,13 @@ const FUND_CHART = gql`
       fund
       manager
       investorCount
-      volumeETH
-      volumeUSD
-      tokens
-      symbols
-      decimals
-      tokensVolumeETH
-      tokensVolumeUSD
+      currentETH
+      currentUSD
+      currentTokens
+      currentTokensSymbols
+      currentTokensDecimals
+      currentTokensAmountETH
+      currentTokensAmountUSD
     }
   }
 `
@@ -69,17 +69,17 @@ export function useFundChartData(fund: string | undefined): {
           fund: fundSnapshotFields.fund,
           manager: fundSnapshotFields.manager,
           investorCount: parseFloat(fundSnapshotFields.investorCount),
-          volumeETH: parseFloat(fundSnapshotFields.volumeETH),
-          volumeUSD: parseFloat(fundSnapshotFields.volumeUSD),
-          tokens: fundSnapshotFields.tokens,
-          symbols: fundSnapshotFields.symbols,
-          decimals: fundSnapshotFields.decimals.map((value) => {
+          currentETH: parseFloat(fundSnapshotFields.currentETH),
+          currentUSD: parseFloat(fundSnapshotFields.currentUSD),
+          currentTokens: fundSnapshotFields.currentTokens,
+          currentTokensSymbols: fundSnapshotFields.currentTokensSymbols,
+          currentTokensDecimals: fundSnapshotFields.currentTokensDecimals.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeETH: fundSnapshotFields.tokensVolumeETH.map((value) => {
+          currentTokensAmountETH: fundSnapshotFields.currentTokensAmountETH.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeUSD: fundSnapshotFields.tokensVolumeUSD.map((value) => {
+          currentTokensAmountUSD: fundSnapshotFields.currentTokensAmountUSD.map((value) => {
             return parseFloat(value)
           }),
         }

@@ -187,7 +187,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <ExtentsText>
                 <Trans>TVL : </Trans>
               </ExtentsText>
-              {formatDollarAmount(fundData.volumeUSD)}
+              {formatDollarAmount(fundData.currentUSD)}
             </RangeText>
             <RangeText>
               <ExtentsText>

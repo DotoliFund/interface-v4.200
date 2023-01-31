@@ -110,9 +110,9 @@ const Chart = ({
             />
             <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="Volume" stackId="a" stroke={color} fill={color} maxBarSize={80} />
-            <Bar dataKey="Liquidity" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
-            <Line dataKey="Principal" type="monotone" stroke={color3} />
+            <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
+            <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
+            <Line dataKey="invest" type="monotone" stroke={color3} />
           </ComposedChart>
         </ResponsiveContainer>
       )}

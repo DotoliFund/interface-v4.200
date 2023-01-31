@@ -15,38 +15,38 @@ export function useTokensPriceInUSD(
   ethPriceInUSDC: number | undefined,
   tokensData: TokensData[] | undefined
 ): [Token, number][] {
-  // get current volume token's price
-  const volumeTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
-  const volumeTokensAmount: [Token, number][] = []
+  // get token's price
+  const tokensPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
+  const tokensAmount: [Token, number][] = []
 
   if (tokensData) {
     tokensData.map((data, index) => {
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
-      volumeTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
-      volumeTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
+      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
+      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
+      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
+      tokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
     })
   }
 
-  const volumeTokensPriceInETH = useTokensPriceInETH(chainId, volumeTokenPools)
-  const volumeTokensPriceInUSD: [Token, number][] = []
-  if (ethPriceInUSDC && volumeTokensPriceInETH && weth9 !== undefined) {
-    volumeTokensAmount.map((data, index) => {
+  const tokensPriceInETH = useTokensPriceInETH(chainId, tokensPools)
+  const tokensPriceInUSD: [Token, number][] = []
+  if (ethPriceInUSDC && tokensPriceInETH && weth9 !== undefined) {
+    tokensAmount.map((data, index) => {
       const token = data[0].address
       const tokenAmount = data[1]
 
       if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        volumeTokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
+        tokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
       } else {
-        volumeTokensPriceInETH.map((data2: any, index2: any) => {
+        tokensPriceInETH.map((data2: any, index2: any) => {
           const token2 = data2[0].address
           const priceInETH = data2[1]
           if (token.toUpperCase() === token2.toUpperCase()) {
-            volumeTokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
+            tokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
           }
         })
       }
     })
   }
-  return volumeTokensPriceInUSD
+  return tokensPriceInUSD
 }

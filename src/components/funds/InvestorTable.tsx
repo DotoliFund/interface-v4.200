@@ -72,13 +72,13 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(investor.investor)}</Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.volumeUSD))}
+          {formatDollarAmount(Number(investor.currentUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.liquidityVolumeUSD))}
+          {formatDollarAmount(Number(investor.poolUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.principalUSD))}
+          {formatDollarAmount(Number(investor.investAmountUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
           <Percent value={investor.profitRatio} wrap={false} />

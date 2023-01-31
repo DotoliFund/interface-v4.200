@@ -6,28 +6,34 @@ import { Investor, InvestorFields } from 'types/fund'
 
 const FUND_INVESTORS = gql`
   query investors($fund: Bytes!) {
-    investors(first: 100, orderBy: principalUSD, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+    investors(
+      first: 100
+      orderBy: investAmountUSD
+      orderDirection: desc
+      where: { fund: $fund }
+      subgraphError: allow
+    ) {
       id
       createdAtTimestamp
       fund
       manager
       investor
-      principalETH
-      principalUSD
-      volumeETH
-      volumeUSD
-      liquidityVolumeETH
-      liquidityVolumeUSD
-      tokens
-      symbols
-      decimals
-      tokensAmount
-      tokensVolumeETH
-      tokensVolumeUSD
-      liquidityTokens
-      liquiditySymbols
-      liquidityDecimals
-      liquidityTokensAmount
+      investAmountETH
+      investAmountUSD
+      currentETH
+      currentUSD
+      currentTokens
+      currentTokensSymbols
+      currentTokensDecimals
+      currentTokensAmount
+      currentTokensAmountETH
+      currentTokensAmountUSD
+      poolETH
+      poolUSD
+      poolTokens
+      poolTokensSymbols
+      poolTokensDecimals
+      poolTokensAmount
       profitETH
       profitUSD
       profitRatio
@@ -79,32 +85,32 @@ export function useFundInvestors(fund: string | undefined): {
           fund: investorDataFields.fund,
           manager: investorDataFields.manager,
           investor: investorDataFields.investor,
-          principalETH: parseFloat(investorDataFields.principalETH),
-          principalUSD: parseFloat(investorDataFields.principalUSD),
-          volumeETH: parseFloat(investorDataFields.volumeETH),
-          volumeUSD: parseFloat(investorDataFields.volumeUSD),
-          liquidityVolumeETH: parseFloat(investorDataFields.liquidityVolumeETH),
-          liquidityVolumeUSD: parseFloat(investorDataFields.liquidityVolumeUSD),
-          tokens: investorDataFields.tokens,
-          symbols: investorDataFields.symbols,
-          decimals: investorDataFields.decimals.map((value) => {
+          investAmountETH: parseFloat(investorDataFields.investAmountETH),
+          investAmountUSD: parseFloat(investorDataFields.investAmountUSD),
+          currentETH: parseFloat(investorDataFields.currentETH),
+          currentUSD: parseFloat(investorDataFields.currentUSD),
+          currentTokens: investorDataFields.currentTokens,
+          currentTokensSymbols: investorDataFields.currentTokensSymbols,
+          currentTokensDecimals: investorDataFields.currentTokensDecimals.map((value) => {
             return parseFloat(value)
           }),
-          tokensAmount: investorDataFields.tokensAmount.map((value) => {
+          currentTokensAmount: investorDataFields.currentTokensAmount.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeETH: investorDataFields.tokensVolumeETH.map((value) => {
+          currentTokensAmountETH: investorDataFields.currentTokensAmountETH.map((value) => {
             return parseFloat(value)
           }),
-          tokensVolumeUSD: investorDataFields.tokensVolumeUSD.map((value) => {
+          currentTokensAmountUSD: investorDataFields.currentTokensAmountUSD.map((value) => {
             return parseFloat(value)
           }),
-          liquidityTokens: investorDataFields.liquidityTokens,
-          liquiditySymbols: investorDataFields.liquiditySymbols,
-          liquidityDecimals: investorDataFields.liquidityDecimals.map((value) => {
+          poolETH: parseFloat(investorDataFields.poolETH),
+          poolUSD: parseFloat(investorDataFields.poolUSD),
+          poolTokens: investorDataFields.poolTokens,
+          poolTokensSymbols: investorDataFields.poolTokensSymbols,
+          poolTokensDecimals: investorDataFields.poolTokensDecimals.map((value) => {
             return parseFloat(value)
           }),
-          liquidityTokensAmount: investorDataFields.liquidityTokensAmount.map((value) => {
+          poolTokensAmount: investorDataFields.poolTokensAmount.map((value) => {
             return parseFloat(value)
           }),
           profitETH: parseFloat(investorDataFields.profitETH),

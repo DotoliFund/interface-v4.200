@@ -89,7 +89,7 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
                 label={<RenderCustomizedLabel />}
                 outerRadius={130}
                 fill="#8884d8"
-                dataKey="Volume"
+                dataKey="volume"
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
