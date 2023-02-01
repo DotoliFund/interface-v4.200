@@ -22,6 +22,7 @@ const INVESTOR_DATA = gql`
       currentTokensAmount
       currentTokensAmountETH
       currentTokensAmountUSD
+      tokenIds
       poolETH
       poolUSD
       poolTokens
@@ -102,6 +103,9 @@ export function useInvestorData(
           return parseFloat(value)
         }),
         currentTokensAmountUSD: data.investor.currentTokensAmountUSD.map((value) => {
+          return parseFloat(value)
+        }),
+        tokenIds: data.investor.tokenIds.map((value) => {
           return parseFloat(value)
         }),
         poolETH: parseFloat(data.investor.poolETH),

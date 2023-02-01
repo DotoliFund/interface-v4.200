@@ -28,6 +28,7 @@ const FUND_INVESTORS = gql`
       currentTokensAmount
       currentTokensAmountETH
       currentTokensAmountUSD
+      tokenIds
       poolETH
       poolUSD
       poolTokens
@@ -101,6 +102,9 @@ export function useFundInvestors(fund: string | undefined): {
             return parseFloat(value)
           }),
           currentTokensAmountUSD: investorDataFields.currentTokensAmountUSD.map((value) => {
+            return parseFloat(value)
+          }),
+          tokenIds: investorDataFields.tokenIds.map((value) => {
             return parseFloat(value)
           }),
           poolETH: parseFloat(investorDataFields.poolETH),

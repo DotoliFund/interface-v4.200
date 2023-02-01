@@ -345,9 +345,9 @@ export default function FundAccount() {
           current: data.currentUSD,
           pool: data.poolUSD,
           invest: data.investAmountUSD,
-          tokens: data.currentTokens,
-          symbols: data.currentTokensSymbols,
-          tokensVolume: data.currentTokensAmountUSD,
+          tokens: data.tokens,
+          symbols: data.tokensSymbols,
+          tokensVolume: data.tokensAmountUSD,
           index,
         }
       })
@@ -371,6 +371,12 @@ export default function FundAccount() {
       })
       // 2. get pool tokens
       //TODO get pool tokens from tokenId
+      const tokenIds = investorData.tokenIds
+      for (let i = 0; i < tokenIds.length; i++) {
+        const tokenId = tokenIds[i]
+        tokenId
+      }
+
       const poolTokens = investorData.poolTokens
       for (let i = 0; i < poolTokens.length; i++) {
         for (let j = 0; j < tokensData.length; j++) {
@@ -558,7 +564,7 @@ export default function FundAccount() {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
       const tokens = volumeUSDData.tokens
-      return tokens.map((data, index) => {
+      return tokens.map((data: any, index: any) => {
         return {
           token: data,
           symbol: volumeUSDData.symbols[index],

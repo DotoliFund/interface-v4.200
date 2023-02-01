@@ -108,6 +108,7 @@ export interface Investor {
   currentTokensAmount: number[]
   currentTokensAmountETH: number[]
   currentTokensAmountUSD: number[]
+  tokenIds: number[]
   poolETH: number
   poolUSD: number
   poolTokens: string[]
@@ -135,6 +136,7 @@ export interface InvestorFields {
   currentTokensAmount: string[]
   currentTokensAmountETH: string[]
   currentTokensAmountUSD: string[]
+  tokenIds: string[]
   poolETH: string
   poolUSD: string
   poolTokens: string[]
@@ -184,12 +186,14 @@ export interface InvestorSnapshot {
   investor: string
   investAmountETH: number
   investAmountUSD: number
+  tokens: string[]
+  tokensSymbols: string[]
+  tokensDecimals: number[]
+  tokensAmountETH: number[]
+  tokensAmountUSD: number[]
   currentETH: number
   currentUSD: number
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensAmountETH: number[]
-  currentTokensAmountUSD: number[]
+  tokenIds: number[]
   poolETH: number
   poolUSD: number
 }
@@ -202,12 +206,14 @@ export interface InvestorSnapshotFields {
   investor: string
   investAmountETH: string
   investAmountUSD: string
+  tokens: string[]
+  tokensSymbols: string[]
+  tokensDecimals: string[]
+  tokensAmountETH: string[]
+  tokensAmountUSD: string[]
   currentETH: string
   currentUSD: string
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensAmountETH: string[]
-  currentTokensAmountUSD: string[]
+  tokenIds: string[]
   poolETH: string
   poolUSD: string
 }

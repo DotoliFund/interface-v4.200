@@ -20,12 +20,14 @@ const INVESTOR_CHART = gql`
       investor
       investAmountETH
       investAmountUSD
+      tokens
+      tokensSymbols
+      tokensDecimals
+      tokensAmountETH
+      tokensAmountUSD
       currentETH
       currentUSD
-      currentTokens
-      currentTokensSymbols
-      currentTokensAmountETH
-      currentTokensAmountUSD
+      tokenIds
       poolETH
       poolUSD
     }
@@ -86,14 +88,20 @@ export function useInvestorChartData(
           investor: investorSnapshotFields.investor,
           investAmountETH: parseFloat(investorSnapshotFields.investAmountETH),
           investAmountUSD: parseFloat(investorSnapshotFields.investAmountUSD),
-          currentETH: parseFloat(investorSnapshotFields.currentETH),
-          currentUSD: parseFloat(investorSnapshotFields.currentUSD),
-          currentTokens: investorSnapshotFields.currentTokens,
-          currentTokensSymbols: investorSnapshotFields.currentTokensSymbols,
-          currentTokensAmountETH: investorSnapshotFields.currentTokensAmountETH.map((value) => {
+          tokens: investorSnapshotFields.tokens,
+          tokensSymbols: investorSnapshotFields.tokensSymbols,
+          tokensDecimals: investorSnapshotFields.tokensDecimals.map((value) => {
             return parseFloat(value)
           }),
-          currentTokensAmountUSD: investorSnapshotFields.currentTokensAmountUSD.map((value) => {
+          tokensAmountETH: investorSnapshotFields.tokensAmountETH.map((value) => {
+            return parseFloat(value)
+          }),
+          tokensAmountUSD: investorSnapshotFields.tokensAmountUSD.map((value) => {
+            return parseFloat(value)
+          }),
+          currentETH: parseFloat(investorSnapshotFields.currentETH),
+          currentUSD: parseFloat(investorSnapshotFields.currentUSD),
+          tokenIds: investorSnapshotFields.tokenIds.map((value) => {
             return parseFloat(value)
           }),
           poolETH: parseFloat(investorSnapshotFields.poolETH),
