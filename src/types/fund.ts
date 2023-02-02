@@ -109,12 +109,6 @@ export interface Investor {
   currentTokensAmountETH: number[]
   currentTokensAmountUSD: number[]
   tokenIds: number[]
-  poolETH: number
-  poolUSD: number
-  poolTokens: string[]
-  poolTokensSymbols: string[]
-  poolTokensDecimals: number[]
-  poolTokensAmount: number[]
   profitETH: number
   profitUSD: number
   profitRatio: number
@@ -137,12 +131,6 @@ export interface InvestorFields {
   currentTokensAmountETH: string[]
   currentTokensAmountUSD: string[]
   tokenIds: string[]
-  poolETH: string
-  poolUSD: string
-  poolTokens: string[]
-  poolTokensSymbols: string[]
-  poolTokensDecimals: string[]
-  poolTokensAmount: string[]
   profitETH: string
   profitUSD: string
   profitRatio: string
@@ -196,6 +184,9 @@ export interface InvestorSnapshot {
   tokenIds: number[]
   poolETH: number
   poolUSD: number
+  profitETH: number
+  profitUSD: number
+  profitRatio: number
 }
 
 export interface InvestorSnapshotFields {
@@ -216,4 +207,7 @@ export interface InvestorSnapshotFields {
   tokenIds: string[]
   poolETH: string
   poolUSD: string
+  profitETH: string
+  profitUSD: string
+  profitRatio: string
 }

@@ -1,5 +1,7 @@
+import { Interface } from '@ethersproject/abi'
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
+import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata.sol/IERC20Metadata.json'
 import { FeeAmount, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import TokenBarChart from 'components/BarChart/stacked'
@@ -29,6 +31,7 @@ import { useETHPriceInUSD, usePools } from 'hooks/usePools'
 import { useTokensPriceInUSD } from 'hooks/useTokensPriceInUSD'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -37,6 +40,7 @@ import { useUserHideClosedPositions } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { PositionDetails } from 'types/position'
+import { IERC20MetadataInterface } from 'types/v3/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata'
 import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { formatTime } from 'utils/date'
@@ -184,17 +188,19 @@ const MainContentWrapper = styled.main`
   flex-direction: column;
 `
 
+enum ChartView {
+  VOL_USD,
+  TOKENS,
+}
+
+const ERC20_METADATA_INTERFACE = new Interface(IERC20Metadata.abi) as IERC20MetadataInterface
+
 function PositionsLoadingPlaceholder() {
   return (
     <LoadingRows>
       <div style={{ height: '250px' }} />
     </LoadingRows>
   )
-}
-
-enum ChartView {
-  VOL_USD,
-  TOKENS,
 }
 
 export default function FundAccount() {
@@ -356,7 +362,75 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const formattedLatestTokens = useMemo(() => {
+  // 2. get pool tokens
+  //TODO get pool tokens from tokenId
+
+  // const liquidityOracle = useLiquidityOracleContract(LIQUIDITY_ORACLE_ADDRESSES)
+  // const tokenIds = investorData?.tokenIds
+  // const inputs = useMemo(() => (tokenIds ? tokenIds.map((tokenId) => [BigNumber.from(tokenId)]) : []), [tokenIds])
+  // const callStates = useSingleContractMultipleData(liquidityOracle, 'getPositionTokenAmount', inputs)
+
+  // const poolTokens: string[] = []
+  // const poolTokensSymbols: string[] = []
+  // const poolTokensDecimals: number[] = []
+  // const poolTokensAmount: number[] = []
+  // const poolTokensAmountETH: number[] = []
+  // const poolTokensAmountUSD: number[] = []
+
+  // callStates.map((data, index) => {
+  //   const result = data.result
+  //   if (result) {
+  //     const token0 = result[0]
+  //     const token1 = result[1]
+  //     const symbol0 = result[4]
+  //     const symbol1 = result[5]
+  //     const decimals0 = Number(BigNumber.from(result[6]).toString())
+  //     const decimals1 = Number(BigNumber.from(result[7]).toString())
+  //     const amount0 = Number(BigNumber.from(result[2]).toString())
+  //     const amount1 = Number(BigNumber.from(result[3]).toString())
+
+  //     const token0Index = poolTokens.indexOf(token0)
+  //     const token1Index = poolTokens.indexOf(token1)
+  //     //token0
+  //     if (poolTokens.indexOf(token0Index.toString()) > -1) {
+  //       poolTokensAmount[token0Index] += amount0
+  //       poolTokensAmountETH[token0Index] += amount0
+  //       poolTokensAmountUSD[token0Index] += amount0
+  //     } else {
+  //       poolTokens.push(token0)
+  //       poolTokensSymbols.push(symbol0)
+  //       poolTokensDecimals.push(decimals0)
+  //       poolTokensAmount.push(amount0)
+  //     }
+  //     //token1
+  //     if (poolTokens.indexOf(token1Index.toString()) > -1) {
+  //       poolTokensAmount[token1Index] += amount1
+  //     } else {
+  //       poolTokens.push(token1)
+  //       poolTokensSymbols.push(symbol1)
+  //       poolTokensDecimals.push(decimals1)
+  //       poolTokensAmount.push(amount1)
+  //     }
+  //   }
+  // })
+
+  // const poolTokensSymbolInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'symbol')
+  // poolTokensSymbolInfo.map((data, index) => {
+  //   const symbol = data.result
+  //   if (symbol) {
+  //     poolTokensSymbols.push(symbol.toString())
+  //   }
+  // })
+
+  // const poolTokensDecimalsInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'decimals')
+  // poolTokensDecimalsInfo.map((data, index) => {
+  //   const decimal = data.result
+  //   if (decimal) {
+  //     poolTokensDecimals.push(Number(decimal))
+  //   }
+  // })
+
+  const latestCurrentTokens = useMemo(() => {
     if (investorData) {
       // 1. get current tokens
       const tokensData = investorData.currentTokens.map((data, index) => {
@@ -369,23 +443,6 @@ export default function FundAccount() {
           index,
         }
       })
-      // 2. get pool tokens
-      //TODO get pool tokens from tokenId
-      const tokenIds = investorData.tokenIds
-      for (let i = 0; i < tokenIds.length; i++) {
-        const tokenId = tokenIds[i]
-        tokenId
-      }
-
-      const poolTokens = investorData.poolTokens
-      for (let i = 0; i < poolTokens.length; i++) {
-        for (let j = 0; j < tokensData.length; j++) {
-          if (poolTokens[i].toUpperCase() === tokensData[j].token) {
-            tokensData[j].pool += investorData.poolTokensAmount[i]
-          }
-        }
-      }
-
       return tokensData
     } else {
       return []
@@ -407,24 +464,86 @@ export default function FundAccount() {
     }
   }, [investorData])
 
+  const poolTokens = useMemo(() => {
+    if (chainId && openPositions && openPositions.length > 0) {
+      const tokens: string[] = []
+      for (let i = 0; i < openPositions.length; i++) {
+        const token0 = openPositions[i].token0
+        const token1 = openPositions[i].token1
+
+        if (!tokens.includes(token0)) {
+          tokens.push(token0)
+        }
+        if (!tokens.includes(token1)) {
+          tokens.push(token1)
+        }
+      }
+      return tokens
+    } else {
+      return []
+    }
+  }, [chainId, openPositions])
+
+  if (chainId && openPositions && openPositions.length > 0 && investorData) {
+    for (let i = 0; i < openPositions.length; i++) {
+      const token0 = openPositions[i].token0
+      const token1 = openPositions[i].token1
+
+      if (!poolTokens.includes(token0)) {
+        poolTokens.push(token0)
+      }
+      if (!poolTokens.includes(token1)) {
+        poolTokens.push(token1)
+      }
+    }
+  }
+
+  const poolTokensSymbolInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'symbol')
+  const poolTokensSymbols = useMemo(() => {
+    const symbols: string[] = []
+    for (let i = 0; i < poolTokensSymbolInfo.length; i++) {
+      const symbol = poolTokensSymbolInfo[i].result
+      if (symbol) {
+        symbols.push(symbol.toString())
+      } else {
+        symbols.push('Unknown')
+      }
+    }
+    return symbols
+  }, [poolTokensSymbolInfo])
+
+  const poolTokensDecimalsInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'decimals')
+  const poolTokensDecimals = useMemo(() => {
+    const decimals: number[] = []
+    for (let i = 0; i < poolTokensDecimalsInfo.length; i++) {
+      const decimal = poolTokensDecimalsInfo[i].result
+      if (decimal) {
+        decimals.push(Number(decimal))
+      } else {
+        decimals.push(18)
+      }
+    }
+    return decimals
+  }, [poolTokensDecimalsInfo])
+
   const positionTokens: [Token | undefined, Token | undefined, FeeAmount | undefined][] = useMemo(() => {
     if (chainId && openPositions && openPositions.length > 0 && investorData) {
       return openPositions.map((data, index) => {
-        const token0 = data.token0
-        const token1 = data.token1
+        const token0: string = data.token0
+        const token1: string = data.token1
         const fee = data.fee
 
         let token0Symbol = ''
         let token1Symbol = ''
         let token0Decimals = 0
         let token1Decimals = 0
-        investorData.poolTokens.map((token, index) => {
+        poolTokens.map((token, index) => {
           if (token.toUpperCase() === token0.toUpperCase()) {
-            token0Symbol = investorData.poolTokensSymbols[index]
-            token0Decimals = investorData.poolTokensDecimals[index]
+            token0Symbol = poolTokensSymbols[index]
+            token0Decimals = poolTokensDecimals[index]
           } else if (token.toUpperCase() === token1.toUpperCase()) {
-            token1Symbol = investorData.poolTokensSymbols[index]
-            token1Decimals = investorData.poolTokensDecimals[index]
+            token1Symbol = poolTokensSymbols[index]
+            token1Decimals = poolTokensDecimals[index]
           }
         })
 
@@ -437,7 +556,7 @@ export default function FundAccount() {
     } else {
       return []
     }
-  }, [chainId, openPositions, investorData])
+  }, [chainId, investorData, openPositions, poolTokens, poolTokensSymbols, poolTokensDecimals])
 
   const positionPools = usePools(positionTokens)
 
@@ -536,18 +655,52 @@ export default function FundAccount() {
     })
   }
 
-  const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
+  const formattedLatestTokens = useMemo(() => {
+    if (investorData) {
+      // 1. get current tokens
+      const tokensData = investorData.currentTokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: investorData.currentTokensSymbols[index],
+          decimal: investorData.currentTokensDecimals[index],
+          current: investorData.currentTokensAmount[index],
+          pool: 0,
+          index,
+        }
+      })
 
-  // const poolHover = useMemo(() => {
-  //   if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
-  //     const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-  //     return volumeUSDData.pool
-  //   } else if (formattedVolumeUSD.length > 0) {
-  //     return formattedVolumeUSD[formattedVolumeUSD.length - 1].pool
-  //   } else {
-  //     return undefined
-  //   }
-  // }, [volumeChartHoverIndex, formattedVolumeUSD])
+      // 2. get pool tokens
+      poolTokensAmountUSD.map((data, index) => {
+        const token = data[0].address
+        const symbol = data[0].symbol ? data[0].symbol : 'Unknown'
+        const decimal = data[0].decimals
+        const tokenAmountUSD = data[1]
+        let added = false
+        for (let i = 0; i < tokensData.length; i++) {
+          if (token.toUpperCase() === tokensData[i].token.toUpperCase()) {
+            tokensData[i].pool += tokenAmountUSD
+            added = true
+          }
+        }
+        if (!added) {
+          tokensData.push({
+            token,
+            symbol,
+            decimal,
+            current: 0,
+            pool: tokenAmountUSD,
+            index,
+          })
+        }
+      })
+
+      return tokensData
+    } else {
+      return []
+    }
+  }, [investorData, poolTokensAmountUSD])
+
+  const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
   const investAmountHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
@@ -893,20 +1046,20 @@ export default function FundAccount() {
                 />
               ) : view === ChartView.TOKENS ? (
                 <TokenBarChart
-                  data={formattedLatestTokens}
+                  data={latestCurrentTokens}
                   color={activeNetwork.primaryColor}
                   setIndex={setTokenIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="18px">
-                          {tokenIndexHover !== undefined ? formattedLatestTokens[tokenIndexHover].symbol : null}
+                          {tokenIndexHover !== undefined ? latestCurrentTokens[tokenIndexHover].symbol : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
                         {tokenIndexHover !== undefined ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
+                              <MonoSpace>{shortenAddress(latestCurrentTokens[tokenIndexHover].token)}</MonoSpace>
                             </Link>
                           </ThemedText.DeprecatedMain>
                         ) : null}
@@ -914,8 +1067,7 @@ export default function FundAccount() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         {tokenIndexHover !== undefined ? (
                           <MonoSpace>
-                            {formattedLatestTokens[tokenIndexHover].current +
-                              formattedLatestTokens[tokenIndexHover].pool}
+                            {latestCurrentTokens[tokenIndexHover].current + latestCurrentTokens[tokenIndexHover].pool}
                           </MonoSpace>
                         ) : (
                           <>
@@ -931,7 +1083,7 @@ export default function FundAccount() {
                         {tokenIndexHover !== undefined ? (
                           <>
                             <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
-                              <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].current)}</MonoSpace>
+                              <MonoSpace>{formatAmount(latestCurrentTokens[tokenIndexHover].current)}</MonoSpace>
                             </ThemedText.DeprecatedMediumHeader>
                             <ThemedText.DeprecatedMain fontSize="20px">
                               <MonoSpace>(current USD)</MonoSpace>
@@ -943,7 +1095,7 @@ export default function FundAccount() {
                         {tokenIndexHover !== undefined ? (
                           <>
                             <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
-                              <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].pool)}</MonoSpace>
+                              <MonoSpace>{formatAmount(latestCurrentTokens[tokenIndexHover].pool)}</MonoSpace>
                             </ThemedText.DeprecatedMediumHeader>
                             <ThemedText.DeprecatedMain fontSize="20px">
                               <MonoSpace>(pool USD)</MonoSpace>

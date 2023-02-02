@@ -23,12 +23,6 @@ const INVESTOR_DATA = gql`
       currentTokensAmountETH
       currentTokensAmountUSD
       tokenIds
-      poolETH
-      poolUSD
-      poolTokens
-      poolTokensSymbols
-      poolTokensDecimals
-      poolTokensAmount
       profitETH
       profitUSD
       profitRatio
@@ -106,16 +100,6 @@ export function useInvestorData(
           return parseFloat(value)
         }),
         tokenIds: data.investor.tokenIds.map((value) => {
-          return parseFloat(value)
-        }),
-        poolETH: parseFloat(data.investor.poolETH),
-        poolUSD: parseFloat(data.investor.poolUSD),
-        poolTokens: data.investor.poolTokens,
-        poolTokensSymbols: data.investor.poolTokensSymbols,
-        poolTokensDecimals: data.investor.poolTokensDecimals.map((value) => {
-          return parseFloat(value)
-        }),
-        poolTokensAmount: data.investor.poolTokensAmount.map((value) => {
           return parseFloat(value)
         }),
         profitETH: parseFloat(data.investor.profitETH),

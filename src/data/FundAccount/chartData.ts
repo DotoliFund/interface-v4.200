@@ -30,6 +30,9 @@ const INVESTOR_CHART = gql`
       tokenIds
       poolETH
       poolUSD
+      profitETH
+      profitUSD
+      profitRatio
     }
   }
 `
@@ -106,6 +109,9 @@ export function useInvestorChartData(
           }),
           poolETH: parseFloat(investorSnapshotFields.poolETH),
           poolUSD: parseFloat(investorSnapshotFields.poolUSD),
+          profitETH: parseFloat(investorSnapshotFields.profitETH),
+          profitUSD: parseFloat(investorSnapshotFields.profitUSD),
+          profitRatio: parseFloat(investorSnapshotFields.profitRatio),
         }
         return investorSnapshotData
       })
