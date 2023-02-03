@@ -21,10 +21,14 @@ export function useTokensPriceInUSD(
 
   if (tokensData) {
     tokensData.map((data, index) => {
-      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
-      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
-      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
-      tokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
+      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), weth9, FeeAmount.HIGH])
+      tokensPools.push([
+        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
+        weth9,
+        FeeAmount.MEDIUM,
+      ])
+      tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), weth9, FeeAmount.LOW])
+      tokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), data.amount])
     })
   }
 

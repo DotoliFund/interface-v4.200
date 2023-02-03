@@ -359,25 +359,6 @@ export default function FundAccount() {
     }
   }, [chartData])
 
-  const latestCurrentTokens = useMemo(() => {
-    if (investorData) {
-      // 1. get current tokens
-      const tokensData = investorData.currentTokens.map((data, index) => {
-        return {
-          token: data,
-          symbol: investorData.currentTokensSymbols[index],
-          decimal: investorData.currentTokensDecimals[index],
-          current: investorData.currentTokensAmount[index],
-          pool: 0,
-          index,
-        }
-      })
-      return tokensData
-    } else {
-      return []
-    }
-  }, [investorData])
-
   const poolTokens = useMemo(() => {
     if (chainId && openPositions && openPositions.length > 0) {
       const tokens: string[] = []
@@ -564,30 +545,6 @@ export default function FundAccount() {
     return tokensAmountUSD
   }, [DuplicatedPoolTokensAmountUSD])
 
-  if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
-    let totalCurrentAmountUSD = 0
-    currentTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[2]
-      totalCurrentAmountUSD += tokenAmountUSD
-    })
-    let totalPoolAmountUSD = 0
-    poolTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[2]
-      totalPoolAmountUSD += tokenAmountUSD
-    })
-
-    formattedVolumeUSD.push({
-      time: Math.floor(new Date().getTime() / 1000),
-      current: totalCurrentAmountUSD,
-      pool: totalPoolAmountUSD,
-      invest: formattedVolumeUSD[formattedVolumeUSD.length - 1].invest,
-      tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
-      symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
-      tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
-      index: formattedVolumeUSD.length,
-    })
-  }
-
   const formattedLatestTokens = useMemo(() => {
     if (currentTokensAmountUSD && poolTokensAmountUSD) {
       // 1. get current tokens
@@ -643,6 +600,42 @@ export default function FundAccount() {
     }
   }, [currentTokensAmountUSD, poolTokensAmountUSD])
 
+  if (formattedVolumeUSD && formattedVolumeUSD.length > 0 && formattedLatestTokens) {
+    let totalCurrentAmountUSD = 0
+    currentTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[2]
+      totalCurrentAmountUSD += tokenAmountUSD
+    })
+    let totalPoolAmountUSD = 0
+    poolTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[2]
+      totalPoolAmountUSD += tokenAmountUSD
+    })
+
+    const tokens = formattedLatestTokens.map((data, index) => {
+      return data.token
+    })
+
+    const symbols = formattedLatestTokens.map((data, index) => {
+      return data.symbol
+    })
+
+    const tokensVolume = formattedLatestTokens.map((data, index) => {
+      return data.current + data.pool
+    })
+
+    formattedVolumeUSD.push({
+      time: Math.floor(new Date().getTime() / 1000),
+      current: totalCurrentAmountUSD,
+      pool: totalPoolAmountUSD,
+      invest: formattedVolumeUSD[formattedVolumeUSD.length - 1].invest,
+      tokens,
+      symbols,
+      tokensVolume,
+      index: formattedVolumeUSD.length,
+    })
+  }
+
   const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
   const investAmountHover = useMemo(() => {
@@ -668,19 +661,19 @@ export default function FundAccount() {
         }
       })
     } else {
-      if (investorData) {
-        return investorData.currentTokens.map((data, index) => {
+      if (formattedLatestTokens) {
+        return formattedLatestTokens.map((data, index) => {
           return {
-            token: data,
-            symbol: investorData.currentTokensSymbols[index],
-            Volume: investorData.currentTokensAmountUSD[index],
+            token: data.token,
+            symbol: data.symbol,
+            volume: data.current + data.pool,
           }
         })
       } else {
         return []
       }
     }
-  }, [volumeChartHoverIndex, formattedVolumeUSD, investorData])
+  }, [volumeChartHoverIndex, formattedVolumeUSD, formattedLatestTokens])
 
   const ratio = useMemo(() => {
     return volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].invest > 0
@@ -693,7 +686,7 @@ export default function FundAccount() {
             100
           ).toFixed(2)
         )
-      : volumeChartHoverIndex && formattedVolumeUSD[volumeChartHoverIndex].invest === 0
+      : volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].invest === 0
       ? Number(0)
       : formattedVolumeUSD && formattedVolumeUSD.length > 0
       ? Number(
@@ -868,7 +861,7 @@ export default function FundAccount() {
                     {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
                 </AutoRow>
-                <PieChart data={tokenHover ? tokenHover : currentTokensData} color={activeNetwork.primaryColor} />
+                <PieChart data={tokenHover} color={activeNetwork.primaryColor} />
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
@@ -978,13 +971,13 @@ export default function FundAccount() {
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="18px">
-                          {tokenIndexHover !== undefined ? latestCurrentTokens[tokenIndexHover].symbol : null}
+                          {tokenIndexHover !== undefined ? formattedLatestTokens[tokenIndexHover].symbol : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
                         {tokenIndexHover !== undefined ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(latestCurrentTokens[tokenIndexHover].token)}</MonoSpace>
+                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
                             </Link>
                           </ThemedText.DeprecatedMain>
                         ) : null}
@@ -992,7 +985,10 @@ export default function FundAccount() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         {tokenIndexHover !== undefined ? (
                           <MonoSpace>
-                            {latestCurrentTokens[tokenIndexHover].current + latestCurrentTokens[tokenIndexHover].pool}
+                            {formatDollarAmount(
+                              formattedLatestTokens[tokenIndexHover].current +
+                                formattedLatestTokens[tokenIndexHover].pool
+                            )}
                           </MonoSpace>
                         ) : (
                           <>
@@ -1007,11 +1003,16 @@ export default function FundAccount() {
                       <AutoRow justify="end">
                         {tokenIndexHover !== undefined ? (
                           <>
-                            <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#ff1a75'}>
-                              <MonoSpace>{formatAmount(latestCurrentTokens[tokenIndexHover].current)}</MonoSpace>
+                            <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#ff1a75'}>
+                              <MonoSpace>
+                                {formatAmount(formattedLatestTokens[tokenIndexHover].currentAmount)}
+                              </MonoSpace>
                             </ThemedText.DeprecatedMediumHeader>
                             <ThemedText.DeprecatedMain fontSize="20px">
-                              <MonoSpace>(current USD)</MonoSpace>
+                              <MonoSpace>
+                                {' '}
+                                ({formatDollarAmount(formattedLatestTokens[tokenIndexHover].current)})
+                              </MonoSpace>
                             </ThemedText.DeprecatedMain>
                           </>
                         ) : null}
@@ -1019,11 +1020,14 @@ export default function FundAccount() {
                       <AutoRow justify="end">
                         {tokenIndexHover !== undefined ? (
                           <>
-                            <ThemedText.DeprecatedMediumHeader fontSize="26px" color={'#3377ff'}>
-                              <MonoSpace>{formatAmount(latestCurrentTokens[tokenIndexHover].pool)}</MonoSpace>
+                            <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#3377ff'}>
+                              <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].poolAmount)}</MonoSpace>
                             </ThemedText.DeprecatedMediumHeader>
                             <ThemedText.DeprecatedMain fontSize="20px">
-                              <MonoSpace>(pool USD)</MonoSpace>
+                              <MonoSpace>
+                                {' '}
+                                ({formatDollarAmount(formattedLatestTokens[tokenIndexHover].pool)})
+                              </MonoSpace>
                             </ThemedText.DeprecatedMain>
                           </>
                         ) : null}

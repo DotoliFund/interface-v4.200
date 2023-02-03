@@ -528,7 +528,7 @@ export default function FundPage() {
                       ) : null}
                       <ThemedText.DeprecatedLargeHeader fontSize="30px">
                         {tokenIndexHover !== undefined ? (
-                          formattedLatestTokens[tokenIndexHover].volume
+                          formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
                         ) : (
                           <>
                             <br />

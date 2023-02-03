@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
-import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
@@ -102,15 +101,9 @@ const Chart = ({
                 bottom: 5,
               }}
             >
-              <defs>
-                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                  <stop offset="100%" stopColor={color} stopOpacity={0} />
-                </linearGradient>
-              </defs>
               <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
               <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
-              <Bar dataKey="volume" type="monotone" stroke={color} fill="url(#gradient)" maxBarSize={80} />
+              <Bar dataKey="volume" type="monotone" stroke={color} fill={color} maxBarSize={80} />
             </BarChart>
           )}
         </ResponsiveContainer>

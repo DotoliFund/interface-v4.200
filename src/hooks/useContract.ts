@@ -18,7 +18,6 @@ import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 import ERC721_ABI from 'abis/erc721.json'
 import ERC1155_ABI from 'abis/erc1155.json'
-//import LiquidityOracleJson from 'abis/LiquidityOracle.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
 import {
@@ -37,7 +36,6 @@ import { useMemo } from 'react'
 import { DotoliFactory } from 'types/dotoli/DotoliFactory'
 import { DotoliFund } from 'types/dotoli/DotoliFund'
 import { DotoliStaking } from 'types/dotoli/DotoliStaking'
-//import { LiquidityOracle } from 'types/dotoli/LiquidityOracle'
 import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall } from 'types/v3'
 
 import { getContract } from '../utils'
@@ -51,7 +49,6 @@ const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 const { abi: NFTPositionManagerABI } = NonfungiblePositionManagerJson
 const { abi: DotoliFactoryABI } = DotoliFactoryJson
 const { abi: DotoliFundABI } = DotoliFundJson
-//const { abi: LiquidityOracleABI } = LiquidityOracleJson
 const { abi: DotoliStakingABI } = DotoliStakingJson
 
 // returns null on errors
@@ -158,13 +155,6 @@ export function useDotoliFundContract(
 ): DotoliFund | null {
   return useContract<DotoliFund>(fundAddress, DotoliFundABI, withSignerIfPossible)
 }
-
-// export function useLiquidityOracleContract(
-//   fundAddress: string | undefined,
-//   withSignerIfPossible?: boolean
-// ): LiquidityOracle | null {
-//   return useContract<LiquidityOracle>(fundAddress, LiquidityOracleABI, withSignerIfPossible)
-// }
 
 export function useDotoliStakingContract(withSignerIfPossible?: boolean): DotoliStaking | null {
   return useContract<DotoliStaking>(DOTOLI_STAKING_ADDRESS, DotoliStakingABI, withSignerIfPossible)
