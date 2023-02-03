@@ -455,7 +455,11 @@ export default function FundPage() {
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(
-                            volumeIndexHover !== undefined ? formattedVolumeUSD[volumeIndexHover].volume : 0
+                            volumeIndexHover !== undefined && formattedVolumeUSD && formattedVolumeUSD.length > 0
+                              ? formattedVolumeUSD[volumeIndexHover].volume
+                              : formattedVolumeUSD && formattedVolumeUSD.length > 0
+                              ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume
+                              : 0
                           )}
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
@@ -466,8 +470,13 @@ export default function FundPage() {
                       <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
                         {volumeIndexHover !== undefined ? (
                           <MonoSpace>
-                            {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} ({' '}
-                            {formatTime(formattedVolumeUSD[volumeIndexHover].time.toString(), 8)} )
+                            {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} (
+                            {formatTime(formattedVolumeUSD[volumeIndexHover].time.toString(), 8)})
+                          </MonoSpace>
+                        ) : formattedVolumeUSD && formattedVolumeUSD.length > 0 ? (
+                          <MonoSpace>
+                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} (
+                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
                           </MonoSpace>
                         ) : null}
                       </ThemedText.DeprecatedMain>

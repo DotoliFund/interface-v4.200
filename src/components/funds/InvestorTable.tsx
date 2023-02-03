@@ -75,7 +75,7 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           {formatDollarAmount(Number(investor.currentUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.poolUSD))}
+          {formatDollarAmount(Number(investor.profitUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
           {formatDollarAmount(Number(investor.investAmountUSD))}

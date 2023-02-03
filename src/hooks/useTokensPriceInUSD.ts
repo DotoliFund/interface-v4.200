@@ -14,7 +14,7 @@ export function useTokensPriceInUSD(
   weth9: Token | undefined,
   ethPriceInUSDC: number | undefined,
   tokensData: TokensData[] | undefined
-): [Token, number][] {
+): [Token, number, number][] {
   // get token's price
   const tokensPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
   const tokensAmount: [Token, number][] = []
@@ -29,20 +29,20 @@ export function useTokensPriceInUSD(
   }
 
   const tokensPriceInETH = useTokensPriceInETH(chainId, tokensPools)
-  const tokensPriceInUSD: [Token, number][] = []
+  const tokensPriceInUSD: [Token, number, number][] = []
   if (ethPriceInUSDC && tokensPriceInETH && weth9 !== undefined) {
     tokensAmount.map((data, index) => {
       const token = data[0].address
       const tokenAmount = data[1]
 
       if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        tokensPriceInUSD.push([weth9, tokenAmount * ethPriceInUSDC])
+        tokensPriceInUSD.push([weth9, tokenAmount, tokenAmount * ethPriceInUSDC])
       } else {
         tokensPriceInETH.map((data2: any, index2: any) => {
           const token2 = data2[0].address
           const priceInETH = data2[1]
           if (token.toUpperCase() === token2.toUpperCase()) {
-            tokensPriceInUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
+            tokensPriceInUSD.push([data2[0], tokenAmount, tokenAmount * priceInETH * ethPriceInUSDC])
           }
         })
       }
