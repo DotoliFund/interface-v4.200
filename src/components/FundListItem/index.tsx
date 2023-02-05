@@ -9,6 +9,7 @@ import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { FundDetails } from 'types/fund'
 import { shortenAddress } from 'utils'
+import { unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
 import { DAI, USDC_MAINNET, USDT, WBTC, WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
@@ -181,7 +182,6 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
               <DataText>{shortenAddress(fundData.address)}</DataText>
             </PrimaryPositionIdData>
           </RowBetween>
-
           <RangeLineItem>
             <RangeText>
               <ExtentsText>
@@ -191,22 +191,21 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             </RangeText>
             <RangeText>
               <ExtentsText>
-                <Trans>Principal : </Trans>
-              </ExtentsText>
-              removed
-            </RangeText>
-            <RangeText>
-              <RangeText>
-                <ExtentsText>
-                  <Trans>Profit : </Trans>
-                </ExtentsText>
-                removed
-              </RangeText>
-              <RangeText></RangeText>
-              <ExtentsText>
                 <Trans>Investors:</Trans>
               </ExtentsText>
               {fundData.investorCount}
+            </RangeText>
+            <RangeText>
+              <ExtentsText>
+                <Trans>Manager : </Trans>
+              </ExtentsText>
+              {shortenAddress(fundData.manager)}
+            </RangeText>
+            <RangeText>
+              <ExtentsText>
+                <Trans>Created : </Trans>
+              </ExtentsText>
+              {unixToDate(fundData.createdAtTimestamp)}
             </RangeText>
           </RangeLineItem>
         </LinkRow>

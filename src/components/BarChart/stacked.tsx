@@ -1,12 +1,14 @@
 import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
-import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
+import { getEtherscanLink } from 'utils'
 
 const DEFAULT_HEIGHT = 340
 
@@ -57,6 +59,9 @@ const Chart = ({
   ...rest
 }: BarChartProps) => {
   const theme = useTheme()
+  const { chainId } = useWeb3React()
+  const [activeNetwork] = useActiveNetworkVersion()
+
   const isEmptyData = !data || data.length === 0
 
   const CustomTooltip = (props: any) => {
@@ -100,23 +105,37 @@ const Chart = ({
               bottom: 5,
             }}
           >
-            <defs>
-              <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <defs>
-              <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={darken(0.36, color2)} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={color2} stopOpacity={0} />
-              </linearGradient>
-            </defs>
             <XAxis dataKey="symbol" axisLine={false} tickLine={false} />
             <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
-            <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
+            <Bar
+              dataKey="current"
+              stackId="a"
+              stroke={color}
+              fill={color}
+              maxBarSize={80}
+              onClick={(data: any) => {
+                console.log(data)
+                if (chainId) {
+                  const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
+                  window.open(link)
+                }
+              }}
+            />
+            <Bar
+              dataKey="pool"
+              stackId="a"
+              stroke={color2}
+              fill={color2}
+              maxBarSize={80}
+              onClick={(data: any) => {
+                console.log(data)
+                if (chainId) {
+                  const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
+                  window.open(link)
+                }
+              }}
+            />
           </BarChart>
         )}
       </ResponsiveContainer>

@@ -1,11 +1,14 @@
 import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
+import { getEtherscanLink } from 'utils'
 
 const DEFAULT_HEIGHT = 340
 
@@ -57,6 +60,9 @@ const Chart = ({
   ...rest
 }: BarChartProps) => {
   const theme = useTheme()
+  const { chainId } = useWeb3React()
+  const [activeNetwork] = useActiveNetworkVersion()
+
   const isEmptyData = !data || data.length === 0
 
   const CustomTooltip = (props: any) => {
@@ -102,8 +108,20 @@ const Chart = ({
               }}
             >
               <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
-              <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
-              <Bar dataKey="volume" type="monotone" stroke={color} fill={color} maxBarSize={80} />
+              <Tooltip cursor={false} content={<CustomTooltip />} />
+              <Bar
+                dataKey="volume"
+                type="monotone"
+                stroke={color}
+                fill={color}
+                maxBarSize={80}
+                onClick={(data: any) => {
+                  if (chainId) {
+                    const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
+                    window.open(link)
+                  }
+                }}
+              />
             </BarChart>
           )}
         </ResponsiveContainer>

@@ -20,10 +20,10 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(3, 1fr);
+  grid-template-columns: 1.5fr repeat(4, 1fr);
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 1.5fr repeat(3, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
@@ -58,6 +58,7 @@ const LinkWrapper = styled(Link)`
 const SORT_FIELD = {
   fund: 'fund',
   volume: 'volume',
+  manager: 'manager',
   investorCount: 'investorCount',
   created: 'createdAtTimestamp',
 }
@@ -69,6 +70,9 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
         <Label fontWeight={400}>{shortenAddress(fundData.address)}</Label>
         <Label end={1} fontWeight={400}>
           {formatDollarAmount(fundData.currentUSD)}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {shortenAddress(fundData.manager)}
         </Label>
         <Label end={1} fontWeight={400}>
           {fundData.investorCount}
@@ -152,6 +156,9 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
               Volume {arrow(SORT_FIELD.volume)}
+            </ClickableText>
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.manager)}>
+              Manager {arrow(SORT_FIELD.manager)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investorCount)}>
               Investors {arrow(SORT_FIELD.investorCount)}

@@ -71,6 +71,9 @@ export default function Overview() {
 
   const [activeNetwork] = useActiveNetworkVersion()
 
+  const [currentVolumeIndexHover, setCurrentVolumeIndexHover] = useState<number | undefined>()
+  const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
+
   const [volumeDateHover, setCurrentDateHover] = useState<string | undefined>()
   const [volumeHover, setCurrentHover] = useState<number | undefined>()
   const [liquidityDateHover, setLiquidityDateHover] = useState<string | undefined>()
@@ -80,12 +83,14 @@ export default function Overview() {
   const fundListData = useFundListData()
   const tokenListData = useTokenListData()
   const chartData = useFactoryChartData().data
+
   const formattedTotalCurrent = useMemo(() => {
     if (chartData) {
-      return chartData.map((day) => {
+      return chartData.map((day, index) => {
         return {
           time: day.timestamp,
           value: day.totalCurrentUSD,
+          index,
         }
       })
     } else {
@@ -93,12 +98,13 @@ export default function Overview() {
     }
   }, [chartData])
 
-  const formattedTotalLiquidityCurrent = useMemo(() => {
+  const formattedInvestorCount = useMemo(() => {
     if (chartData) {
-      return chartData.map((day) => {
+      return chartData.map((day, index) => {
         return {
           time: day.timestamp,
-          value: day.totalCurrentUSD,
+          value: day.investorCount,
+          index,
         }
       })
     } else {
@@ -140,15 +146,20 @@ export default function Overview() {
             <AreaChart
               data={formattedTotalCurrent}
               color={activeNetwork.primaryColor}
-              setLabel={setCurrentDateHover}
-              setValue={setCurrentHover}
+              setIndex={setCurrentVolumeIndexHover}
               topLeft={
                 <AutoColumn gap="4px">
                   <ThemedText.MediumHeader fontSize="16px">Current</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
                       {formatDollarAmount(
-                        volumeHover !== undefined ? volumeHover : latestCurrentData ? latestCurrentData.value : 0
+                        currentVolumeIndexHover !== undefined &&
+                          formattedTotalCurrent &&
+                          formattedTotalCurrent.length > 0
+                          ? formattedTotalCurrent[currentVolumeIndexHover].value
+                          : formattedTotalCurrent && formattedTotalCurrent.length > 0
+                          ? formattedTotalCurrent[formattedTotalCurrent.length - 1].value
+                          : 0
                       )}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
@@ -157,13 +168,17 @@ export default function Overview() {
               topRight={
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                    {volumeDateHover ? (
+                    {currentVolumeIndexHover !== undefined &&
+                    formattedTotalCurrent &&
+                    formattedTotalCurrent.length > 0 ? (
                       <MonoSpace>
-                        {unixToDate(Number(volumeDateHover))} ( {formatTime(volumeDateHover.toString(), 8)} )
+                        {unixToDate(Number(formattedTotalCurrent[currentVolumeIndexHover].time))} ({' '}
+                        {formatTime(formattedTotalCurrent[currentVolumeIndexHover].time.toString(), 8)} )
                       </MonoSpace>
-                    ) : latestCurrentData ? (
+                    ) : formattedTotalCurrent && formattedTotalCurrent.length > 0 ? (
                       <MonoSpace>
-                        {unixToDate(latestCurrentData.time)} ( {formatTime(latestCurrentData.time.toString(), 8)} )
+                        {unixToDate(formattedTotalCurrent[formattedTotalCurrent.length - 1].time)} ({' '}
+                        {formatTime(formattedTotalCurrent[formattedTotalCurrent.length - 1].time.toString(), 8)} )
                       </MonoSpace>
                     ) : null}
                   </ThemedText.DeprecatedMain>
@@ -175,22 +190,21 @@ export default function Overview() {
           </ChartWrapper>
           <ChartWrapper>
             <AreaChart
-              data={formattedTotalLiquidityCurrent}
+              data={formattedInvestorCount}
               color={activeNetwork.primaryColor}
-              setLabel={setLiquidityDateHover}
-              setValue={setLiquidityHover}
+              setIndex={setInvestorCountIndexHover}
               topLeft={
                 <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">Liquidity</ThemedText.MediumHeader>
+                  <ThemedText.MediumHeader fontSize="16px">Investor</ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
-                      {formatDollarAmount(
-                        liquidityHover !== undefined
-                          ? liquidityHover
-                          : latestLiquidityData
-                          ? latestLiquidityData.value
-                          : 0
-                      )}
+                      {investorCountIndexHover !== undefined &&
+                      formattedInvestorCount &&
+                      formattedInvestorCount.length > 0
+                        ? formattedInvestorCount[investorCountIndexHover].value
+                        : formattedInvestorCount && formattedInvestorCount.length > 0
+                        ? formattedInvestorCount[formattedInvestorCount.length - 1].value
+                        : 0}
                     </MonoSpace>
                   </ThemedText.LargeHeader>
                 </AutoColumn>
@@ -198,15 +212,21 @@ export default function Overview() {
               topRight={
                 <AutoColumn gap="4px">
                   <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                    {liquidityDateHover ? (
+                    {investorCountIndexHover !== undefined &&
+                    formattedInvestorCount &&
+                    formattedInvestorCount.length > 0 ? (
                       <MonoSpace>
-                        {unixToDate(Number(liquidityDateHover))} ( {formatTime(liquidityDateHover.toString(), 8)} )
+                        {unixToDate(Number(formattedInvestorCount[investorCountIndexHover].time))} ({' '}
+                        {formatTime(formattedInvestorCount[investorCountIndexHover].time.toString(), 8)} )
                       </MonoSpace>
-                    ) : latestCurrentData ? (
+                    ) : formattedInvestorCount && formattedInvestorCount.length > 0 ? (
                       <MonoSpace>
-                        {unixToDate(latestCurrentData.time)} ( {formatTime(latestCurrentData.time.toString(), 8)} )
+                        {unixToDate(Number(formattedInvestorCount[formattedInvestorCount.length - 1].time))} ({' '}
+                        {formatTime(formattedInvestorCount[formattedInvestorCount.length - 1].time.toString(), 8)} )
                       </MonoSpace>
-                    ) : null}
+                    ) : (
+                      0
+                    )}
                   </ThemedText.DeprecatedMain>
                   <br />
                   <br />

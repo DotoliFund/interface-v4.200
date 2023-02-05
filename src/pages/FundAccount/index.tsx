@@ -971,24 +971,34 @@ export default function FundAccount() {
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="18px">
-                          {tokenIndexHover !== undefined ? formattedLatestTokens[tokenIndexHover].symbol : null}
+                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formattedLatestTokens[tokenIndexHover].symbol
+                            : formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formattedLatestTokens[0].symbol
+                            : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {tokenIndexHover !== undefined ? (
+                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
-                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
-                            </Link>
+                            <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
+                          </ThemedText.DeprecatedMain>
+                        ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
                           </ThemedText.DeprecatedMain>
                         ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        {tokenIndexHover !== undefined ? (
+                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                           <MonoSpace>
                             {formatDollarAmount(
                               formattedLatestTokens[tokenIndexHover].current +
                                 formattedLatestTokens[tokenIndexHover].pool
                             )}
+                          </MonoSpace>
+                        ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                          <MonoSpace>
+                            {formatDollarAmount(formattedLatestTokens[0].current + formattedLatestTokens[0].pool)}
                           </MonoSpace>
                         ) : (
                           <>
@@ -1001,7 +1011,7 @@ export default function FundAccount() {
                   topRight={
                     <AutoColumn gap="4px">
                       <AutoRow justify="end">
-                        {tokenIndexHover !== undefined ? (
+                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                           <>
                             <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#ff1a75'}>
                               <MonoSpace>
@@ -1015,10 +1025,19 @@ export default function FundAccount() {
                               </MonoSpace>
                             </ThemedText.DeprecatedMain>
                           </>
+                        ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                          <>
+                            <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#ff1a75'}>
+                              <MonoSpace>{formatAmount(formattedLatestTokens[0].currentAmount)}</MonoSpace>
+                            </ThemedText.DeprecatedMediumHeader>
+                            <ThemedText.DeprecatedMain fontSize="20px">
+                              <MonoSpace> ({formatDollarAmount(formattedLatestTokens[0].current)})</MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          </>
                         ) : null}
                       </AutoRow>
                       <AutoRow justify="end">
-                        {tokenIndexHover !== undefined ? (
+                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                           <>
                             <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#3377ff'}>
                               <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].poolAmount)}</MonoSpace>
@@ -1028,6 +1047,15 @@ export default function FundAccount() {
                                 {' '}
                                 ({formatDollarAmount(formattedLatestTokens[tokenIndexHover].pool)})
                               </MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          </>
+                        ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                          <>
+                            <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#3377ff'}>
+                              <MonoSpace>{formatAmount(formattedLatestTokens[0].poolAmount)}</MonoSpace>
+                            </ThemedText.DeprecatedMediumHeader>
+                            <ThemedText.DeprecatedMain fontSize="20px">
+                              <MonoSpace> ({formatDollarAmount(formattedLatestTokens[0].pool)})</MonoSpace>
                             </ThemedText.DeprecatedMain>
                           </>
                         ) : null}

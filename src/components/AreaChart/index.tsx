@@ -32,24 +32,21 @@ export type AreaChartProps = {
   color2?: string | undefined
   height?: number | undefined
   minHeight?: number
-  setLabel: Dispatch<SetStateAction<string | undefined>>
-  setValue: Dispatch<SetStateAction<number | undefined>>
+  setIndex: Dispatch<SetStateAction<number | undefined>>
   topLeft?: ReactNode | undefined
   topRight?: ReactNode | undefined
   bottomLeft?: ReactNode | undefined
   bottomRight?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({ data, color = '#56B2A4', setLabel, setValue, topLeft, topRight }: AreaChartProps) => {
+const Chart = ({ data, color = '#56B2A4', setIndex, topLeft, topRight }: AreaChartProps) => {
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
-    const time = payload ? payload.payload.time : undefined
-    const value = payload ? payload.value : undefined
+    const index = payload ? payload.payload.index : undefined
 
     useEffect(() => {
-      setLabel(time)
-      setValue(value)
-    }, [time, value])
+      setIndex(index)
+    }, [index])
 
     return null
   }
@@ -75,10 +72,6 @@ const Chart = ({ data, color = '#56B2A4', setLabel, setValue, topLeft, topRight 
               right: 15,
               left: 15,
               bottom: 5,
-            }}
-            onMouseLeave={() => {
-              setLabel && setLabel(undefined)
-              setValue && setValue(undefined)
             }}
           >
             <defs>

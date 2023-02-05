@@ -35,8 +35,7 @@ import styled, { useTheme } from 'styled-components/macro'
 import { StyledInternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { unixToDate } from 'utils/date'
-import { formatTime } from 'utils/date'
+import { formatTime, unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatDollarAmount } from 'utils/numbers'
 
@@ -492,48 +491,44 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {tokenIndexHover !== undefined ? formattedLatestTokens[tokenIndexHover].symbol : null}
+                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formattedLatestTokens[tokenIndexHover].symbol
+                            : formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formattedLatestTokens[0].symbol
+                            : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {tokenIndexHover !== undefined ? (
-                          <ThemedText.DeprecatedMain fontSize="14px">
-                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
-                            </Link>
-                          </ThemedText.DeprecatedMain>
-                        ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {tokenIndexHover !== undefined ? (
-                            formattedLatestTokens[tokenIndexHover].amount
-                          ) : (
-                            <>
-                              <br />
-                            </>
-                          )}
+                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formattedLatestTokens[tokenIndexHover].amount
+                            : formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formattedLatestTokens[0].amount
+                            : null}
+                          <br />
                         </MonoSpace>
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      {formattedVolumeUSD ? (
+                      {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                         <ThemedText.DeprecatedMain fontSize="14px">
-                          <MonoSpace>
-                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} (
-                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
-                          </MonoSpace>
+                          <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
+                        </ThemedText.DeprecatedMain>
+                      ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                        <ThemedText.DeprecatedMain fontSize="14px">
+                          <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
                         </ThemedText.DeprecatedMain>
                       ) : null}
                       <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                        {tokenIndexHover !== undefined ? (
-                          formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
-                        ) : (
-                          <>
-                            <br />
-                          </>
-                        )}
+                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                          ? formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
+                          : formattedLatestTokens && formattedLatestTokens.length > 0
+                          ? formatDollarAmount(formattedLatestTokens[0].volume)
+                          : null}
+                        <br />
                       </ThemedText.DeprecatedLargeHeader>
                     </AutoColumn>
                   }
@@ -550,7 +545,7 @@ export default function FundPage() {
                           {feeIndexHover !== undefined ? formattedFeeTokens[feeIndexHover].symbol : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {feeIndexHover !== undefined ? (
+                        {chainId !== undefined && feeIndexHover !== undefined ? (
                           <ThemedText.DeprecatedMain fontSize="14px">
                             <Link to={'https://www.guru99.com/c-function-pointers.html'}>
                               <MonoSpace>{shortenAddress(formattedFeeTokens[feeIndexHover].token)}</MonoSpace>
