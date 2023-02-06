@@ -73,7 +73,7 @@ const Chart = ({
 
   return (
     <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
-      <RowBetween>
+      <RowBetween padding={'5sp'}>
         {isEmptyData ? null : (
           <>
             {topLeft ?? null}

@@ -1,4 +1,7 @@
+import { RowBetween } from 'components/Row'
+import { VOTE_URL } from 'constants/addresses'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button as RebassButton } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
@@ -49,9 +52,10 @@ const Button = styled(RebassButton)<{ primary?: boolean; big?: boolean; dark?: b
 interface CoverSectionProps {
   headline: string
   description: string
+  buttonNameA: string | undefined
 }
 
-const CoverSection = ({ headline, description }: CoverSectionProps) => {
+const CoverSection = ({ headline, description, buttonNameA }: CoverSectionProps) => {
   const [hover, setHover] = useState(false)
 
   const onHover = () => {
@@ -64,8 +68,8 @@ const CoverSection = ({ headline, description }: CoverSectionProps) => {
         <CoverH1>{headline}</CoverH1>
         <CoverP>{description}</CoverP>
         <CoverBtnWrapper>
-          <Button primary={true} big={true} dark={true} fontBig={true}>
-            Get started {hover ? <ArrowForward /> : <ArrowRight />}
+          <Button primary={true} big={true} dark={true} fontBig={true} marginRight={'15px'}>
+            {buttonNameA} {hover ? <ArrowForward /> : <ArrowRight />}
           </Button>
         </CoverBtnWrapper>
       </CoverContent>
@@ -130,13 +134,101 @@ const InfoSection = ({
 }
 
 export default function Home() {
+  const [hover, setHover] = useState(false)
+  const navigate = useNavigate()
+
+  const onHover = () => {
+    setHover(!hover)
+  }
+
   return (
     <div>
-      <CoverSection
-        headline={'Manage or Invest crypto fund with confidence'}
-        description={'Swap and Provide Liquidity with Uniswap'}
-      />
-      <InfoSection
+      <CoverContainer>
+        <CoverContent>
+          <CoverH1>{'Manage or Invest crypto fund with confidence'}</CoverH1>
+          <CoverP>{'Swap and Provide Liquidity with Uniswap'}</CoverP>
+          <CoverBtnWrapper>
+            <Button
+              primary={true}
+              big={true}
+              dark={true}
+              fontBig={true}
+              marginRight={'15px'}
+              onClick={() => navigate(`/account`)}
+            >
+              {'Get Started'} {hover ? <ArrowForward /> : <ArrowRight />}
+            </Button>
+          </CoverBtnWrapper>
+        </CoverContent>
+      </CoverContainer>
+
+      <CoverContainer>
+        <CoverContent>
+          <CoverH1>{'Efficient Profits and Fees'}</CoverH1>
+          <CoverP>
+            {
+              'More benefits for managers and investors. Because of no third parties, Managers are rewarded according to their investment results'
+            }
+          </CoverP>
+        </CoverContent>
+      </CoverContainer>
+
+      <CoverContainer>
+        <CoverContent>
+          <CoverH1>{'Decentralized fund investment'}</CoverH1>
+          <CoverP>
+            {'Only investors can withdraw their own funds. Managers can only swap or provide Uniswap liquidity'}
+          </CoverP>
+        </CoverContent>
+      </CoverContainer>
+
+      <CoverContainer>
+        <CoverContent>
+          <CoverH1>{'Transparent fund management'}</CoverH1>
+          <CoverP>
+            {'All investments of the manager are recorded. Investors can choose the best manager at any time'}
+          </CoverP>
+        </CoverContent>
+      </CoverContainer>
+
+      <CoverContainer>
+        <CoverContent>
+          <CoverH1>{'Governance'}</CoverH1>
+          <CoverP>
+            {
+              'Fee rate and investable cryptos are determined by voting. You can vote with governance token and increase governance token by staking'
+            }
+          </CoverP>
+
+          <CoverBtnWrapper>
+            <RowBetween>
+              <Button
+                primary={true}
+                big={true}
+                dark={true}
+                fontBig={true}
+                marginRight={'15px'}
+                onClick={() => navigate(`/staking`)}
+              >
+                {'Staking'} {hover ? <ArrowForward /> : <ArrowRight />}
+              </Button>
+              <Button
+                primary={true}
+                big={true}
+                dark={true}
+                fontBig={true}
+                onClick={() => {
+                  window.open(VOTE_URL)
+                }}
+              >
+                {'Governance'} {hover ? <ArrowForward /> : <ArrowRight />}
+              </Button>
+            </RowBetween>
+          </CoverBtnWrapper>
+        </CoverContent>
+      </CoverContainer>
+
+      {/* <InfoSection
         id={'about'}
         lightBg={false}
         lightText={true}
@@ -187,7 +279,7 @@ export default function Home() {
         img={'logo192.png'}
         alt={'Car'}
         darkText={false}
-      />
+      /> */}
     </div>
   )
 }
