@@ -119,6 +119,10 @@ msgstr "{0} 추가됨"
 msgid "Adding"
 msgstr "첨가"
 
+#: src/pages/Home/index.tsx
+msgid "All investments of the manager are recorded. Investors can choose the best manager at any time"
+msgstr ""
+
 #: src/components/Settings/index.tsx
 msgid "Allow high price impact trades and skip the confirm screen. Use at your own risk."
 msgstr "높은 가격 영향 거래를 허용하고 확인 화면을 건너 뜁니다. 자신의 책임하에 사용하십시오."
@@ -429,6 +433,10 @@ msgstr "어두운 테마"
 msgid "Dark theme"
 msgstr "어두운 테마"
 
+#: src/pages/Home/index.tsx
+msgid "Decentralized fund investment"
+msgstr "탈중앙화된 펀드 투자"
+
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Delegate voting power to {0}"
 msgstr "{0} 에게 위임한 투표권"
@@ -490,6 +498,10 @@ msgstr "편집"
 #: src/pages/AddLiquidity/index.tsx
 msgid "Efficiency Comparison"
 msgstr "효율성 비교"
+
+#: src/pages/Home/index.tsx
+msgid "Efficient Profits and Fees"
+msgstr "효율적인 수익 및 수수료"
 
 #: src/state/burn/v3/hooks.tsx
 msgid "Enter a percent"
@@ -593,6 +605,10 @@ msgstr "수수료"
 msgid "Fee Tier"
 msgstr "수수료 등급"
 
+#: src/pages/Home/index.tsx
+msgid "Fee rate and investable cryptos are determined by voting. You can vote with governance token and increase governance token by staking"
+msgstr "수수료 비율과 투자 가능한 암호화폐는 투표로 결정됩니다. 거버넌스 토큰으로 투표하고 스테이킹으로 거버넌스 토큰을 늘릴 수 있습니다."
+
 #: src/components/FeeSelector/index.tsx
 msgid "Fee tier"
 msgstr "수수료 등급"
@@ -625,9 +641,18 @@ msgstr "펀드"
 msgid "Get Reward"
 msgstr "보상 받기"
 
+#: src/pages/Home/index.tsx
+msgid "Get Started"
+msgstr "시작하기"
+
 #: src/components/ErrorBoundary/index.tsx
 msgid "Get support on Discord"
 msgstr "Discord에서 지원 받기"
+
+#: src/pages/Home/index.tsx
+#: src/pages/Home/index.tsx
+msgid "Governance"
+msgstr "거버넌스"
 
 #: src/components/Header/NetworkSelector.tsx
 #: src/components/Menu/index.tsx
@@ -779,6 +804,10 @@ msgstr "유동성 데이터가 없습니다."
 msgid "MAX"
 msgstr "최대"
 
+#: src/pages/Home/index.tsx
+msgid "Manage or Invest crypto fund with confidence"
+msgstr "안심하고 암호화폐 자금을 관리하거나 투자하세요"
+
 #: src/components/FundListItem/index.tsx
 msgid "Manager :"
 msgstr "관리자 :"
@@ -846,6 +875,10 @@ msgstr "누락된 종속성"
 msgid "More"
 msgstr "추가"
 
+#: src/pages/Home/index.tsx
+msgid "More benefits for managers and investors. Because investor invest to manager directly, no invest company, Managers are rewarded according to their investment results"
+msgstr "관리자와 투자자를 위한 더 많은 혜택. 투자자가 운용사에게 직접 투자하기 때문에 투자회사가 없으며 운용사는 투자 결과에 따라 보상을 받습니다."
+
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
 #: src/pages/FundPage/index.tsx
@@ -907,6 +940,10 @@ msgstr "생성되지 않음"
 #: src/components/Settings/index.tsx
 msgid "ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING."
 msgstr "당신이 무엇을 하고 있는지 알고 있는 경우에만 이 모드를 사용하십시오."
+
+#: src/pages/Home/index.tsx
+msgid "Only investors can withdraw their own funds. Managers can only manage fund with Dotoli and Uniswap"
+msgstr "투자자만이 자신의 자금을 인출할 수 있습니다. 매니저는 Dotoli와 Uniswap으로만 펀드를 관리할 수 있습니다."
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Optimism Bridge"
@@ -1126,6 +1163,7 @@ msgstr "스테이크"
 
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
+#: src/pages/Home/index.tsx
 #: src/pages/Staking/index.tsx
 msgid "Staking"
 msgstr "스테이킹"
@@ -1158,6 +1196,10 @@ msgstr "<0/>을 정확한 <1/>로 바꿉니다."
 #: src/pages/Swap/index.tsx
 msgid "Swap Anyway"
 msgstr "어쨌든 스왑"
+
+#: src/pages/Home/index.tsx
+msgid "Swap and Provide Liquidity with Uniswap"
+msgstr "Uniswap으로 스왑 및 유동성 제공"
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Swap exactly <0/> for <1/>"
@@ -1370,6 +1412,10 @@ msgstr "거래 제출"
 #: src/components/WalletDropdown/TransactionMenu.tsx
 msgid "Transactions"
 msgstr "트랜잭션"
+
+#: src/pages/Home/index.tsx
+msgid "Transparent fund management"
+msgstr "투명한 자금 운용"
 
 #: src/components/WalletModal/PendingView.tsx
 msgid "Try Again"
@@ -1722,6 +1768,14 @@ msgstr "{0}% 수영장"
 #: src/components/FeeSelector/FeeTierPercentageBadge.tsx
 msgid "{0}% select"
 msgstr "{0}% 선택"
+
+#: src/pages/Home/index.tsx
+msgid "{description}"
+msgstr "{description}"
+
+#: src/pages/Home/index.tsx
+msgid "{headline}"
+msgstr "{headline}"
 
 #: src/components/NetworkAlert/NetworkAlert.tsx
 msgid "{label} token bridge"

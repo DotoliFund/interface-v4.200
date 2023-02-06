@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { RowBetween } from 'components/Row'
 import { VOTE_URL } from 'constants/addresses'
 import { useState } from 'react'
@@ -65,8 +66,12 @@ const CoverSection = ({ headline, description, buttonNameA }: CoverSectionProps)
   return (
     <CoverContainer>
       <CoverContent>
-        <CoverH1>{headline}</CoverH1>
-        <CoverP>{description}</CoverP>
+        <CoverH1>
+          <Trans>{headline}</Trans>
+        </CoverH1>
+        <CoverP>
+          <Trans>{description}</Trans>
+        </CoverP>
         <CoverBtnWrapper>
           <Button primary={true} big={true} dark={true} fontBig={true} marginRight={'15px'}>
             {buttonNameA} {hover ? <ArrowForward /> : <ArrowRight />}
@@ -145,8 +150,12 @@ export default function Home() {
     <div>
       <CoverContainer>
         <CoverContent>
-          <CoverH1>{'Manage or Invest crypto fund with confidence'}</CoverH1>
-          <CoverP>{'Swap and Provide Liquidity with Uniswap'}</CoverP>
+          <CoverH1>
+            <Trans>{'Manage or Invest crypto fund with confidence'}</Trans>
+          </CoverH1>
+          <CoverP>
+            <Trans>{'Swap and Provide Liquidity with Uniswap'}</Trans>
+          </CoverP>
           <CoverBtnWrapper>
             <Button
               primary={true}
@@ -156,7 +165,7 @@ export default function Home() {
               marginRight={'15px'}
               onClick={() => navigate(`/account`)}
             >
-              {'Get Started'} {hover ? <ArrowForward /> : <ArrowRight />}
+              <Trans>{'Get Started'}</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
             </Button>
           </CoverBtnWrapper>
         </CoverContent>
@@ -164,40 +173,56 @@ export default function Home() {
 
       <CoverContainer>
         <CoverContent>
-          <CoverH1>{'Efficient Profits and Fees'}</CoverH1>
+          <CoverH1>
+            <Trans>{'Efficient Profits and Fees'}</Trans>
+          </CoverH1>
           <CoverP>
-            {
-              'More benefits for managers and investors. Because investor invest to manager directly, no invest company, Managers are rewarded according to their investment results'
-            }
+            <Trans>
+              {
+                'More benefits for managers and investors. Because investor invest to manager directly, no invest company, Managers are rewarded according to their investment results'
+              }
+            </Trans>
           </CoverP>
         </CoverContent>
       </CoverContainer>
 
       <CoverContainer>
         <CoverContent>
-          <CoverH1>{'Decentralized fund investment'}</CoverH1>
+          <CoverH1>
+            <Trans>{'Decentralized fund investment'}</Trans>
+          </CoverH1>
           <CoverP>
-            {'Only investors can withdraw their own funds. Managers can only swap or provide Uniswap liquidity'}
+            <Trans>
+              {'Only investors can withdraw their own funds. Managers can only manage fund with Dotoli and Uniswap'}
+            </Trans>
           </CoverP>
         </CoverContent>
       </CoverContainer>
 
       <CoverContainer>
         <CoverContent>
-          <CoverH1>{'Transparent fund management'}</CoverH1>
+          <CoverH1>
+            <Trans>{'Transparent fund management'}</Trans>
+          </CoverH1>
           <CoverP>
-            {'All investments of the manager are recorded. Investors can choose the best manager at any time'}
+            <Trans>
+              {'All investments of the manager are recorded. Investors can choose the best manager at any time'}
+            </Trans>
           </CoverP>
         </CoverContent>
       </CoverContainer>
 
       <CoverContainer>
         <CoverContent>
-          <CoverH1>{'Governance'}</CoverH1>
+          <CoverH1>
+            <Trans>{'Governance'}</Trans>
+          </CoverH1>
           <CoverP>
-            {
-              'Fee rate and investable cryptos are determined by voting. You can vote with governance token and increase governance token by staking'
-            }
+            <Trans>
+              {
+                'Fee rate and investable cryptos are determined by voting. You can vote with governance token and increase governance token by staking'
+              }
+            </Trans>
           </CoverP>
 
           <CoverBtnWrapper>
@@ -210,7 +235,7 @@ export default function Home() {
                 marginRight={'15px'}
                 onClick={() => navigate(`/staking`)}
               >
-                {'Staking'} {hover ? <ArrowForward /> : <ArrowRight />}
+                <Trans>{'Staking'}</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
               </Button>
               <Button
                 primary={true}
@@ -221,7 +246,7 @@ export default function Home() {
                   window.open(VOTE_URL)
                 }}
               >
-                {'Governance'} {hover ? <ArrowForward /> : <ArrowRight />}
+                <Trans>{'Governance'}</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
               </Button>
             </RowBetween>
           </CoverBtnWrapper>
