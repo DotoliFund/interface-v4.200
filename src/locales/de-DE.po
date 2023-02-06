@@ -870,10 +870,6 @@ msgid "New Position"
 msgstr ""
 
 #: src/pages/Fee/index.tsx
-#~ msgid "No Fee"
-#~ msgstr ""
-
-#: src/pages/Fee/index.tsx
 msgid "No Fees"
 msgstr ""
 
@@ -1394,10 +1390,6 @@ msgstr ""
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
 msgid "Unexpected issue with estimating the gas. Please try again."
 msgstr ""
-
-#: src/components/PrivacyPolicy/index.tsx
-#~ msgid "Uniswap Labs' Terms of Service"
-#~ msgstr ""
 
 #: src/components/SearchModal/TokenImportCard.tsx
 msgid "Unknown Source"
