@@ -1,0 +1,1740 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2023-02-06 16:22+0900\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ko-KR\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "$-"
+msgstr "$-"
+
+#: src/components/CurrencyInputPanel/FiatValue.tsx
+msgid "$<0/>"
+msgstr "$<0/>"
+
+#: src/components/swap/GasEstimateBadge.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "${0}"
+msgstr "${0}"
+
+#: src/components/swap/TradePrice.tsx
+msgid "(${0})"
+msgstr "(${0})"
+
+#: src/components/AddressInputPanel/index.tsx
+msgid "(View on Explorer)"
+msgstr "(익스플로러에서 보기)"
+
+#: src/components/AccountDetails/index.tsx
+msgid "(clear all)"
+msgstr "(모두 지우기)"
+
+#: src/pages/Swap/index.tsx
+msgid "- Remove recipient"
+msgstr "- 받는 사람 제거"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "25%"
+msgstr "25%"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "50%"
+msgstr "50%"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "75%"
+msgstr "75%"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "<0>Current Price:</0><1><2/></1><3>{0} per {1}</3>"
+msgstr "<0>현재 가격:</0><1><2/></1><3>{0} 당 {1}</3>"
+
+#: src/components/swap/PriceImpactWarning.tsx
+msgid "A swap of this size may have a high price impact, given the current liquidity in the pool. There may be a large difference between the amount of your input token and what you will receive in the output token"
+msgstr "풀의 현재 유동성을 고려할 때 이 크기의 스왑은 가격에 큰 영향을 미칠 수 있습니다. 입력 토큰의 양과 출력 토큰으로 받게 될 금액 사이에는 큰 차이가 있을 수 있습니다."
+
+#: src/components/Menu/index.tsx
+msgid "About"
+msgstr "정보"
+
+#: src/components/swap/SwapModalHeader.tsx
+msgid "Accept"
+msgstr "수락"
+
+#: src/components/AccountDetails/index.tsx
+msgid "Account"
+msgstr "계정"
+
+#: src/components/SearchModal/ImportRow.tsx
+msgid "Active"
+msgstr "활성"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/AddLiquidity/index.tsx
+msgid "Add"
+msgstr "추가"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Add <0/> and <1/> to Uniswap V2"
+msgstr "Uniswap V2에 <0/> 및 <1/> 추가"
+
+#: src/components/NavigationTabs/index.tsx
+#: src/components/NavigationTabs/index.tsx
+#: src/pages/AddLiquidity/index.tsx
+msgid "Add Liquidity"
+msgstr "유동성 추가"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Add more liquidity"
+msgstr "더 많은 유동성 추가"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Add {0}"
+msgstr "{0}추가"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Add {0}/{1} V3 liquidity"
+msgstr "{0}/{1} V3 유동성 추가"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Added"
+msgstr "추가됨"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Added {0}"
+msgstr "{0} 추가됨"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Adding"
+msgstr "첨가"
+
+#: src/components/Settings/index.tsx
+msgid "Allow high price impact trades and skip the confirm screen. Use at your own risk."
+msgstr "높은 가격 영향 거래를 허용하고 확인 화면을 건너 뜁니다. 자신의 책임하에 사용하십시오."
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Allow the Dotoli Protocol to use your {0}"
+msgstr "Dotoli 프로토콜이 귀하의 {0}을(를) 사용하도록 허용"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Amount"
+msgstr "금액"
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+msgstr "교환을 실행하는 중에 오류가 발생했습니다. 가격변동 허용치를 높여야 할 수도 있습니다. 그래도 작동하지 않으면 교환중인 토큰이 Uniswap과 호환되지 않는 것일 수 있습니다. 참고: 전송 수수료 및 리베이스 토큰은 Uniswap V3와 호환되지 않습니다."
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Approve"
+msgstr "승인"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Approve {0}"
+msgstr "{0} 승인"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Approved"
+msgstr "승인됨"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Approving"
+msgstr "승인 중"
+
+#: src/components/Settings/index.tsx
+msgid "Are you sure?"
+msgstr "확실합니까?"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Auto"
+msgstr "자동"
+
+#: src/components/Settings/index.tsx
+msgid "Auto Router API"
+msgstr "자동 라우터 API"
+
+#: src/components/WalletModal/PendingView.tsx
+msgid "Back to wallet selection"
+msgstr "지갑 선택으로 돌아가기"
+
+#: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapCurrencyInputPanel.tsx
+msgid "Balance: {0}"
+msgstr "잔액: {0}"
+
+#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
+msgid "Balance: {selectedCurrencyBalance}"
+msgstr "잔액: {selectedCurrencyBalance}"
+
+#: src/components/FeeSelector/shared.tsx
+msgid "Best for exotic pairs."
+msgstr "색다른 쌍에 가장 적합합니다."
+
+#: src/components/FeeSelector/shared.tsx
+msgid "Best for most pairs."
+msgstr "대부분의 쌍에 가장 적합합니다."
+
+#: src/components/FeeSelector/shared.tsx
+msgid "Best for stable pairs."
+msgstr "안정적인 쌍에 가장 적합합니다."
+
+#: src/components/FeeSelector/shared.tsx
+msgid "Best for very stable pairs."
+msgstr "매우 안정적인 쌍에 가장 적합합니다."
+
+#: src/components/swap/SwapRoute.tsx
+msgid "Best price route costs ~{formattedGasPriceString} in gas."
+msgstr "최고의 가격 경로 비용은 ~{formattedGasPriceString} 가스입니다."
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Blockscout"
+msgstr "블록아웃"
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Bridge"
+msgstr "브릿지"
+
+#: src/constants/tokenSafety.tsx
+msgid "Caution"
+msgstr "주의"
+
+#: src/components/AccountDetails/index.tsx
+msgid "Change"
+msgstr "변경"
+
+#: src/components/Header/ChainConnectivityWarning.tsx
+msgid "Check network status"
+msgstr "네트워크 상태 확인"
+
+#: src/pages/Account/CTACards.tsx
+msgid "Check out fund manager guides."
+msgstr "매니저 가이드를 확인하세요."
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/WalletDropdown/AuthenticatedHeader.tsx
+msgid "Claim"
+msgstr "청구"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Claim <0/> for {0}"
+msgstr "{0} 에 대한 <0/> 청구"
+
+#: src/components/Header/index.tsx
+#: src/components/Menu/index.tsx
+msgid "Claim UNI"
+msgstr ""
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Claim UNI reward for {0}"
+msgstr "{0} 에 대한 UNI 청구"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Claim fees"
+msgstr "청구 수수료"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Claimed"
+msgstr "청구됨"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Claiming"
+msgstr "청구 중"
+
+#: src/components/Header/index.tsx
+msgid "Claiming UNI"
+msgstr "UNI 토큰 청구"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Clear All"
+msgstr "모두 지우기"
+
+#: src/components/SearchModal/ManageTokens.tsx
+msgid "Clear all"
+msgstr "모두 지우기"
+
+#: src/components/TokenSafety/index.tsx
+#: src/components/TransactionConfirmationModal/index.tsx
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Close"
+msgstr "닫기"
+
+#: src/components/Badge/RangeBadge.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Closed"
+msgstr "닫힘"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "Collect"
+msgstr "징수"
+
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Collect as {nativeWrappedSymbol}"
+msgstr "{nativeWrappedSymbol}으로 징수"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Collect fees"
+msgstr "수수료 징수"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Collect {0}/{1} fees"
+msgstr "{0}/{1} 수수료 징수"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "Collected"
+msgstr "징수됨"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "Collecting"
+msgstr "징수 중"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Collecting fees"
+msgstr "수수료 징수"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Collecting fees will withdraw currently available fees for you."
+msgstr "수수료를 징수하면 현재 사용 가능한 수수료가 인출됩니다."
+
+#: src/components/swap/ConfirmSwapModal.tsx
+#: src/components/swap/SwapModalFooter.tsx
+msgid "Confirm Swap"
+msgstr "스왑 확인"
+
+#: src/components/WalletModal/PendingView.tsx
+msgid "Confirm this connection in your wallet"
+msgstr ""
+
+#: src/components/ModalViews/index.tsx
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Confirm this transaction in your wallet"
+msgstr "지갑에서 이 거래를 확인하세요"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Confirm transaction in wallet"
+msgstr "지갑에서 이 연결을 확인하세요"
+
+#: src/components/Web3Status/index.tsx
+msgid "Connect"
+msgstr "연결하다"
+
+#: src/pages/AddLiquidity/index.tsx
+#: src/pages/Deposit/index.tsx
+#: src/pages/Fee/index.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
+#: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Withdraw/index.tsx
+#: src/state/burn/v3/hooks.tsx
+#: src/state/create/hooks.tsx
+#: src/state/deposit/hooks.tsx
+#: src/state/fee/hooks.tsx
+#: src/state/mint/v3/hooks.tsx
+#: src/state/swap/hooks.tsx
+#: src/state/withdraw/hooks.tsx
+msgid "Connect Wallet"
+msgstr "지갑 연결"
+
+#: src/components/WalletModal/index.tsx
+msgid "Connect a wallet"
+msgstr "지갑 연결"
+
+#: src/components/AccountDetails/index.tsx
+msgid "Connected with"
+msgstr "지갑 연결"
+
+#: src/components/WalletDropdown/AuthenticatedHeader.tsx
+#: src/theme/components.tsx
+msgid "Copied!"
+msgstr "복사되었습니다!"
+
+#: src/components/WalletDropdown/AuthenticatedHeader.tsx
+msgid "Copy"
+msgstr "복사"
+
+#: src/components/AccountDetails/index.tsx
+msgid "Copy Address"
+msgstr "주소 복사"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Create"
+msgstr "만들다"
+
+#: src/pages/Account/index.tsx
+msgid "Create Fund"
+msgstr "펀드 생성"
+
+#: src/components/NavigationTabs/index.tsx
+msgid "Create a pair"
+msgstr "쌍 만들기"
+
+#: src/components/ErrorBoundary/index.tsx
+msgid "Create an issue on GitHub"
+msgstr "GitHub에서 이슈 생성하기"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Create pool and add {0}/{1} V3 liquidity"
+msgstr "풀 생성 및 {0}/{1} V3 유동성 추가"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Create {0}/{1} V3 pool"
+msgstr "V3 풀 {0}/{1} 생성"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Created"
+msgstr "생성됨"
+
+#: src/components/FundListItem/index.tsx
+msgid "Created :"
+msgstr "생성 날짜"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Creating"
+msgstr "만들기"
+
+#: src/components/PositionPreview/index.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "Current price"
+msgstr "현재 가격"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Current {0} Price:"
+msgstr "현재 {0} 가격 :"
+
+#: src/components/Menu/index.tsx
+msgid "Dark Theme"
+msgstr "어두운 테마"
+
+#: src/components/WalletDropdown/DefaultMenu.tsx
+msgid "Dark theme"
+msgstr "어두운 테마"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Delegate voting power to {0}"
+msgstr "{0} 에게 위임한 투표권"
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Deposit/index.tsx
+#: src/pages/Deposit/index.tsx
+#: src/pages/Deposit/index.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundAccount/index.tsx
+msgid "Deposit"
+msgstr "입금"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Deposit Amounts"
+msgstr "입금액"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Deposit liquidity"
+msgstr "예금 유동성"
+
+#: src/components/NetworkAlert/NetworkAlert.tsx
+msgid "Deposit tokens to the {label} network."
+msgstr "{label} 네트워크에 토큰을 예치합니다."
+
+#: src/components/AccountDetails/index.tsx
+#: src/components/WalletDropdown/AuthenticatedHeader.tsx
+msgid "Disconnect"
+msgstr "연결 해제"
+
+#: src/components/Menu/index.tsx
+msgid "Discord"
+msgstr "디스코드"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Dismiss"
+msgstr "해제"
+
+#: src/components/Menu/index.tsx
+msgid "Docs"
+msgstr "문서"
+
+#: src/components/NavBar/MenuDropdown.tsx
+msgid "Documentation"
+msgstr "문서"
+
+#: src/components/SwitchLocaleLink/index.tsx
+msgid "Dotoli available in: <0>{0}</0>"
+msgstr "Dotoli 사용 가능 : <0>{0}</0>"
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "Dotoli' Terms of Service"
+msgstr ""
+
+#: src/components/FeeSelector/index.tsx
+msgid "Edit"
+msgstr "편집"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Efficiency Comparison"
+msgstr "효율성 비교"
+
+#: src/state/burn/v3/hooks.tsx
+msgid "Enter a percent"
+msgstr "퍼센트를 입력하세요."
+
+#: src/state/deposit/hooks.tsx
+#: src/state/fee/hooks.tsx
+#: src/state/swap/hooks.tsx
+#: src/state/withdraw/hooks.tsx
+msgid "Enter a recipient"
+msgstr "수령인을 입력하세요."
+
+#: src/state/create/hooks.tsx
+msgid "Enter a sender"
+msgstr "발송인을 입력하세요."
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Enter a valid slippage percentage"
+msgstr "유효한 슬리피지 요율을 입력하세요."
+
+#: src/state/create/hooks.tsx
+#: src/state/deposit/hooks.tsx
+#: src/state/fee/hooks.tsx
+#: src/state/mint/v3/hooks.tsx
+#: src/state/swap/hooks.tsx
+#: src/state/withdraw/hooks.tsx
+msgid "Enter an amount"
+msgstr "금액을 입력하세요."
+
+#: src/components/SearchModal/ManageTokens.tsx
+msgid "Enter valid token address"
+msgstr "유효한 토큰 주소를 입력하세요."
+
+#: src/hooks/useWrapCallback.tsx
+#: src/hooks/useWrapCallback.tsx
+msgid "Enter {0} amount"
+msgstr "{0} 금액을 입력하세요"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+#: src/components/TransactionConfirmationModal/index.tsx
+#: src/components/Web3Status/index.tsx
+msgid "Error"
+msgstr "오류"
+
+#: src/components/WalletModal/PendingView.tsx
+msgid "Error connecting"
+msgstr "연결 오류"
+
+#: src/components/swap/GasEstimateBadge.tsx
+msgid "Estimate may differ due to your wallet gas settings"
+msgstr "지갑의 가스 설정에 따라 예상 값이 다를 수 있습니다"
+
+#: src/components/swap/GasEstimateBadge.tsx
+msgid "Estimated network fee"
+msgstr "예상 네트워크 수수료"
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Etherscan"
+msgstr "이더스캔"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Execute proposal {proposalKey}."
+msgstr "제안 실행 {proposalKey}."
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "Expected Output"
+msgstr "예상 출력"
+
+#: src/components/Settings/index.tsx
+msgid "Expert Mode"
+msgstr "전문가 모드"
+
+#: src/components/Settings/index.tsx
+msgid "Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result in bad rates and lost funds."
+msgstr "전문가 모드를 사용하면 거래 확인창이 꺼지고 안 좋은 요율과 자금 손실을 초래하는 높은 슬리피지 거래를 허용할 수 있습니다."
+
+#: src/components/WalletDropdown/AuthenticatedHeader.tsx
+msgid "Explore"
+msgstr "탐구하다"
+
+#: src/pages/Account/CTACards.tsx
+msgid "Explore DotoliFund Analytics."
+msgstr "DotoliFund 분석 정보를 살펴보세요."
+
+#: src/components/Popups/FailedNetworkSwitchPopup.tsx
+msgid "Failed to switch networks from the Dotoli Interface. In order to use Dotoli on {0}, you must change the network in your wallet."
+msgstr "Dotoli 인터페이스에서 네트워크 전환에 실패했습니다. {0}에서 Dotoli를 사용하려면 지갑에서 네트워크를 변경해야 합니다."
+
+#: src/components/NavBar/MenuDropdown.tsx
+msgid "Feature Flags"
+msgstr "기능 플래그"
+
+#: src/pages/Fee/index.tsx
+#: src/pages/Fee/index.tsx
+#: src/pages/Fee/index.tsx
+#: src/pages/FundPage/index.tsx
+msgid "Fee"
+msgstr "수수료"
+
+#: src/components/PositionPreview/index.tsx
+msgid "Fee Tier"
+msgstr "수수료 등급"
+
+#: src/components/FeeSelector/index.tsx
+msgid "Fee tier"
+msgstr "수수료 등급"
+
+#: src/components/swap/SwapDetailsDropdown.tsx
+msgid "Fetching best price..."
+msgstr "최적 가격을 가져오는 중..."
+
+#: src/pages/Swap/index.tsx
+msgid "From"
+msgstr "스왑 전"
+
+#: src/pages/Swap/index.tsx
+msgid "From (at most)"
+msgstr "스왑 전(최대)"
+
+#: src/components/RangeSelector/PresetsButtons.tsx
+msgid "Full Range"
+msgstr "전체 범위"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Full range positions may earn less fees than concentrated positions. Learn more <0>here</0>."
+msgstr "전체 범위 포지션은 집중 포지션보다 적은 수수료를 받을 수 있습니다. 여기에서 <0>자세히 알아보기</0>."
+
+#: src/components/Header/index.tsx
+msgid "Fund"
+msgstr "펀드"
+
+#: src/pages/Staking/index.tsx
+msgid "Get Reward"
+msgstr "보상 받기"
+
+#: src/components/ErrorBoundary/index.tsx
+msgid "Get support on Discord"
+msgstr "Discord에서 지원 받기"
+
+#: src/components/Header/NetworkSelector.tsx
+#: src/components/Menu/index.tsx
+msgid "Help Center"
+msgstr "지원 센터"
+
+#: src/components/NavBar/MenuDropdown.tsx
+msgid "Help center"
+msgstr "지원 센터"
+
+#: src/components/FeeSelector/index.tsx
+msgid "Hide"
+msgstr "숨기기"
+
+#: src/components/NavBar/index.tsx
+msgid "Home"
+msgstr "홈"
+
+#: src/components/TokenSafety/index.tsx
+#: src/pages/AddLiquidity/index.tsx
+msgid "I understand"
+msgstr "이해합니다"
+
+#: src/components/SearchModal/BlockedToken.tsx
+#: src/components/SearchModal/ImportRow.tsx
+#: src/components/SearchModal/ImportToken.tsx
+msgid "Import"
+msgstr "수입"
+
+#: src/components/Badge/RangeBadge.tsx
+msgid "In range"
+msgstr "범위 내"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Increase Liquidity"
+msgstr "유동성 증가"
+
+#: src/components/swap/SwapModalHeader.tsx
+msgid "Input is estimated. You will sell at most <0>{0} {1}</0> or the transaction will revert."
+msgstr "입력이 추정됩니다. 최대 <0>{0} {1}</0>까지 판매하지 않으면 거래가 취소됩니다."
+
+#: src/components/WalletModal/InjectedOption.tsx
+msgid "Install MetaMask"
+msgstr "메타마스크 설치"
+
+#: src/pages/Swap/index.tsx
+msgid "Insufficient liquidity for this trade."
+msgstr "이 거래에 대한 유동성이 부족합니다."
+
+#: src/hooks/useWrapCallback.tsx
+#: src/hooks/useWrapCallback.tsx
+#: src/state/create/hooks.tsx
+#: src/state/deposit/hooks.tsx
+#: src/state/fee/hooks.tsx
+#: src/state/mint/v3/hooks.tsx
+#: src/state/mint/v3/hooks.tsx
+#: src/state/swap/hooks.tsx
+#: src/state/withdraw/hooks.tsx
+msgid "Insufficient {0} balance"
+msgstr "{0} 잔액 부족"
+
+#: src/components/Settings/index.tsx
+msgid "Interface Settings"
+msgstr "인터페이스 설정"
+
+#: src/state/mint/v3/hooks.tsx
+msgid "Invalid pair"
+msgstr "잘못된 쌍"
+
+#: src/state/mint/v3/hooks.tsx
+msgid "Invalid price input"
+msgstr "잘못된 가격 입력"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Invalid range selected. The min price must be lower than the max price."
+msgstr "잘못된 범위를 선택했습니다. 최소 가격은 최대 가격보다 낮아야 합니다."
+
+#: src/lib/hooks/swap/useSwapCallback.tsx
+#: src/state/deposit/hooks.tsx
+#: src/state/fee/hooks.tsx
+#: src/state/swap/hooks.tsx
+#: src/state/withdraw/hooks.tsx
+msgid "Invalid recipient"
+msgstr "잘못된 수신자"
+
+#: src/state/create/hooks.tsx
+msgid "Invalid sender"
+msgstr "잘못된 발신자"
+
+#: src/pages/Account/index.tsx
+msgid "Invest"
+msgstr "투자"
+
+#: src/components/FundList/index.tsx
+#: src/components/FundList/index.tsx
+msgid "Investing Funds"
+msgstr "투자중인 펀드"
+
+#: src/components/FundListItem/index.tsx
+msgid "Investors:"
+msgstr "투자자"
+
+#: src/components/Menu/index.tsx
+#: src/components/WalletDropdown/DefaultMenu.tsx
+#: src/components/WalletDropdown/LanguageMenu.tsx
+msgid "Language"
+msgstr "언어"
+
+#: src/pages/Account/index.tsx
+msgid "Learn"
+msgstr "배우기"
+
+#: src/pages/Account/CTACards.tsx
+msgid "Learn about managing fund"
+msgstr "펀드 관리에 대해 배우기"
+
+#: src/components/PrivacyPolicy/index.tsx
+#: src/components/PrivacyPolicy/index.tsx
+#: src/components/TokenSafety/index.tsx
+msgid "Learn more"
+msgstr "더 알아보기"
+
+#: src/components/Menu/index.tsx
+#: src/components/NavBar/MenuDropdown.tsx
+#: src/components/PrivacyPolicy/index.tsx
+msgid "Legal & Privacy"
+msgstr "법률 및 개인정보 보호"
+
+#: src/components/Menu/index.tsx
+msgid "Light Theme"
+msgstr "밝은 테마"
+
+#: src/components/WalletDropdown/DefaultMenu.tsx
+msgid "Light theme"
+msgstr "밝은 테마"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Liquidity"
+msgstr "유동성"
+
+#: src/components/LiquidityChartRangeInput/index.tsx
+msgid "Liquidity data not available."
+msgstr "유동성 데이터가 없습니다."
+
+#: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
+msgid "MAX"
+msgstr "최대"
+
+#: src/components/FundListItem/index.tsx
+msgid "Manager :"
+msgstr "관리자 :"
+
+#: src/components/FundList/index.tsx
+#: src/components/FundList/index.tsx
+msgid "Managing Fund"
+msgstr "관리중인 펀드"
+
+#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapCurrencyInputPanel.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Max"
+msgstr "최대"
+
+#: src/components/PositionPreview/index.tsx
+#: src/components/RangeSelector/index.tsx
+msgid "Max Price"
+msgstr "최고 가격"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Max price"
+msgstr "최고 가격"
+
+#: src/components/PositionListItem/index.tsx
+msgid "Max:"
+msgstr "최대"
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "Maximum sent"
+msgstr "최대 이체"
+
+#: src/components/Menu/index.tsx
+msgid "Menu"
+msgstr "메뉴"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Migrate {0}/{1} liquidity to V3"
+msgstr "{0}/{1} 유동성을 V3로 마이그레이션"
+
+#: src/components/PositionPreview/index.tsx
+#: src/components/RangeSelector/index.tsx
+msgid "Min Price"
+msgstr "최저 가격"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Min price"
+msgstr "최저 가격"
+
+#: src/components/PositionListItem/index.tsx
+msgid "Min:"
+msgstr "최소"
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "Minimum received"
+msgstr "최소 수령됨"
+
+#: src/lib/hooks/swap/useSwapCallback.tsx
+msgid "Missing dependencies"
+msgstr "누락된 종속성"
+
+#: src/pages/Account/index.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundAccount/index.tsx
+msgid "More"
+msgstr "추가"
+
+#: src/components/Header/index.tsx
+#: src/components/NavBar/index.tsx
+#: src/pages/FundPage/index.tsx
+msgid "My Account"
+msgstr "내 계정"
+
+#: src/pages/Account/index.tsx
+#: src/pages/Account/index.tsx
+msgid "My Funds"
+msgstr "내 펀드"
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "Network Fee"
+msgstr "네트워크 요금"
+
+#: src/components/Header/ChainConnectivityWarning.tsx
+msgid "Network Warning"
+msgstr "네트워크 경고"
+
+#: src/pages/FundAccount/index.tsx
+msgid "New Position"
+msgstr "새로운 포지션"
+
+#: src/pages/Fee/index.tsx
+msgid "No Fees"
+msgstr "수수료 없음"
+
+#: src/components/FeeSelector/FeeTierPercentageBadge.tsx
+msgid "No data"
+msgstr "데이터 없음"
+
+#: src/components/BarChart/fee.tsx
+msgid "No fee tokens"
+msgstr "수수료 토큰 없음"
+
+#: src/components/SearchModal/CurrencySearch.tsx
+#: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
+msgid "No results found."
+msgstr "검색 결과가 없습니다"
+
+#: src/components/BarChart/stacked.tsx
+#: src/components/BarChart/token.tsx
+#: src/components/BarChart/volume.tsx
+msgid "No token data"
+msgstr "토큰 데이터 없음"
+
+#: src/components/PieChart/index.tsx
+msgid "No tokens"
+msgstr "토큰 없음"
+
+#: src/constants/tokenSafety.tsx
+msgid "Not Available"
+msgstr "사용 불가"
+
+#: src/components/FeeSelector/FeeTierPercentageBadge.tsx
+msgid "Not created"
+msgstr "생성되지 않음"
+
+#: src/components/Settings/index.tsx
+msgid "ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING."
+msgstr "당신이 무엇을 하고 있는지 알고 있는 경우에만 이 모드를 사용하십시오."
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Optimism Bridge"
+msgstr ""
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Optimistic Etherscan"
+msgstr ""
+
+#: src/components/Badge/RangeBadge.tsx
+msgid "Out of range"
+msgstr "범위를 벗어남"
+
+#: src/components/swap/SwapModalHeader.tsx
+msgid "Output is estimated. You will receive at least <0>{0} {1}</0> or the transaction will revert."
+msgstr "산출물이 추정됩니다. 최소 <0>{0} {1}</0>을(를) 받지 않으면 거래가 취소됩니다."
+
+#: src/components/swap/SwapModalHeader.tsx
+msgid "Output will be sent to <0>{0}</0>"
+msgstr "산출물이 <0>{0}</0>(으)로 전송됩니다."
+
+#: src/components/Header/index.tsx
+#: src/components/NavBar/index.tsx
+msgid "Overview"
+msgstr "개요"
+
+#: src/components/WalletDropdown/DefaultMenu.tsx
+msgid "Pending"
+msgstr "보류 중"
+
+#: src/constants/tokenSafety.tsx
+msgid "Please do your own research before trading."
+msgstr "거래하기 전에 스스로 조사하십시오."
+
+#: src/components/Settings/index.tsx
+msgid "Please type the word \"{confirmWord}\" to enable expert mode."
+msgstr "전문가 모드를 활성화하려면 \"{confirmWord}\"라는 단어를 입력하세요."
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Polygon Bridge"
+msgstr ""
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Polygonscan"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Pool"
+msgstr "수영장"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Pooled {0}:"
+msgstr ""
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Portal Bridge"
+msgstr ""
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Preview"
+msgstr "미리보기"
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "Price Impact"
+msgstr "가격 영향"
+
+#: src/pages/Swap/index.tsx
+msgid "Price Impact Too High"
+msgstr "가격 영향이 너무 높음"
+
+#: src/components/swap/SwapModalHeader.tsx
+msgid "Price Updated"
+msgstr "가격 업데이트됨"
+
+#: src/components/swap/PriceImpactWarning.tsx
+msgid "Price impact warning"
+msgstr "가격 영향 경고"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Price range"
+msgstr "가격 범위"
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "Protocol Disclaimer"
+msgstr "프로토콜 고지 사항"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Queue proposal {proposalKey}."
+msgstr "대기열 제안 {proposalKey}."
+
+#: src/components/swap/UnsupportedCurrencyFooter.tsx
+msgid "Read more about unsupported assets"
+msgstr "지원되지 않는 자산에 대해 자세히 알아보기"
+
+#: src/components/AccountDetails/index.tsx
+msgid "Recent Transactions"
+msgstr "최근 거래"
+
+#: src/components/AddressInputPanel/index.tsx
+msgid "Recipient"
+msgstr "받는 사람"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Remove"
+msgstr "제거"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Remove <0/> and <1/>"
+msgstr "<0/> 및 <1/> 제거"
+
+#: src/components/NavigationTabs/index.tsx
+#: src/components/NavigationTabs/index.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Remove Liquidity"
+msgstr "유동성 제거"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Removed"
+msgstr "제거됨"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Removing"
+msgstr "제거 중"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "Removing {0} {1} and {2} {3}"
+msgstr "{0} {1} 및 {2} {3} 제거 중"
+
+#: src/components/Menu/index.tsx
+msgid "Request Features"
+msgstr "요청 기능"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Return"
+msgstr "반환"
+
+#: src/components/SearchModal/CurrencySearch.tsx
+#: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
+msgid "Search name or paste address"
+msgstr "이름 검색 또는 주소 붙여 넣기"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Select Pair"
+msgstr "쌍 선택"
+
+#: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
+#: src/components/SearchModal/CurrencySearch.tsx
+#: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
+#: src/state/create/hooks.tsx
+#: src/state/deposit/hooks.tsx
+#: src/state/fee/hooks.tsx
+#: src/state/swap/hooks.tsx
+#: src/state/withdraw/hooks.tsx
+msgid "Select a token"
+msgstr "토큰 선택"
+
+#: src/components/Header/NetworkSelector.tsx
+msgid "Select a {0}network"
+msgstr "{0}네트워크 선택"
+
+#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapCurrencyInputPanel.tsx
+msgid "Select token"
+msgstr "토큰 선택"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Selected Range"
+msgstr "선택한 범위"
+
+#: src/pages/AddLiquidity/index.tsx
+#: src/pages/AddLiquidity/index.tsx
+msgid "Set Price Range"
+msgstr "가격 범위 설정"
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Set Starting Price"
+msgstr "시작 가격 설정"
+
+#: src/components/Settings/index.tsx
+msgid "Settings"
+msgstr "설정"
+
+#: src/components/FundList/index.tsx
+#: src/components/FundList/index.tsx
+#: src/components/PositionList/index.tsx
+#: src/components/PositionList/index.tsx
+#: src/pages/FundAccount/index.tsx
+msgid "Show closed positions"
+msgstr "마감된 위치 표시"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Slippage tolerance"
+msgstr "슬리피지 허용 오차"
+
+#: src/components/swap/UnsupportedCurrencyFooter.tsx
+msgid "Some assets are not available through this interface because they may not work well with the smart contracts or we are unable to allow trading for legal reasons."
+msgstr "일부 자산은 스마트 계약과 잘 작동하지 않거나 법적 이유로 거래를 허용할 수 없기 때문에 이 인터페이스를 통해 사용할 수 없습니다."
+
+#: src/components/ErrorBoundary/index.tsx
+msgid "Something went wrong"
+msgstr "문제가 발생했습니다"
+
+#: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Stake"
+msgstr "스테이크"
+
+#: src/components/Header/index.tsx
+#: src/components/NavBar/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Staking"
+msgstr "스테이킹"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Submit new proposal"
+msgstr "새 제안 제출"
+
+#: src/pages/FundPage/index.tsx
+msgid "Subscribe"
+msgstr "구독"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Success"
+msgstr "성공"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/swap/SwapHeader.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Swap/index.tsx
+msgid "Swap"
+msgstr "스왑"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Swap <0/> for exactly <1/>"
+msgstr "<0/>을 정확한 <1/>로 바꿉니다."
+
+#: src/pages/Swap/index.tsx
+msgid "Swap Anyway"
+msgstr "어쨌든 스왑"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Swap exactly <0/> for <1/>"
+msgstr "정확한 <0/>를 <1/>로 바꿉니다."
+
+#: src/lib/hooks/swap/useSendSwapTransaction.tsx
+#: src/lib/hooks/swap/useSendSwapTransaction.tsx
+msgid "Swap failed: {0}"
+msgstr "스왑 실패: {0}"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Swapped"
+msgstr "스왑됨"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Swapping"
+msgstr "스왑 중"
+
+#: src/components/swap/ConfirmSwapModal.tsx
+msgid "Swapping {0} {1} for {2} {3}"
+msgstr "{0} {1} 을 {2} {3}(으)로 스왑"
+
+#: src/components/FundListItem/index.tsx
+msgid "TVL :"
+msgstr "TVL"
+
+#: src/components/Popups/SurveyPopup.tsx
+msgid "Take a 10 minute survey to help us improve your experience in the Dotoli."
+msgstr "Dotoli에서의 경험을 개선하는 데 도움이 되는 10분 설문조사에 참여해 주세요."
+
+#: src/components/Popups/SurveyPopup.tsx
+msgid "Tell us what you think ↗"
+msgstr "당신의 생각을 알려주세요"
+
+#: src/components/FeeSelector/index.tsx
+msgid "The % you will earn in fees."
+msgstr "받는 수수료 %"
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
+msgstr "Uniswap 불변 x * y = k가 스왑에 의해 충족되지 않았습니다. 이는 일반적으로 스와핑하는 토큰 중 하나가 이체시 사용자 지정 동작을 통합함을 의미합니다."
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "The amount you expect to receive at the current market price. You may receive less or more if the market price changes while your transaction is pending."
+msgstr "현재 시장 가격에서 받을 것으로 예상되는 금액입니다. 거래가 보류 중인 동안 시장 가격이 변경되면 더 적게 또는 더 많이 받을 수 있습니다."
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "The app fetches blockchain data from The Graph’s hosted service."
+msgstr "앱은 Graph의 호스팅 서비스에서 블록체인 데이터를 가져옵니다."
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "The app fetches on-chain data and constructs contract calls with an Alchemy API."
+msgstr "앱은 온체인 데이터를 가져오고 Alchemy API를 사용하여 계약 호출을 구성합니다."
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "The app fetches the optimal trade route from a Uniswap Labs server."
+msgstr "앱은 Uniswap Labs 서버에서 최적의 무역 경로를 가져옵니다."
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "The app logs anonymized usage statistics in order to improve over time."
+msgstr "앱은 시간이 지남에 따라 개선하기 위해 익명화된 사용 통계를 기록합니다."
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "The app securely collects your wallet address and shares it with TRM Labs Inc. for risk and compliance reasons."
+msgstr "앱은 위험 및 규정 준수를 위해 지갑 주소를 안전하게 수집하고 TRM Labs Inc.와 공유합니다."
+
+#: src/components/WalletModal/PendingView.tsx
+msgid "The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
+msgstr "연결 시도가 실패했습니다. 다시 시도를 클릭하고 단계에 따라 지갑에 연결하십시오."
+
+#: src/components/Header/Polling.tsx
+msgid "The current fast gas amount for sending a transaction on L1. Gas fees are paid in Ethereum's native currency Ether (ETH) and denominated in GWEI."
+msgstr "L1에서 트랜잭션을 보내기 위한 현재 빠른 가스 양입니다. 가스 요금은 Ethereum의 기본 통화인 Ether(ETH)로 지불되며 GWEI로 표시됩니다."
+
+#: src/components/CurrencyInputPanel/FiatValue.tsx
+msgid "The estimated difference between the USD values of input and output amounts."
+msgstr "입력 금액과 출력 금액의 USD 값 간의 예상 차이입니다."
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "The fee paid to miners who process your transaction. This must be paid in {0}."
+msgstr "거래를 처리하는 광부에게 지불되는 수수료. 이것은 {0}에서 지불해야 합니다."
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "The impact your trade has on the market price of this pool."
+msgstr "귀하의 거래가 이 풀의 시장 가격에 미치는 영향."
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "The input token cannot be transferred. There may be an issue with the input token."
+msgstr "입력 토큰을 이체할 수 없습니다. 입력 토큰에 문제가 있을 수 있습니다."
+
+#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapCurrencyInputPanel.tsx
+msgid "The market price is outside your specified price range. Single-asset deposit only."
+msgstr "시장 가격이 지정된 가격 범위를 벗어났습니다. 단일 자산 예금만."
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "The minimum amount you are guaranteed to receive. If the price slips any further, your transaction will revert."
+msgstr "받을 수 있는 최소 금액입니다. 가격이 더 하락하면 거래가 되돌릴 것입니다."
+
+#: src/components/Header/Polling.tsx
+msgid "The most recent block number on this network. Prices update on every block."
+msgstr "이 네트워크의 가장 최근 블록 번호입니다. 가격은 모든 블록에서 업데이트됩니다."
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "The output token cannot be transferred. There may be an issue with the output token."
+msgstr "산출 토큰을 이체할 수 없습니다. 산출 토큰에 문제가 있을 수 있습니다."
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+msgstr "산출 토큰을 이체할 수 없습니다. 산출 토큰에 문제가 있을 수 있습니다. 참고: 이체 수수료 및 리베이스 토큰이 Uniswap V3와 호환되지 않습니다."
+
+#: src/components/Badge/RangeBadge.tsx
+msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
+msgstr "이 풀의 가격이 선택한 범위를 벗어났습니다. 귀하의 포지션은 현재 수수료를 벌고 있지 않습니다."
+
+#: src/components/Badge/RangeBadge.tsx
+msgid "The price of this pool is within your selected range. Your position is currently earning fees."
+msgstr "이 풀의 가격은 선택한 범위 내에 있습니다. 귀하의 포지션은 현재 수수료를 받고 있습니다."
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
+msgstr "기한이 지났기 때문에 거래를 보낼 수 없습니다. 거래 기한이 너무 낮지 않은지 확인하십시오."
+
+#: src/components/LiquidityChartRangeInput/index.tsx
+msgid "There is no liquidity data."
+msgstr "유동성 데이터가 없습니다."
+
+#: src/components/PrivacyPolicy/index.tsx
+msgid "This app uses the following third-party APIs:"
+msgstr "이 앱은 다음 타사 API를 사용합니다."
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction."
+msgstr "유동성을 추가하려면 이 풀을 초기화해야 합니다. 초기화하려면 풀의 시작 가격을 선택하십시오. 그런 다음 유동성 가격 범위와 예금 금액을 입력하십시오. 초기화 트랜잭션으로 인해 가스 요금이 평소보다 높아집니다."
+
+#: src/components/swap/SwapRoute.tsx
+msgid "This route optimizes your total output by considering split routes, multiple hops, and the gas cost of each step."
+msgstr "이 경로는 분할 경로, 다중 홉 및 각 단계의 가스 비용을 고려하여 총 출력을 최적화합니다."
+
+#: src/components/SearchModal/ImportToken.tsx
+msgid "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
+msgstr "이 토큰은 활성 토큰 목록에 표시되지 않습니다. 거래하려는 토큰인지 확인하십시오."
+
+#: src/components/SearchModal/BlockedToken.tsx
+msgid "This token is not supported in the Uniswap Labs app"
+msgstr "이 토큰은 Uniswap Labs 앱에서 지원되지 않습니다."
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+msgstr "이 거래는 가격 변동으로 인해 성공하지 못합니다. 슬리피지 허용치를 높이십시오. 참고: 이체 수수료 및 리베이스 토큰은 Uniswap V3와 호환되지 않습니다."
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
+msgstr "이 거래는 가격 변동이나 이체 수수료로 인해 성공하지 못합니다. 슬리피지 허용치를 높이십시오."
+
+#: src/components/SearchModal/ManageTokens.tsx
+msgid "Tip: Custom tokens are stored locally in your browser"
+msgstr "팁: 사용자 지정 토큰은 브라우저에 로컬로 저장됩니다."
+
+#: src/pages/Swap/index.tsx
+msgid "To"
+msgstr "스왑 후"
+
+#: src/pages/Swap/index.tsx
+msgid "To (at least)"
+msgstr "스왑 후(최소)"
+
+#: src/components/SearchModal/BlockedToken.tsx
+msgid "Token not supported"
+msgstr "지원되지 않는 토큰"
+
+#: src/pages/Account/CTACards.tsx
+msgid "Top funds"
+msgstr "상위 펀드"
+
+#: src/components/swap/RouterLabel.tsx
+msgid "Trade Route"
+msgstr "교역로"
+
+#: src/components/Settings/index.tsx
+msgid "Transaction Settings"
+msgstr "거래 설정"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Transaction Submitted"
+msgstr "제출된 트랜잭션"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Transaction completed in"
+msgstr "거래 완료"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Transaction deadline"
+msgstr "거래 마감 시간"
+
+#: src/lib/hooks/swap/useSendSwapTransaction.tsx
+#: src/lib/hooks/swap/useSendSwapTransaction.tsx
+msgid "Transaction rejected"
+msgstr "거래 거부됨"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Transaction submitted"
+msgstr "거래 제출"
+
+#: src/components/WalletDropdown/DefaultMenu.tsx
+#: src/components/WalletDropdown/TransactionMenu.tsx
+msgid "Transactions"
+msgstr "트랜잭션"
+
+#: src/components/WalletModal/PendingView.tsx
+msgid "Try Again"
+msgstr "다시 시도하십시오"
+
+#: src/components/Settings/index.tsx
+msgid "Turn On Expert Mode"
+msgstr "전문가 모드 켜기"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "Unclaimed fees"
+msgstr "미 청구 수수료"
+
+#: src/lib/hooks/swap/useSendSwapTransaction.tsx
+msgid "Unexpected error. Could not estimate gas for the swap."
+msgstr "예기치 않은 오류. 스왑을 위한 가스를 추정할 수 없습니다."
+
+#: src/lib/hooks/swap/useSendSwapTransaction.tsx
+msgid "Unexpected issue with estimating the gas. Please try again."
+msgstr "가스 추정에 예상치 못한 문제가 있습니다. 다시 시도해 주세요."
+
+#: src/components/SearchModal/TokenImportCard.tsx
+msgid "Unknown Source"
+msgstr "불분명 한 출처"
+
+#: src/utils/swapErrorToUserReadableMessage.tsx
+msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+msgstr "알 수 없는 오류 {0}. 슬리피지 허용치를 높이십시오. 참고: 이체 수수료 및 리베이스 토큰은 Uniswap V3와 호환되지 않습니다."
+
+#: src/pages/AddLiquidity/index.tsx
+#: src/pages/Deposit/index.tsx
+#: src/pages/Fee/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Withdraw/index.tsx
+msgid "Unsupported Asset"
+msgstr "지원되지 않는 자산"
+
+#: src/components/swap/UnsupportedCurrencyFooter.tsx
+msgid "Unsupported Assets"
+msgstr "지원되지 않는 자산"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/Swap/index.tsx
+msgid "Unwrap"
+msgstr "Unwrap"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Unwrap <0/> to {0}"
+msgstr "<0/> 에서 {0} Unwrap"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Unwrapped"
+msgstr "Unwrapped"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Unwrapping"
+msgstr "Unwrapping"
+
+#: src/components/Settings/index.tsx
+msgid "Use the Uniswap Labs API to get faster quotes."
+msgstr "Uniswap Labs API를 사용하여 더 빠른 견적을 받으세요."
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "View on Etherscan"
+msgstr "Etherscan에서 보기"
+
+#: src/components/AccountDetails/index.tsx
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "View on Explorer"
+msgstr "Explorer에서 보기"
+
+#: src/components/NavBar/MenuDropdown.tsx
+msgid "View token analytics"
+msgstr "토큰 분석 보기"
+
+#: src/components/ModalViews/index.tsx
+msgid "View transaction on Explorer"
+msgstr "Explorer에서 거래 보기"
+
+#: src/components/Header/index.tsx
+#: src/components/NavBar/index.tsx
+msgid "Vote"
+msgstr "투표"
+
+#: src/components/NavBar/MenuDropdown.tsx
+msgid "Vote in governance"
+msgstr "거버넌스 투표"
+
+#: src/components/TransactionConfirmationModal/index.tsx
+msgid "Waiting for confirmation"
+msgstr "확인 대기 중"
+
+#: src/components/WalletModal/PendingView.tsx
+msgid "Waiting to connect"
+msgstr "연결 대기 중"
+
+#: src/components/AddressInputPanel/index.tsx
+msgid "Wallet Address or ENS name"
+msgstr "지갑 주소 또는 ENS 이름"
+
+#: src/constants/tokenSafety.tsx
+msgid "Warning"
+msgstr "경고"
+
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/Staking/index.tsx
+#: src/pages/Withdraw/index.tsx
+#: src/pages/Withdraw/index.tsx
+#: src/pages/Withdraw/index.tsx
+msgid "Withdraw"
+msgstr "출금"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Withdraw deposited liquidity"
+msgstr "예치된 유동성 출금"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/pages/Swap/index.tsx
+msgid "Wrap"
+msgstr "Wrap"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "Wrap <0/> to {0}"
+msgstr "<0/> 에서 {0}바꿈"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Wrapped"
+msgstr "Wrapped"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Wrapping"
+msgstr "Wrapping"
+
+#: src/pages/Deposit/index.tsx
+msgid "You can now deposit {0}"
+msgstr "이제 {0}를 입금할 수 있습니다."
+
+#: src/pages/Staking/index.tsx
+msgid "You can now stake {0}"
+msgstr "이제 {0}를 스테이킹할 수 있습니다."
+
+#: src/components/Header/ChainConnectivityWarning.tsx
+msgid "You may have lost your network connection, or {label} might be down right now."
+msgstr "네트워크 연결이 끊어졌거나 {label}이(가) 지금 다운되었을 수 있습니다."
+
+#: src/components/Header/ChainConnectivityWarning.tsx
+msgid "You may have lost your network connection."
+msgstr "네트워크 연결이 끊어졌을 수 있습니다."
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "You must give the Dotoli smart contracts permission to use your {0}. You only have to do this once per token."
+msgstr "{0}을 사용하려면 Dotoli 스마트 계약에 권한을 부여해야합니다. 토큰 당 한 번만 이 작업을 수행하면 됩니다."
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "You will also collect fees earned from this position."
+msgstr "이 포지션에서 얻은 수수료도 징수합니다."
+
+#: src/pages/FundAccount/index.tsx
+msgid "Your active V3 liquidity positions will appear here."
+msgstr "활성 V3 유동성 포지션이 여기에 표시됩니다."
+
+#: src/pages/Account/index.tsx
+msgid "Your connected network is unsupported."
+msgstr "연결된 네트워크가 지원되지 않습니다."
+
+#: src/pages/Account/index.tsx
+msgid "Your investing funds will appear here."
+msgstr "귀하의 투자중인 펀드가 여기에 나타납니다."
+
+#: src/pages/Account/index.tsx
+msgid "Your managing fund will appear here."
+msgstr "귀하의 관리중인 펀드가 여기에 나타납니다."
+
+#: src/components/Badge/RangeBadge.tsx
+msgid "Your position has 0 liquidity, and is not earning fees."
+msgstr "귀하의 포지션은 유동성이 0이며 수수료를 받지 않습니다."
+
+#: src/components/LiquidityChartRangeInput/index.tsx
+msgid "Your position will appear here."
+msgstr "귀하의 포지션이 여기에 나타납니다."
+
+#: src/components/PositionPreview/index.tsx
+#: src/components/PositionPreview/index.tsx
+msgid "Your position will be 100% composed of {0} at this price"
+msgstr "이 가격에서 귀하의 포지션은 100% {0}(으)로 구성됩니다"
+
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "Your position will be 100% {0} at this price."
+msgstr "이 가격에서 귀하의 포지션은 100% {0}이(가) 됩니다."
+
+#: src/pages/AddLiquidity/index.tsx
+msgid "Your position will not earn fees or be used in trades until the market price moves into your range."
+msgstr "귀하의 포지션은 시장 가격이 귀하의 범위로 이동할 때까지 수수료를 받거나 거래에 사용되지 않습니다."
+
+#: src/components/PositionList/index.tsx
+#: src/components/PositionList/index.tsx
+msgid "Your positions"
+msgstr "내 포지션"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Your transaction may be frontrun"
+msgstr "귀하의 거래는 프론트런일 수 있습니다"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Your transaction may fail"
+msgstr "거래가 실패할 수 있습니다"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Your transaction will revert if it is pending for more than this period of time."
+msgstr "이 기간 이상 보류중인 거래는 취소됩니다."
+
+#: src/components/TransactionSettings/index.tsx
+msgid "Your transaction will revert if the price changes unfavorably by more than this percentage."
+msgstr "가격이 이 요율 이상으로 불리하게 변경되면 거래가 취소됩니다."
+
+#: src/components/WalletDropdown/TransactionMenu.tsx
+msgid "Your transactions will appear here"
+msgstr "거래가 여기에 표시됩니다."
+
+#: src/components/AccountDetails/index.tsx
+msgid "Your transactions will appear here..."
+msgstr "거래 내역이 여기에 표시됩니다 ..."
+
+#: src/components/swap/AdvancedSwapDetails.tsx
+msgid "after slippage"
+msgstr "미끄러진 후"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "and"
+msgstr "그리고"
+
+#: src/components/Settings/index.tsx
+msgid "confirm"
+msgstr "확인"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "failed"
+msgstr "실패한"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "fees"
+msgstr "수수료"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "for"
+msgstr "찬성"
+
+#: src/components/Header/Polling.tsx
+msgid "gwei"
+msgstr "gwei"
+
+#: src/components/Header/ChainConnectivityWarning.tsx
+msgid "here."
+msgstr "여기"
+
+#: src/components/TransactionSettings/index.tsx
+msgid "minutes"
+msgstr "분"
+
+#: src/components/WalletDropdown/AuthenticatedHeader.tsx
+msgid "reward"
+msgstr "보상"
+
+#: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "staking"
+msgstr "스테이킹"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "to"
+msgstr "에게"
+
+#: src/components/SearchModal/ImportRow.tsx
+msgid "via {0}"
+msgstr "{0} 경유"
+
+#: src/components/SearchModal/TokenImportCard.tsx
+msgid "via {0} token list"
+msgstr "{0} 토큰 목록을 통해"
+
+#: src/components/SearchModal/ImportToken.tsx
+msgid "{0, plural, =1 {Import token} other {Import tokens}}"
+msgstr "{0, plural, =1 {가져오기 토큰} other {가져오기 토큰}}"
+
+#: src/constants/tokenSafety.tsx
+msgid "{0, plural, =1 {This token isn't verified} other {These tokens aren't verified}}"
+msgstr "{0, plural, =1 {이 토큰은 확인되지 않음} other {이 토큰은 확인되지 않음}}"
+
+#: src/constants/tokenSafety.tsx
+msgid "{0, plural, =1 {You can't trade this token using the Uniswap App.} other {You can't trade these tokens using the Uniswap App.}}"
+msgstr "{0, plural, =1 {Uniswap 앱을 사용하여 이 토큰을 거래할 수 없습니다.} other {Uniswap 앱을 사용하여 이러한 토큰을 거래할 수 없습니다.}}"
+
+#: src/components/RateToggle/index.tsx
+#: src/components/RateToggle/index.tsx
+msgid "{0}"
+msgstr "{0}"
+
+#: src/components/SearchModal/ManageTokens.tsx
+msgid "{0} Custom Tokens"
+msgstr "{0} 맞춤 토큰"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "{0} Fees Earned:"
+msgstr "{0} 적립 수수료:"
+
+#: src/components/Web3Status/index.tsx
+msgid "{0} Pending"
+msgstr "{0} 대기 중"
+
+#: src/components/PositionPreview/index.tsx
+#: src/components/PositionPreview/index.tsx
+#: src/components/PositionPreview/index.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "{0} per {1}"
+msgstr "{1} 당 {0}"
+
+#: src/components/Header/TopBar.tsx
+msgid "{0} {nativeCurrencySymbol}"
+msgstr "{0} {nativeCurrencySymbol}"
+
+#: src/components/CurrencyInputPanel/FiatValue.tsx
+#: src/components/FeeSelector/FeeOption.tsx
+#: src/components/PositionPreview/index.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/Pool/PositionPage.tsx
+msgid "{0}%"
+msgstr "{0}%"
+
+#: src/components/FeeSelector/index.tsx
+msgid "{0}% fee tier"
+msgstr "{0}% 수수료 등급"
+
+#: src/components/RoutingDiagram/RoutingDiagram.tsx
+msgid "{0}% pool"
+msgstr "{0}% 수영장"
+
+#: src/components/FeeSelector/FeeTierPercentageBadge.tsx
+msgid "{0}% select"
+msgstr "{0}% 선택"
+
+#: src/components/NetworkAlert/NetworkAlert.tsx
+msgid "{label} token bridge"
+msgstr "{label} 토큰 브릿지"
+
+#: src/pages/RemoveLiquidity/V3.tsx
+msgid "{percentForSlider}%"
+msgstr "{percentForSlider}%"
+
+#: src/components/InputStepCounter/InputStepCounter.tsx
+msgid "{tokenB} per {tokenA}"
+msgstr "{tokenA} 당 {tokenB}"
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "← Back to Fund"
+msgstr "← 펀드로 돌아가기"

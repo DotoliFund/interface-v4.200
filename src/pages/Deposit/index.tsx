@@ -288,7 +288,7 @@ export default function Deposit() {
                 <DepositSection>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
                     <CurrencyInputPanel
-                      label={<Trans>deposit123</Trans>}
+                      label={<Trans>Deposit</Trans>}
                       value={formattedAmounts[Field.INPUT]}
                       showMaxButton={showMaxButton}
                       currency={currencies[Field.INPUT] ?? null}

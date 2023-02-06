@@ -167,7 +167,7 @@ export default function Home() {
           <CoverH1>{'Efficient Profits and Fees'}</CoverH1>
           <CoverP>
             {
-              'More benefits for managers and investors. Because of no third parties, Managers are rewarded according to their investment results'
+              'More benefits for managers and investors. Because investor invest to manager directly, no invest company, Managers are rewarded according to their investment results'
             }
           </CoverP>
         </CoverContent>

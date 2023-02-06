@@ -263,7 +263,7 @@ export default function Fee() {
                 {isFeeEmpty ? (
                   <ButtonPrimary disabled={true}>
                     <ThemedText.DeprecatedMain mb="4px">
-                      <Trans>No Fee</Trans>
+                      <Trans>No Fees</Trans>
                     </ThemedText.DeprecatedMain>
                   </ButtonPrimary>
                 ) : addIsUnsupported ? (

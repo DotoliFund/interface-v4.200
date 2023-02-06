@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
 import { useWeb3React } from '@web3-react/core'
+import noise from 'assets/images/noise.png'
 import { AutoColumn } from 'components/Column'
 import SearchSmall from 'components/Search'
 import { getChainInfoOrDefault } from 'constants/chainInfo'
@@ -15,11 +16,24 @@ import styled, { useTheme } from 'styled-components/macro'
 
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 import { ExternalLink, ThemedText } from '../../theme'
-import { CardNoise } from '../claim/styled'
 import Menu from '../Menu'
 import Row, { RowBetween } from '../Row'
 import { Dots } from '../swap/styleds'
 import HolidayOrnament from './HolidayOrnament'
+
+export const CardNoise = styled.span`
+  background: url(${noise});
+  background-size: cover;
+  mix-blend-mode: overlay;
+  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+  position: absolute;
+  top: 0;
+  left: 0;
+  user-select: none;
+`
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;

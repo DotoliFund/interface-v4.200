@@ -3,7 +3,6 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 import { sendEvent } from 'components/analytics'
 import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
 import { networkConnection } from 'connection'
 import { getConnection, getConnectionName, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils'
 import usePrevious from 'hooks/usePrevious'
@@ -19,9 +18,7 @@ import { isMobile } from 'utils/userAgent'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { useModalIsOpen, useToggleWalletModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
-import { ExternalLink, ThemedText } from '../../theme'
 import AccountDetails from '../AccountDetails'
-import { LightCard } from '../Card'
 import Modal from '../Modal'
 import { CoinbaseWalletOption, OpenCoinbaseWalletOption } from './CoinbaseWalletOption'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
@@ -280,39 +277,6 @@ export default function WalletModal({
             <Trans>Connect a wallet</Trans>
           </HoverText>
         </HeaderRow>
-      )
-    }
-
-    function getTermsOfService(nftFlagEnabled: boolean, walletView: string) {
-      if (nftFlagEnabled && walletView === WALLET_VIEWS.PENDING) return null
-      return nftFlagEnabled ? (
-        <AutoRow style={{ flexWrap: 'nowrap', padding: '4px 16px' }}>
-          <ThemedText.BodySecondary fontSize={16} lineHeight={'24px'}>
-            <Trans>
-              By connecting a wallet, you agree to Uniswap Labs’{' '}
-              <ExternalLink href="https://uniswap.org/terms-of-service/">Terms of Service</ExternalLink> and consent to
-              its <ExternalLink href="https://uniswap.org/privacy-policy">Privacy Policy</ExternalLink>.
-            </Trans>
-          </ThemedText.BodySecondary>
-        </AutoRow>
-      ) : (
-        <LightCard>
-          <AutoRow style={{ flexWrap: 'nowrap' }}>
-            <ThemedText.DeprecatedBody fontSize={12}>
-              <Trans>
-                By connecting a wallet, you agree to Uniswap Labs’{' '}
-                <ExternalLink style={{ textDecoration: 'underline' }} href="https://uniswap.org/terms-of-service/">
-                  Terms of Service
-                </ExternalLink>{' '}
-                and acknowledge that you have read and understand the Uniswap{' '}
-                <ExternalLink style={{ textDecoration: 'underline' }} href="https://uniswap.org/disclaimer/">
-                  Protocol Disclaimer
-                </ExternalLink>
-                .
-              </Trans>
-            </ThemedText.DeprecatedBody>
-          </AutoRow>
-        </LightCard>
       )
     }
 

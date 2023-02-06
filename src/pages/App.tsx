@@ -3,7 +3,6 @@ import { CUSTOM_USER_PROPERTIES, EventName, PageName } from 'components/Amplitud
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import Loader from 'components/Loader'
 import NavBar from 'components/NavBar'
-import TopLevelModals from 'components/TopLevelModals'
 import { useFeatureFlagsIsLoaded } from 'featureFlags'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import Account from 'pages/Account'
@@ -127,7 +126,7 @@ export default function App() {
           <BodyWrapper>
             <Popups />
             <Polling />
-            <TopLevelModals />
+            {/* <TopLevelModals /> */}
             <Suspense fallback={<Loader />}>
               {isLoaded ? (
                 <Routes>
