@@ -48,15 +48,16 @@ const PageTabs = () => {
       <MenuItem href="/staking">
         <Trans>Staking</Trans>
       </MenuItem>
-      <div
-        onClick={() => {
-          window.open(VOTE_URL)
-        }}
-      >
-        <MenuItem href={pathname}>
+      <MenuItem href={pathname}>
+        <div
+          onClick={() => {
+            window.open(VOTE_URL)
+          }}
+          style={{ width: '8px' }}
+        >
           <Trans>Vote</Trans>
-        </MenuItem>
-      </div>
+        </div>
+      </MenuItem>
     </>
   )
 }

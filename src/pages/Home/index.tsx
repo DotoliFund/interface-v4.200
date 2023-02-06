@@ -154,7 +154,7 @@ export default function Home() {
             <Trans>{'Manage or Invest crypto fund with confidence'}</Trans>
           </CoverH1>
           <CoverP>
-            <Trans>{'Swap and Provide Liquidity with Uniswap'}</Trans>
+            <Trans>{'Swap and Provide Liquidity via Uniswap'}</Trans>
           </CoverP>
           <CoverBtnWrapper>
             <Button
@@ -174,12 +174,12 @@ export default function Home() {
       <CoverContainer>
         <CoverContent>
           <CoverH1>
-            <Trans>{'Efficient Profits and Fees'}</Trans>
+            <Trans>{'More benefits for investors and fund managers'}</Trans>
           </CoverH1>
           <CoverP>
             <Trans>
               {
-                'More benefits for managers and investors. Because investor invest to manager directly, no invest company, Managers are rewarded according to their investment results'
+                'Since the investor invests directly to the fund manager, the fee is low, and the fund manager get rewards in proportion to the investment performance'
               }
             </Trans>
           </CoverP>
@@ -193,7 +193,9 @@ export default function Home() {
           </CoverH1>
           <CoverP>
             <Trans>
-              {'Only investors can withdraw their own funds. Managers can only manage fund with Dotoli and Uniswap'}
+              {
+                'Only investors can withdraw their own funds. Fund managers can only swap token or manage pool via Dotoli and Uniswap'
+              }
             </Trans>
           </CoverP>
         </CoverContent>
@@ -206,7 +208,9 @@ export default function Home() {
           </CoverH1>
           <CoverP>
             <Trans>
-              {'All investments of the manager are recorded. Investors can choose the best manager at any time'}
+              {
+                'All investments made by the fund manager are recorded. Investors can find great fund managers. Also, fund managers can attract investors through investment performance.'
+              }
             </Trans>
           </CoverP>
         </CoverContent>
