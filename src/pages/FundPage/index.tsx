@@ -372,10 +372,15 @@ export default function FundPage() {
           <RowBetween>
             <AutoRow gap="4px">
               <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <ThemedText.DeprecatedMain>{`Home > `}</ThemedText.DeprecatedMain>
+                <ThemedText.DeprecatedMain>
+                  <Trans>Home</Trans>
+                  {' > '}
+                </ThemedText.DeprecatedMain>
               </StyledInternalLink>
               <StyledInternalLink to={networkPrefix(activeNetwork) + 'funds'}>
-                <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
+                <ThemedText.DeprecatedLabel>
+                  <Trans>Funds</Trans>
+                </ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
               <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + fundData.address}>
@@ -386,9 +391,9 @@ export default function FundPage() {
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>
-                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`Fund : ${shortenAddress(
-                  fundData.address
-                )} `}</ThemedText.DeprecatedLabel>
+                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
+                  <Trans>Fund :</Trans> ${shortenAddress(fundData.address)}
+                </ThemedText.DeprecatedLabel>
                 {activeNetwork === EthereumNetworkInfo ? null : <></>}
               </RowFixed>
             </AutoColumn>

@@ -671,6 +671,14 @@ msgstr ""
 msgid "Fund"
 msgstr ""
 
+#: src/pages/FundPage/index.tsx
+msgid "Fund :"
+msgstr ""
+
+#: src/pages/FundPage/index.tsx
+msgid "Funds"
+msgstr ""
+
 #: src/pages/Overview/index.tsx
 msgid "Funds :"
 msgstr ""
@@ -707,6 +715,7 @@ msgstr ""
 
 #: src/components/NavBar/index.tsx
 #: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
 msgid "Home"
 msgstr ""
 
@@ -800,12 +809,9 @@ msgstr ""
 msgid "Investors"
 msgstr ""
 
+#: src/components/FundListItem/index.tsx
 #: src/pages/Overview/index.tsx
 msgid "Investors :"
-msgstr ""
-
-#: src/components/FundListItem/index.tsx
-msgid "Investors:"
 msgstr ""
 
 #: src/components/funds/InvestorTable.tsx
@@ -1092,6 +1098,10 @@ msgstr ""
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Portal Bridge"
+msgstr ""
+
+#: src/pages/FundAccount/index.tsx
+msgid "Positions"
 msgstr ""
 
 #: src/pages/AddLiquidity/index.tsx

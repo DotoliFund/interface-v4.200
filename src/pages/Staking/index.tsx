@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonConfirmed, ButtonError, ButtonGray, ButtonLight } from 'components/Button'
+import { ButtonConfirmed, ButtonError, ButtonLight } from 'components/Button'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInputPanel'
@@ -71,15 +71,6 @@ const StakingSection = styled.div`
   &:focus-within:before {
     border-color: ${({ theme }) => theme.stateOverlayPressed};
   }
-`
-
-const OptionButton = styled(ButtonGray)`
-  border-radius: 12px;
-  flex: 1 1 auto;
-  font-size: 12px;
-  padding: 4px 6px;
-  width: 90%;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
 `
 
 const ToggleRow = styled(RowFlat)`

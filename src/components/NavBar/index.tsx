@@ -54,7 +54,6 @@ const PageTabs = () => {
           onClick={() => {
             window.open(VOTE_URL)
           }}
-          style={{ width: '8px' }}
         >
           <Trans>Vote</Trans>
         </div>
@@ -67,21 +66,17 @@ const Navbar = () => {
   return (
     <>
       <nav className={styles.nav}>
-        <Box display="flex" height="full" flexWrap="nowrap" alignItems="stretch">
+        <Box display="flex" height="full" flexWrap="nowrap">
           <Box className={styles.leftSideContainer}>
             <Box as="a" href="#/swap" className={styles.logoContainer}>
               {/* <UniIcon width="48" height="48" className={styles.logo} /> */}
               <img width="48" height="48" src={DotoliSVG} />
               {/* <DotoliSVG /> */}
             </Box>
-            <Box display={{ sm: 'flex', lg: 'none' }}>
-              <ChainSelector leftAlign={true} />
-            </Box>
-            <Row gap="8" display={{ sm: 'none', lg: 'flex' }}>
+            <Row gap={{ xl: '0', xxl: '8' }} display={{ sm: 'none', lg: 'flex' }}>
               <PageTabs />
             </Row>
           </Box>
-          <Box className={styles.middleContainer}></Box>
           <Box className={styles.rightSideContainer}>
             <Row gap="12">
               <Box display={{ sm: 'flex', xl: 'none' }}></Box>

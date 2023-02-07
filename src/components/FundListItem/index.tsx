@@ -191,7 +191,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             </RangeText>
             <RangeText>
               <ExtentsText>
-                <Trans>Investors:</Trans>
+                <Trans>Investors : </Trans>
               </ExtentsText>
               {fundData.investorCount}
             </RangeText>

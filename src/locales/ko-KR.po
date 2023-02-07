@@ -431,7 +431,7 @@ msgstr "생성됨"
 
 #: src/components/FundListItem/index.tsx
 msgid "Created :"
-msgstr "생성 날짜"
+msgstr "생성 날짜 :"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Creating"
@@ -671,9 +671,17 @@ msgstr "전체 범위 포지션은 집중 포지션보다 적은 수수료를 �
 msgid "Fund"
 msgstr "펀드"
 
+#: src/pages/FundPage/index.tsx
+msgid "Fund :"
+msgstr "펀드 :"
+
+#: src/pages/FundPage/index.tsx
+msgid "Funds"
+msgstr "펀드"
+
 #: src/pages/Overview/index.tsx
 msgid "Funds :"
-msgstr "펀드"
+msgstr "펀드 :"
 
 #: src/pages/Staking/index.tsx
 msgid "Get Reward"
@@ -707,6 +715,7 @@ msgstr "숨기기"
 
 #: src/components/NavBar/index.tsx
 #: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
 msgid "Home"
 msgstr "홈"
 
@@ -800,13 +809,10 @@ msgstr "투자자"
 msgid "Investors"
 msgstr "투자자"
 
+#: src/components/FundListItem/index.tsx
 #: src/pages/Overview/index.tsx
 msgid "Investors :"
-msgstr "투자자"
-
-#: src/components/FundListItem/index.tsx
-msgid "Investors:"
-msgstr "투자자"
+msgstr "투자자 :"
 
 #: src/components/funds/InvestorTable.tsx
 msgid "Invetsor"
@@ -882,7 +888,7 @@ msgstr "관리자 :"
 
 #: src/pages/Overview/index.tsx
 msgid "Manager Fee :"
-msgstr "매니저 수수료"
+msgstr "매니저 수수료 :"
 
 #: src/components/FundList/index.tsx
 #: src/components/FundList/index.tsx
@@ -906,7 +912,7 @@ msgstr "최고 가격"
 
 #: src/components/PositionListItem/index.tsx
 msgid "Max:"
-msgstr "최대"
+msgstr "최대 :"
 
 #: src/components/swap/AdvancedSwapDetails.tsx
 msgid "Maximum sent"
@@ -931,7 +937,7 @@ msgstr "최저 가격"
 
 #: src/components/PositionListItem/index.tsx
 msgid "Min:"
-msgstr "최소"
+msgstr "최소 :"
 
 #: src/components/swap/AdvancedSwapDetails.tsx
 msgid "Minimum received"
@@ -1081,18 +1087,22 @@ msgstr "수영장"
 
 #: src/pages/Overview/index.tsx
 msgid "Pool size to be whitelisted tokens:"
-msgstr "화이트리스트 토큰이 되기 위한 풀 크기"
+msgstr "화이트리스트 토큰이 되기 위한 풀 크기 :"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Pooled {0}:"
-msgstr "풀에 있는 {0}"
+msgstr "풀에 있는 {0}:"
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Portal Bridge"
 msgstr "Portal 브릿지"
+
+#: src/pages/FundAccount/index.tsx
+msgid "Positions"
+msgstr "포지션"
 
 #: src/pages/AddLiquidity/index.tsx
 msgid "Preview"
@@ -1344,7 +1354,7 @@ msgstr "{0} {1} 을 {2} {3}(으)로 스왑"
 
 #: src/components/FundListItem/index.tsx
 msgid "TVL :"
-msgstr "TVL"
+msgstr "TVL :"
 
 #: src/components/Popups/SurveyPopup.tsx
 msgid "Take a 10 minute survey to help us improve your experience in the Dotoli."
@@ -1453,7 +1463,7 @@ msgstr "유동성 데이터가 없습니다."
 
 #: src/components/PrivacyPolicy/index.tsx
 msgid "This app uses the following third-party APIs:"
-msgstr "이 앱은 다음 타사 API를 사용합니다."
+msgstr "이 앱은 다음 타사 API를 사용합니다 :"
 
 #: src/pages/AddLiquidity/index.tsx
 msgid "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction."

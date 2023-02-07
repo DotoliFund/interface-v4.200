@@ -1073,7 +1073,9 @@ export default function FundAccount() {
             </DarkGreyCard>
           </ContentLayout>
           <TitleRow mt={'16px'}>
-            <ThemedText.DeprecatedMain fontSize="24px">Positions</ThemedText.DeprecatedMain>
+            <ThemedText.DeprecatedMain fontSize="24px">
+              <Trans>Positions</Trans>
+            </ThemedText.DeprecatedMain>
             {accountIsManager ? (
               <ButtonRow>
                 <ResponsiveButtonPrimary
