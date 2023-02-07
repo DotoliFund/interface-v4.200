@@ -1,9 +1,10 @@
 import { Trans } from '@lingui/macro'
+import DotoliSVG from 'assets/svg/acorn.svg'
 import Web3Status from 'components/Web3Status'
 import { VOTE_URL } from 'constants/addresses'
 import { Box } from 'nft/components/Box'
 import { Row } from 'nft/components/Flex'
-import { UniIcon } from 'nft/components/icons'
+//import { UniIcon } from 'nft/components/icons'
 import { ReactNode } from 'react'
 import { NavLink, NavLinkProps, useLocation } from 'react-router-dom'
 
@@ -69,7 +70,9 @@ const Navbar = () => {
         <Box display="flex" height="full" flexWrap="nowrap" alignItems="stretch">
           <Box className={styles.leftSideContainer}>
             <Box as="a" href="#/swap" className={styles.logoContainer}>
-              <UniIcon width="48" height="48" className={styles.logo} />
+              {/* <UniIcon width="48" height="48" className={styles.logo} /> */}
+              <img width="48" height="48" src={DotoliSVG} />
+              {/* <DotoliSVG /> */}
             </Box>
             <Box display={{ sm: 'flex', lg: 'none' }}>
               <ChainSelector leftAlign={true} />
