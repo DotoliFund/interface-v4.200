@@ -278,7 +278,9 @@ export default function TransactionTable({
           return null
         })}
         {sortedTransactions.length === 0 ? (
-          <ThemedText.DeprecatedMain>No Transactions</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain>
+            <Trans>No Transactions</Trans>
+          </ThemedText.DeprecatedMain>
         ) : undefined}
         <PageButtons>
           <div
