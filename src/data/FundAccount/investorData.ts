@@ -12,8 +12,8 @@ const INVESTOR_DATA = gql`
       fund
       manager
       investor
-      investAmountETH
-      investAmountUSD
+      principalETH
+      principalUSD
       currentETH
       currentUSD
       currentTokens
@@ -81,8 +81,8 @@ export function useInvestorData(
         fund: data.investor.fund,
         manager: data.investor.manager,
         investor: data.investor.investor,
-        investAmountETH: parseFloat(data.investor.investAmountETH),
-        investAmountUSD: parseFloat(data.investor.investAmountUSD),
+        principalETH: parseFloat(data.investor.principalETH),
+        principalUSD: parseFloat(data.investor.principalUSD),
         currentETH: parseFloat(data.investor.currentETH),
         currentUSD: parseFloat(data.investor.currentUSD),
         currentTokens: data.investor.currentTokens,

@@ -347,7 +347,7 @@ export default function FundAccount() {
           time: data.timestamp,
           current: data.currentUSD,
           pool: data.poolUSD,
-          invest: data.investAmountUSD,
+          principal: data.principalUSD,
           tokens: data.tokens,
           symbols: data.tokensSymbols,
           tokensVolume: data.tokensAmountUSD,
@@ -628,7 +628,7 @@ export default function FundAccount() {
       time: Math.floor(new Date().getTime() / 1000),
       current: totalCurrentAmountUSD,
       pool: totalPoolAmountUSD,
-      invest: formattedVolumeUSD[formattedVolumeUSD.length - 1].invest,
+      principal: formattedVolumeUSD[formattedVolumeUSD.length - 1].principal,
       tokens,
       symbols,
       tokensVolume,
@@ -638,12 +638,12 @@ export default function FundAccount() {
 
   const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
-  const investAmountHover = useMemo(() => {
+  const principalHover = useMemo(() => {
     if (volumeChartHoverIndex !== undefined && formattedVolumeUSD) {
       const volumeUSDData = formattedVolumeUSD[volumeChartHoverIndex]
-      return volumeUSDData.invest
+      return volumeUSDData.principal
     } else if (formattedVolumeUSD.length > 0) {
-      return formattedVolumeUSD[formattedVolumeUSD.length - 1].invest
+      return formattedVolumeUSD[formattedVolumeUSD.length - 1].principal
     } else {
       return undefined
     }
@@ -676,25 +676,25 @@ export default function FundAccount() {
   }, [volumeChartHoverIndex, formattedVolumeUSD, formattedLatestTokens])
 
   const ratio = useMemo(() => {
-    return volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].invest > 0
+    return volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].principal > 0
       ? Number(
           (
             ((formattedVolumeUSD[volumeChartHoverIndex].current +
               formattedVolumeUSD[volumeChartHoverIndex].pool -
-              formattedVolumeUSD[volumeChartHoverIndex].invest) /
-              formattedVolumeUSD[volumeChartHoverIndex].invest) *
+              formattedVolumeUSD[volumeChartHoverIndex].principal) /
+              formattedVolumeUSD[volumeChartHoverIndex].principal) *
             100
           ).toFixed(2)
         )
-      : volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].invest === 0
+      : volumeChartHoverIndex !== undefined && formattedVolumeUSD[volumeChartHoverIndex].principal === 0
       ? Number(0)
       : formattedVolumeUSD && formattedVolumeUSD.length > 0
       ? Number(
           (
             ((formattedVolumeUSD[formattedVolumeUSD.length - 1].current +
               formattedVolumeUSD[formattedVolumeUSD.length - 1].pool -
-              formattedVolumeUSD[formattedVolumeUSD.length - 1].invest) /
-              formattedVolumeUSD[formattedVolumeUSD.length - 1].invest) *
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].principal) /
+              formattedVolumeUSD[formattedVolumeUSD.length - 1].principal) *
             100
           ).toFixed(2)
         )
@@ -943,10 +943,10 @@ export default function FundAccount() {
                         <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#99FF99'}>
                           <MonoSpace>
                             {formatDollarAmount(
-                              investAmountHover !== undefined
-                                ? investAmountHover
+                              principalHover !== undefined
+                                ? principalHover
                                 : formattedVolumeUSD && formattedVolumeUSD.length > 0
-                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].invest
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].principal
                                 : 0
                             )}
                           </MonoSpace>

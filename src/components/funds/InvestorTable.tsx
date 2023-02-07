@@ -79,7 +79,7 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           {formatDollarAmount(Number(investor.profitUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.investAmountUSD))}
+          {formatDollarAmount(Number(investor.principalUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
           <Percent value={investor.profitRatio} wrap={false} />

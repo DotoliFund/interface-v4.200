@@ -98,8 +98,8 @@ export interface Investor {
   fund: string
   manager: string
   investor: string
-  investAmountETH: number
-  investAmountUSD: number
+  principalETH: number
+  principalUSD: number
   currentETH: number
   currentUSD: number
   currentTokens: string[]
@@ -120,8 +120,8 @@ export interface InvestorFields {
   fund: string
   manager: string
   investor: string
-  investAmountETH: string
-  investAmountUSD: string
+  principalETH: string
+  principalUSD: string
   currentETH: string
   currentUSD: string
   currentTokens: string[]
@@ -172,8 +172,8 @@ export interface InvestorSnapshot {
   fund: string
   manager: string
   investor: string
-  investAmountETH: number
-  investAmountUSD: number
+  principalETH: number
+  principalUSD: number
   tokens: string[]
   tokensSymbols: string[]
   tokensDecimals: number[]
@@ -195,8 +195,8 @@ export interface InvestorSnapshotFields {
   fund: string
   manager: string
   investor: string
-  investAmountETH: string
-  investAmountUSD: string
+  principalETH: string
+  principalUSD: string
   tokens: string[]
   tokensSymbols: string[]
   tokensDecimals: string[]

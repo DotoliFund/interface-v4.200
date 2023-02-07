@@ -6,20 +6,14 @@ import { Investor, InvestorFields } from 'types/fund'
 
 const FUND_INVESTORS = gql`
   query investors($fund: Bytes!) {
-    investors(
-      first: 100
-      orderBy: investAmountUSD
-      orderDirection: desc
-      where: { fund: $fund }
-      subgraphError: allow
-    ) {
+    investors(first: 100, orderBy: principalUSD, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
       id
       createdAtTimestamp
       fund
       manager
       investor
-      investAmountETH
-      investAmountUSD
+      principalETH
+      principalUSD
       currentETH
       currentUSD
       currentTokens
@@ -80,8 +74,8 @@ export function useFundInvestors(fund: string | undefined): {
           fund: investorDataFields.fund,
           manager: investorDataFields.manager,
           investor: investorDataFields.investor,
-          investAmountETH: parseFloat(investorDataFields.investAmountETH),
-          investAmountUSD: parseFloat(investorDataFields.investAmountUSD),
+          principalETH: parseFloat(investorDataFields.principalETH),
+          principalUSD: parseFloat(investorDataFields.principalUSD),
           currentETH: parseFloat(investorDataFields.currentETH),
           currentUSD: parseFloat(investorDataFields.currentUSD),
           currentTokens: investorDataFields.currentTokens,

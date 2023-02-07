@@ -112,7 +112,7 @@ const Chart = ({
             <Legend />
             <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
             <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
-            <Line dataKey="invest" type="monotone" stroke={color3} />
+            <Line dataKey="principal" type="monotone" stroke={color3} />
           </ComposedChart>
         </ResponsiveContainer>
       )}
