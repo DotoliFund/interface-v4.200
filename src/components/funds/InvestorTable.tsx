@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
@@ -164,22 +165,22 @@ export default function InvestorTable({
       <AutoColumn gap="16px">
         <ResponsiveGrid>
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)}>
-            Invetsor {arrow(SORT_FIELD.investor)}
+            <Trans>Invetsor</Trans> {arrow(SORT_FIELD.investor)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
-            Volume {arrow(SORT_FIELD.volume)}
+            <Trans>Volume</Trans> {arrow(SORT_FIELD.volume)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.liquidity)}>
-            Liquidity {arrow(SORT_FIELD.liquidity)}
+            <Trans>Liquidity</Trans> {arrow(SORT_FIELD.liquidity)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.principal)}>
-            Principal {arrow(SORT_FIELD.principal)}
+            <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.ratio)}>
-            Profit {arrow(SORT_FIELD.ratio)}
+            <Trans>Profit</Trans> {arrow(SORT_FIELD.ratio)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
-            Time {arrow(SORT_FIELD.timestamp)}
+            <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
         </ResponsiveGrid>
         <Break />

@@ -823,10 +823,14 @@ export default function FundAccount() {
           <RowBetween>
             <AutoRow gap="4px">
               <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <ThemedText.DeprecatedMain>{`Home > `}</ThemedText.DeprecatedMain>
+                <ThemedText.DeprecatedMain>
+                  <Trans>Home</Trans> {'> '}
+                </ThemedText.DeprecatedMain>
               </StyledInternalLink>
               <StyledInternalLink to={networkPrefix(activeNetwork) + 'funds'}>
-                <ThemedText.DeprecatedLabel>{` Funds `}</ThemedText.DeprecatedLabel>
+                <ThemedText.DeprecatedLabel>
+                  <Trans>Fund</Trans>
+                </ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
               <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund}>
@@ -841,9 +845,9 @@ export default function FundAccount() {
             </AutoRow>
           </RowBetween>
           <ResponsiveRow align="flex-end">
-            <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">{`Investor : ${shortenAddress(
-              investorData.investor
-            )}`}</ThemedText.DeprecatedLabel>
+            <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
+              <Trans>Investor</Trans> : ${shortenAddress(investorData.investor)}
+            </ThemedText.DeprecatedLabel>
             {activeNetwork === EthereumNetworkInfo ? null : <></>}
 
             {activeNetwork !== EthereumNetworkInfo ? null : (
@@ -856,7 +860,9 @@ export default function FundAccount() {
             <DarkGreyCard>
               <AutoColumn gap="md">
                 <AutoRow gap="md">
-                  <ThemedText.DeprecatedMain ml="8px">Manager : </ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain ml="8px">
+                    <Trans>Manager</Trans> :
+                  </ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
                     {shortenAddress(investorData.manager)}
                   </ThemedText.DeprecatedLabel>
@@ -872,14 +878,14 @@ export default function FundAccount() {
                     fontSize="12px"
                     onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                   >
-                    Volume
+                    <Trans>Volume</Trans>
                   </ToggleElement>
                   <ToggleElement
                     isActive={view === ChartView.TOKENS}
                     fontSize="12px"
                     onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
                   >
-                    Tokens
+                    <Trans>Tokens</Trans>
                   </ToggleElement>
                 </ToggleWrapper>
               </ToggleRow>
@@ -1110,7 +1116,7 @@ export default function FundAccount() {
             )}
           </MainContentWrapper>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            Transactions
+            <Trans>Transactions</Trans>
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
             {transactions ? (
@@ -1122,7 +1128,7 @@ export default function FundAccount() {
             )}
           </DarkGreyCard>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            Liquidity Transactions
+            <Trans>Liquidity Transactions</Trans>
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
             {liquidityTransactions ? (

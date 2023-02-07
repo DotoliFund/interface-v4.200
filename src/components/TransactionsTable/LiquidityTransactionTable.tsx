@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -98,15 +99,25 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
     <ResponsiveGrid>
       <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
-          {transaction.type === LiquidityTransactionType.MINT
-            ? `Mint ${transaction.token0Symbol} and ${transaction.token1Symbol}`
-            : transaction.type === LiquidityTransactionType.ADD
-            ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
-            : transaction.type === LiquidityTransactionType.COLLECT
-            ? `Collect ${transaction.token0Symbol} and ${transaction.token1Symbol}`
-            : transaction.type === LiquidityTransactionType.REMOVE
-            ? `Remove ${transaction.token0Symbol} and ${transaction.token1Symbol}`
-            : `Error`}
+          {transaction.type === LiquidityTransactionType.MINT ? (
+            <Trans>
+              Mint ${transaction.token0Symbol} and ${transaction.token1Symbol}
+            </Trans>
+          ) : transaction.type === LiquidityTransactionType.ADD ? (
+            <Trans>
+              Add ${transaction.token0Symbol} and ${transaction.token1Symbol}
+            </Trans>
+          ) : transaction.type === LiquidityTransactionType.COLLECT ? (
+            <Trans>
+              Collect ${transaction.token0Symbol} and ${transaction.token1Symbol}
+            </Trans>
+          ) : transaction.type === LiquidityTransactionType.REMOVE ? (
+            <Trans>
+              Remove ${transaction.token0Symbol} and ${transaction.token1Symbol}
+            </Trans>
+          ) : (
+            <Trans>Error</Trans>
+          )}
         </Label>
       </ExternalLink>
       <Label end={1} fontWeight={400}>
@@ -218,7 +229,7 @@ export default function LiquidityTransactionTable({
               }}
               active={txFilter === undefined}
             >
-              All
+              <Trans>All</Trans>
             </SortText>
             <SortText
               onClick={() => {
@@ -226,7 +237,7 @@ export default function LiquidityTransactionTable({
               }}
               active={txFilter === LiquidityTransactionType.MINT}
             >
-              Mint
+              <Trans>Mint</Trans>
             </SortText>
             <SortText
               onClick={() => {
@@ -234,7 +245,7 @@ export default function LiquidityTransactionTable({
               }}
               active={txFilter === LiquidityTransactionType.ADD}
             >
-              Add
+              <Trans>Add</Trans>
             </SortText>
             <SortText
               onClick={() => {
@@ -242,23 +253,23 @@ export default function LiquidityTransactionTable({
               }}
               active={txFilter === LiquidityTransactionType.REMOVE}
             >
-              Remove
+              <Trans>Remove</Trans>
             </SortText>
           </RowFixed>
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
-            Total Value {arrow(SORT_FIELD.amountUSD)}
+            <Trans>Total Value</Trans> {arrow(SORT_FIELD.amountUSD)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            Token Amount {arrow(SORT_FIELD.amountToken0)}
+            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken0)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            Token Amount {arrow(SORT_FIELD.amountToken1)}
+            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken1)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)}>
-            Account {arrow(SORT_FIELD.sender)}
+            <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
-            Time {arrow(SORT_FIELD.timestamp)}
+            <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
         </ResponsiveGrid>
         <Break />

@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -6,7 +7,6 @@ import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import { OptimismNetworkInfo } from 'constants/networks'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink } from 'theme'
@@ -47,14 +47,6 @@ const ResponsiveGrid = styled.div`
     & > *:nth-child(4) {
       display: none;
     }
-  }
-`
-
-const LinkWrapper = styled(Link)`
-  text-decoration: none;
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
   }
 `
 
@@ -154,13 +146,13 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
           <ResponsiveGrid>
             <Label color={theme.deprecated_text2}>#</Label>
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.address)}>
-              Address {arrow(SORT_FIELD.address)}
+              <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.name)}>
-              Name {arrow(SORT_FIELD.name)}
+              <Trans>Name</Trans> {arrow(SORT_FIELD.name)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.updateDate)}>
-              Update {arrow(SORT_FIELD.updateDate)}
+              <Trans>Update</Trans> {arrow(SORT_FIELD.updateDate)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />

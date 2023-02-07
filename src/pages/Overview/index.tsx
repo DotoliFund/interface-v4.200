@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import AreaChart from 'components/AreaChart'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -74,11 +75,6 @@ export default function Overview() {
   const [currentVolumeIndexHover, setCurrentVolumeIndexHover] = useState<number | undefined>()
   const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
 
-  const [volumeDateHover, setCurrentDateHover] = useState<string | undefined>()
-  const [volumeHover, setCurrentHover] = useState<number | undefined>()
-  const [liquidityDateHover, setLiquidityDateHover] = useState<string | undefined>()
-  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
-
   const factoryData = useFactoryData()
   const fundListData = useFundListData()
   const tokenListData = useTokenListData()
@@ -112,34 +108,12 @@ export default function Overview() {
     }
   }, [chartData])
 
-  const latestCurrentData = useMemo(() => {
-    if (chartData && chartData.length > 0) {
-      return {
-        time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].totalCurrentUSD,
-      }
-    } else {
-      return undefined
-    }
-  }, [chartData])
-
-  const latestLiquidityData = useMemo(() => {
-    if (chartData && chartData.length > 0) {
-      return {
-        time: chartData[chartData.length - 1].timestamp,
-        value: chartData[chartData.length - 1].totalCurrentUSD,
-      }
-    } else {
-      return undefined
-    }
-  }, [chartData])
-
   return (
     <PageWrapper>
       <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
       <AutoColumn gap="16px">
         <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-          Overview
+          <Trans>Overview</Trans>
         </ThemedText.DeprecatedMain>
         <ResponsiveRow>
           <ChartWrapper>
@@ -195,7 +169,9 @@ export default function Overview() {
               setIndex={setInvestorCountIndexHover}
               topLeft={
                 <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">Investor</ThemedText.MediumHeader>
+                  <ThemedText.MediumHeader fontSize="16px">
+                    <Trans>Investor</Trans>
+                  </ThemedText.MediumHeader>
                   <ThemedText.LargeHeader fontSize="32px">
                     <MonoSpace>
                       {investorCountIndexHover !== undefined &&
@@ -240,18 +216,24 @@ export default function Overview() {
             <RowBetween>
               <RowFixed>
                 <RowFixed mr="20px">
-                  <ThemedText.DeprecatedMain ml="10px">Funds :</ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain ml="10px">
+                    <Trans>Funds :</Trans>
+                  </ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.fundCount}</ThemedText.DeprecatedLabel>
                   <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
                 </RowFixed>
                 <RowFixed mr="20px">
-                  <ThemedText.DeprecatedMain ml="10px">Investors : </ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain ml="10px">
+                    <Trans>Investors : </Trans>
+                  </ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.investorCount}</ThemedText.DeprecatedLabel>
                   <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
                 </RowFixed>
                 <HideMedium>
                   <RowFixed mr="20px">
-                    <ThemedText.DeprecatedMain ml="10px">Manager Fee : </ThemedText.DeprecatedMain>
+                    <ThemedText.DeprecatedMain ml="10px">
+                      <Trans>Manager Fee : </Trans>
+                    </ThemedText.DeprecatedMain>
                     <ThemedText.DeprecatedLabel ml="10px">
                       {factoryData.data ? (factoryData.data.managerFee / 10000).toFixed(2) : ''} %
                     </ThemedText.DeprecatedLabel>
@@ -260,7 +242,7 @@ export default function Overview() {
                 <HideMedium>
                   <RowFixed mr="20px">
                     <ThemedText.DeprecatedMain ml="10px">
-                      Pool volume to become a whitelist token:{' '}
+                      <Trans>Pool size to be whitelisted tokens: </Trans>
                     </ThemedText.DeprecatedMain>
                     <ThemedText.DeprecatedLabel ml="10px">
                       {factoryData.data ? factoryData.data.minPoolAmount / 1e18 : ''} ETH
@@ -272,13 +254,17 @@ export default function Overview() {
           </DarkGreyCard>
         </HideSmall>
         <RowBetween mt={'16px'}>
-          <ThemedText.DeprecatedMain fontSize="22px">Top Funds</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain fontSize="22px">
+            <Trans>Top Funds</Trans>
+          </ThemedText.DeprecatedMain>
         </RowBetween>
         <DarkGreyCard>
           <FundTable fundDatas={fundListData.data} />
         </DarkGreyCard>
         <RowBetween mt={'16px'}>
-          <ThemedText.DeprecatedMain fontSize="22px">Tokens</ThemedText.DeprecatedMain>
+          <ThemedText.DeprecatedMain fontSize="22px">
+            <Trans>Tokens</Trans>
+          </ThemedText.DeprecatedMain>
         </RowBetween>
         <DarkGreyCard>
           <TokenTable tokenDatas={tokenListData.data} />

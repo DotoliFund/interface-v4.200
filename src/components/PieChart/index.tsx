@@ -79,7 +79,6 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
           </ThemedText.DeprecatedBody>
         ) : (
           <>
-            Tokens
             <PieChart width={300} height={300}>
               <Pie
                 data={data}

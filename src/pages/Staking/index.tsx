@@ -323,14 +323,14 @@ export default function Staking() {
                       fontSize="12px"
                       onClick={() => (view === StakeView.STAKE ? {} : setView(StakeView.STAKE))}
                     >
-                      Stake
+                      <Trans>Stake</Trans>
                     </ToggleElement>
                     <ToggleElement
                       isActive={view === StakeView.WITHDRAW}
                       fontSize="12px"
                       onClick={() => (view === StakeView.WITHDRAW ? {} : setView(StakeView.WITHDRAW))}
                     >
-                      Withdraw
+                      <Trans>Withdraw</Trans>
                     </ToggleElement>
 
                     <ToggleElement
@@ -338,7 +338,7 @@ export default function Staking() {
                       fontSize="12px"
                       onClick={() => (view === StakeView.REWARD ? {} : setView(StakeView.REWARD))}
                     >
-                      Reward
+                      <Trans>Reward</Trans>
                     </ToggleElement>
                   </ToggleWrapper>
                 </ToggleRow>
@@ -348,10 +348,18 @@ export default function Staking() {
               <Card backgroundColor={'#202B58'}>
                 <RowBetween>
                   <AutoColumn gap="10px">
-                    <Text ml={'20px'}>UnStaked</Text>
-                    <Text ml={'20px'}>Earned</Text>
-                    <Text ml={'20px'}>Staked</Text>
-                    <Text ml={'20px'}>Total Staked</Text>
+                    <Text ml={'20px'}>
+                      <Trans>UnStaked</Trans>
+                    </Text>
+                    <Text ml={'20px'}>
+                      <Trans>Earned</Trans>
+                    </Text>
+                    <Text ml={'20px'}>
+                      <Trans>Staked</Trans>
+                    </Text>
+                    <Text ml={'20px'}>
+                      <Trans>Total Staked</Trans>
+                    </Text>
                   </AutoColumn>
                   <AutoColumn gap="10px" justify="end">
                     <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>

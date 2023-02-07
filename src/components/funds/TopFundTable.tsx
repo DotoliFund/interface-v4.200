@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
@@ -24,7 +25,8 @@ const ResponsiveGrid = styled.div`
 
   @media screen and (max-width: 940px) {
     grid-template-columns: 1.5fr repeat(3, 1fr);
-    & > *:nth-child(5) {
+    & > *:nth-child(5) {import { Trans } from '@lingui/macro'
+
       display: none;
     }
   }
@@ -152,19 +154,19 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
         <AutoColumn gap="16px">
           <ResponsiveGrid>
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
-              Fund {arrow(SORT_FIELD.fund)}
+              <Trans>Fund</Trans> {arrow(SORT_FIELD.fund)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
-              Volume {arrow(SORT_FIELD.volume)}
+              <Trans>Volume</Trans> {arrow(SORT_FIELD.volume)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.manager)}>
-              Manager {arrow(SORT_FIELD.manager)}
+              <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investorCount)}>
-              Investors {arrow(SORT_FIELD.investorCount)}
+              <Trans>Investors</Trans> {arrow(SORT_FIELD.investorCount)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.created)}>
-              Created {arrow(SORT_FIELD.created)}
+              <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
             </ClickableText>
           </ResponsiveGrid>
           <Break />

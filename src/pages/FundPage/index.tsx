@@ -403,7 +403,9 @@ export default function FundPage() {
             <DarkGreyCard>
               <AutoColumn gap="md">
                 <AutoRow gap="md">
-                  <ThemedText.DeprecatedMain ml="8px">Manager : </ThemedText.DeprecatedMain>
+                  <ThemedText.DeprecatedMain ml="8px">
+                    <Trans>Manager</Trans> :{' '}
+                  </ThemedText.DeprecatedMain>
                   <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
                     {shortenAddress(fundData.manager)}
                   </ThemedText.DeprecatedLabel>
@@ -422,14 +424,14 @@ export default function FundPage() {
                     fontSize="12px"
                     onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                   >
-                    Volume
+                    <Trans>Volume</Trans>
                   </ToggleElement>
                   <ToggleElement
                     isActive={view === ChartView.TOKENS}
                     fontSize="12px"
                     onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
                   >
-                    Tokens
+                    <Trans>Tokens</Trans>
                   </ToggleElement>
                   {isManager ? (
                     <ToggleElement
@@ -437,7 +439,7 @@ export default function FundPage() {
                       fontSize="12px"
                       onClick={() => (view === ChartView.FEES ? {} : setView(ChartView.FEES))}
                     >
-                      Fees
+                      <Trans>Fees</Trans>
                     </ToggleElement>
                   ) : (
                     <></>
@@ -588,7 +590,7 @@ export default function FundPage() {
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            Investors
+            <Trans>Investors</Trans>
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
             {investors ? (
@@ -600,7 +602,7 @@ export default function FundPage() {
             )}{' '}
           </DarkGreyCard>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            Transactions
+            <Trans>Transactions</Trans>
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
             {transactions ? (

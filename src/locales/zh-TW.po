@@ -73,6 +73,8 @@ msgid "Accept"
 msgstr ""
 
 #: src/components/AccountDetails/index.tsx
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
 msgid "Account"
 msgstr ""
 
@@ -81,8 +83,13 @@ msgid "Active"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
 #: src/pages/AddLiquidity/index.tsx
 msgid "Add"
+msgstr ""
+
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Add ${0} and ${1}"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
@@ -117,6 +124,15 @@ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Adding"
+msgstr ""
+
+#: src/components/TokensTable/index.tsx
+msgid "Address"
+msgstr ""
+
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "All"
 msgstr ""
 
 #: src/pages/Home/index.tsx
@@ -286,6 +302,10 @@ msgstr ""
 msgid "Collect"
 msgstr ""
 
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Collect ${0} and ${1}"
+msgstr ""
+
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Collect as {nativeWrappedSymbol}"
@@ -405,6 +425,7 @@ msgid "Create {0}/{1} V3 pool"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/funds/TopFundTable.tsx
 msgid "Created"
 msgstr ""
 
@@ -441,6 +462,7 @@ msgstr ""
 msgid "Delegate voting power to {0}"
 msgstr ""
 
+#: src/components/TransactionsTable/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
@@ -448,6 +470,10 @@ msgstr ""
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 msgid "Deposit"
+msgstr ""
+
+#: src/components/TransactionsTable/index.tsx
+msgid "Deposit ${0}"
 msgstr ""
 
 #: src/pages/AddLiquidity/index.tsx
@@ -489,6 +515,10 @@ msgstr ""
 
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Dotoli' Terms of Service"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "Earned"
 msgstr ""
 
 #: src/components/FeeSelector/index.tsx
@@ -538,6 +568,8 @@ msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
 #: src/components/Web3Status/index.tsx
 msgid "Error"
 msgstr ""
@@ -609,6 +641,10 @@ msgstr ""
 msgid "Fee tier"
 msgstr ""
 
+#: src/pages/FundPage/index.tsx
+msgid "Fees"
+msgstr ""
+
 #: src/components/swap/SwapDetailsDropdown.tsx
 msgid "Fetching best price..."
 msgstr ""
@@ -629,8 +665,14 @@ msgstr ""
 msgid "Full range positions may earn less fees than concentrated positions. Learn more <0>here</0>."
 msgstr ""
 
+#: src/components/funds/TopFundTable.tsx
 #: src/components/Header/index.tsx
+#: src/pages/FundAccount/index.tsx
 msgid "Fund"
+msgstr ""
+
+#: src/pages/Overview/index.tsx
+msgid "Funds :"
 msgstr ""
 
 #: src/pages/Staking/index.tsx
@@ -664,6 +706,7 @@ msgid "Hide"
 msgstr ""
 
 #: src/components/NavBar/index.tsx
+#: src/pages/FundAccount/index.tsx
 msgid "Home"
 msgstr ""
 
@@ -747,8 +790,26 @@ msgstr ""
 msgid "Investing Funds"
 msgstr ""
 
+#: src/pages/FundAccount/index.tsx
+#: src/pages/Overview/index.tsx
+msgid "Investor"
+msgstr ""
+
+#: src/components/funds/TopFundTable.tsx
+#: src/pages/FundPage/index.tsx
+msgid "Investors"
+msgstr ""
+
+#: src/pages/Overview/index.tsx
+msgid "Investors :"
+msgstr ""
+
 #: src/components/FundListItem/index.tsx
 msgid "Investors:"
+msgstr ""
+
+#: src/components/funds/InvestorTable.tsx
+msgid "Invetsor"
 msgstr ""
 
 #: src/components/Menu/index.tsx
@@ -785,8 +846,13 @@ msgstr ""
 msgid "Light theme"
 msgstr ""
 
+#: src/components/funds/InvestorTable.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "Liquidity"
+msgstr ""
+
+#: src/pages/FundAccount/index.tsx
+msgid "Liquidity Transactions"
 msgstr ""
 
 #: src/components/LiquidityChartRangeInput/index.tsx
@@ -804,8 +870,18 @@ msgstr ""
 msgid "Manage or Invest crypto fund with confidence"
 msgstr ""
 
+#: src/components/funds/TopFundTable.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
+msgid "Manager"
+msgstr ""
+
 #: src/components/FundListItem/index.tsx
 msgid "Manager :"
+msgstr ""
+
+#: src/pages/Overview/index.tsx
+msgid "Manager Fee :"
 msgstr ""
 
 #: src/components/FundList/index.tsx
@@ -861,6 +937,14 @@ msgstr ""
 msgid "Minimum received"
 msgstr ""
 
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Mint"
+msgstr ""
+
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Mint ${0} and ${1}"
+msgstr ""
+
 #: src/lib/hooks/swap/useSwapCallback.tsx
 msgid "Missing dependencies"
 msgstr ""
@@ -884,6 +968,10 @@ msgstr ""
 #: src/pages/Account/index.tsx
 #: src/pages/Account/index.tsx
 msgid "My Funds"
+msgstr ""
+
+#: src/components/TokensTable/index.tsx
+msgid "Name"
 msgstr ""
 
 #: src/components/swap/AdvancedSwapDetails.tsx
@@ -963,6 +1051,7 @@ msgstr ""
 
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
+#: src/pages/Overview/index.tsx
 msgid "Overview"
 msgstr ""
 
@@ -988,6 +1077,10 @@ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Pool"
+msgstr ""
+
+#: src/pages/Overview/index.tsx
+msgid "Pool size to be whitelisted tokens:"
 msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -1025,6 +1118,14 @@ msgstr ""
 msgid "Price range"
 msgstr ""
 
+#: src/components/funds/InvestorTable.tsx
+msgid "Principal"
+msgstr ""
+
+#: src/components/funds/InvestorTable.tsx
+msgid "Profit"
+msgstr ""
+
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Protocol Disclaimer"
 msgstr ""
@@ -1046,9 +1147,14 @@ msgid "Recipient"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Remove"
+msgstr ""
+
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Remove ${0} and ${1}"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
@@ -1081,6 +1187,10 @@ msgstr ""
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "Return"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "Reward"
 msgstr ""
 
 #: src/components/SearchModal/CurrencySearch.tsx
@@ -1158,7 +1268,12 @@ msgstr ""
 
 #: src/pages/Staking/index.tsx
 #: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
 msgid "Stake"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "Staked"
 msgstr ""
 
 #: src/components/Header/index.tsx
@@ -1182,11 +1297,16 @@ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/components/TransactionsTable/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx
 #: src/pages/Swap/index.tsx
 msgid "Swap"
+msgstr ""
+
+#: src/components/TransactionsTable/index.tsx
+msgid "Swap ${0} to ${1}"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
@@ -1359,6 +1479,12 @@ msgstr ""
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 msgstr ""
 
+#: src/components/funds/InvestorTable.tsx
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Time"
+msgstr ""
+
 #: src/components/SearchModal/ManageTokens.tsx
 msgid "Tip: Custom tokens are stored locally in your browser"
 msgstr ""
@@ -1371,12 +1497,38 @@ msgstr ""
 msgid "To (at least)"
 msgstr ""
 
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Token Amount"
+msgstr ""
+
 #: src/components/SearchModal/BlockedToken.tsx
 msgid "Token not supported"
 msgstr ""
 
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
+#: src/pages/Overview/index.tsx
+msgid "Tokens"
+msgstr ""
+
+#: src/pages/Overview/index.tsx
+msgid "Top Funds"
+msgstr ""
+
 #: src/pages/Account/CTACards.tsx
 msgid "Top funds"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "Total Staked"
+msgstr ""
+
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+msgid "Total Value"
 msgstr ""
 
 #: src/components/swap/RouterLabel.tsx
@@ -1410,6 +1562,8 @@ msgstr ""
 
 #: src/components/WalletDropdown/DefaultMenu.tsx
 #: src/components/WalletDropdown/TransactionMenu.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
 msgid "Transactions"
 msgstr ""
 
@@ -1423,6 +1577,10 @@ msgstr ""
 
 #: src/components/Settings/index.tsx
 msgid "Turn On Expert Mode"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "UnStaked"
 msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
@@ -1474,6 +1632,10 @@ msgstr ""
 msgid "Unwrapping"
 msgstr ""
 
+#: src/components/TokensTable/index.tsx
+msgid "Update"
+msgstr ""
+
 #: src/components/Settings/index.tsx
 msgid "Use the Uniswap Labs API to get faster quotes."
 msgstr ""
@@ -1493,6 +1655,13 @@ msgstr ""
 
 #: src/components/ModalViews/index.tsx
 msgid "View transaction on Explorer"
+msgstr ""
+
+#: src/components/funds/InvestorTable.tsx
+#: src/components/funds/TopFundTable.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
+msgid "Volume"
 msgstr ""
 
 #: src/components/Header/index.tsx
@@ -1520,13 +1689,19 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+#: src/components/TransactionsTable/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
+#: src/pages/Staking/index.tsx
 #: src/pages/Staking/index.tsx
 #: src/pages/Withdraw/index.tsx
 #: src/pages/Withdraw/index.tsx
 #: src/pages/Withdraw/index.tsx
 msgid "Withdraw"
+msgstr ""
+
+#: src/components/TransactionsTable/index.tsx
+msgid "Withdraw ${0}"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx

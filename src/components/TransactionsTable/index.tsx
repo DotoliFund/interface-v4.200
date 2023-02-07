@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -98,13 +99,17 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
     <ResponsiveGrid>
       <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
-          {transaction.type === TransactionType.SWAP
-            ? `Swap ${transaction.token0Symbol} to ${transaction.token1Symbol}`
-            : transaction.type === TransactionType.DEPOSIT
-            ? `Deposit ${transaction.token0Symbol}`
-            : transaction.type === TransactionType.WITHDRAW
-            ? `Withdraw ${transaction.token0Symbol}`
-            : `Error`}
+          {transaction.type === TransactionType.SWAP ? (
+            <Trans>
+              Swap ${transaction.token0Symbol} to ${transaction.token1Symbol}
+            </Trans>
+          ) : transaction.type === TransactionType.DEPOSIT ? (
+            <Trans>Deposit ${transaction.token0Symbol}</Trans>
+          ) : transaction.type === TransactionType.WITHDRAW ? (
+            <Trans>Withdraw ${transaction.token0Symbol}</Trans>
+          ) : (
+            <Trans>Error</Trans>
+          )}
         </Label>
       </ExternalLink>
       <Label end={1} fontWeight={400}>
@@ -216,7 +221,7 @@ export default function TransactionTable({
               }}
               active={txFilter === undefined}
             >
-              All
+              <Trans>All</Trans>
             </SortText>
             <SortText
               onClick={() => {
@@ -224,7 +229,7 @@ export default function TransactionTable({
               }}
               active={txFilter === TransactionType.SWAP}
             >
-              Swap
+              <Trans>Swap</Trans>
             </SortText>
             <SortText
               onClick={() => {
@@ -232,7 +237,7 @@ export default function TransactionTable({
               }}
               active={txFilter === TransactionType.DEPOSIT}
             >
-              Deposit
+              <Trans>Deposit</Trans>
             </SortText>
             <SortText
               onClick={() => {
@@ -240,23 +245,23 @@ export default function TransactionTable({
               }}
               active={txFilter === TransactionType.WITHDRAW}
             >
-              Withdraw
+              <Trans>Withdraw</Trans>
             </SortText>
           </RowFixed>
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
-            Total Value {arrow(SORT_FIELD.amountUSD)}
+            <Trans>Total Value</Trans> {arrow(SORT_FIELD.amountUSD)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            Token Amount {arrow(SORT_FIELD.amountToken0)}
+            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken0)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            Token Amount {arrow(SORT_FIELD.amountToken1)}
+            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken1)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)}>
-            Account {arrow(SORT_FIELD.sender)}
+            <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
-            Time {arrow(SORT_FIELD.timestamp)}
+            <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
         </ResponsiveGrid>
         <Break />
