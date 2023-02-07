@@ -172,11 +172,11 @@ msgstr "자동 라우터 API"
 msgid "Back to wallet selection"
 msgstr "지갑 선택으로 돌아가기"
 
+#: src/components/CurrencyInputPanel/index.tsx
 #: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/SwapCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/index.tsx
 msgid "Balance: {0}"
 msgstr "잔액: {0}"
 
@@ -240,7 +240,7 @@ msgstr "{0} 에 대한 <0/> 청구"
 #: src/components/Header/index.tsx
 #: src/components/Menu/index.tsx
 msgid "Claim UNI"
-msgstr ""
+msgstr "UNI 청구"
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Claim UNI reward for {0}"
@@ -324,7 +324,7 @@ msgstr "스왑 확인"
 
 #: src/components/WalletModal/PendingView.tsx
 msgid "Confirm this connection in your wallet"
-msgstr ""
+msgstr "지갑에서 이 연결을 확인하십시오."
 
 #: src/components/ModalViews/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
@@ -489,7 +489,7 @@ msgstr "Dotoli 사용 가능 : <0>{0}</0>"
 
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Dotoli' Terms of Service"
-msgstr ""
+msgstr "Dotoli 서비스 이용약관"
 
 #: src/components/FeeSelector/index.tsx
 msgid "Edit"
@@ -793,10 +793,10 @@ msgstr "유동성"
 msgid "Liquidity data not available."
 msgstr "유동성 데이터가 없습니다."
 
+#: src/components/CurrencyInputPanel/index.tsx
 #: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/index.tsx
 msgid "MAX"
 msgstr "최대"
 
@@ -943,11 +943,11 @@ msgstr "투자자만이 자신의 자금을 인출할 수 있습니다. 펀드 �
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Optimism Bridge"
-msgstr ""
+msgstr "Optimism 브릿지"
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Optimistic Etherscan"
-msgstr ""
+msgstr "Optimistic 이더스캔"
 
 #: src/components/Badge/RangeBadge.tsx
 msgid "Out of range"
@@ -980,11 +980,11 @@ msgstr "전문가 모드를 활성화하려면 \"{confirmWord}\"라는 단어를
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Polygon Bridge"
-msgstr ""
+msgstr "폴리곤 브릿지"
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Polygonscan"
-msgstr ""
+msgstr "폴리곤스캔"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Pool"
@@ -995,11 +995,11 @@ msgstr "수영장"
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Pooled {0}:"
-msgstr ""
+msgstr "풀에 있는 {0}"
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Portal Bridge"
-msgstr ""
+msgstr "Portal 브릿지"
 
 #: src/pages/AddLiquidity/index.tsx
 msgid "Preview"
@@ -1092,10 +1092,10 @@ msgstr "이름 검색 또는 주소 붙여 넣기"
 msgid "Select Pair"
 msgstr "쌍 선택"
 
+#: src/components/CurrencyInputPanel/index.tsx
 #: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/index.tsx
 #: src/components/SearchModal/CurrencySearch.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
 #: src/state/create/hooks.tsx
@@ -1291,11 +1291,11 @@ msgid "The input token cannot be transferred. There may be an issue with the inp
 msgstr "입력 토큰을 이체할 수 없습니다. 입력 토큰에 문제가 있을 수 있습니다."
 
 #: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/index.tsx
 #: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/SwapCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/index.tsx
 msgid "The market price is outside your specified price range. Single-asset deposit only."
 msgstr "시장 가격이 지정된 가격 범위를 벗어났습니다. 단일 자산 예금만."
 
