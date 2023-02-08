@@ -6,7 +6,7 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
-import { FeeToken } from 'types/fund'
+import { FundToken } from 'types/fund'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
@@ -66,7 +66,7 @@ const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 }
 
 // from the current fee inputs, compute the best trade and return it.
-export function useDerivedFeeInfo(feeTokens: FeeToken[]): {
+export function useDerivedFeeInfo(feeTokens: FundToken[]): {
   currency: Currency | null
   currencyBalance: CurrencyAmount<Currency> | undefined
   parsedAmount: CurrencyAmount<Currency> | undefined

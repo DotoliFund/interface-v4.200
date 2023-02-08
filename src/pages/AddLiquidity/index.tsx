@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
-import CurrencyInputPanel from 'components/CurrencyInputPanel/SwapCurrencyInputPanel'
+import CurrencyInputPanel from 'components/CurrencyInputPanel/FundCurrencyInputPanel'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { NULL_ADDRESS } from 'constants/addresses'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -538,6 +538,7 @@ export default function AddLiquidity() {
                       <RowBetween>
                         <CurrencyDropdown
                           value={formattedAmounts[Field.CURRENCY_A]}
+                          isFund={true}
                           onUserInput={onFieldAInput}
                           hideInput={true}
                           onMax={() => {
@@ -554,6 +555,7 @@ export default function AddLiquidity() {
 
                         <CurrencyDropdown
                           value={formattedAmounts[Field.CURRENCY_B]}
+                          isFund={true}
                           hideInput={true}
                           onUserInput={onFieldBInput}
                           onCurrencySelect={handleCurrencyBSelect}

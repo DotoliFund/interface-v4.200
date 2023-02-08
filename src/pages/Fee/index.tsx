@@ -32,7 +32,7 @@ import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
-import { FeeToken } from 'types/fund'
+import { FundToken } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { supportedChainId } from 'utils/supportedChainId'
 
@@ -132,7 +132,7 @@ export default function Fee() {
     'getFeeTokens',
     []
   )
-  const feeTokens: FeeToken[] = getFeeTokens
+  const feeTokens: FundToken[] = getFeeTokens
   const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false
 
   // fee state

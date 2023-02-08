@@ -1,15 +1,16 @@
-import { Currency, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
 import { checkWarning } from 'constants/tokenSafety'
+import { useDotoliFundContract } from 'hooks/useContract'
+import JSBI from 'jsbi'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { XOctagon } from 'react-feather'
 import { Check } from 'react-feather'
+import { useParams } from 'react-router-dom'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
-import { FundToken } from 'types/fund'
-import { getFeeTokenAmountDecimal } from 'utils/formatCurrencyAmount'
 
 import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 import { ThemedText } from '../../../theme'
@@ -65,8 +66,8 @@ export const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
   height: 1em;
 `
 
-function Balance({ balance }: { balance: string }) {
-  return <StyledBalanceText title={balance}>{balance}</StyledBalanceText>
+function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
+  return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
@@ -103,9 +104,8 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
-export function FeeCurrencyRow({
+export function CurrencyRow({
   currency,
-  feeToken,
   onSelect,
   isSelected,
   otherSelected,
@@ -114,7 +114,6 @@ export function FeeCurrencyRow({
   eventProperties,
 }: {
   currency: Currency
-  feeToken: FundToken
   onSelect: (hasWarning: boolean) => void
   isSelected: boolean
   otherSelected: boolean
@@ -122,9 +121,26 @@ export function FeeCurrencyRow({
   showCurrencyAmount?: boolean
   eventProperties: Record<string, unknown>
 }) {
-  const { account } = useWeb3React()
+  const params = useParams()
+  const fundAddress = params.fundAddress
+  const investorAddress = params.investorAddress
+
   const key = currencyKey(currency)
-  const balance = currency && feeToken ? getFeeTokenAmountDecimal(currency, feeToken.amount) : '0'
+
+  const DotoliFundContract = useDotoliFundContract(fundAddress)
+  const { loading: getInvestorTokenAmountLoading, result: [getInvestorTokenAmount] = [] } = useSingleCallResult(
+    DotoliFundContract,
+    'getInvestorTokenAmount',
+    [investorAddress ?? undefined, currency.wrapped.address]
+  )
+  const balance = useMemo(() => {
+    if (!getInvestorTokenAmountLoading && getInvestorTokenAmount) {
+      return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(getInvestorTokenAmount.toString()))
+    } else {
+      return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(0))
+    }
+  }, [getInvestorTokenAmountLoading, getInvestorTokenAmount, currency])
+
   const warning = currency.isNative ? null : checkWarning(currency.address)
   const isBlockedToken = !!warning && !warning.canProceed
   const blockedTokenOpacity = '0.6'
@@ -165,7 +181,7 @@ export function FeeCurrencyRow({
       </Column>
       {showCurrencyAmount ? (
         <RowFixed style={{ justifySelf: 'flex-end' }}>
-          {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+          {balance ? <Balance balance={balance} /> : investorAddress ? <Loader /> : null}
           {isSelected && <CheckIcon />}
         </RowFixed>
       ) : (
@@ -212,10 +228,9 @@ const LoadingRow = () => (
   </LoadingRows>
 )
 
-export default function CurrencyList({
+export default function FundCurrencyList({
   height,
   currencies,
-  feeTokens,
   otherListTokens,
   selectedCurrency,
   onCurrencySelect,
@@ -228,7 +243,6 @@ export default function CurrencyList({
 }: {
   height: number
   currencies: Currency[]
-  feeTokens: FundToken[]
   otherListTokens?: WrappedTokenInfo[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency, hasWarning?: boolean) => void
@@ -249,7 +263,7 @@ export default function CurrencyList({
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
       const row: Currency = data[index]
-      const feeToken: FundToken = feeTokens[index]
+
       const currency = row
 
       const isSelected = Boolean(currency && selectedCurrency && selectedCurrency.equals(currency))
@@ -262,10 +276,9 @@ export default function CurrencyList({
         return LoadingRow()
       } else if (currency) {
         return (
-          <FeeCurrencyRow
+          <CurrencyRow
             style={style}
             currency={currency}
-            feeToken={feeToken}
             isSelected={isSelected}
             onSelect={handleSelect}
             otherSelected={otherSelected}
@@ -277,16 +290,7 @@ export default function CurrencyList({
         return null
       }
     },
-    [
-      onCurrencySelect,
-      otherCurrency,
-      feeTokens,
-      selectedCurrency,
-      showCurrencyAmount,
-      isLoading,
-      isAddressSearch,
-      searchQuery,
-    ]
+    [onCurrencySelect, otherCurrency, selectedCurrency, showCurrencyAmount, isLoading, isAddressSearch, searchQuery]
   )
 
   const itemKey = useCallback((index: number, data: typeof itemData) => {

@@ -11,7 +11,7 @@ import { Lock } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
 import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
-import { FeeToken } from 'types/fund'
+import { FundToken } from 'types/fund'
 import { getFeeTokenAmountDecimal } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
@@ -179,7 +179,7 @@ interface FeeCurrencyInputPanelProps {
   label?: ReactNode
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
-  feeTokens: FeeToken[]
+  feeTokens: FundToken[]
   hideBalance?: boolean
   pair?: Pair | null
   hideInput?: boolean

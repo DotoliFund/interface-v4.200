@@ -7,9 +7,13 @@ import useLast from '../../hooks/useLast'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import Modal from '../Modal'
 import { CurrencySearch } from './CurrencySearch'
+import { FundCurrencySearch } from './FundCurrencySearch'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
+  isFund: boolean
+  fundAddress: string | null
+  investorAddress: string | null
   onDismiss: () => void
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
@@ -27,6 +31,9 @@ export enum CurrencyModalView {
 
 export default memo(function CurrencySearchModal({
   isOpen,
+  isFund,
+  fundAddress,
+  investorAddress,
   onDismiss,
   onCurrencySelect,
   selectedCurrency,
@@ -74,18 +81,33 @@ export default memo(function CurrencySearchModal({
         // Converts pixel units to vh for Modal component
         modalHeight = Math.min(Math.round((680 / windowHeight) * 100), 80)
       }
-      content = (
-        <CurrencySearch
-          isOpen={isOpen}
-          onDismiss={onDismiss}
-          onCurrencySelect={handleCurrencySelect}
-          selectedCurrency={selectedCurrency}
-          otherSelectedCurrency={otherSelectedCurrency}
-          showCommonBases={showCommonBases}
-          showCurrencyAmount={showCurrencyAmount}
-          disableNonToken={disableNonToken}
-        />
-      )
+      if (isFund && fundAddress && investorAddress) {
+        content = (
+          <FundCurrencySearch
+            isOpen={isOpen}
+            onDismiss={onDismiss}
+            onCurrencySelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            showCurrencyAmount={showCurrencyAmount}
+            disableNonToken={disableNonToken}
+          />
+        )
+      } else {
+        content = (
+          <CurrencySearch
+            isOpen={isOpen}
+            onDismiss={onDismiss}
+            onCurrencySelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            showCommonBases={showCommonBases}
+            showCurrencyAmount={showCurrencyAmount}
+            disableNonToken={disableNonToken}
+          />
+        )
+      }
+
       break
     case CurrencyModalView.tokenSafety:
       modalHeight = undefined
@@ -102,7 +124,12 @@ export default memo(function CurrencySearchModal({
       break
   }
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={modalHeight} minHeight={modalHeight}>
+    <Modal
+      isOpen={isOpen}
+      onDismiss={onDismiss}
+      maxHeight={isFund && modalHeight ? modalHeight * 0.6 : modalHeight}
+      minHeight={isFund && modalHeight ? modalHeight * 0.6 : modalHeight}
+    >
       {content}
     </Modal>
   )

@@ -171,7 +171,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   font-variant: small-caps;
 `
 
-interface SwapCurrencyInputPanelProps {
+interface FundCurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -194,7 +194,7 @@ interface SwapCurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function SwapCurrencyInputPanel({
+export default function FundCurrencyInputPanel({
   value,
   onUserInput,
   onMax,
@@ -215,7 +215,7 @@ export default function SwapCurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: SwapCurrencyInputPanelProps) {
+}: FundCurrencyInputPanelProps) {
   const params = useParams()
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
@@ -338,9 +338,12 @@ export default function SwapCurrencyInputPanel({
           </FiatRow>
         )}
       </Container>
-      {onCurrencySelect && (
+      {onCurrencySelect && fundAddress && investorAddress ? (
         <CurrencySearchModal
           isOpen={modalOpen}
+          isFund={true}
+          fundAddress={fundAddress}
+          investorAddress={investorAddress}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
@@ -349,7 +352,7 @@ export default function SwapCurrencyInputPanel({
           showCurrencyAmount={showCurrencyAmount}
           disableNonToken={disableNonToken}
         />
-      )}
+      ) : null}
     </InputPanel>
   )
 }

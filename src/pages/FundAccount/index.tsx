@@ -393,6 +393,20 @@ export default function FundAccount() {
     }
   }
 
+  const poolTokensDecimalsInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'decimals')
+  const poolTokensDecimals = useMemo(() => {
+    const decimals: number[] = []
+    for (let i = 0; i < poolTokensDecimalsInfo.length; i++) {
+      const decimal = poolTokensDecimalsInfo[i].result
+      if (decimal) {
+        decimals.push(Number(decimal))
+      } else {
+        decimals.push(0)
+      }
+    }
+    return decimals
+  }, [poolTokensDecimalsInfo])
+
   const poolTokensSymbolInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'symbol')
   const poolTokensSymbols = useMemo(() => {
     const symbols: string[] = []
@@ -406,20 +420,6 @@ export default function FundAccount() {
     }
     return symbols
   }, [poolTokensSymbolInfo])
-
-  const poolTokensDecimalsInfo = useMultipleContractSingleData(poolTokens, ERC20_METADATA_INTERFACE, 'decimals')
-  const poolTokensDecimals = useMemo(() => {
-    const decimals: number[] = []
-    for (let i = 0; i < poolTokensDecimalsInfo.length; i++) {
-      const decimal = poolTokensDecimalsInfo[i].result
-      if (decimal) {
-        decimals.push(Number(decimal))
-      } else {
-        decimals.push(18)
-      }
-    }
-    return decimals
-  }, [poolTokensDecimalsInfo])
 
   const positionTokens: [Token | undefined, Token | undefined, FeeAmount | undefined][] = useMemo(() => {
     if (chainId && openPositions && openPositions.length > 0 && investorData) {
