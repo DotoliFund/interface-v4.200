@@ -11,6 +11,7 @@ import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import FundCurrencyInputPanel from 'components/CurrencyInputPanel/FundCurrencyInputPanel'
+import CurrencyInputPanel from 'components/CurrencyInputPanel/index'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
@@ -496,7 +497,7 @@ export default function Swap() {
             <div>
               <OutputSwapSection showDetailsDropdown={showDetailsDropdown}>
                 <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
-                  <FundCurrencyInputPanel
+                  <CurrencyInputPanel
                     value={formattedAmounts[Field.OUTPUT]}
                     onUserInput={handleTypeOutput}
                     label={

@@ -102,7 +102,6 @@ function TransactionSubmittedContent({
   inline?: boolean // not in modal
 }) {
   const theme = useTheme()
-
   const { connector } = useWeb3React()
 
   const token = currencyToAdd?.wrapped

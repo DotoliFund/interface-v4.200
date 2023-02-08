@@ -174,7 +174,6 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
 
 interface CurrencyInputPanelProps {
   value: string
-  isFund: boolean
   onUserInput: (value: string) => void
   onMax?: () => void
   showMaxButton: boolean
@@ -198,7 +197,6 @@ interface CurrencyInputPanelProps {
 
 export default function CurrencyInputPanel({
   value,
-  isFund,
   onUserInput,
   onMax,
   showMaxButton,

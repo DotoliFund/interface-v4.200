@@ -39,7 +39,6 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from '../../co
 import { ZERO_PERCENT } from '../../constants/misc'
 import { WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
-import { useArgentWalletContract } from '../../hooks/useArgentWalletContract'
 import { useV3NFTPositionManagerContract } from '../../hooks/useContract'
 import { useDerivedPositionInfo } from '../../hooks/useDerivedPositionInfo'
 import { useIsSwapUnsupported } from '../../hooks/useIsSwapUnsupported'
@@ -254,8 +253,6 @@ export default function AddLiquidity() {
     {}
   )
 
-  const argentWalletContract = useArgentWalletContract()
-
   const allowedSlippage = useUserSlippageToleranceWithDefault(
     outOfRange ? ZERO_PERCENT : DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE
   )
@@ -399,10 +396,10 @@ export default function AddLiquidity() {
     if (txHash) {
       onFieldAInput('')
       // dont jump to pool page if creating
-      navigate('/pool')
+      navigate(`/fund/${fundAddress}/${investorAddress}`)
     }
     setTxHash('')
-  }, [navigate, onFieldAInput, txHash])
+  }, [navigate, onFieldAInput, txHash, fundAddress, investorAddress])
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
 
@@ -538,7 +535,6 @@ export default function AddLiquidity() {
                       <RowBetween>
                         <CurrencyDropdown
                           value={formattedAmounts[Field.CURRENCY_A]}
-                          isFund={true}
                           onUserInput={onFieldAInput}
                           hideInput={true}
                           onMax={() => {
@@ -555,7 +551,6 @@ export default function AddLiquidity() {
 
                         <CurrencyDropdown
                           value={formattedAmounts[Field.CURRENCY_B]}
-                          isFund={true}
                           hideInput={true}
                           onUserInput={onFieldBInput}
                           onCurrencySelect={handleCurrencyBSelect}
