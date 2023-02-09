@@ -325,7 +325,8 @@ export default function Swap() {
           attemptingTxn: false,
           tradeToConfirm,
           showConfirm,
-          swapErrorMessage: error.message,
+          //swapErrorMessage: error.message,
+          swapErrorMessage: 'Swap failed',
           txHash: undefined,
         })
       })

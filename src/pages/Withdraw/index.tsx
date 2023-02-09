@@ -1,43 +1,35 @@
+import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonError, ButtonLight } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FundCurrencyInputPanel from 'components/CurrencyInputPanel/FundCurrencyInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { RowBetween, RowFixed } from 'components/Row'
-import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
+import { PageWrapper, SwapWrapper as WithdrawWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import TokenWarningModal from 'components/TokenWarningModal'
-import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { useAllTokens, useCurrency } from 'hooks/Tokens'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+import TransactionConfirmationModal, {
+  ConfirmationModalContent,
+  TransactionErrorContent,
+} from 'components/TransactionConfirmationModal'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useCallback, useMemo, useState } from 'react'
-import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
-import { Field } from 'state/swap/actions'
 import { useExpertModeManager } from 'state/user/hooks'
-import {
-  useDefaultsFromURLSearch,
-  useDerivedWithdrawInfo,
-  useWithdrawActionHandlers,
-  useWithdrawState,
-} from 'state/withdraw/hooks'
+import { Field } from 'state/withdraw/actions'
+import { useDerivedWithdrawInfo, useWithdrawActionHandlers, useWithdrawState } from 'state/withdraw/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { supportedChainId } from 'utils/supportedChainId'
 
 const StyledWithdrawHeader = styled.div`
   padding: 8px 12px;
@@ -76,52 +68,18 @@ const WithdrawSection = styled.div`
   }
 `
 
-export function getIsValidSwapQuote(
-  trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
-  tradeState: TradeState,
-  swapInputError?: ReactNode
-): boolean {
-  return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
-}
-
 export default function Withdraw() {
   const params = useParams()
   const fundAddress = params.fundAddress
+  const investorAddress = params.investorAddress
   const navigate = useNavigate()
   const { account, chainId, provider } = useWeb3React()
-  const loadedUrlParams = useDefaultsFromURLSearch()
 
-  // token warning stuff
-  const [loadedInputCurrency] = [useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId)]
-  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
-  const urlLoadedTokens: Token[] = useMemo(
-    () => [loadedInputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
-    [loadedInputCurrency]
-  )
-  const handleConfirmTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-  }, [])
-
-  // dismiss warning if all imported tokens are in active lists
-  const defaultTokens = useAllTokens()
-  const importTokensNotInDefault = useMemo(
-    () =>
-      urlLoadedTokens &&
-      urlLoadedTokens
-        .filter((token: Token) => {
-          return !Boolean(token.address in defaultTokens)
-        })
-        .filter((token: Token) => {
-          // Any token addresses that are loaded from the shorthands map do not need to show the import URL
-          const supported = supportedChainId(chainId)
-          if (!supported) return true
-          return !Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
-            const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][supported]
-            return shorthandTokenAddress && shorthandTokenAddress === token.address
-          })
-        }),
-    [chainId, defaultTokens, urlLoadedTokens]
-  )
+  // modal and loading
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
+  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
+  const [withdrawErrorMessage, setWithdrawErrorMessage] = useState<string | undefined>(undefined)
+  const [txHash, setTxHash] = useState<string | undefined>(undefined)
 
   // toggle wallet when disconnected
   const toggleWalletModal = useToggleWalletModal()
@@ -131,24 +89,23 @@ export default function Withdraw() {
 
   // withdraw state
   const { typedValue } = useWithdrawState()
-  const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedWithdrawInfo(fundAddress)
+  const {
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: withdrawInputError,
+  } = useDerivedWithdrawInfo(fundAddress)
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
   const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
   const { onCurrencySelection, onUserInput, onChangeRecipient } = useWithdrawActionHandlers()
-  const isValid = !swapInputError
+  const isValid = !withdrawInputError
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(value)
     },
     [onUserInput]
   )
-
-  // reset if they close warning without tokens in params
-  const handleDismissTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-    navigate('/withdraw/')
-  }, [navigate])
 
   const formattedAmounts = useMemo(
     () => ({
@@ -175,6 +132,10 @@ export default function Withdraw() {
       data: calldata,
       value,
     }
+
+    setAttemptingTxn(true)
+    setShowConfirm(true)
+
     provider
       .getSigner()
       .estimateGas(txn)
@@ -186,20 +147,31 @@ export default function Withdraw() {
         return provider
           .getSigner()
           .sendTransaction(newTxn)
-          .then((response) => {
-            console.log(response)
+          .then((response: TransactionResponse) => {
+            setAttemptingTxn(false)
+            // addTransaction(response, {
+            //   type: TransactionType.ADD_LIQUIDITY_V3_POOL,
+            //   baseCurrencyId: currencyId(baseCurrency),
+            //   quoteCurrencyId: currencyId(quoteCurrency),
+            //   createPool: Boolean(noLiquidity),
+            //   expectedAmountBaseRaw: parsedAmounts[Field.CURRENCY_A]?.quotient?.toString() ?? '0',
+            //   expectedAmountQuoteRaw: parsedAmounts[Field.CURRENCY_B]?.quotient?.toString() ?? '0',
+            //   feeAmount: position.pool.fee,
+            // })
+            // setTxHash(response.hash)
+            // sendEvent({
+            //   category: 'Liquidity',
+            //   action: 'Add',
+            //   label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/'),
+            // })
           })
       })
       .catch((error) => {
-        //setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) {
-          console.error(error)
-        }
+        setAttemptingTxn(false)
+        //setWithdrawErrorMessage(error.message)
+        setWithdrawErrorMessage('Withdraw failed')
       })
   }
-
-  const addIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], null)
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
@@ -216,18 +188,51 @@ export default function Withdraw() {
     })
   }, [maxInputAmount, onUserInput])
 
+  const handleDismissConfirmation = useCallback(() => {
+    setShowConfirm(false)
+    if (txHash) {
+      navigate(`/withdraw/${fundAddress}/${investorAddress}`)
+    }
+    setTxHash('')
+  }, [navigate, txHash, fundAddress, investorAddress])
+
   return (
-    <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
+    <Trace page={PageName.WITHDRAW_PAGE} shouldLogImpression>
       <>
-        {/* {tokensFlag === TokensVariant.Enabled && <TokensBanner />} */}
-        <TokenWarningModal
-          isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-          tokens={importTokensNotInDefault}
-          onConfirm={handleConfirmTokenWarning}
-          onDismiss={handleDismissTokenWarning}
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          onDismiss={() => {
+            handleDismissConfirmation()
+          }}
+          attemptingTxn={attemptingTxn}
+          hash={txHash}
+          content={() =>
+            withdrawErrorMessage ? (
+              <TransactionErrorContent onDismiss={handleDismissConfirmation} message={withdrawErrorMessage} />
+            ) : (
+              <ConfirmationModalContent
+                title={<Trans>Confirm Withdraw</Trans>}
+                onDismiss={handleDismissConfirmation}
+                topContent={() => {
+                  return null
+                }}
+                bottomContent={() => {
+                  return null
+                }}
+              />
+            )
+          }
+          pendingText={
+            <Trans>
+              {/* Withdrawing {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
+          {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol} */}
+              Withdrawing
+            </Trans>
+          }
+          currencyToAdd={undefined}
         />
         <PageWrapper>
-          <SwapWrapper id="swap-page">
+          <WithdrawWrapper id="withdraw-page">
             <StyledWithdrawHeader>
               <RowBetween>
                 <RowFixed>
@@ -259,13 +264,7 @@ export default function Withdraw() {
                 </WithdrawSection>
               </div>
               <div>
-                {addIsUnsupported ? (
-                  <ButtonPrimary disabled={true}>
-                    <ThemedText.DeprecatedMain mb="4px">
-                      <Trans>Unsupported Asset</Trans>
-                    </ThemedText.DeprecatedMain>
-                  </ButtonPrimary>
-                ) : !account ? (
+                {!account ? (
                   <ButtonLight onClick={toggleWalletModal}>
                     <Trans>Connect Wallet</Trans>
                   </ButtonLight>
@@ -273,23 +272,23 @@ export default function Withdraw() {
                   <ButtonError
                     onClick={() => {
                       if (isExpertMode) {
-                        //handleSwap()
+                        //onWithdraw()
                       } else {
                         onWithdraw()
                       }
                     }}
-                    id="swap-button"
+                    id="withdraw-button"
                     disabled={!isValid}
                     error={isValid}
                   >
                     <Text fontSize={20} fontWeight={500}>
-                      {swapInputError ? swapInputError : <Trans>Withdraw</Trans>}
+                      {withdrawInputError ? withdrawInputError : <Trans>Withdraw</Trans>}
                     </Text>
                   </ButtonError>
                 )}
               </div>
             </AutoColumn>
-          </SwapWrapper>
+          </WithdrawWrapper>
           <NetworkAlert />
         </PageWrapper>
         <SwitchLocaleLink />

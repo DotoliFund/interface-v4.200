@@ -12,14 +12,16 @@ import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
 import { RowBetween, RowFixed } from 'components/Row'
-import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
+import { PageWrapper, SwapWrapper as DepositWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { MouseoverTooltip } from 'components/Tooltip'
-import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+import TransactionConfirmationModal, {
+  ConfirmationModalContent,
+  TransactionErrorContent,
+} from 'components/TransactionConfirmationModal'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
-import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { DotoliFund } from 'interface/DotoliFund'
 import { toHex } from 'interface/utils/calldata'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -28,12 +30,7 @@ import { CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import {
-  useDefaultsFromURLSearch,
-  useDepositActionHandlers,
-  useDepositState,
-  useDerivedDepositInfo,
-} from 'state/deposit/hooks'
+import { useDepositActionHandlers, useDepositState, useDerivedDepositInfo } from 'state/deposit/hooks'
 import { InterfaceTrade } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
 import { Field } from 'state/swap/actions'
@@ -93,12 +90,14 @@ export default function Deposit() {
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
   const { account, chainId, provider } = useWeb3React()
-  const loadedUrlParams = useDefaultsFromURLSearch()
+  //const loadedUrlParams = useDefaultsFromURLSearch()
   const navigate = useNavigate()
 
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
-  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
+  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
+  const [depositErrorMessage, setDepositErrorMessage] = useState<string | undefined>(undefined)
+  const [txHash, setTxHash] = useState<string | undefined>(undefined)
 
   const theme = useTheme()
 
@@ -183,6 +182,7 @@ export default function Deposit() {
     }
 
     setAttemptingTxn(true)
+    setShowConfirm(true)
 
     provider
       .getSigner()
@@ -216,10 +216,8 @@ export default function Deposit() {
       })
       .catch((error) => {
         setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) {
-          console.error(error)
-        }
+        //setDepositErrorMessage(error.message)
+        setDepositErrorMessage('Deposit failed')
       })
   }
 
@@ -243,11 +241,6 @@ export default function Deposit() {
 
   const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
 
-  // txn values
-  const deadline = useTransactionDeadline() // custom from users settings
-
-  const [txHash, setTxHash] = useState<string>('')
-
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
     if (txHash) {
@@ -256,45 +249,42 @@ export default function Deposit() {
     setTxHash('')
   }, [navigate, txHash, fundAddress, investorAddress])
 
-  const pendingText = 'pendingText test'
-
   return (
-    <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
+    <Trace page={PageName.DEPOSIT_PAGE} shouldLogImpression>
       <TransactionConfirmationModal
         isOpen={showConfirm}
-        onDismiss={handleDismissConfirmation}
+        onDismiss={() => {
+          handleDismissConfirmation()
+        }}
         attemptingTxn={attemptingTxn}
         hash={txHash}
-        content={() => (
-          <ConfirmationModalContent
-            title={<Trans>Deposit</Trans>}
-            onDismiss={handleDismissConfirmation}
-            topContent={() => (
-              <></>
-              // <Review
-              //   parsedAmounts={parsedAmounts}
-              //   position={position}
-              //   existingPosition={existingPosition}
-              //   priceLower={priceLower}
-              //   priceUpper={priceUpper}
-              //   outOfRange={outOfRange}
-              //   ticksAtLimit={ticksAtLimit}
-              // />
-            )}
-            bottomContent={() => (
-              <ButtonPrimary style={{ marginTop: '1rem' }} onClick={undefined}>
-                <Text fontWeight={500} fontSize={20}>
-                  <Trans>Add</Trans>
-                </Text>
-              </ButtonPrimary>
-            )}
-          />
-        )}
-        pendingText={pendingText}
+        content={() =>
+          depositErrorMessage ? (
+            <TransactionErrorContent onDismiss={handleDismissConfirmation} message={depositErrorMessage} />
+          ) : (
+            <ConfirmationModalContent
+              title={<Trans>Confirm Deposit</Trans>}
+              onDismiss={handleDismissConfirmation}
+              topContent={() => {
+                return null
+              }}
+              bottomContent={() => {
+                return null
+              }}
+            />
+          )
+        }
+        pendingText={
+          <Trans>
+            {/* Depositing {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
+          {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol} */}
+            Depositing
+          </Trans>
+        }
         currencyToAdd={undefined}
       />
       <PageWrapper>
-        <SwapWrapper id="swap-page">
+        <DepositWrapper id="deposit-page">
           <StyledDepositHeader>
             <RowBetween>
               <RowFixed>
@@ -412,7 +402,7 @@ export default function Deposit() {
               )}
             </div>
           </AutoColumn>
-        </SwapWrapper>
+        </DepositWrapper>
         <NetworkAlert />
       </PageWrapper>
       <SwitchLocaleLink />

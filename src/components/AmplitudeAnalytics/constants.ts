@@ -72,6 +72,8 @@ export enum PageName {
   POOL_PAGE = 'pool-page',
   SWAP_PAGE = 'swap-page',
   VOTE_PAGE = 'vote-page',
+  DEPOSIT_PAGE = 'deposit-page',
+  WITHDRAW_PAGE = 'withdraw-page',
   // alphabetize additional page names.
 }
 
@@ -81,14 +83,16 @@ export enum PageName {
  * but a different `section`.
  */
 export enum SectionName {
-  CURRENCY_INPUT_PANEL = 'swap-currency-input',
-  CURRENCY_OUTPUT_PANEL = 'swap-currency-output',
+  CURRENCY_INPUT_PANEL = 'currency-input',
+  CURRENCY_OUTPUT_PANEL = 'currency-output',
   // alphabetize additional section names.
 }
 
 /** Known modals for analytics purposes. */
 export enum ModalName {
   CONFIRM_SWAP = 'confirm-swap-modal',
+  CONFIRM_DEPOSIT = 'confirm-deposit-modal',
+  CONFIRM_WITHDRAW = 'confirm-withdraw-modal',
   TOKEN_SELECTOR = 'token-selector-modal',
   // alphabetize additional modal names.
 }
