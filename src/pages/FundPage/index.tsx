@@ -28,7 +28,7 @@ import { useETHPriceInUSD, useTokensPriceInETH } from 'hooks/usePools'
 import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
@@ -100,6 +100,7 @@ export default function FundPage() {
   const { account, chainId, provider } = useWeb3React()
   const navigate = useNavigate()
   const toggleWalletModal = useToggleWalletModal()
+  const nowDate = Math.floor(new Date().getTime() / 1000)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -252,7 +253,7 @@ export default function FundPage() {
       totalCurrentAmountUSD += tokenAmountUSD
     })
     formattedVolumeUSD.push({
-      time: Math.floor(new Date().getTime() / 1000),
+      time: nowDate,
       volume: totalCurrentAmountUSD,
       tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
       symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
@@ -505,6 +506,15 @@ export default function FundPage() {
                             : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
+                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
+                          </ThemedText.DeprecatedMain>
+                        ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
+                          </ThemedText.DeprecatedMain>
+                        ) : null}
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
@@ -520,15 +530,11 @@ export default function FundPage() {
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
-                        <ThemedText.DeprecatedMain fontSize="14px">
-                          <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
-                        </ThemedText.DeprecatedMain>
-                      ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
-                        <ThemedText.DeprecatedMain fontSize="14px">
-                          <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
-                        </ThemedText.DeprecatedMain>
-                      ) : null}
+                      <ThemedText.DeprecatedMain fontSize="14px">
+                        <MonoSpace>
+                          {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
+                        </MonoSpace>
+                      </ThemedText.DeprecatedMain>
                       <ThemedText.DeprecatedLargeHeader fontSize="30px">
                         {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
                           ? formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
@@ -549,21 +555,27 @@ export default function FundPage() {
                     <AutoColumn gap="4px">
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {feeIndexHover !== undefined ? formattedFeeTokens[feeIndexHover].symbol : null}
+                          {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0
+                            ? formattedFeeTokens[feeIndexHover].symbol
+                            : formattedFeeTokens && formattedFeeTokens.length > 0
+                            ? formattedFeeTokens[0].symbol
+                            : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
-                        {chainId !== undefined && feeIndexHover !== undefined ? (
-                          <ThemedText.DeprecatedMain fontSize="14px">
-                            <Link to={'https://www.guru99.com/c-function-pointers.html'}>
-                              <MonoSpace>{shortenAddress(formattedFeeTokens[feeIndexHover].token)}</MonoSpace>
-                            </Link>
-                          </ThemedText.DeprecatedMain>
-                        ) : null}
+                        <ThemedText.DeprecatedMain fontSize="14px">
+                          {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                            <MonoSpace>{shortenAddress(formattedFeeTokens[feeIndexHover].token)}</MonoSpace>
+                          ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                            <MonoSpace>{shortenAddress(formattedFeeTokens[0].token)}</MonoSpace>
+                          ) : null}
+                        </ThemedText.DeprecatedMain>
                       </AutoRow>
                       <ThemedText.DeprecatedLargeHeader fontSize="32px">
                         <MonoSpace>
-                          {feeIndexHover !== undefined ? (
+                          {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
                             formattedFeeTokens[feeIndexHover].amount
+                          ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                            formattedFeeTokens[0].amount
                           ) : (
                             <>
                               <br />
@@ -575,14 +587,11 @@ export default function FundPage() {
                   }
                   topRight={
                     <AutoColumn gap="4px" justify="end">
-                      {formattedVolumeUSD ? (
-                        <ThemedText.DeprecatedMain fontSize="14px">
-                          <MonoSpace>
-                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} ({' '}
-                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
-                          </MonoSpace>
-                        </ThemedText.DeprecatedMain>
-                      ) : null}
+                      <ThemedText.DeprecatedMain fontSize="14px">
+                        <MonoSpace>
+                          {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
+                        </MonoSpace>
+                      </ThemedText.DeprecatedMain>
                       <ThemedText.DeprecatedLargeHeader fontSize="30px">
                         <>
                           <br />
