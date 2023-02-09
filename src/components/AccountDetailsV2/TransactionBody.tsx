@@ -9,6 +9,7 @@ import {
   DepositTransactionInfo,
   ExactInputSwapTransactionInfo,
   ExactOutputSwapTransactionInfo,
+  FeeTransactionInfo,
   RemoveLiquidityV3TransactionInfo,
   TransactionInfo,
   TransactionType,
@@ -363,6 +364,24 @@ const WithdrawSummary = ({
   )
 }
 
+const FeeSummary = ({ info, transactionState }: { info: FeeTransactionInfo; transactionState: TransactionState }) => {
+  const { tokenAddress, amountRaw = '0' } = info
+  const actionProps = {
+    transactionState,
+    pending: <Trans>Fee receiving</Trans>,
+    success: <Trans>Fee received</Trans>,
+    failed: <Trans>Fee</Trans>,
+  }
+
+  return (
+    <BodyWrap>
+      <Action {...actionProps} />{' '}
+      <FormattedCurrencyAmount rawAmount={amountRaw} currencyId={tokenAddress} sigFigs={4} />{' '}
+      <FailedText transactionState={transactionState} />
+    </BodyWrap>
+  )
+}
+
 const TransactionBody = ({ info, transactionState }: { info: TransactionInfo; transactionState: TransactionState }) => {
   switch (info.type) {
     case TransactionType.SWAP:
@@ -383,6 +402,8 @@ const TransactionBody = ({ info, transactionState }: { info: TransactionInfo; tr
       return <DepositSummary info={info} transactionState={transactionState} />
     case TransactionType.WITHDRAW:
       return <WithdrawSummary info={info} transactionState={transactionState} />
+    case TransactionType.FEE:
+      return <FeeSummary info={info} transactionState={transactionState} />
     default:
       return <span />
   }

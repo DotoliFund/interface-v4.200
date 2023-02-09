@@ -34,6 +34,7 @@ export enum TransactionType {
   EXECUTE,
   DEPOSIT,
   WITHDRAW,
+  FEE,
 }
 
 export interface BaseTransactionInfo {
@@ -171,6 +172,12 @@ export interface WithdrawTransactionInfo {
   amountRaw: string
 }
 
+export interface FeeTransactionInfo {
+  type: TransactionType.FEE
+  tokenAddress: string
+  amountRaw: string
+}
+
 export type TransactionInfo =
   | ApproveTransactionInfo
   | ExactOutputSwapTransactionInfo
@@ -191,6 +198,7 @@ export type TransactionInfo =
   | SubmitProposalTransactionInfo
   | DepositTransactionInfo
   | WithdrawTransactionInfo
+  | FeeTransactionInfo
 
 export interface TransactionDetails {
   hash: string

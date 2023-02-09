@@ -92,7 +92,6 @@ export default function Deposit() {
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
   const { account, chainId, provider } = useWeb3React()
-  //const loadedUrlParams = useDefaultsFromURLSearch()
   const navigate = useNavigate()
 
   // modal and loading

@@ -338,7 +338,6 @@ export default function FeeCurrencyInputPanel({
       </Container>
       {onCurrencySelect && (
         <FeeCurrencySearchModal
-          fundAddress={fundAddress ? fundAddress : undefined}
           isOpen={modalOpen}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}

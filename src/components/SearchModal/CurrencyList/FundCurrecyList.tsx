@@ -239,7 +239,6 @@ export default function FundCurrencyList({
   showCurrencyAmount,
   isLoading,
   searchQuery,
-  isAddressSearch,
 }: {
   height: number
   currencies: Currency[]
@@ -251,7 +250,6 @@ export default function FundCurrencyList({
   showCurrencyAmount?: boolean
   isLoading: boolean
   searchQuery: string
-  isAddressSearch: string | false
 }) {
   const itemData: Currency[] = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
@@ -283,14 +281,14 @@ export default function FundCurrencyList({
             onSelect={handleSelect}
             otherSelected={otherSelected}
             showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
+            eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, false)}
           />
         )
       } else {
         return null
       }
     },
-    [onCurrencySelect, otherCurrency, selectedCurrency, showCurrencyAmount, isLoading, isAddressSearch, searchQuery]
+    [onCurrencySelect, otherCurrency, selectedCurrency, showCurrencyAmount, isLoading, searchQuery]
   )
 
   const itemKey = useCallback((index: number, data: typeof itemData) => {

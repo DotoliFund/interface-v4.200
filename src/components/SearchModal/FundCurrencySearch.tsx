@@ -4,7 +4,6 @@ import { Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata.sol/IERC20Metadata.json'
 import { useWeb3React } from '@web3-react/core'
-import { sendEvent } from 'components/analytics'
 import { useDotoliFundContract } from 'hooks/useContract'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
@@ -23,12 +22,9 @@ import styled, { useTheme } from 'styled-components/macro'
 import { FundToken } from 'types/fund'
 import { IERC20MetadataInterface } from 'types/v3/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata'
 
-import { useIsUserAddedToken, useToken } from '../../hooks/Tokens'
 import { CloseIcon, ThemedText } from '../../theme'
-import { isAddress } from '../../utils'
 import Column from '../Column'
 import { RowBetween } from '../Row'
-import { CurrencyRow, formatAnalyticsEventProperties } from './CurrencyList'
 import FundCurrencyList from './CurrencyList/FundCurrecyList'
 import { PaddedColumn, Separator } from './styleds'
 
@@ -147,23 +143,6 @@ export function FundCurrencySearch({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
 
-  // if they input an address, use it
-  const isAddressSearch = isAddress(debouncedQuery)
-
-  const searchToken = useToken(debouncedQuery)
-
-  const searchTokenIsAdded = useIsUserAddedToken(searchToken)
-
-  useEffect(() => {
-    if (isAddressSearch) {
-      sendEvent({
-        category: 'Currency Select',
-        action: 'Search by address',
-        label: isAddressSearch,
-      })
-    }
-  }, [isAddressSearch])
-
   const [balances, balancesAreLoading] = useAllTokenBalances()
   const sortedTokens: Token[] = useMemo(
     () => (!balancesAreLoading ? [...investorTokens].sort(tokenComparator.bind(null, balances)) : []),
@@ -223,24 +202,7 @@ export function FundCurrencySearch({
         </RowBetween>
       </PaddedColumn>
       <Separator />
-      {searchToken && !searchTokenIsAdded ? (
-        <Column style={{ padding: '20px 0', height: '100%' }}>
-          <CurrencyRow
-            currency={searchToken}
-            isSelected={Boolean(searchToken && selectedCurrency && selectedCurrency.equals(searchToken))}
-            onSelect={(hasWarning: boolean) => searchToken && handleCurrencySelect(searchToken, hasWarning)}
-            otherSelected={Boolean(searchToken && otherSelectedCurrency && otherSelectedCurrency.equals(searchToken))}
-            showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(
-              searchToken,
-              0,
-              [searchToken],
-              searchQuery,
-              isAddressSearch
-            )}
-          />
-        </Column>
-      ) : searchCurrencies?.length > 0 || isLoading ? (
+      {searchCurrencies?.length > 0 || isLoading ? (
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>
             {({ height }) => (
@@ -255,7 +217,6 @@ export function FundCurrencySearch({
                 showCurrencyAmount={showCurrencyAmount}
                 isLoading={isLoading}
                 searchQuery={searchQuery}
-                isAddressSearch={isAddressSearch}
               />
             )}
           </AutoSizer>

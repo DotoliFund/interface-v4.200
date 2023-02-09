@@ -1,19 +1,20 @@
 // eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
+import { Interface } from '@ethersproject/abi'
+import { Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
+import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata.sol/IERC20Metadata.json'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Column from 'components/Column'
-import Row, { RowBetween } from 'components/Row'
-import { useActiveTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { RowBetween } from 'components/Row'
+import { useSearchInactiveTokenLists } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useToggle from 'hooks/useToggle'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
-import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
@@ -21,11 +22,10 @@ import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { CloseIcon, ThemedText } from 'theme'
 import { FundToken } from 'types/fund'
+import { IERC20MetadataInterface } from 'types/v3/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata'
 import { isAddress } from 'utils'
 
-import CommonBases from '../CommonBases'
-import { CurrencyRow, formatAnalyticsEventProperties } from '../CurrencyList'
-import { PaddedColumn, SearchInput, Separator } from '../styleds'
+import { PaddedColumn, Separator } from '../styleds'
 import FeeCurrencyList from './FeeCurrencyList'
 
 const ContentWrapper = styled(Column)`
@@ -36,11 +36,10 @@ const ContentWrapper = styled(Column)`
 `
 
 interface FeeCurrencySearchProps {
-  fundAddress: string | undefined
+  feeTokens: FundToken[]
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
-  feeTokens: FundToken[]
   onCurrencySelect: (currency: Currency, hasWarning?: boolean) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
@@ -60,20 +59,77 @@ function isTokenExist(tokens: FundToken[], token: string) {
 }
 
 export function FeeCurrencySearch({
-  fundAddress,
-  selectedCurrency,
   feeTokens,
+  isOpen,
+  onDismiss,
+  selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
-  showCommonBases,
   showCurrencyAmount,
   disableNonToken,
-  onDismiss,
-  isOpen,
 }: FeeCurrencySearchProps) {
   const { chainId } = useWeb3React()
   const theme = useTheme()
-  const DotoliFundContract = useDotoliFundContract(fundAddress)
+
+  const feeTokensAddresses: string[] = useMemo(() => {
+    if (feeTokens && feeTokens.length > 0) {
+      return feeTokens.map((data, index) => {
+        return data.tokenAddress
+      })
+    } else {
+      return []
+    }
+  }, [feeTokens])
+
+  const ERC20_METADATA_INTERFACE = new Interface(IERC20Metadata.abi) as IERC20MetadataInterface
+
+  const feeTokensDecimalsInfo = useMultipleContractSingleData(feeTokensAddresses, ERC20_METADATA_INTERFACE, 'decimals')
+  const feeTokensDecimals = useMemo(() => {
+    const decimals: number[] = []
+    for (let i = 0; i < feeTokensDecimalsInfo.length; i++) {
+      const decimal = feeTokensDecimalsInfo[i].result
+      if (decimal) {
+        decimals.push(Number(decimal))
+      } else {
+        decimals.push(0)
+      }
+    }
+    return decimals
+  }, [feeTokensDecimalsInfo])
+
+  const feeTokensSymbolInfo = useMultipleContractSingleData(feeTokensAddresses, ERC20_METADATA_INTERFACE, 'symbol')
+  const feeTokensSymbols = useMemo(() => {
+    const symbols: string[] = []
+    for (let i = 0; i < feeTokensSymbolInfo.length; i++) {
+      const symbol = feeTokensSymbolInfo[i].result
+      if (symbol) {
+        symbols.push(symbol.toString())
+      } else {
+        symbols.push('Unknown')
+      }
+    }
+    return symbols
+  }, [feeTokensSymbolInfo])
+
+  const feeTokensInfo: Token[] = useMemo(() => {
+    if (
+      chainId &&
+      feeTokensAddresses &&
+      feeTokensAddresses.length > 0 &&
+      feeTokensDecimals.length > 0 &&
+      feeTokensSymbols.length > 0
+    ) {
+      const tokens: Token[] = feeTokensAddresses.map((data, index) => {
+        const token: string = data
+        const decimals: number = feeTokensDecimals[index]
+        const symbol: string = feeTokensSymbols[index]
+        return new Token(chainId, token, decimals, symbol)
+      })
+      return tokens
+    } else {
+      return []
+    }
+  }, [chainId, feeTokensAddresses, feeTokensDecimals, feeTokensSymbols])
 
   const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false)
 
@@ -83,15 +139,8 @@ export function FeeCurrencySearch({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
 
-  // Only display 'imported' tokens when the search filter has input
-  const defaultTokens = useActiveTokens(debouncedQuery.length > 0)
-
   // if they input an address, use it
   const isAddressSearch = isAddress(debouncedQuery)
-
-  const searchToken = useToken(debouncedQuery)
-
-  const searchTokenIsAdded = useIsUserAddedToken(searchToken)
 
   useEffect(() => {
     if (isAddressSearch) {
@@ -103,14 +152,10 @@ export function FeeCurrencySearch({
     }
   }, [isAddressSearch])
 
-  const filteredTokens: Token[] = useMemo(() => {
-    return Object.values(defaultTokens).filter(getTokenFilter(debouncedQuery))
-  }, [defaultTokens, debouncedQuery])
-
   const [balances, balancesAreLoading] = useAllTokenBalances()
   const sortedTokens: Token[] = useMemo(
-    () => (!balancesAreLoading ? [...filteredTokens].sort(tokenComparator.bind(null, balances)) : []),
-    [balances, filteredTokens, balancesAreLoading]
+    () => (!balancesAreLoading ? [...feeTokensInfo].sort(tokenComparator.bind(null, balances)) : []),
+    [balances, feeTokensInfo, balancesAreLoading]
   )
   const isLoading = Boolean(balancesAreLoading && !tokenLoaderTimerElapsed)
 
@@ -163,34 +208,6 @@ export function FeeCurrencySearch({
     if (isOpen) setSearchQuery('')
   }, [isOpen])
 
-  // manage focus on modal show
-  const inputRef = useRef<HTMLInputElement>()
-  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const input = event.target.value
-    const checksummedInput = isAddress(input)
-    setSearchQuery(checksummedInput || input)
-    fixedList.current?.scrollTo(0)
-  }, [])
-
-  const handleEnter = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        const s = debouncedQuery.toLowerCase().trim()
-        if (s === native?.symbol?.toLowerCase()) {
-          handleCurrencySelect(native)
-        } else if (feeCurrencies.length > 0) {
-          if (
-            feeCurrencies[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
-            feeCurrencies.length === 1
-          ) {
-            handleCurrencySelect(feeCurrencies[0])
-          }
-        }
-      }
-    },
-    [debouncedQuery, native, feeCurrencies, handleCurrencySelect]
-  )
-
   // menu ui
   const [open, toggle] = useToggle(false)
   const node = useRef<HTMLDivElement>()
@@ -198,7 +215,7 @@ export function FeeCurrencySearch({
 
   // if no results on main list, show option to expand into inactive
   const filteredInactiveTokens = useSearchInactiveTokenLists(
-    filteredTokens.length === 0 || (debouncedQuery.length > 2 && !isAddressSearch) ? debouncedQuery : undefined
+    feeTokensInfo.length === 0 || (debouncedQuery.length > 2 && !isAddressSearch) ? debouncedQuery : undefined
   )
 
   // Timeout token loader after 3 seconds to avoid hanging in a loading state.
@@ -218,47 +235,9 @@ export function FeeCurrencySearch({
           </Text>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
-        <Row>
-          <SearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t`Search name or paste address`}
-            autoComplete="off"
-            value={searchQuery}
-            ref={inputRef as RefObject<HTMLInputElement>}
-            onChange={handleInput}
-            onKeyDown={handleEnter}
-          />
-        </Row>
-        {showCommonBases && (
-          <CommonBases
-            chainId={chainId}
-            onSelect={handleCurrencySelect}
-            selectedCurrency={selectedCurrency}
-            searchQuery={searchQuery}
-            isAddressSearch={isAddressSearch}
-          />
-        )}
       </PaddedColumn>
       <Separator />
-      {searchToken && !searchTokenIsAdded ? (
-        <Column style={{ padding: '20px 0', height: '100%' }}>
-          <CurrencyRow
-            currency={searchToken}
-            isSelected={Boolean(searchToken && selectedCurrency && selectedCurrency.equals(searchToken))}
-            onSelect={(hasWarning: boolean) => searchToken && handleCurrencySelect(searchToken, hasWarning)}
-            otherSelected={Boolean(searchToken && otherSelectedCurrency && otherSelectedCurrency.equals(searchToken))}
-            showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(
-              searchToken,
-              0,
-              [searchToken],
-              searchQuery,
-              isAddressSearch
-            )}
-          />
-        </Column>
-      ) : feeCurrencies?.length > 0 || filteredInactiveTokens?.length > 0 || isLoading ? (
+      {feeCurrencies?.length > 0 || filteredInactiveTokens?.length > 0 || isLoading ? (
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>
             {({ height }) => (

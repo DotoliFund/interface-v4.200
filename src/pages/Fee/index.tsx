@@ -1,5 +1,6 @@
+import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
@@ -9,32 +10,30 @@ import { AutoColumn } from 'components/Column'
 import FeeCurrencyInputPanel from 'components/CurrencyInputPanel/FeeCurrencyInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { RowBetween, RowFixed } from 'components/Row'
-import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
+import { PageWrapper, SwapWrapper as FeeWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import TokenWarningModal from 'components/TokenWarningModal'
-import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { useAllTokens, useCurrency } from 'hooks/Tokens'
+import TransactionConfirmationModal, {
+  ConfirmationModalContent,
+  TransactionErrorContent,
+} from 'components/TransactionConfirmationModal'
 import { useDotoliFundContract } from 'hooks/useContract'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useCallback, useMemo, useState } from 'react'
-import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { useDefaultsFromURLSearch, useDerivedFeeInfo, useFeeActionHandlers, useFeeState } from 'state/fee/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
-import { Field } from 'state/swap/actions'
+import { Field } from 'state/fee/actions'
+import { useDerivedFeeInfo, useFeeActionHandlers, useFeeState } from 'state/fee/hooks'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import { TransactionType } from 'state/transactions/types'
 import { useExpertModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { FundToken } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { supportedChainId } from 'utils/supportedChainId'
 
 const StyledFeeHeader = styled.div`
   padding: 8px 12px;
@@ -73,52 +72,17 @@ const FeeSection = styled.div`
   }
 `
 
-export function getIsValidSwapQuote(
-  trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
-  tradeState: TradeState,
-  swapInputError?: ReactNode
-): boolean {
-  return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
-}
-
 export default function Fee() {
   const params = useParams()
   const fundAddress = params.fundAddress
   const navigate = useNavigate()
   const { account, chainId, provider } = useWeb3React()
-  const loadedUrlParams = useDefaultsFromURLSearch()
 
-  // token warning stuff
-  const [loadedInputCurrency] = [useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId)]
-  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
-  const urlLoadedTokens: Token[] = useMemo(
-    () => [loadedInputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
-    [loadedInputCurrency]
-  )
-  const handleConfirmTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-  }, [])
-
-  // dismiss warning if all imported tokens are in active lists
-  const defaultTokens = useAllTokens()
-  const importTokensNotInDefault = useMemo(
-    () =>
-      urlLoadedTokens &&
-      urlLoadedTokens
-        .filter((token: Token) => {
-          return !Boolean(token.address in defaultTokens)
-        })
-        .filter((token: Token) => {
-          // Any token addresses that are loaded from the shorthands map do not need to show the import URL
-          const supported = supportedChainId(chainId)
-          if (!supported) return true
-          return !Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
-            const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][supported]
-            return shorthandTokenAddress && shorthandTokenAddress === token.address
-          })
-        }),
-    [chainId, defaultTokens, urlLoadedTokens]
-  )
+  // modal and loading
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
+  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false)
+  const [feeErrorMessage, setFeeErrorMessage] = useState<string | undefined>(undefined)
+  const [txHash, setTxHash] = useState<string | undefined>(undefined)
 
   // toggle wallet when disconnected
   const toggleWalletModal = useToggleWalletModal()
@@ -137,23 +101,17 @@ export default function Fee() {
 
   // fee state
   const { typedValue } = useFeeState()
-  const { currencyBalance, parsedAmount, currency, inputError: swapInputError } = useDerivedFeeInfo(feeTokens)
+  const { currencyBalance, parsedAmount, currency, inputError: feeInputError } = useDerivedFeeInfo(feeTokens)
   const fiatValueInput = useStablecoinValue(parsedAmount)
 
   const { onCurrencySelection, onUserInput } = useFeeActionHandlers()
-  const isValid = !swapInputError
+  const isValid = !feeInputError
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(value)
     },
     [onUserInput]
   )
-
-  // reset if they close warning without tokens in params
-  const handleDismissTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-    navigate('/fee/')
-  }, [navigate])
 
   const formattedAmounts = useMemo(
     () => ({
@@ -165,6 +123,8 @@ export default function Fee() {
   const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(() => currencyBalance, [currencyBalance])
   const showMaxButton = Boolean(currencyBalance?.greaterThan(0) && !parsedAmount?.equalTo(currencyBalance))
 
+  const addTransaction = useTransactionAdder()
+
   async function onFee() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress) return
@@ -175,6 +135,16 @@ export default function Fee() {
       data: calldata,
       value,
     }
+
+    const tokenAddress = currency?.wrapped.address
+
+    const amount = parsedAmount.quotient.toString()
+    //const decimal = 10 ** parsedAmount.currency.decimals
+    //const deAmount = amount / decimal
+
+    setAttemptingTxn(true)
+    setShowConfirm(true)
+
     provider
       .getSigner()
       .estimateGas(txn)
@@ -186,20 +156,27 @@ export default function Fee() {
         return provider
           .getSigner()
           .sendTransaction(newTxn)
-          .then((response) => {
-            console.log(response)
+          .then((response: TransactionResponse) => {
+            setAttemptingTxn(false)
+            addTransaction(response, {
+              type: TransactionType.FEE,
+              tokenAddress,
+              amountRaw: amount,
+            })
+            setTxHash(response.hash)
+            // sendEvent({
+            //   category: 'Liquidity',
+            //   action: 'Add',
+            //   label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/'),
+            // })
           })
       })
       .catch((error) => {
-        //setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) {
-          console.error(error)
-        }
+        setAttemptingTxn(false)
+        //setFeeErrorMessage(error.message)
+        setFeeErrorMessage('Failed to receive fees')
       })
   }
-
-  const addIsUnsupported = useIsSwapUnsupported(currency, null)
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
@@ -216,18 +193,51 @@ export default function Fee() {
     })
   }, [maxInputAmount, onUserInput])
 
+  const handleDismissConfirmation = useCallback(() => {
+    setShowConfirm(false)
+    if (txHash) {
+      navigate(`/fee/${fundAddress}`)
+    }
+    setTxHash('')
+  }, [navigate, txHash, fundAddress])
+
   return (
-    <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
+    <Trace page={PageName.FEE_PAGE} shouldLogImpression>
       <>
-        {/* {tokensFlag === TokensVariant.Enabled && <TokensBanner />} */}
-        <TokenWarningModal
-          isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-          tokens={importTokensNotInDefault}
-          onConfirm={handleConfirmTokenWarning}
-          onDismiss={handleDismissTokenWarning}
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          onDismiss={() => {
+            handleDismissConfirmation()
+          }}
+          attemptingTxn={attemptingTxn}
+          hash={txHash}
+          content={() =>
+            feeErrorMessage ? (
+              <TransactionErrorContent onDismiss={handleDismissConfirmation} message={feeErrorMessage} />
+            ) : (
+              <ConfirmationModalContent
+                title={<Trans>Confirm Fee</Trans>}
+                onDismiss={handleDismissConfirmation}
+                topContent={() => {
+                  return null
+                }}
+                bottomContent={() => {
+                  return null
+                }}
+              />
+            )
+          }
+          pendingText={
+            <Trans>
+              {/* Withdrawing Fee {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
+          {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol} */}
+              Fee receiving
+            </Trans>
+          }
+          currencyToAdd={undefined}
         />
         <PageWrapper>
-          <SwapWrapper id="swap-page">
+          <FeeWrapper id="fee-page">
             <StyledFeeHeader>
               <RowBetween>
                 <RowFixed>
@@ -266,12 +276,6 @@ export default function Fee() {
                       <Trans>No Fees</Trans>
                     </ThemedText.DeprecatedMain>
                   </ButtonPrimary>
-                ) : addIsUnsupported ? (
-                  <ButtonPrimary disabled={true}>
-                    <ThemedText.DeprecatedMain mb="4px">
-                      <Trans>Unsupported Asset</Trans>
-                    </ThemedText.DeprecatedMain>
-                  </ButtonPrimary>
                 ) : !account ? (
                   <ButtonLight onClick={toggleWalletModal}>
                     <Trans>Connect Wallet</Trans>
@@ -280,23 +284,23 @@ export default function Fee() {
                   <ButtonError
                     onClick={() => {
                       if (isExpertMode) {
-                        //handleSwap()
+                        //onFee()
                       } else {
                         onFee()
                       }
                     }}
-                    id="swap-button"
+                    id="fee-button"
                     disabled={!isValid}
                     error={isValid}
                   >
                     <Text fontSize={20} fontWeight={500}>
-                      {swapInputError ? swapInputError : <Trans>Fee</Trans>}
+                      {feeInputError ? feeInputError : <Trans>Fee</Trans>}
                     </Text>
                   </ButtonError>
                 )}
               </div>
             </AutoColumn>
-          </SwapWrapper>
+          </FeeWrapper>
           <NetworkAlert />
         </PageWrapper>
         <SwitchLocaleLink />

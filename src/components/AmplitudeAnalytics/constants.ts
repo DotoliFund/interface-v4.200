@@ -74,6 +74,7 @@ export enum PageName {
   VOTE_PAGE = 'vote-page',
   DEPOSIT_PAGE = 'deposit-page',
   WITHDRAW_PAGE = 'withdraw-page',
+  FEE_PAGE = 'fee-page',
   // alphabetize additional page names.
 }
 

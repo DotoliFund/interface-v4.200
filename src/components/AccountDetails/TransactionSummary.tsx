@@ -18,6 +18,7 @@ import {
   ExactInputSwapTransactionInfo,
   ExactOutputSwapTransactionInfo,
   ExecuteTransactionInfo,
+  FeeTransactionInfo,
   MigrateV2LiquidityToV3TransactionInfo,
   QueueTransactionInfo,
   RemoveLiquidityV3TransactionInfo,
@@ -292,6 +293,16 @@ function WithdrawSummary({ info }: { info: WithdrawTransactionInfo }) {
   )
 }
 
+function FeeSummary({ info }: { info: FeeTransactionInfo }) {
+  const { tokenAddress, amountRaw = '0' } = info
+
+  return (
+    <Trans>
+      Fee <FormattedCurrencyAmountManaged rawAmount={amountRaw} currencyId={tokenAddress} sigFigs={4} />
+    </Trans>
+  )
+}
+
 export function TransactionSummary({ info }: { info: TransactionInfo }) {
   switch (info.type) {
     case TransactionType.ADD_LIQUIDITY_V3_POOL:
@@ -347,5 +358,8 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
 
     case TransactionType.WITHDRAW:
       return <WithdrawSummary info={info} />
+
+    case TransactionType.FEE:
+      return <FeeSummary info={info} />
   }
 }

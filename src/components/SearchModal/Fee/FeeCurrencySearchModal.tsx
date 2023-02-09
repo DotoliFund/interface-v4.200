@@ -10,7 +10,6 @@ import { FundToken } from 'types/fund'
 import { FeeCurrencySearch } from './FeeCurrencySearch'
 
 interface FeeCurrencySearchModalProps {
-  fundAddress: string | undefined
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
@@ -29,7 +28,6 @@ export enum CurrencyModalView {
 }
 
 export default memo(function FeeCurrencySearchModal({
-  fundAddress,
   isOpen,
   onDismiss,
   onCurrencySelect,
@@ -81,7 +79,6 @@ export default memo(function FeeCurrencySearchModal({
       }
       content = (
         <FeeCurrencySearch
-          fundAddress={fundAddress}
           isOpen={isOpen}
           onDismiss={onDismiss}
           onCurrencySelect={handleCurrencySelect}
@@ -109,7 +106,12 @@ export default memo(function FeeCurrencySearchModal({
       break
   }
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={modalHeight} minHeight={modalHeight}>
+    <Modal
+      isOpen={isOpen}
+      onDismiss={onDismiss}
+      maxHeight={modalHeight ? modalHeight * 0.6 : modalHeight}
+      minHeight={modalHeight ? modalHeight * 0.6 : modalHeight}
+    >
       {content}
     </Modal>
   )
