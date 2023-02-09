@@ -27,7 +27,7 @@ import { toHex } from 'interface/utils/calldata'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useDepositActionHandlers, useDepositState, useDerivedDepositInfo } from 'state/deposit/hooks'
@@ -90,9 +90,7 @@ export function getIsValidSwapQuote(
 export default function Deposit() {
   const params = useParams()
   const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
   const { account, chainId, provider } = useWeb3React()
-  const navigate = useNavigate()
 
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -244,13 +242,10 @@ export default function Deposit() {
 
   const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
 
-  const handleDismissConfirmation = useCallback(() => {
+  const handleDismissConfirmation = () => {
     setShowConfirm(false)
-    if (txHash) {
-      navigate(`/deposit/${fundAddress}/${investorAddress}`)
-    }
     setTxHash('')
-  }, [navigate, txHash, fundAddress, investorAddress])
+  }
 
   return (
     <Trace page={PageName.DEPOSIT_PAGE} shouldLogImpression>

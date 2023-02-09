@@ -21,7 +21,6 @@ import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useCallback, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
@@ -75,7 +74,6 @@ const FeeSection = styled.div`
 export default function Fee() {
   const params = useParams()
   const fundAddress = params.fundAddress
-  const navigate = useNavigate()
   const { account, chainId, provider } = useWeb3React()
 
   // modal and loading
@@ -193,13 +191,10 @@ export default function Fee() {
     })
   }, [maxInputAmount, onUserInput])
 
-  const handleDismissConfirmation = useCallback(() => {
+  const handleDismissConfirmation = () => {
     setShowConfirm(false)
-    if (txHash) {
-      navigate(`/fee/${fundAddress}`)
-    }
     setTxHash('')
-  }, [navigate, txHash, fundAddress])
+  }
 
   return (
     <Trace page={PageName.FEE_PAGE} shouldLogImpression>

@@ -19,7 +19,6 @@ import TransactionConfirmationModal, {
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useCallback, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
@@ -73,8 +72,6 @@ const WithdrawSection = styled.div`
 export default function Withdraw() {
   const params = useParams()
   const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
-  const navigate = useNavigate()
   const { account, chainId, provider } = useWeb3React()
 
   // modal and loading
@@ -191,13 +188,10 @@ export default function Withdraw() {
     })
   }, [maxInputAmount, onUserInput])
 
-  const handleDismissConfirmation = useCallback(() => {
+  const handleDismissConfirmation = () => {
     setShowConfirm(false)
-    if (txHash) {
-      navigate(`/withdraw/${fundAddress}/${investorAddress}`)
-    }
     setTxHash('')
-  }, [navigate, txHash, fundAddress, investorAddress])
+  }
 
   return (
     <Trace page={PageName.WITHDRAW_PAGE} shouldLogImpression>
