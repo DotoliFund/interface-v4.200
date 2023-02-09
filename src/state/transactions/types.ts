@@ -32,6 +32,8 @@ export enum TransactionType {
   SUBMIT_PROPOSAL,
   QUEUE,
   EXECUTE,
+  DEPOSIT,
+  WITHDRAW,
 }
 
 export interface BaseTransactionInfo {
@@ -157,6 +159,18 @@ export interface SubmitProposalTransactionInfo {
   type: TransactionType.SUBMIT_PROPOSAL
 }
 
+export interface DepositTransactionInfo {
+  type: TransactionType.DEPOSIT
+  tokenAddress: string
+  amountRaw: string
+}
+
+export interface WithdrawTransactionInfo {
+  type: TransactionType.WITHDRAW
+  tokenAddress: string
+  amountRaw: string
+}
+
 export type TransactionInfo =
   | ApproveTransactionInfo
   | ExactOutputSwapTransactionInfo
@@ -175,6 +189,8 @@ export type TransactionInfo =
   | CollectFeesTransactionInfo
   | RemoveLiquidityV3TransactionInfo
   | SubmitProposalTransactionInfo
+  | DepositTransactionInfo
+  | WithdrawTransactionInfo
 
 export interface TransactionDetails {
   hash: string

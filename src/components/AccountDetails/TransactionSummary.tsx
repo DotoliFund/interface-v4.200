@@ -14,6 +14,7 @@ import {
   CreateV3PoolTransactionInfo,
   DelegateTransactionInfo,
   DepositLiquidityStakingTransactionInfo,
+  DepositTransactionInfo,
   ExactInputSwapTransactionInfo,
   ExactOutputSwapTransactionInfo,
   ExecuteTransactionInfo,
@@ -24,6 +25,7 @@ import {
   TransactionInfo,
   TransactionType,
   WithdrawLiquidityStakingTransactionInfo,
+  WithdrawTransactionInfo,
   WrapTransactionInfo,
 } from '../../state/transactions/types'
 
@@ -270,6 +272,26 @@ function SwapSummary({ info }: { info: ExactInputSwapTransactionInfo | ExactOutp
   }
 }
 
+function DepositSummary({ info }: { info: DepositTransactionInfo }) {
+  const { tokenAddress, amountRaw = '0' } = info
+
+  return (
+    <Trans>
+      Deposit <FormattedCurrencyAmountManaged rawAmount={amountRaw} currencyId={tokenAddress} sigFigs={4} />
+    </Trans>
+  )
+}
+
+function WithdrawSummary({ info }: { info: WithdrawTransactionInfo }) {
+  const { tokenAddress, amountRaw = '0' } = info
+
+  return (
+    <Trans>
+      Withdraw <FormattedCurrencyAmountManaged rawAmount={amountRaw} currencyId={tokenAddress} sigFigs={4} />
+    </Trans>
+  )
+}
+
 export function TransactionSummary({ info }: { info: TransactionInfo }) {
   switch (info.type) {
     case TransactionType.ADD_LIQUIDITY_V3_POOL:
@@ -319,6 +341,11 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
 
     case TransactionType.SUBMIT_PROPOSAL:
       return <SubmitProposalTransactionSummary info={info} />
+
+    case TransactionType.DEPOSIT:
+      return <DepositSummary info={info} />
+
+    case TransactionType.WITHDRAW:
+      return <WithdrawSummary info={info} />
   }
-  return <></>
 }

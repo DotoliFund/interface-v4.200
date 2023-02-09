@@ -23,6 +23,8 @@ import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import { TransactionType } from 'state/transactions/types'
 import { useExpertModeManager } from 'state/user/hooks'
 import { Field } from 'state/withdraw/actions'
 import { useDerivedWithdrawInfo, useWithdrawActionHandlers, useWithdrawState } from 'state/withdraw/hooks'
@@ -121,10 +123,13 @@ export default function Withdraw() {
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
   const currency = currencies[Field.INPUT]
+  const tokenAddress = currency?.wrapped.address
+
+  const addTransaction = useTransactionAdder()
 
   async function onWithdraw() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount || !fundAddress) return
+    if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
 
     const { calldata, value } = DotoliFund.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
@@ -132,6 +137,8 @@ export default function Withdraw() {
       data: calldata,
       value,
     }
+
+    const amount = parsedAmount.quotient.toString()
 
     setAttemptingTxn(true)
     setShowConfirm(true)
@@ -149,16 +156,12 @@ export default function Withdraw() {
           .sendTransaction(newTxn)
           .then((response: TransactionResponse) => {
             setAttemptingTxn(false)
-            // addTransaction(response, {
-            //   type: TransactionType.ADD_LIQUIDITY_V3_POOL,
-            //   baseCurrencyId: currencyId(baseCurrency),
-            //   quoteCurrencyId: currencyId(quoteCurrency),
-            //   createPool: Boolean(noLiquidity),
-            //   expectedAmountBaseRaw: parsedAmounts[Field.CURRENCY_A]?.quotient?.toString() ?? '0',
-            //   expectedAmountQuoteRaw: parsedAmounts[Field.CURRENCY_B]?.quotient?.toString() ?? '0',
-            //   feeAmount: position.pool.fee,
-            // })
-            // setTxHash(response.hash)
+            addTransaction(response, {
+              type: TransactionType.WITHDRAW,
+              tokenAddress,
+              amountRaw: amount,
+            })
+            setTxHash(response.hash)
             // sendEvent({
             //   category: 'Liquidity',
             //   action: 'Add',
@@ -198,101 +201,99 @@ export default function Withdraw() {
 
   return (
     <Trace page={PageName.WITHDRAW_PAGE} shouldLogImpression>
-      <>
-        <TransactionConfirmationModal
-          isOpen={showConfirm}
-          onDismiss={() => {
-            handleDismissConfirmation()
-          }}
-          attemptingTxn={attemptingTxn}
-          hash={txHash}
-          content={() =>
-            withdrawErrorMessage ? (
-              <TransactionErrorContent onDismiss={handleDismissConfirmation} message={withdrawErrorMessage} />
-            ) : (
-              <ConfirmationModalContent
-                title={<Trans>Confirm Withdraw</Trans>}
-                onDismiss={handleDismissConfirmation}
-                topContent={() => {
-                  return null
-                }}
-                bottomContent={() => {
-                  return null
-                }}
-              />
-            )
-          }
-          pendingText={
-            <Trans>
-              {/* Withdrawing {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
+      <TransactionConfirmationModal
+        isOpen={showConfirm}
+        onDismiss={() => {
+          handleDismissConfirmation()
+        }}
+        attemptingTxn={attemptingTxn}
+        hash={txHash}
+        content={() =>
+          withdrawErrorMessage ? (
+            <TransactionErrorContent onDismiss={handleDismissConfirmation} message={withdrawErrorMessage} />
+          ) : (
+            <ConfirmationModalContent
+              title={<Trans>Confirm Withdraw</Trans>}
+              onDismiss={handleDismissConfirmation}
+              topContent={() => {
+                return null
+              }}
+              bottomContent={() => {
+                return null
+              }}
+            />
+          )
+        }
+        pendingText={
+          <Trans>
+            {/* Withdrawing {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
           {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol} */}
-              Withdrawing
-            </Trans>
-          }
-          currencyToAdd={undefined}
-        />
-        <PageWrapper>
-          <WithdrawWrapper id="withdraw-page">
-            <StyledWithdrawHeader>
-              <RowBetween>
-                <RowFixed>
-                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
-                    <Trans>Withdraw</Trans>
-                  </ThemedText.DeprecatedBlack>
-                </RowFixed>
-              </RowBetween>
-            </StyledWithdrawHeader>
-            <AutoColumn gap={'6px'}>
-              <div style={{ display: 'relative' }}>
-                <WithdrawSection>
-                  <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                    <FundCurrencyInputPanel
-                      label={<Trans>Withdraw</Trans>}
-                      value={formattedAmounts[Field.INPUT]}
-                      showMaxButton={showMaxButton}
-                      currency={currencies[Field.INPUT] ?? null}
-                      onUserInput={handleTypeInput}
-                      onMax={handleMaxInput}
-                      fiatValue={fiatValueInput ?? undefined}
-                      onCurrencySelect={handleInputSelect}
-                      otherCurrency={currencies[Field.INPUT]}
-                      showCommonBases={true}
-                      id={SectionName.CURRENCY_INPUT_PANEL}
-                      loading={false}
-                    />
-                  </Trace>
-                </WithdrawSection>
-              </div>
-              <div>
-                {!account ? (
-                  <ButtonLight onClick={toggleWalletModal}>
-                    <Trans>Connect Wallet</Trans>
-                  </ButtonLight>
-                ) : (
-                  <ButtonError
-                    onClick={() => {
-                      if (isExpertMode) {
-                        //onWithdraw()
-                      } else {
-                        onWithdraw()
-                      }
-                    }}
-                    id="withdraw-button"
-                    disabled={!isValid}
-                    error={isValid}
-                  >
-                    <Text fontSize={20} fontWeight={500}>
-                      {withdrawInputError ? withdrawInputError : <Trans>Withdraw</Trans>}
-                    </Text>
-                  </ButtonError>
-                )}
-              </div>
-            </AutoColumn>
-          </WithdrawWrapper>
-          <NetworkAlert />
-        </PageWrapper>
-        <SwitchLocaleLink />
-      </>
+            Withdrawing
+          </Trans>
+        }
+        currencyToAdd={undefined}
+      />
+      <PageWrapper>
+        <WithdrawWrapper id="withdraw-page">
+          <StyledWithdrawHeader>
+            <RowBetween>
+              <RowFixed>
+                <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                  <Trans>Withdraw</Trans>
+                </ThemedText.DeprecatedBlack>
+              </RowFixed>
+            </RowBetween>
+          </StyledWithdrawHeader>
+          <AutoColumn gap={'6px'}>
+            <div style={{ display: 'relative' }}>
+              <WithdrawSection>
+                <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                  <FundCurrencyInputPanel
+                    label={<Trans>Withdraw</Trans>}
+                    value={formattedAmounts[Field.INPUT]}
+                    showMaxButton={showMaxButton}
+                    currency={currencies[Field.INPUT] ?? null}
+                    onUserInput={handleTypeInput}
+                    onMax={handleMaxInput}
+                    fiatValue={fiatValueInput ?? undefined}
+                    onCurrencySelect={handleInputSelect}
+                    otherCurrency={currencies[Field.INPUT]}
+                    showCommonBases={true}
+                    id={SectionName.CURRENCY_INPUT_PANEL}
+                    loading={false}
+                  />
+                </Trace>
+              </WithdrawSection>
+            </div>
+            <div>
+              {!account ? (
+                <ButtonLight onClick={toggleWalletModal}>
+                  <Trans>Connect Wallet</Trans>
+                </ButtonLight>
+              ) : (
+                <ButtonError
+                  onClick={() => {
+                    if (isExpertMode) {
+                      //onWithdraw()
+                    } else {
+                      onWithdraw()
+                    }
+                  }}
+                  id="withdraw-button"
+                  disabled={!isValid}
+                  error={isValid}
+                >
+                  <Text fontSize={20} fontWeight={500}>
+                    {withdrawInputError ? withdrawInputError : <Trans>Withdraw</Trans>}
+                  </Text>
+                </ButtonError>
+              )}
+            </div>
+          </AutoColumn>
+        </WithdrawWrapper>
+        <NetworkAlert />
+      </PageWrapper>
+      <SwitchLocaleLink />
     </Trace>
   )
 }

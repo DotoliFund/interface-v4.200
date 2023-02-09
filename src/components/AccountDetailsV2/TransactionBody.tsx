@@ -6,11 +6,13 @@ import {
   ApproveTransactionInfo,
   ClaimTransactionInfo,
   CollectFeesTransactionInfo,
+  DepositTransactionInfo,
   ExactInputSwapTransactionInfo,
   ExactOutputSwapTransactionInfo,
   RemoveLiquidityV3TransactionInfo,
   TransactionInfo,
   TransactionType,
+  WithdrawTransactionInfo,
   WrapTransactionInfo,
 } from 'state/transactions/types'
 import styled from 'styled-components/macro'
@@ -313,6 +315,54 @@ const WrapSummary = ({
   )
 }
 
+const DepositSummary = ({
+  info,
+  transactionState,
+}: {
+  info: DepositTransactionInfo
+  transactionState: TransactionState
+}) => {
+  const { tokenAddress, amountRaw = '0' } = info
+  const actionProps = {
+    transactionState,
+    pending: <Trans>Depositing</Trans>,
+    success: <Trans>Deposited</Trans>,
+    failed: <Trans>Deposit</Trans>,
+  }
+
+  return (
+    <BodyWrap>
+      <Action {...actionProps} />{' '}
+      <FormattedCurrencyAmount rawAmount={amountRaw} currencyId={tokenAddress} sigFigs={4} />{' '}
+      <FailedText transactionState={transactionState} />
+    </BodyWrap>
+  )
+}
+
+const WithdrawSummary = ({
+  info,
+  transactionState,
+}: {
+  info: WithdrawTransactionInfo
+  transactionState: TransactionState
+}) => {
+  const { tokenAddress, amountRaw = '0' } = info
+  const actionProps = {
+    transactionState,
+    pending: <Trans>Withdrawing</Trans>,
+    success: <Trans>Withdrawed</Trans>,
+    failed: <Trans>Withdraw</Trans>,
+  }
+
+  return (
+    <BodyWrap>
+      <Action {...actionProps} />{' '}
+      <FormattedCurrencyAmount rawAmount={amountRaw} currencyId={tokenAddress} sigFigs={4} />{' '}
+      <FailedText transactionState={transactionState} />
+    </BodyWrap>
+  )
+}
+
 const TransactionBody = ({ info, transactionState }: { info: TransactionInfo; transactionState: TransactionState }) => {
   switch (info.type) {
     case TransactionType.SWAP:
@@ -329,6 +379,10 @@ const TransactionBody = ({ info, transactionState }: { info: TransactionInfo; tr
       return <ApprovalSummary info={info} transactionState={transactionState} />
     case TransactionType.CLAIM:
       return <ClaimSummary info={info} transactionState={transactionState} />
+    case TransactionType.DEPOSIT:
+      return <DepositSummary info={info} transactionState={transactionState} />
+    case TransactionType.WITHDRAW:
+      return <WithdrawSummary info={info} transactionState={transactionState} />
     default:
       return <span />
   }

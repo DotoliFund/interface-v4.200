@@ -34,6 +34,8 @@ import { useDepositActionHandlers, useDepositState, useDerivedDepositInfo } from
 import { InterfaceTrade } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
 import { Field } from 'state/swap/actions'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import { TransactionType } from 'state/transactions/types'
 import { useExpertModeManager } from 'state/user/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
@@ -161,6 +163,8 @@ export default function Deposit() {
   const currency = currencies[Field.INPUT]
   const tokenAddress = currency?.wrapped.address
 
+  const addTransaction = useTransactionAdder()
+
   async function onDeposit() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
@@ -181,6 +185,10 @@ export default function Deposit() {
       }
     }
 
+    const amount = parsedAmount.quotient.toString()
+    //const decimal = 10 ** parsedAmount.currency.decimals
+    //const deAmount = amount / decimal
+
     setAttemptingTxn(true)
     setShowConfirm(true)
 
@@ -197,16 +205,12 @@ export default function Deposit() {
           .sendTransaction(newTxn)
           .then((response: TransactionResponse) => {
             setAttemptingTxn(false)
-            // addTransaction(response, {
-            //   type: TransactionType.ADD_LIQUIDITY_V3_POOL,
-            //   baseCurrencyId: currencyId(baseCurrency),
-            //   quoteCurrencyId: currencyId(quoteCurrency),
-            //   createPool: Boolean(noLiquidity),
-            //   expectedAmountBaseRaw: parsedAmounts[Field.CURRENCY_A]?.quotient?.toString() ?? '0',
-            //   expectedAmountQuoteRaw: parsedAmounts[Field.CURRENCY_B]?.quotient?.toString() ?? '0',
-            //   feeAmount: position.pool.fee,
-            // })
-            // setTxHash(response.hash)
+            addTransaction(response, {
+              type: TransactionType.DEPOSIT,
+              tokenAddress,
+              amountRaw: amount,
+            })
+            setTxHash(response.hash)
             // sendEvent({
             //   category: 'Liquidity',
             //   action: 'Add',
