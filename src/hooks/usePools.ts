@@ -162,32 +162,51 @@ export function useTokensPriceInETH(
   const pools = usePools(poolKeys)
 
   if (chainId === undefined) return undefined
-
   const weth9 = WRAPPED_NATIVE_CURRENCY[chainId]
-  const latestTokenPools: Pool[] = []
+
+  /* 
+    Remain only one pool fee which is the largest liquidity
+    and filter other small liquidity pool fee
+    ex)
+      ETH, USDC, 0.05% fee pool = 1000 liquidity
+      ETH, USDC, 0.3% fee pool = 700 liquidity
+      ETH, USDC, 1% fee pool = 500 liquidity
+      => remain only ETH, USDC, 1% fee pool
+  */
+  const bestPools: Pool[] = []
 
   pools.map((data, index) => {
     const poolState = data[0]
-    const pool = data[1]
-    if (poolState === PoolState.EXISTS && pool) {
-      if (latestTokenPools.length === 0) {
-        latestTokenPools.push(pool)
+    const newPool = data[1]
+    if (poolState === PoolState.EXISTS && newPool) {
+      if (bestPools.length === 0) {
+        // only at first, when bestPools is empty
+        bestPools.push(newPool)
       } else {
-        const lastPoolToken0 = latestTokenPools[latestTokenPools.length - 1].token0
-        const lastPoolToken1 = latestTokenPools[latestTokenPools.length - 1].token1
-        const token0 = pool.token0
-        const token1 = pool.token1
+        const bestPoolToken0 = bestPools[bestPools.length - 1].token0
+        const bestPoolToken1 = bestPools[bestPools.length - 1].token1
+        const bestPoolFee = bestPools[bestPools.length - 1].fee
+        const newPooltoken0 = newPool.token0
+        const newPooltoken1 = newPool.token1
+        const newPoolfee = newPool.fee
 
-        if (lastPoolToken0.equals(token0) && lastPoolToken1.equals(token1)) {
-          const lastPoolLiquidity = latestTokenPools[latestTokenPools.length - 1].liquidity
-          const liquidity = pool.liquidity
+        // in case of same tokens but different fee pool
+        if (
+          (bestPoolToken0.equals(newPooltoken0) &&
+            bestPoolToken1.equals(newPooltoken1) &&
+            bestPoolFee !== newPoolfee) ||
+          (bestPoolToken0.equals(newPooltoken1) && bestPoolToken1.equals(newPooltoken0) && bestPoolFee !== newPoolfee)
+        ) {
+          const bestPoolLiquidity = bestPools[bestPools.length - 1].liquidity
+          const newliquidity = newPool.liquidity
 
-          if (JSBI.lessThan(lastPoolLiquidity, liquidity)) {
-            latestTokenPools.pop()
-            latestTokenPools.push(pool)
+          if (JSBI.lessThan(bestPoolLiquidity, newliquidity)) {
+            bestPools.pop()
+            bestPools.push(newPool)
           }
         } else {
-          latestTokenPools.push(pool)
+          // if new tokens pool
+          bestPools.push(newPool)
         }
       }
     }
@@ -195,31 +214,34 @@ export function useTokensPriceInETH(
 
   const tokenPricesInETH: [Token, number][] = []
 
-  for (let i = 0; i < latestTokenPools.length; i++) {
-    if (latestTokenPools[i].token0.equals(weth9)) {
-      const token1Price = latestTokenPools[i].token1Price.quote(
+  for (let i = 0; i < bestPools.length; i++) {
+    if (bestPools[i].token0.equals(weth9)) {
+      const token0Price = bestPools[i].token0Price.quote(
         CurrencyAmount.fromRawAmount(
-          latestTokenPools[i].token1,
-          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(latestTokenPools[i].token1.decimals))
-        )
-      ).quotient
-      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
-      const ethDecimal = Math.pow(10, 18).toFixed(18)
-      const priceInETH = parseFloat(token1PriceDecimal) / parseFloat(ethDecimal)
-      tokenPricesInETH.push([latestTokenPools[i].token1, priceInETH])
-    } else {
-      const token0Price = latestTokenPools[i]?.token0Price.quote(
-        CurrencyAmount.fromRawAmount(
-          latestTokenPools[i].token0,
-          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(latestTokenPools[i].token0.decimals))
+          bestPools[i].token0,
+          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(bestPools[i].token0.decimals))
         )
       ).quotient
       const token0PriceDecimal = parseFloat(token0Price.toString()).toFixed(18)
       const ethDecimal = Math.pow(10, 18).toFixed(18)
-      const priceInETH = parseFloat(token0PriceDecimal) / parseFloat(ethDecimal)
-      tokenPricesInETH.push([latestTokenPools[i].token0, priceInETH])
+      const token0PriceInETH = parseFloat(token0PriceDecimal) / parseFloat(ethDecimal)
+      const priceInETH = parseFloat('1') / token0PriceInETH
+      tokenPricesInETH.push([bestPools[i].token1, priceInETH])
+    } else {
+      const token1Price = bestPools[i].token1Price.quote(
+        CurrencyAmount.fromRawAmount(
+          bestPools[i].token1,
+          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(bestPools[i].token1.decimals))
+        )
+      ).quotient
+      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
+      const ethDecimal = Math.pow(10, 18).toFixed(18)
+      const token1PriceInETH = parseFloat(token1PriceDecimal) / parseFloat(ethDecimal)
+      const priceInETH = parseFloat('1') / token1PriceInETH
+      tokenPricesInETH.push([bestPools[i].token0, priceInETH])
     }
   }
+
   return tokenPricesInETH
 }
 
@@ -232,42 +254,42 @@ export function useETHPriceInUSD(chainId: number | undefined): number | undefine
   }
 
   const pools = usePools(poolTokens)
-
   if (chainId === undefined) return undefined
+  const weth9 = WRAPPED_NATIVE_CURRENCY[chainId]
 
-  let largestLiquidity = '0'
-  let largestPool = 0
+  let bestLiquidity = '0'
+  let bestPool = 0
 
   pools.map((data, index) => {
     const poolState = data[0]
-    const pool = data[1]
-    if (poolState === PoolState.EXISTS && pool) {
-      if (JSBI.GT(pool.liquidity, JSBI.BigInt(largestLiquidity))) {
-        largestLiquidity = pool.liquidity.toString()
-        largestPool = index
+    const newPool = data[1]
+    if (poolState === PoolState.EXISTS && newPool) {
+      if (JSBI.GT(newPool.liquidity, JSBI.BigInt(bestLiquidity))) {
+        bestLiquidity = newPool.liquidity.toString()
+        bestPool = index
       }
     }
   })
 
-  const poolState = pools[largestPool][0]
-  const pool = pools[largestPool][1]
+  const poolState = pools[bestPool][0]
+  const pool = pools[bestPool][1]
   if (poolState === PoolState.EXISTS && pool) {
     const token0 = pool.token0
-    if (token0.equals(USDC[chainId])) {
-      const token1Price = pool.token1Price.quote(
-        CurrencyAmount.fromRawAmount(pool.token1, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(pool.token1.decimals)))
-      ).quotient
-      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
-      const usdcDecimal = Math.pow(10, USDC[chainId].decimals).toFixed(18)
-      const priceInUSD = parseFloat(token1PriceDecimal) / parseFloat(usdcDecimal)
-      return priceInUSD
-    } else {
+    if (token0.equals(weth9)) {
       const token0Price = pool.token0Price.quote(
         CurrencyAmount.fromRawAmount(pool.token0, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(pool.token0.decimals)))
       ).quotient
       const token0PriceDecimal = parseFloat(token0Price.toString()).toFixed(18)
       const usdcDecimal = Math.pow(10, USDC[chainId].decimals).toFixed(18)
       const priceInUSD = parseFloat(token0PriceDecimal) / parseFloat(usdcDecimal)
+      return priceInUSD
+    } else {
+      const token1Price = pool.token1Price.quote(
+        CurrencyAmount.fromRawAmount(pool.token1, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(pool.token1.decimals)))
+      ).quotient
+      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
+      const usdcDecimal = Math.pow(10, USDC[chainId].decimals).toFixed(18)
+      const priceInUSD = parseFloat(token1PriceDecimal) / parseFloat(usdcDecimal)
       return priceInUSD
     }
   } else {

@@ -218,32 +218,71 @@ export default function FundPage() {
   const currentTokensAmount: [Token, number][] = []
   if (formattedLatestTokens) {
     formattedLatestTokens.map((data, index) => {
-      currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.HIGH])
-      currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.MEDIUM])
-      currentTokenPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal), weth9, FeeAmount.LOW])
-      currentTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal), data.amount])
+      currentTokenPools.push([
+        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
+        weth9,
+        FeeAmount.HIGH,
+      ])
+      currentTokenPools.push([
+        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
+        weth9,
+        FeeAmount.MEDIUM,
+      ])
+      currentTokenPools.push([
+        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
+        weth9,
+        FeeAmount.LOW,
+      ])
+      currentTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), data.amount])
     })
   }
 
   const currentTokensPriceInETH = useTokensPriceInETH(chainId, currentTokenPools)
-  const currentTokensAmountUSD: [Token, number][] = []
-  if (ethPriceInUSDC && currentTokensPriceInETH && weth9 !== undefined) {
-    currentTokensAmount.map((data, index) => {
-      const token = data[0].address
-      const tokenAmount = data[1]
 
-      if (token.toUpperCase() === weth9.address.toUpperCase()) {
-        currentTokensAmountUSD.push([weth9, tokenAmount * ethPriceInUSDC])
-      } else {
-        currentTokensPriceInETH.map((data2: any, index2: any) => {
-          const token2 = data2[0].address
-          const priceInETH = data2[1]
-          if (token.toUpperCase() === token2.toUpperCase()) {
-            currentTokensAmountUSD.push([data2[0], tokenAmount * priceInETH * ethPriceInUSDC])
-          }
-        })
+  // remove duplicated tokens and get tokens amountUSD
+  // currentTokensAmount + currentTokensPriceInETH => currentTokensAmountUSD
+  const currentTokensAmountUSD: [Token, number][] = []
+
+  if (weth9 && ethPriceInUSDC && currentTokensAmount && currentTokensAmount.length > 0 && currentTokensPriceInETH) {
+    for (let i = 0; i < currentTokensAmount.length; i++) {
+      const newToken: Token = currentTokensAmount[i][0]
+      const newTokenAddress: string = newToken.address
+      const newTokenAmount: number = currentTokensAmount[i][1]
+      let newTokenPriceETH = 0
+
+      // get token's priceUSD
+      for (let j = 0; j < currentTokensPriceInETH.length; j++) {
+        const tokenAddress: string = currentTokensPriceInETH[j][0].address
+        const tokenPriceETH: number = currentTokensPriceInETH[j][1]
+        // WETH => priceETH = 1
+        if (newTokenAddress.toUpperCase() === weth9.address.toUpperCase()) {
+          newTokenPriceETH = 1
+          break
+        } else if (newTokenAddress.toUpperCase() === tokenAddress.toUpperCase()) {
+          newTokenPriceETH = tokenPriceETH
+          break
+        }
       }
-    })
+
+      // console.log('newTokenAddress', newTokenAddress)
+      // console.log('newTokenAmount', newTokenAmount)
+      // console.log('newTokenPriceETH', newTokenPriceETH)
+      // console.log('ethPriceInUSDC', ethPriceInUSDC)
+
+      // sum duplicated token's amountUSD
+      let isAdded = false
+      for (let j = 0; j < currentTokensAmountUSD.length; j++) {
+        const filteredTokenAddress: string = currentTokensAmountUSD[j][0].address
+        if (newTokenAddress.toUpperCase() === filteredTokenAddress.toUpperCase()) {
+          currentTokensAmountUSD[j][1] += newTokenAmount * newTokenPriceETH * ethPriceInUSDC
+          isAdded = true
+          break
+        }
+      }
+      if (!isAdded) {
+        currentTokensAmountUSD.push([newToken, newTokenAmount * newTokenPriceETH * ethPriceInUSDC])
+      }
+    }
   }
 
   if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
