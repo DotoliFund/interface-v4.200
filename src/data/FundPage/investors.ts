@@ -10,8 +10,8 @@ const FUND_INVESTORS = gql`
       id
       createdAtTimestamp
       fund
-      manager
       investor
+      isManager
       principalETH
       principalUSD
       currentETH
@@ -69,11 +69,10 @@ export function useFundInvestors(fund: string | undefined): {
     ? data.investors.map((value, index) => {
         const investorDataFields = data.investors[index]
         const investorData: Investor = {
-          id: investorDataFields.id,
           createdAtTimestamp: parseFloat(investorDataFields.createdAtTimestamp),
           fund: investorDataFields.fund,
-          manager: investorDataFields.manager,
           investor: investorDataFields.investor,
+          isManager: Boolean(investorDataFields.isManager),
           principalETH: parseFloat(investorDataFields.principalETH),
           principalUSD: parseFloat(investorDataFields.principalUSD),
           currentETH: parseFloat(investorDataFields.currentETH),

@@ -16,9 +16,9 @@ import PieChart from 'components/PieChart'
 import PositionList from 'components/PositionList'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
+import LiquidityTransactionTable from 'components/Tables/LiquidityTransactionTable'
+import TransactionTable from 'components/Tables/TransactionTable'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-import TransactionTable from 'components/TransactionsTable'
-import LiquidityTransactionTable from 'components/TransactionsTable/LiquidityTransactionTable'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useInvestorChartData } from 'data/FundAccount/chartData'
@@ -35,13 +35,14 @@ import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useUserHideClosedPositions } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
-import { StyledInternalLink, ThemedText } from 'theme'
+import { ExternalLink, StyledInternalLink, ThemedText } from 'theme'
 import { PositionDetails } from 'types/position'
 import { IERC20MetadataInterface } from 'types/v3/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata'
-import { shortenAddress } from 'utils'
+import { getEtherscanLink, shortenAddress } from 'utils'
 import { formatTime, unixToDate } from 'utils/date'
 import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
@@ -208,6 +209,7 @@ export default function FundAccount() {
   const investorAddress = params.investorAddress
   const newPositionLink = '/add/' + fundAddress + '/' + investorAddress + '/ETH'
   const navigate = useNavigate()
+  const toggleWalletModal = useToggleWalletModal()
   const DotoliFactoryContract = useDotoliFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { chainId, account } = useWeb3React()
@@ -739,7 +741,13 @@ export default function FundAccount() {
 
   const Buttons = () =>
     !account ? (
-      <ButtonPrimary $borderRadius="12px" mr="12px" padding={'12px'}>
+      <ButtonPrimary
+        $borderRadius="12px"
+        margin={'6px'}
+        padding={'12px'}
+        data-testid="navbar-connect-wallet"
+        onClick={toggleWalletModal}
+      >
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
@@ -818,38 +826,27 @@ export default function FundAccount() {
   return (
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
-      {investorData ? (
+      {investorData && chainId ? (
         <AutoColumn gap="16px">
           <RowBetween>
             <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <ThemedText.DeprecatedMain>
-                  <Trans>Home</Trans> {'> '}
-                </ThemedText.DeprecatedMain>
-              </StyledInternalLink>
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'funds'}>
-                <ThemedText.DeprecatedLabel>
-                  <Trans>Fund</Trans>
-                </ThemedText.DeprecatedLabel>
-              </StyledInternalLink>
-              <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
               <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund}>
-                <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.fund)}`}</ThemedText.DeprecatedLabel>
+                <ThemedText.DeprecatedLabel>{shortenAddress(investorData.fund)}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
               <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
               <StyledInternalLink
                 to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund + '/' + investorData.investor}
               >
-                <ThemedText.DeprecatedLabel>{`${shortenAddress(investorData.investor)}`}</ThemedText.DeprecatedLabel>
+                <ThemedText.DeprecatedLabel>{shortenAddress(investorData.investor)}</ThemedText.DeprecatedLabel>
               </StyledInternalLink>
             </AutoRow>
           </RowBetween>
           <ResponsiveRow align="flex-end">
-            <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
-              <Trans>Investor</Trans> : ${shortenAddress(investorData.investor)}
-            </ThemedText.DeprecatedLabel>
-            {activeNetwork === EthereumNetworkInfo ? null : <></>}
-
+            <ExternalLink href={getEtherscanLink(chainId, investorData.investor, 'address', activeNetwork)}>
+              <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
+                <Trans>Investor </Trans> : {shortenAddress(investorData.investor)}
+              </ThemedText.DeprecatedLabel>
+            </ExternalLink>
             {activeNetwork !== EthereumNetworkInfo ? null : (
               <RowFixed>
                 <Buttons />
@@ -861,11 +858,8 @@ export default function FundAccount() {
               <AutoColumn gap="md">
                 <AutoRow gap="md">
                   <ThemedText.DeprecatedMain ml="8px">
-                    <Trans>Manager</Trans> :
+                    <Trans>Total Tokens</Trans>
                   </ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                    {shortenAddress(investorData.manager)}
-                  </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart data={tokenHover} color={activeNetwork.primaryColor} />
               </AutoColumn>

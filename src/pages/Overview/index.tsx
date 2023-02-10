@@ -2,12 +2,14 @@ import { Trans } from '@lingui/macro'
 import AreaChart from 'components/AreaChart'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import FundTable from 'components/funds/TopFundTable'
 import Row, { RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
-import TokenTable from 'components/TokensTable'
+import TokenTable from 'components/Tables/TokensTable'
+import FundTable from 'components/Tables/TopFundTable'
+import ManagerTable from 'components/Tables/TopManagerTable'
 import { useFactoryChartData } from 'data/Overview/chartData'
 import { useFactoryData } from 'data/Overview/factoryData'
+import { useTopManagers } from 'data/Overview/topManagers'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useFundListData, useTokenListData } from 'state/funds/hooks'
@@ -76,6 +78,7 @@ export default function Overview() {
   const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
 
   const factoryData = useFactoryData()
+  const managerListData = useTopManagers()
   const fundListData = useFundListData()
   const tokenListData = useTokenListData()
   const chartData = useFactoryChartData().data
@@ -84,7 +87,7 @@ export default function Overview() {
     if (chartData) {
       return chartData.map((day, index) => {
         return {
-          time: day.timestamp,
+          time: day.date,
           value: day.totalCurrentUSD,
           index,
         }
@@ -98,7 +101,7 @@ export default function Overview() {
     if (chartData) {
       return chartData.map((day, index) => {
         return {
-          time: day.timestamp,
+          time: day.date,
           value: day.investorCount,
           index,
         }
@@ -253,6 +256,14 @@ export default function Overview() {
             </RowBetween>
           </DarkGreyCard>
         </HideSmall>
+        <RowBetween mt={'16px'}>
+          <ThemedText.DeprecatedMain fontSize="22px">
+            <Trans>Top Managers</Trans>
+          </ThemedText.DeprecatedMain>
+        </RowBetween>
+        <DarkGreyCard>
+          <ManagerTable managerDatas={managerListData.data} />
+        </DarkGreyCard>
         <RowBetween mt={'16px'}>
           <ThemedText.DeprecatedMain fontSize="22px">
             <Trans>Top Funds</Trans>

@@ -6,9 +6,9 @@ import { FactorySnapshot, FactorySnapshotFields } from 'types/fund'
 export const FUND_CHART_DATA_BULK = () => {
   const queryString = `
     query factorySnapshots {
-      factorySnapshots(orderBy: timestamp, orderDirection: asc, subgraphError: allow) {
+      factorySnapshots(orderBy: date, orderDirection: asc, subgraphError: allow) {
         id
-        timestamp
+        date
         fundCount
         investorCount
         totalCurrentETH
@@ -57,7 +57,7 @@ export function useFactoryChartData(): {
         const factorySnapshotFields = data.factorySnapshots[index]
         const fundSnapshotData: FactorySnapshot = {
           id: factorySnapshotFields.id,
-          timestamp: parseFloat(factorySnapshotFields.timestamp),
+          date: parseFloat(factorySnapshotFields.date),
           fundCount: parseFloat(factorySnapshotFields.fundCount),
           investorCount: parseFloat(factorySnapshotFields.investorCount),
           totalCurrentETH: parseFloat(factorySnapshotFields.totalCurrentETH),

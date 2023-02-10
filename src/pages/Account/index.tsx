@@ -154,13 +154,12 @@ function WrongNetworkCard() {
   const theme = useTheme()
   return (
     <>
-      {/* {tokensFlag === TokensVariant.Enabled && <TokensBanner />} */}
       <PageWrapper>
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
               <ThemedText.DeprecatedBody fontSize={'20px'}>
-                <Trans>My Funds</Trans>
+                <Trans>My Account</Trans>
               </ThemedText.DeprecatedBody>
             </TitleRow>
 
@@ -326,7 +325,7 @@ export default function Account() {
             <AutoColumn gap="lg" style={{ width: '100%' }}>
               <TitleRow padding={'0'}>
                 <ThemedText.DeprecatedBody fontSize={'20px'}>
-                  <Trans>My Funds</Trans>
+                  <Trans>My Account</Trans>
                 </ThemedText.DeprecatedBody>
                 <ButtonRow>
                   {

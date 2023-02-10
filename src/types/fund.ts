@@ -39,7 +39,7 @@ export interface FactoryFields {
 
 export interface FactorySnapshot {
   id: string
-  timestamp: number
+  date: number
   fundCount: number
   investorCount: number
   totalCurrentETH: number
@@ -48,7 +48,7 @@ export interface FactorySnapshot {
 
 export interface FactorySnapshotFields {
   id: string
-  timestamp: string
+  date: string
   fundCount: string
   investorCount: string
   totalCurrentETH: string
@@ -93,11 +93,10 @@ export interface FundFields {
 }
 
 export interface Investor {
-  id: string
   createdAtTimestamp: number
   fund: string
-  manager: string
   investor: string
+  isManager: boolean
   principalETH: number
   principalUSD: number
   currentETH: number
@@ -118,8 +117,8 @@ export interface InvestorFields {
   id: string
   createdAtTimestamp: string
   fund: string
-  manager: string
   investor: string
+  isManager: string
   principalETH: string
   principalUSD: string
   currentETH: string

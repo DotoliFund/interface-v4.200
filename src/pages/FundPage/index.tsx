@@ -8,13 +8,13 @@ import VolumeBarChart from 'components/BarChart/volume'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import InvestorTable from 'components/funds/InvestorTable'
 import { LoadingRows } from 'components/Loader/styled'
 import PieChart from 'components/PieChart'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
+import InvestorTable from 'components/Tables/InvestorTable'
+import TransactionTable from 'components/Tables/TransactionTable'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-import TransactionTable from 'components/TransactionsTable'
 import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -32,11 +32,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
-import { StyledInternalLink, ThemedText } from 'theme'
-import { shortenAddress } from 'utils'
+import { ExternalLink, ThemedText } from 'theme'
+import { getEtherscanLink, shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatTime, unixToDate } from 'utils/date'
-import { networkPrefix } from 'utils/networkPrefix'
 import { formatDollarAmount } from 'utils/numbers'
 
 const PageWrapper = styled.div`
@@ -407,34 +406,16 @@ export default function FundPage() {
   return (
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
-      {fundData ? (
+      {fundData && chainId ? (
         <AutoColumn gap="16px">
-          <RowBetween>
-            <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <ThemedText.DeprecatedMain>
-                  <Trans>Home</Trans>
-                  {' > '}
-                </ThemedText.DeprecatedMain>
-              </StyledInternalLink>
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'funds'}>
-                <ThemedText.DeprecatedLabel>
-                  <Trans>Funds</Trans>
-                </ThemedText.DeprecatedLabel>
-              </StyledInternalLink>
-              <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + fundData.address}>
-                <ThemedText.DeprecatedLabel>{`${shortenAddress(fundData.address)}`}</ThemedText.DeprecatedLabel>
-              </StyledInternalLink>
-            </AutoRow>
-          </RowBetween>
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>
-                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
-                  <Trans>Fund :</Trans> ${shortenAddress(fundData.address)}
-                </ThemedText.DeprecatedLabel>
-                {activeNetwork === EthereumNetworkInfo ? null : <></>}
+                <ExternalLink href={getEtherscanLink(chainId, fundData.address, 'address', activeNetwork)}>
+                  <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
+                    <Trans>Fund :</Trans> {shortenAddress(fundData.address)}
+                  </ThemedText.DeprecatedLabel>
+                </ExternalLink>
               </RowFixed>
             </AutoColumn>
             {activeNetwork !== EthereumNetworkInfo ? null : (
@@ -449,11 +430,8 @@ export default function FundPage() {
               <AutoColumn gap="md">
                 <AutoRow gap="md">
                   <ThemedText.DeprecatedMain ml="8px">
-                    <Trans>Manager</Trans> :{' '}
+                    <Trans>Current Tokens</Trans>
                   </ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel fontSize="14px" ml="8px">
-                    {shortenAddress(fundData.manager)}
-                  </ThemedText.DeprecatedLabel>
                 </AutoRow>
                 <PieChart
                   data={formattedHoverToken ? formattedHoverToken : formattedLatestTokens}

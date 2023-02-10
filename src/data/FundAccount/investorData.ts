@@ -10,8 +10,8 @@ const INVESTOR_DATA = gql`
       id
       createdAtTimestamp
       fund
-      manager
       investor
+      isManager
       principalETH
       principalUSD
       currentETH
@@ -76,11 +76,10 @@ export function useInvestorData(
 
   const formatted: Investor | undefined = data
     ? {
-        id: data.investor.id,
         createdAtTimestamp: parseFloat(data.investor.createdAtTimestamp),
         fund: data.investor.fund,
-        manager: data.investor.manager,
         investor: data.investor.investor,
+        isManager: Boolean(data.investor.isManager),
         principalETH: parseFloat(data.investor.principalETH),
         principalUSD: parseFloat(data.investor.principalUSD),
         currentETH: parseFloat(data.investor.currentETH),
