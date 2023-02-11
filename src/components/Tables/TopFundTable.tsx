@@ -7,7 +7,7 @@ import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
-import { Fund } from 'types/fund'
+import { TopFund } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
@@ -59,13 +59,13 @@ const LinkWrapper = styled(Link)`
 
 const SORT_FIELD = {
   fund: 'fund',
-  volume: 'volume',
+  current: 'current',
   manager: 'manager',
   investorCount: 'investorCount',
   created: 'createdAtTimestamp',
 }
 
-const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
+const DataRow = ({ fundData, index }: { fundData: TopFund; index: number }) => {
   return (
     <LinkWrapper to={'/fund/' + fundData.address}>
       <ResponsiveGrid>
@@ -89,12 +89,12 @@ const DataRow = ({ fundData, index }: { fundData: Fund; index: number }) => {
 
 const MAX_ITEMS = 10
 
-export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDatas: Fund[]; maxItems?: number }) {
+export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDatas: TopFund[]; maxItems?: number }) {
   // theming
   const theme = useTheme()
 
   // for sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.volume)
+  const [sortField, setSortField] = useState(SORT_FIELD.current)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
@@ -114,7 +114,7 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
           .filter((x) => !!x)
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof Fund] > b[sortField as keyof Fund]
+              return a[sortField as keyof TopFund] > b[sortField as keyof TopFund]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {
@@ -156,8 +156,8 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
               <Trans>Fund</Trans> {arrow(SORT_FIELD.fund)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
-              <Trans>Volume</Trans> {arrow(SORT_FIELD.volume)}
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.current)}>
+              <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.manager)}>
               <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}

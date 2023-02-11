@@ -8,7 +8,7 @@ import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
-import { Investor } from 'types/fund'
+import { TopManager } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
@@ -60,15 +60,15 @@ const LinkWrapper = styled(Link)`
 
 const SORT_FIELD = {
   manager: 'manager',
-  volume: 'volume',
+  current: 'current',
   principal: 'principal',
   profitRatio: 'profitRatio',
   created: 'createdAtTimestamp',
 }
 
-const DataRow = ({ managerData, index }: { managerData: Investor; index: number }) => {
+const DataRow = ({ managerData, index }: { managerData: TopManager; index: number }) => {
   return (
-    <LinkWrapper to={'/fund/' + managerData.fund}>
+    <LinkWrapper to={'/fund/' + managerData.fund + '/' + managerData.investor}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(managerData.investor)}</Label>
         <Label end={1} fontWeight={400}>
@@ -90,18 +90,18 @@ const DataRow = ({ managerData, index }: { managerData: Investor; index: number 
 
 const MAX_ITEMS = 10
 
-export default function ManagerTable({
+export default function TopManagerTable({
   managerDatas,
   maxItems = MAX_ITEMS,
 }: {
-  managerDatas: Investor[]
+  managerDatas: TopManager[]
   maxItems?: number
 }) {
   // theming
   const theme = useTheme()
 
   // for sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.volume)
+  const [sortField, setSortField] = useState(SORT_FIELD.current)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
@@ -121,7 +121,7 @@ export default function ManagerTable({
           .filter((x) => !!x)
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof Investor] > b[sortField as keyof Investor]
+              return a[sortField as keyof TopManager] > b[sortField as keyof TopManager]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {
@@ -163,8 +163,8 @@ export default function ManagerTable({
             <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.manager)}>
               <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
-              <Trans>Volume</Trans> {arrow(SORT_FIELD.volume)}
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.current)}>
+              <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.principal)}>
               <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}

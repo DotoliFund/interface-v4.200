@@ -2,30 +2,58 @@ import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Fund, FundFields } from 'types/fund'
 
 const FUND_DATA = gql`
-  query fund($fund: Bytes!) {
+  query fundData($fund: Bytes!) {
     fund(id: $fund, subgraphError: allow) {
       id
       address
       createdAtTimestamp
       manager
       investorCount
-      currentETH
       currentUSD
       currentTokens
       currentTokensSymbols
       currentTokensDecimals
       currentTokensAmount
-      currentTokensAmountETH
-      currentTokensAmountUSD
       feeTokens
       feeSymbols
       feeTokensAmount
     }
   }
 `
+
+interface Fund {
+  id: string
+  address: string
+  createdAtTimestamp: number
+  manager: string
+  investorCount: number
+  currentUSD: number
+  currentTokens: string[]
+  currentTokensSymbols: string[]
+  currentTokensDecimals: number[]
+  currentTokensAmount: number[]
+  feeTokens: string[]
+  feeSymbols: string[]
+  feeTokensAmount: number[]
+}
+
+interface FundFields {
+  id: string
+  address: string
+  createdAtTimestamp: string
+  manager: string
+  investorCount: string
+  currentUSD: string
+  currentTokens: string[]
+  currentTokensSymbols: string[]
+  currentTokensDecimals: string[]
+  currentTokensAmount: string[]
+  feeTokens: string[]
+  feeSymbols: string[]
+  feeTokensAmount: string[]
+}
 
 interface FundResponse {
   fund: FundFields
@@ -66,11 +94,11 @@ export function useFundData(fund: string | undefined): {
 
   const formatted: Fund | undefined = data
     ? {
+        id: data.fund.id,
         address: data.fund.address,
-        createdAtTimestamp: parseFloat(data.fund.createdAtTimestamp),
+        createdAtTimestamp: parseInt(data.fund.createdAtTimestamp),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),
-        currentETH: parseFloat(data.fund.currentETH),
         currentUSD: parseFloat(data.fund.currentUSD),
         currentTokens: data.fund.currentTokens,
         currentTokensSymbols: data.fund.currentTokensSymbols,
@@ -78,12 +106,6 @@ export function useFundData(fund: string | undefined): {
           return parseFloat(value)
         }),
         currentTokensAmount: data.fund.currentTokensAmount.map((value) => {
-          return parseFloat(value)
-        }),
-        currentTokensAmountETH: data.fund.currentTokensAmountETH.map((value) => {
-          return parseFloat(value)
-        }),
-        currentTokensAmountUSD: data.fund.currentTokensAmountUSD.map((value) => {
           return parseFloat(value)
         }),
         feeTokens: data.fund.feeTokens,

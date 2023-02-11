@@ -14,7 +14,6 @@ import { isTestEnv } from 'utils/env'
 
 import application from './application/reducer'
 import burnV3 from './burn/v3/reducer'
-import funds from './funds/reducer'
 import { updateVersion } from './global/actions'
 import lists from './lists/reducer'
 import mintV3 from './mint/v3/reducer'
@@ -32,7 +31,6 @@ export const store = configureStore({
     wallets,
     create,
     user,
-    funds,
     mintV3,
     burnV3,
     connection,

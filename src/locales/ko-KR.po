@@ -73,8 +73,8 @@ msgid "Accept"
 msgstr "수락"
 
 #: src/components/AccountDetails/index.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Account"
 msgstr "계정"
 
@@ -83,12 +83,12 @@ msgid "Active"
 msgstr "활성"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 #: src/pages/AddLiquidity/index.tsx
 msgid "Add"
 msgstr "추가"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Add ${0} and ${1}"
 msgstr "${0} 및 ${1} 추가"
 
@@ -126,18 +126,18 @@ msgstr "{0} 추가됨"
 msgid "Adding"
 msgstr "추가 중"
 
-#: src/components/TokensTable/index.tsx
+#: src/components/Tables/TokensTable.tsx
 msgid "Address"
 msgstr "주소"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "All"
-msgstr "모든"
+msgstr "전체"
 
 #: src/pages/Home/index.tsx
 msgid "All investments made by the fund manager are recorded. Investors can find great fund managers. Also, fund managers can attract investors through investment performance."
-msgstr "펀드매니저의 모든 투자는 기록됩니다. 투자자는 훌륭한 펀드매니저를 찾을 수 있습니다. 또한 펀드매니저는 투자실적을 통해 투자자를 유치할 수 있습니다."
+msgstr "펀드매니저의 투자 내역은 모두 기록됩니다. 투자자는 훌륭한 펀드매니저를 찾을 수 있습니다. 또한 펀드매니저는 투자실적을 통해 투자자를 유치할 수 있습니다."
 
 #: src/components/Settings/index.tsx
 msgid "Allow high price impact trades and skip the confirm screen. Use at your own risk."
@@ -302,7 +302,7 @@ msgstr "닫힘"
 msgid "Collect"
 msgstr "징수"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Collect ${0} and ${1}"
 msgstr "${0} 및 ${1} 수집"
 
@@ -437,7 +437,8 @@ msgid "Create {0}/{1} V3 pool"
 msgstr "V3 풀 {0}/{1} 생성"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/funds/TopFundTable.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Created"
 msgstr "생성됨"
 
@@ -448,6 +449,16 @@ msgstr "생성 날짜 :"
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Creating"
 msgstr "만들기"
+
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
+msgid "Current"
+msgstr ""
+
+#: src/pages/FundPage/index.tsx
+msgid "Current Tokens"
+msgstr ""
 
 #: src/components/PositionPreview/index.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -475,7 +486,7 @@ msgid "Delegate voting power to {0}"
 msgstr "{0} 에게 투표권 위임"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
@@ -485,7 +496,7 @@ msgstr "{0} 에게 투표권 위임"
 msgid "Deposit"
 msgstr "입금"
 
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Deposit ${0}"
 msgstr "${0} 입금"
 
@@ -592,10 +603,10 @@ msgstr "유효한 토큰 주소를 입력하세요."
 msgid "Enter {0} amount"
 msgstr "{0} 금액을 입력하세요"
 
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
 #: src/components/Web3Status/index.tsx
 msgid "Error"
 msgstr "오류"
@@ -706,8 +717,7 @@ msgid "Full range positions may earn less fees than concentrated positions. Lear
 msgstr "전체 범위 포지션은 집중 포지션보다 적은 수수료를 받을 수 있습니다. 여기에서 <0>자세히 알아보기</0>."
 
 #: src/components/Header/index.tsx
-#: src/components/funds/TopFundTable.tsx
-#: src/pages/FundAccount/index.tsx
+#: src/components/Tables/TopFundTable.tsx
 msgid "Fund"
 msgstr "펀드"
 
@@ -842,7 +852,7 @@ msgstr "투자중인 펀드"
 msgid "Investor"
 msgstr "투자자"
 
-#: src/components/funds/TopFundTable.tsx
+#: src/components/Tables/TopFundTable.tsx
 #: src/pages/FundPage/index.tsx
 msgid "Investors"
 msgstr "투자자"
@@ -852,7 +862,7 @@ msgstr "투자자"
 msgid "Investors :"
 msgstr "투자자 :"
 
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
 msgid "Invetsor"
 msgstr "투자자"
 
@@ -890,7 +900,6 @@ msgstr "밝은 테마"
 msgid "Light theme"
 msgstr "밝은 테마"
 
-#: src/components/funds/InvestorTable.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "Liquidity"
 msgstr "유동성"
@@ -914,9 +923,8 @@ msgstr "최대"
 msgid "Manage or Invest crypto fund with confidence"
 msgstr "안심하고 암호화폐 자금을 관리하거나 투자하세요"
 
-#: src/components/funds/TopFundTable.tsx
-#: src/pages/FundAccount/index.tsx
-#: src/pages/FundPage/index.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Manager"
 msgstr "매니저"
 
@@ -981,11 +989,11 @@ msgstr "최소 :"
 msgid "Minimum received"
 msgstr "최소 수령됨"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Mint"
 msgstr "발행"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Mint ${0} and ${1}"
 msgstr "${0} 및 ${1} 발행"
 
@@ -1016,7 +1024,7 @@ msgstr "내 계정"
 #~ msgid "My Funds"
 #~ msgstr "내 펀드"
 
-#: src/components/TokensTable/index.tsx
+#: src/components/Tables/TokensTable.tsx
 msgid "Name"
 msgstr "이름"
 
@@ -1036,8 +1044,8 @@ msgstr "새로운 포지션"
 msgid "No Fees"
 msgstr "수수료 없음"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "No Transactions"
 msgstr "트랜잭션 없음"
 
@@ -1174,11 +1182,13 @@ msgstr "가격 영향 경고"
 msgid "Price range"
 msgstr "가격 범위"
 
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Principal"
 msgstr "원금"
 
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Profit"
 msgstr "이익"
 
@@ -1203,13 +1213,13 @@ msgid "Recipient"
 msgstr "받는 사람"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Remove"
 msgstr "제거"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Remove ${0} and ${1}"
 msgstr "${0} 및 ${1} 제거"
 
@@ -1330,7 +1340,7 @@ msgstr "스테이킹"
 
 #: src/pages/Staking/index.tsx
 msgid "Staked"
-msgstr "스테이킹 된"
+msgstr "예치중"
 
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
@@ -1352,7 +1362,7 @@ msgid "Success"
 msgstr "성공"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/components/swap/SwapHeader.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
@@ -1361,7 +1371,7 @@ msgstr "성공"
 msgid "Swap"
 msgstr "스왑"
 
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Swap ${0} to ${1}"
 msgstr "${0}을 ${1}로 스왑"
 
@@ -1535,9 +1545,9 @@ msgstr "이 거래는 가격 변동으로 인해 성공하지 못합니다. 슬�
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 msgstr "이 거래는 가격 변동이나 이체 수수료로 인해 성공하지 못합니다. 슬리피지 허용치를 높이십시오."
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Time"
 msgstr "시간"
 
@@ -1553,12 +1563,22 @@ msgstr "스왑 후"
 msgid "To (at least)"
 msgstr "스왑 후(최소)"
 
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
+msgid "Token 1"
+msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
+msgid "Token 2"
+msgstr ""
+
 #: src/components/TransactionsTable/LiquidityTransactionTable.tsx
 #: src/components/TransactionsTable/LiquidityTransactionTable.tsx
 #: src/components/TransactionsTable/index.tsx
 #: src/components/TransactionsTable/index.tsx
-msgid "Token Amount"
-msgstr "토큰 수량"
+#~ msgid "Token Amount"
+#~ msgstr "토큰 수량"
 
 #: src/components/SearchModal/BlockedToken.tsx
 msgid "Token not supported"
@@ -1574,6 +1594,10 @@ msgstr "토큰"
 msgid "Top Funds"
 msgstr "상위 펀드"
 
+#: src/pages/Overview/index.tsx
+msgid "Top Managers"
+msgstr ""
+
 #: src/pages/Account/CTACards.tsx
 msgid "Top funds"
 msgstr "상위 펀드"
@@ -1582,10 +1606,13 @@ msgstr "상위 펀드"
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/pages/FundAccount/index.tsx
+msgid "Total Tokens"
+msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"
-msgstr "총 가격"
+msgstr "총 가치"
 
 #: src/components/swap/RouterLabel.tsx
 msgid "Trade Route"
@@ -1637,7 +1664,7 @@ msgstr "전문가 모드 켜기"
 
 #: src/pages/Staking/index.tsx
 msgid "UnStaked"
-msgstr "스테이킹 되지 않은"
+msgstr "지갑 보유 중"
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "Unclaimed fees"
@@ -1686,13 +1713,17 @@ msgstr "Unwrapped"
 msgid "Unwrapping"
 msgstr "Unwrapping"
 
-#: src/components/TokensTable/index.tsx
+#: src/components/Tables/TokensTable.tsx
 msgid "Update"
 msgstr "업데이트"
 
 #: src/components/Settings/index.tsx
 msgid "Use the Uniswap Labs API to get faster quotes."
 msgstr "Uniswap Labs API를 사용하여 더 빠른 견적을 받으세요."
+
+#: src/components/Tables/TransactionTable.tsx
+msgid "Value"
+msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "View on Etherscan"
@@ -1711,8 +1742,6 @@ msgstr "토큰 분석 보기"
 msgid "View transaction on Explorer"
 msgstr "Explorer에서 거래 보기"
 
-#: src/components/funds/InvestorTable.tsx
-#: src/components/funds/TopFundTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
 msgid "Volume"
@@ -1744,7 +1773,7 @@ msgid "Warning"
 msgstr "경고"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Staking/index.tsx
@@ -1755,7 +1784,7 @@ msgstr "경고"
 msgid "Withdraw"
 msgstr "출금"
 
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Withdraw ${0}"
 msgstr "${0} 출금"
 

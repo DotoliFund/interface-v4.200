@@ -1,9 +1,8 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { FactorySnapshot, FactorySnapshotFields } from 'types/fund'
 
-export const FUND_CHART_DATA_BULK = () => {
+export const FACTORY_CHART = () => {
   const queryString = `
     query factorySnapshots {
       factorySnapshots(orderBy: date, orderDirection: asc, subgraphError: allow) {
@@ -11,7 +10,6 @@ export const FUND_CHART_DATA_BULK = () => {
         date
         fundCount
         investorCount
-        totalCurrentETH
         totalCurrentUSD
       }
     }
@@ -19,8 +17,24 @@ export const FUND_CHART_DATA_BULK = () => {
   return gql(queryString)
 }
 
-interface FactorySnapshotResponse {
-  factorySnapshots: FactorySnapshotFields[]
+export interface FactoryChart {
+  id: string
+  date: number
+  fundCount: number
+  investorCount: number
+  totalCurrentUSD: number
+}
+
+export interface FactoryChartFields {
+  id: string
+  date: string
+  fundCount: string
+  investorCount: string
+  totalCurrentUSD: string
+}
+
+interface FactoryChartResponse {
+  factorySnapshots: FactoryChartFields[]
 }
 
 /**
@@ -29,12 +43,12 @@ interface FactorySnapshotResponse {
 export function useFactoryChartData(): {
   loading: boolean
   error: boolean
-  data: FactorySnapshot[]
+  data: FactoryChart[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FactorySnapshotResponse>(FUND_CHART_DATA_BULK(), {
+  const { loading, error, data } = useQuery<FactoryChartResponse>(FACTORY_CHART(), {
     client: dataClient,
   })
 
@@ -52,18 +66,16 @@ export function useFactoryChartData(): {
     }
   }
 
-  const formatted: FactorySnapshot[] = data
-    ? data.factorySnapshots.map((value, index) => {
-        const factorySnapshotFields = data.factorySnapshots[index]
-        const fundSnapshotData: FactorySnapshot = {
-          id: factorySnapshotFields.id,
-          date: parseFloat(factorySnapshotFields.date),
-          fundCount: parseFloat(factorySnapshotFields.fundCount),
-          investorCount: parseFloat(factorySnapshotFields.investorCount),
-          totalCurrentETH: parseFloat(factorySnapshotFields.totalCurrentETH),
-          totalCurrentUSD: parseFloat(factorySnapshotFields.totalCurrentUSD),
+  const formatted: FactoryChart[] = data
+    ? data.factorySnapshots.map((data2, index) => {
+        const factoryChartData: FactoryChart = {
+          id: data2.id,
+          date: parseFloat(data2.date),
+          fundCount: parseFloat(data2.fundCount),
+          investorCount: parseFloat(data2.investorCount),
+          totalCurrentUSD: parseFloat(data2.totalCurrentUSD),
         }
-        return fundSnapshotData
+        return factoryChartData
       })
     : []
 

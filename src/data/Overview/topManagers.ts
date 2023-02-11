@@ -1,30 +1,29 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Investor, InvestorFields } from 'types/fund'
+import { TopManager } from 'types/fund'
 
 export const TOP_MANAGERS_BULK = () => {
   const queryString = `
-    query investors {
-      investors(orderBy: profitRatio, orderDirection: desc, where: { isManager: true } subgraphError: allow) {
+    query topManagers($updated: BigInt!) {
+      investors(
+        first: 100,
+        orderBy: profitRatio,
+        orderDirection: desc,
+        where: { 
+          isManager: true,
+          updatedAtTimestamp_gt: $updated
+        },
+        subgraphError: allow)
+      {
         id
         createdAtTimestamp
+        updatedAtTimestamp
         fund
         investor
         isManager
-        principalETH
         principalUSD
-        currentETH
         currentUSD
-        currentTokens
-        currentTokensSymbols
-        currentTokensDecimals
-        currentTokensAmount
-        currentTokensAmountETH
-        currentTokensAmountUSD
-        tokenIds
-        profitETH
-        profitUSD
         profitRatio
       }
     }
@@ -32,8 +31,20 @@ export const TOP_MANAGERS_BULK = () => {
   return gql(queryString)
 }
 
-interface InvestorDataResponse {
-  investors: InvestorFields[]
+export interface TopManagerFields {
+  id: string
+  createdAtTimestamp: string
+  updatedAtTimestamp: string
+  fund: string
+  investor: string
+  isManager: string
+  principalUSD: string
+  currentUSD: string
+  profitRatio: string
+}
+
+interface TopManagerResponse {
+  investors: TopManagerFields[]
 }
 
 /**
@@ -42,12 +53,16 @@ interface InvestorDataResponse {
 export function useTopManagers(): {
   loading: boolean
   error: boolean
-  data: Investor[]
+  data: TopManager[]
 } {
   // get client
   const { dataClient } = useClients()
+  const now = new Date()
+  const lastMonth = new Date(now.setMonth(now.getMonth() - 1))
+  const updated = Math.floor(lastMonth.getTime() / 1000)
 
-  const { loading, error, data } = useQuery<InvestorDataResponse>(TOP_MANAGERS_BULK(), {
+  const { loading, error, data } = useQuery<TopManagerResponse>(TOP_MANAGERS_BULK(), {
+    variables: { updated },
     client: dataClient,
   })
 
@@ -63,38 +78,18 @@ export function useTopManagers(): {
     }
   }
 
-  const formatted: Investor[] = data
-    ? data.investors.map((value, index) => {
-        const investorFields = data.investors[index]
-        const investorData: Investor = {
-          createdAtTimestamp: parseFloat(investorFields.createdAtTimestamp),
-          fund: investorFields.fund,
-          investor: investorFields.investor,
-          isManager: Boolean(investorFields.isManager),
-          principalETH: parseFloat(investorFields.principalETH),
-          principalUSD: parseFloat(investorFields.principalUSD),
-          currentETH: parseFloat(investorFields.currentETH),
-          currentUSD: parseFloat(investorFields.currentUSD),
-          currentTokens: investorFields.currentTokens,
-          currentTokensSymbols: investorFields.currentTokensSymbols,
-          currentTokensDecimals: investorFields.currentTokensDecimals.map((value) => {
-            return parseFloat(value)
-          }),
-          currentTokensAmount: investorFields.currentTokensAmount.map((value) => {
-            return parseFloat(value)
-          }),
-          currentTokensAmountETH: investorFields.currentTokensAmountETH.map((value) => {
-            return parseFloat(value)
-          }),
-          currentTokensAmountUSD: investorFields.currentTokensAmountUSD.map((value) => {
-            return parseFloat(value)
-          }),
-          tokenIds: investorFields.tokenIds.map((value) => {
-            return parseFloat(value)
-          }),
-          profitETH: parseFloat(investorFields.profitETH),
-          profitUSD: parseFloat(investorFields.profitUSD),
-          profitRatio: parseFloat(investorFields.profitRatio),
+  const formatted: TopManager[] = data
+    ? data.investors.map((data2, index) => {
+        const investorData: TopManager = {
+          id: data2.id,
+          createdAtTimestamp: parseFloat(data2.createdAtTimestamp),
+          updatedAtTimestamp: parseFloat(data2.updatedAtTimestamp),
+          fund: data2.fund,
+          investor: data2.investor,
+          isManager: Boolean(data2.isManager),
+          principalUSD: parseFloat(data2.principalUSD),
+          currentUSD: parseFloat(data2.currentUSD),
+          profitRatio: parseFloat(data2.profitRatio),
         }
         return investorData
       })

@@ -4,15 +4,16 @@ import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import Row, { RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
-import TokenTable from 'components/Tables/TokensTable'
+import TokenTable from 'components/Tables/TokenTable'
 import FundTable from 'components/Tables/TopFundTable'
-import ManagerTable from 'components/Tables/TopManagerTable'
-import { useFactoryChartData } from 'data/Overview/chartData'
+import TopManagerTable from 'components/Tables/TopManagerTable'
+import { useFactoryChartData } from 'data/Overview/factoryChartData'
 import { useFactoryData } from 'data/Overview/factoryData'
+import { useTopFunds } from 'data/Overview/topFunds'
 import { useTopManagers } from 'data/Overview/topManagers'
+import { useWhiteListTokens } from 'data/Overview/whiteListTokens'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
-import { useFundListData, useTokenListData } from 'state/funds/hooks'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { formatTime, unixToDate } from 'utils/date'
@@ -78,14 +79,14 @@ export default function Overview() {
   const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
 
   const factoryData = useFactoryData()
-  const managerListData = useTopManagers()
-  const fundListData = useFundListData()
-  const tokenListData = useTokenListData()
-  const chartData = useFactoryChartData().data
+  const topManagers = useTopManagers()
+  const topFunds = useTopFunds()
+  const whiteListTokens = useWhiteListTokens()
+  const factoryChartData = useFactoryChartData().data
 
   const formattedTotalCurrent = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day, index) => {
+    if (factoryChartData) {
+      return factoryChartData.map((day, index) => {
         return {
           time: day.date,
           value: day.totalCurrentUSD,
@@ -95,11 +96,11 @@ export default function Overview() {
     } else {
       return []
     }
-  }, [chartData])
+  }, [factoryChartData])
 
   const formattedInvestorCount = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day, index) => {
+    if (factoryChartData) {
+      return factoryChartData.map((day, index) => {
         return {
           time: day.date,
           value: day.investorCount,
@@ -109,7 +110,7 @@ export default function Overview() {
     } else {
       return []
     }
-  }, [chartData])
+  }, [factoryChartData])
 
   return (
     <PageWrapper>
@@ -262,7 +263,7 @@ export default function Overview() {
           </ThemedText.DeprecatedMain>
         </RowBetween>
         <DarkGreyCard>
-          <ManagerTable managerDatas={managerListData.data} />
+          <TopManagerTable managerDatas={topManagers.data} />
         </DarkGreyCard>
         <RowBetween mt={'16px'}>
           <ThemedText.DeprecatedMain fontSize="22px">
@@ -270,7 +271,7 @@ export default function Overview() {
           </ThemedText.DeprecatedMain>
         </RowBetween>
         <DarkGreyCard>
-          <FundTable fundDatas={fundListData.data} />
+          <FundTable fundDatas={topFunds.data} />
         </DarkGreyCard>
         <RowBetween mt={'16px'}>
           <ThemedText.DeprecatedMain fontSize="22px">
@@ -278,7 +279,7 @@ export default function Overview() {
           </ThemedText.DeprecatedMain>
         </RowBetween>
         <DarkGreyCard>
-          <TokenTable tokenDatas={tokenListData.data} />
+          <TokenTable tokenDatas={whiteListTokens.data} />
         </DarkGreyCard>
       </AutoColumn>
     </PageWrapper>

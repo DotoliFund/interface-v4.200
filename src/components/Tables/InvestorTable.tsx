@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
-import { Investor } from 'types/fund'
+import { InvestorList } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
@@ -23,10 +23,10 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(5, 1fr);
+  grid-template-columns: 1.5fr repeat(4, 1fr);
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(4, 1fr);
+    grid-template-columns: 1.5fr repeat(3, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
@@ -60,14 +60,13 @@ const LinkWrapper = styled(Link)`
 
 const SORT_FIELD = {
   investor: 'investor',
-  volume: 'volume',
-  liquidity: 'liquidity',
+  current: 'current',
   principal: 'principal',
   ratio: 'profitRatio',
   timestamp: 'time',
 }
 
-const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
+const DataRow = ({ investor, color }: { investor: InvestorList; color?: string }) => {
   return (
     <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
       <ResponsiveGrid>
@@ -76,16 +75,13 @@ const DataRow = ({ investor, color }: { investor: Investor; color?: string }) =>
           {formatDollarAmount(Number(investor.currentUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatDollarAmount(Number(investor.profitUSD))}
-        </Label>
-        <Label end={1} fontWeight={400}>
           {formatDollarAmount(Number(investor.principalUSD))}
         </Label>
         <Label end={1} fontWeight={400}>
           <Percent value={investor.profitRatio} wrap={false} />
         </Label>
         <Label end={1} fontWeight={400}>
-          {formatTime(investor.createdAtTimestamp.toString(), 8)}
+          {formatTime(investor.updatedAtTimestamp.toString(), 8)}
         </Label>
       </ResponsiveGrid>
     </LinkWrapper>
@@ -97,7 +93,7 @@ export default function InvestorTable({
   maxItems = 10,
   color,
 }: {
-  investors: Investor[]
+  investors: InvestorList[]
   maxItems?: number
   color?: string
 }) {
@@ -126,7 +122,7 @@ export default function InvestorTable({
           .slice()
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof Investor] > b[sortField as keyof Investor]
+              return a[sortField as keyof InvestorList] > b[sortField as keyof InvestorList]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {
@@ -167,11 +163,8 @@ export default function InvestorTable({
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)}>
             <Trans>Invetsor</Trans> {arrow(SORT_FIELD.investor)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.volume)}>
-            <Trans>Volume</Trans> {arrow(SORT_FIELD.volume)}
-          </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.liquidity)}>
-            <Trans>Liquidity</Trans> {arrow(SORT_FIELD.liquidity)}
+          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.current)}>
+            <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.principal)}>
             <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}

@@ -2,9 +2,8 @@ import { useQuery } from '@apollo/client'
 import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Factory, FactoryFields } from 'types/fund'
 
-const FACTORY_DATA_BULK = gql`
+const FACTORY_DATA = gql`
   query factory($factory: Bytes!) {
     factory(id: $factory, subgraphError: allow) {
       id
@@ -15,6 +14,22 @@ const FACTORY_DATA_BULK = gql`
     }
   }
 `
+
+interface Factory {
+  id: string
+  fundCount: number
+  investorCount: number
+  managerFee: number
+  minPoolAmount: number
+}
+
+interface FactoryFields {
+  id: string
+  fundCount: string
+  investorCount: string
+  managerFee: string
+  minPoolAmount: string
+}
 
 interface FactoryResponse {
   factory: FactoryFields
@@ -32,7 +47,7 @@ export function useFactoryData(): {
   const { dataClient } = useClients()
   const factory = DOTOLI_FACTORY_ADDRESSES
 
-  const { loading, error, data } = useQuery<FactoryResponse>(FACTORY_DATA_BULK, {
+  const { loading, error, data } = useQuery<FactoryResponse>(FACTORY_DATA, {
     variables: { factory },
     client: dataClient,
   })

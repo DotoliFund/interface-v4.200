@@ -14,199 +14,88 @@ export interface Token {
   updatedTimestamp: string
 }
 
-export interface TokenFields {
+export interface TopFund {
   id: string
-  address: string
-  symbol: string
-  updatedTimestamp: string
-}
-
-export interface Factory {
-  id: string
-  fundCount: number
-  investorCount: number
-  managerFee: number
-  minPoolAmount: number
-}
-
-export interface FactoryFields {
-  id: string
-  fundCount: string
-  investorCount: string
-  managerFee: string
-  minPoolAmount: string
-}
-
-export interface FactorySnapshot {
-  id: string
-  date: number
-  fundCount: number
-  investorCount: number
-  totalCurrentETH: number
-  totalCurrentUSD: number
-}
-
-export interface FactorySnapshotFields {
-  id: string
-  date: string
-  fundCount: string
-  investorCount: string
-  totalCurrentETH: string
-  totalCurrentUSD: string
-}
-
-export interface Fund {
   address: string
   createdAtTimestamp: number
   manager: string
   investorCount: number
-  currentETH: number
   currentUSD: number
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensDecimals: number[]
-  currentTokensAmount: number[]
-  currentTokensAmountETH: number[]
-  currentTokensAmountUSD: number[]
-  feeTokens: string[]
-  feeSymbols: string[]
-  feeTokensAmount: number[]
 }
 
-export interface FundFields {
+export interface Manager {
   id: string
-  address: string
-  createdAtTimestamp: string
-  manager: string
-  investorCount: string
-  currentETH: string
-  currentUSD: string
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensDecimals: string[]
-  currentTokensAmount: string[]
-  currentTokensAmountETH: string[]
-  currentTokensAmountUSD: string[]
-  feeTokens: string[]
-  feeSymbols: string[]
-  feeTokensAmount: string[]
-}
-
-export interface Investor {
   createdAtTimestamp: number
+  updatedAtTimestamp: number
   fund: string
   investor: string
   isManager: boolean
-  principalETH: number
   principalUSD: number
-  currentETH: number
   currentUSD: number
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensDecimals: number[]
-  currentTokensAmount: number[]
-  currentTokensAmountETH: number[]
-  currentTokensAmountUSD: number[]
-  tokenIds: number[]
-  profitETH: number
-  profitUSD: number
   profitRatio: number
 }
 
-export interface InvestorFields {
+export interface TopManager {
   id: string
-  createdAtTimestamp: string
+  createdAtTimestamp: number
+  updatedAtTimestamp: number
   fund: string
   investor: string
-  isManager: string
-  principalETH: string
-  principalUSD: string
-  currentETH: string
-  currentUSD: string
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensDecimals: string[]
-  currentTokensAmount: string[]
-  currentTokensAmountETH: string[]
-  currentTokensAmountUSD: string[]
-  tokenIds: string[]
-  profitETH: string
-  profitUSD: string
-  profitRatio: string
-}
-
-export interface FundSnapshot {
-  id: string
-  timestamp: number
-  fund: string
-  manager: string
-  investorCount: number
-  currentETH: number
-  currentUSD: number
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensDecimals: number[]
-  currentTokensAmountETH: number[]
-  currentTokensAmountUSD: number[]
-}
-
-export interface FundSnapshotFields {
-  id: string
-  timestamp: string
-  fund: string
-  manager: string
-  investorCount: string
-  currentETH: string
-  currentUSD: string
-  currentTokens: string[]
-  currentTokensSymbols: string[]
-  currentTokensDecimals: string[]
-  currentTokensAmountETH: string[]
-  currentTokensAmountUSD: string[]
-}
-
-export interface InvestorSnapshot {
-  id: string
-  timestamp: number
-  fund: string
-  manager: string
-  investor: string
-  principalETH: number
+  isManager: boolean
   principalUSD: number
-  tokens: string[]
-  tokensSymbols: string[]
-  tokensDecimals: number[]
-  tokensAmountETH: number[]
-  tokensAmountUSD: number[]
-  currentETH: number
   currentUSD: number
-  tokenIds: number[]
-  poolETH: number
-  poolUSD: number
-  profitETH: number
-  profitUSD: number
   profitRatio: number
 }
 
-export interface InvestorSnapshotFields {
+export interface InvestorList {
   id: string
-  timestamp: string
+  createdAtTimestamp: number
+  updatedAtTimestamp: number
   fund: string
-  manager: string
   investor: string
-  principalETH: string
-  principalUSD: string
-  tokens: string[]
-  tokensSymbols: string[]
-  tokensDecimals: string[]
-  tokensAmountETH: string[]
-  tokensAmountUSD: string[]
-  currentETH: string
-  currentUSD: string
-  tokenIds: string[]
-  poolETH: string
-  poolUSD: string
-  profitETH: string
-  profitUSD: string
-  profitRatio: string
+  isManager: boolean
+  principalUSD: number
+  currentUSD: number
+  profitRatio: number
+}
+
+export enum TransactionType {
+  SWAP,
+  DEPOSIT,
+  WITHDRAW,
+}
+
+export interface Transaction {
+  type: TransactionType
+  hash: string
+  timestamp: string
+  sender: string
+  token0: string
+  token1: string
+  token0Symbol: string
+  token1Symbol: string
+  amount0: number
+  amount1: number
+  amountUSD: number
+}
+
+export enum LiquidityTransactionType {
+  MINT,
+  ADD,
+  COLLECT,
+  REMOVE,
+}
+
+export interface LiquidityTransaction {
+  type: LiquidityTransactionType
+  hash: string
+  timestamp: string
+  sender: string
+  token0: string
+  token1: string
+  token0Symbol: string
+  token1Symbol: string
+  amount0: number
+  amount1: number
+  amountUSD: number
 }

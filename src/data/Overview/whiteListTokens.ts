@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Token, TokenFields } from 'types/fund'
+import { Token } from 'types/fund'
 
-export const TOKENS_BULK = () => {
+export const WHITELIST_TOKENS = () => {
   const queryString = `
-    query tokens {
+    query whiteListTokens {
       tokens(first: 100, orderBy: id, orderDirection: asc, where: { active: true }, subgraphError: allow) {
         id
         address
@@ -17,14 +17,21 @@ export const TOKENS_BULK = () => {
   return gql(queryString)
 }
 
-interface TokenDataResponse {
-  tokens: TokenFields[]
+export interface WhiteListTokenFields {
+  id: string
+  address: string
+  symbol: string
+  updatedTimestamp: string
+}
+
+interface WhiteListTokenResponse {
+  tokens: WhiteListTokenFields[]
 }
 
 /**
- * Fetch tokens
+ * Fetch whiteList tokens
  */
-export function useTokenList(): {
+export function useWhiteListTokens(): {
   loading: boolean
   error: boolean
   data: Token[]
@@ -32,7 +39,7 @@ export function useTokenList(): {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<TokenDataResponse>(TOKENS_BULK(), {
+  const { loading, error, data } = useQuery<WhiteListTokenResponse>(WHITELIST_TOKENS(), {
     client: dataClient,
   })
 
@@ -49,12 +56,11 @@ export function useTokenList(): {
   }
 
   const formatted: Token[] = data
-    ? data.tokens.map((value, index) => {
-        const tokenFields = data.tokens[index]
+    ? data.tokens.map((data2, index) => {
         const tokenData: Token = {
-          address: tokenFields.address,
-          symbol: tokenFields.symbol,
-          updatedTimestamp: tokenFields.updatedTimestamp,
+          address: data2.address,
+          symbol: data2.symbol,
+          updatedTimestamp: data2.updatedTimestamp,
         }
         return tokenData
       })

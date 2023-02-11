@@ -2,15 +2,13 @@ import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Transaction, TransactionType } from 'types'
+import { Transaction, TransactionType } from 'types/fund'
 
 const FUND_TRANSACTIONS = gql`
   query transactions($fund: Bytes!) {
     deposits(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       investor
       token
@@ -20,10 +18,8 @@ const FUND_TRANSACTIONS = gql`
       amountUSD
     }
     withdraws(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       investor
       token
@@ -33,10 +29,8 @@ const FUND_TRANSACTIONS = gql`
       amountUSD
     }
     swaps(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       manager
       investor
@@ -55,9 +49,6 @@ const FUND_TRANSACTIONS = gql`
 interface FundTransactionResults {
   deposits: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     investor: string
@@ -69,9 +60,6 @@ interface FundTransactionResults {
   }[]
   withdraws: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     investor: string
@@ -83,9 +71,6 @@ interface FundTransactionResults {
   }[]
   swaps: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     manager: string
@@ -136,7 +121,7 @@ export function useFundTransactions(fund: string | undefined): {
     ? data.deposits.map((m) => {
         return {
           type: TransactionType.DEPOSIT,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.investor,
           token0: m.token,
@@ -155,7 +140,7 @@ export function useFundTransactions(fund: string | undefined): {
     ? data.withdraws.map((m) => {
         return {
           type: TransactionType.WITHDRAW,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.investor,
           token0: m.token,
@@ -174,7 +159,7 @@ export function useFundTransactions(fund: string | undefined): {
     ? data.swaps.map((m) => {
         return {
           type: TransactionType.SWAP,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.manager,
           token0: m.token0,

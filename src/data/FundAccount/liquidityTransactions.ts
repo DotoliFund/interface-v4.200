@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { LiquidityTransaction, LiquidityTransactionType } from 'types'
+import { LiquidityTransaction, LiquidityTransactionType } from 'types/fund'
 
 const FUND_ACCOUNT_TRANSACTIONS = gql`
   query transactions($fund: Bytes!, $investor: Bytes!) {
@@ -13,10 +13,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       where: { fund: $fund, investor: $investor }
       subgraphError: allow
     ) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       manager
       investor
@@ -26,7 +24,6 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       token1Symbol
       amount0
       amount1
-      amountETH
       amountUSD
     }
     increaseLiquidities(
@@ -36,10 +33,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       where: { fund: $fund, investor: $investor }
       subgraphError: allow
     ) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       manager
       investor
@@ -49,7 +44,6 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       token1Symbol
       amount0
       amount1
-      amountETH
       amountUSD
     }
     collectPositionFees(
@@ -59,10 +53,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       where: { fund: $fund, investor: $investor }
       subgraphError: allow
     ) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       manager
       investor
@@ -72,7 +64,6 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       token1Symbol
       amount0
       amount1
-      amountETH
       amountUSD
     }
     decreaseLiquidities(
@@ -82,10 +73,8 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       where: { fund: $fund, investor: $investor }
       subgraphError: allow
     ) {
+      id
       timestamp
-      transaction {
-        id
-      }
       fund
       manager
       investor
@@ -95,7 +84,6 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       token1Symbol
       amount0
       amount1
-      amountETH
       amountUSD
     }
   }
@@ -104,9 +92,6 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
 interface InvestorTransactionResults {
   mintNewPositions: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     manager: string
@@ -117,14 +102,10 @@ interface InvestorTransactionResults {
     token1Symbol: string
     amount0: string
     amount1: string
-    amountETH: string
     amountUSD: string
   }[]
   increaseLiquidities: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     manager: string
@@ -135,14 +116,10 @@ interface InvestorTransactionResults {
     token1Symbol: string
     amount0: string
     amount1: string
-    amountETH: string
     amountUSD: string
   }[]
   collectPositionFees: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     manager: string
@@ -153,14 +130,10 @@ interface InvestorTransactionResults {
     token1Symbol: string
     amount0: string
     amount1: string
-    amountETH: string
     amountUSD: string
   }[]
   decreaseLiquidities: {
     id: string
-    transaction: {
-      id: string
-    }
     timestamp: string
     fund: string
     manager: string
@@ -171,7 +144,6 @@ interface InvestorTransactionResults {
     token1Symbol: string
     amount0: string
     amount1: string
-    amountETH: string
     amountUSD: string
   }[]
 }
@@ -217,7 +189,7 @@ export function useFundAccountLiquidityTransactions(
     ? data.mintNewPositions.map((m) => {
         return {
           type: LiquidityTransactionType.MINT,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.manager,
           token0: m.token0,
@@ -226,7 +198,6 @@ export function useFundAccountLiquidityTransactions(
           token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
-          amountETH: parseFloat(m.amountETH),
           amountUSD: parseFloat(m.amountUSD),
         }
       })
@@ -236,7 +207,7 @@ export function useFundAccountLiquidityTransactions(
     ? data.increaseLiquidities.map((m) => {
         return {
           type: LiquidityTransactionType.ADD,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.manager,
           token0: m.token0,
@@ -245,7 +216,6 @@ export function useFundAccountLiquidityTransactions(
           token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
-          amountETH: parseFloat(m.amountETH),
           amountUSD: parseFloat(m.amountUSD),
         }
       })
@@ -255,7 +225,7 @@ export function useFundAccountLiquidityTransactions(
     ? data.collectPositionFees.map((m) => {
         return {
           type: LiquidityTransactionType.COLLECT,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.manager,
           token0: m.token0,
@@ -264,7 +234,6 @@ export function useFundAccountLiquidityTransactions(
           token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
-          amountETH: parseFloat(m.amountETH),
           amountUSD: parseFloat(m.amountUSD),
         }
       })
@@ -274,7 +243,7 @@ export function useFundAccountLiquidityTransactions(
     ? data.decreaseLiquidities.map((m) => {
         return {
           type: LiquidityTransactionType.REMOVE,
-          hash: m.transaction.id,
+          hash: m.id,
           timestamp: m.timestamp,
           sender: m.manager,
           token0: m.token0,
@@ -283,7 +252,6 @@ export function useFundAccountLiquidityTransactions(
           token1Symbol: m.token1Symbol,
           amount0: parseFloat(m.amount0),
           amount1: parseFloat(m.amount1),
-          amountETH: parseFloat(m.amountETH),
           amountUSD: parseFloat(m.amountUSD),
         }
       })

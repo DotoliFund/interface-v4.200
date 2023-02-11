@@ -2,40 +2,50 @@ import { useQuery } from '@apollo/client'
 import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { Investor, InvestorFields } from 'types/fund'
 
 const INVESTOR_DATA = gql`
   query investor($id: String!) {
     investor(id: $id, subgraphError: allow) {
       id
-      createdAtTimestamp
       fund
       investor
       isManager
-      principalETH
-      principalUSD
-      currentETH
-      currentUSD
       currentTokens
       currentTokensSymbols
       currentTokensDecimals
       currentTokensAmount
-      currentTokensAmountETH
-      currentTokensAmountUSD
-      tokenIds
-      profitETH
-      profitUSD
-      profitRatio
     }
   }
 `
+
+export interface Investor {
+  id: string
+  fund: string
+  investor: string
+  isManager: boolean
+  currentTokens: string[]
+  currentTokensSymbols: string[]
+  currentTokensDecimals: number[]
+  currentTokensAmount: number[]
+}
+
+export interface InvestorFields {
+  id: string
+  fund: string
+  investor: string
+  isManager: string
+  currentTokens: string[]
+  currentTokensSymbols: string[]
+  currentTokensDecimals: string[]
+  currentTokensAmount: string[]
+}
 
 interface InvestorResponse {
   investor: InvestorFields
 }
 
 /**
- * Fetch top funds by profit
+ * Fetch investor data
  */
 export function useInvestorData(
   fund: string | undefined,
@@ -76,14 +86,10 @@ export function useInvestorData(
 
   const formatted: Investor | undefined = data
     ? {
-        createdAtTimestamp: parseFloat(data.investor.createdAtTimestamp),
+        id: data.investor.id,
         fund: data.investor.fund,
         investor: data.investor.investor,
         isManager: Boolean(data.investor.isManager),
-        principalETH: parseFloat(data.investor.principalETH),
-        principalUSD: parseFloat(data.investor.principalUSD),
-        currentETH: parseFloat(data.investor.currentETH),
-        currentUSD: parseFloat(data.investor.currentUSD),
         currentTokens: data.investor.currentTokens,
         currentTokensSymbols: data.investor.currentTokensSymbols,
         currentTokensDecimals: data.investor.currentTokensDecimals.map((value) => {
@@ -92,18 +98,6 @@ export function useInvestorData(
         currentTokensAmount: data.investor.currentTokensAmount.map((value) => {
           return parseFloat(value)
         }),
-        currentTokensAmountETH: data.investor.currentTokensAmountETH.map((value) => {
-          return parseFloat(value)
-        }),
-        currentTokensAmountUSD: data.investor.currentTokensAmountUSD.map((value) => {
-          return parseFloat(value)
-        }),
-        tokenIds: data.investor.tokenIds.map((value) => {
-          return parseFloat(value)
-        }),
-        profitETH: parseFloat(data.investor.profitETH),
-        profitUSD: parseFloat(data.investor.profitUSD),
-        profitRatio: parseFloat(data.investor.profitRatio),
       }
     : undefined
 

@@ -73,8 +73,8 @@ msgid "Accept"
 msgstr ""
 
 #: src/components/AccountDetails/index.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Account"
 msgstr ""
 
@@ -83,12 +83,12 @@ msgid "Active"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 #: src/pages/AddLiquidity/index.tsx
 msgid "Add"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Add ${0} and ${1}"
 msgstr ""
 
@@ -126,12 +126,12 @@ msgstr ""
 msgid "Adding"
 msgstr ""
 
-#: src/components/TokensTable/index.tsx
+#: src/components/Tables/TokensTable.tsx
 msgid "Address"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "All"
 msgstr ""
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Collect"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Collect ${0} and ${1}"
 msgstr ""
 
@@ -437,7 +437,8 @@ msgid "Create {0}/{1} V3 pool"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/funds/TopFundTable.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Created"
 msgstr ""
 
@@ -447,6 +448,16 @@ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Creating"
+msgstr ""
+
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
+msgid "Current"
+msgstr ""
+
+#: src/pages/FundPage/index.tsx
+msgid "Current Tokens"
 msgstr ""
 
 #: src/components/PositionPreview/index.tsx
@@ -475,7 +486,7 @@ msgid "Delegate voting power to {0}"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
@@ -485,7 +496,7 @@ msgstr ""
 msgid "Deposit"
 msgstr ""
 
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Deposit ${0}"
 msgstr ""
 
@@ -592,10 +603,10 @@ msgstr ""
 msgid "Enter {0} amount"
 msgstr ""
 
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
 #: src/components/Web3Status/index.tsx
 msgid "Error"
 msgstr ""
@@ -706,8 +717,7 @@ msgid "Full range positions may earn less fees than concentrated positions. Lear
 msgstr ""
 
 #: src/components/Header/index.tsx
-#: src/components/funds/TopFundTable.tsx
-#: src/pages/FundAccount/index.tsx
+#: src/components/Tables/TopFundTable.tsx
 msgid "Fund"
 msgstr ""
 
@@ -842,7 +852,7 @@ msgstr ""
 msgid "Investor"
 msgstr ""
 
-#: src/components/funds/TopFundTable.tsx
+#: src/components/Tables/TopFundTable.tsx
 #: src/pages/FundPage/index.tsx
 msgid "Investors"
 msgstr ""
@@ -852,7 +862,7 @@ msgstr ""
 msgid "Investors :"
 msgstr ""
 
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
 msgid "Invetsor"
 msgstr ""
 
@@ -890,7 +900,6 @@ msgstr ""
 msgid "Light theme"
 msgstr ""
 
-#: src/components/funds/InvestorTable.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "Liquidity"
 msgstr ""
@@ -914,9 +923,8 @@ msgstr ""
 msgid "Manage or Invest crypto fund with confidence"
 msgstr ""
 
-#: src/components/funds/TopFundTable.tsx
-#: src/pages/FundAccount/index.tsx
-#: src/pages/FundPage/index.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Manager"
 msgstr ""
 
@@ -981,11 +989,11 @@ msgstr ""
 msgid "Minimum received"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Mint"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Mint ${0} and ${1}"
 msgstr ""
 
@@ -1016,7 +1024,7 @@ msgstr ""
 #~ msgid "My Funds"
 #~ msgstr ""
 
-#: src/components/TokensTable/index.tsx
+#: src/components/Tables/TokensTable.tsx
 msgid "Name"
 msgstr ""
 
@@ -1036,8 +1044,8 @@ msgstr ""
 msgid "No Fees"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "No Transactions"
 msgstr ""
 
@@ -1174,11 +1182,13 @@ msgstr ""
 msgid "Price range"
 msgstr ""
 
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Principal"
 msgstr ""
 
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Profit"
 msgstr ""
 
@@ -1203,13 +1213,13 @@ msgid "Recipient"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Remove"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Remove ${0} and ${1}"
 msgstr ""
 
@@ -1352,7 +1362,7 @@ msgid "Success"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/components/swap/SwapHeader.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
@@ -1361,7 +1371,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Swap ${0} to ${1}"
 msgstr ""
 
@@ -1535,9 +1545,9 @@ msgstr ""
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
-#: src/components/funds/InvestorTable.tsx
+#: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Time"
 msgstr ""
 
@@ -1553,12 +1563,22 @@ msgstr ""
 msgid "To (at least)"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
-#: src/components/TransactionsTable/index.tsx
-msgid "Token Amount"
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
+msgid "Token 1"
 msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/TransactionTable.tsx
+msgid "Token 2"
+msgstr ""
+
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
+#: src/components/TransactionsTable/index.tsx
+#: src/components/TransactionsTable/index.tsx
+#~ msgid "Token Amount"
+#~ msgstr ""
 
 #: src/components/SearchModal/BlockedToken.tsx
 msgid "Token not supported"
@@ -1574,6 +1594,10 @@ msgstr ""
 msgid "Top Funds"
 msgstr ""
 
+#: src/pages/Overview/index.tsx
+msgid "Top Managers"
+msgstr ""
+
 #: src/pages/Account/CTACards.tsx
 msgid "Top funds"
 msgstr ""
@@ -1582,8 +1606,11 @@ msgstr ""
 msgid "Total Staked"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/pages/FundAccount/index.tsx
+msgid "Total Tokens"
+msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"
 msgstr ""
 
@@ -1686,12 +1713,16 @@ msgstr ""
 msgid "Unwrapping"
 msgstr ""
 
-#: src/components/TokensTable/index.tsx
+#: src/components/Tables/TokensTable.tsx
 msgid "Update"
 msgstr ""
 
 #: src/components/Settings/index.tsx
 msgid "Use the Uniswap Labs API to get faster quotes."
+msgstr ""
+
+#: src/components/Tables/TransactionTable.tsx
+msgid "Value"
 msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
@@ -1711,8 +1742,6 @@ msgstr ""
 msgid "View transaction on Explorer"
 msgstr ""
 
-#: src/components/funds/InvestorTable.tsx
-#: src/components/funds/TopFundTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
 msgid "Volume"
@@ -1744,7 +1773,7 @@ msgid "Warning"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Staking/index.tsx
@@ -1755,7 +1784,7 @@ msgstr ""
 msgid "Withdraw"
 msgstr ""
 
-#: src/components/TransactionsTable/index.tsx
+#: src/components/Tables/TransactionTable.tsx
 msgid "Withdraw ${0}"
 msgstr ""
 

@@ -210,6 +210,7 @@ export function useTokensPriceInETH(
         }
       }
     }
+    return null
   })
 
   const tokenPricesInETH: [Token, number][] = []
@@ -269,6 +270,7 @@ export function useETHPriceInUSD(chainId: number | undefined): number | undefine
         bestPool = index
       }
     }
+    return null
   })
 
   const poolState = pools[bestPool][0]

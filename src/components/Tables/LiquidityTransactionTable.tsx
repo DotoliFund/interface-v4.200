@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
-import { LiquidityTransaction, LiquidityTransactionType } from 'types'
+import { LiquidityTransaction, LiquidityTransactionType } from 'types/fund'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
@@ -101,19 +101,19 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === LiquidityTransactionType.MINT ? (
             <Trans>
-              Mint ${transaction.token0Symbol} and ${transaction.token1Symbol}
+              Mint {transaction.token0Symbol} and {transaction.token1Symbol}
             </Trans>
           ) : transaction.type === LiquidityTransactionType.ADD ? (
             <Trans>
-              Add ${transaction.token0Symbol} and ${transaction.token1Symbol}
+              Add {transaction.token0Symbol} and {transaction.token1Symbol}
             </Trans>
           ) : transaction.type === LiquidityTransactionType.COLLECT ? (
             <Trans>
-              Collect ${transaction.token0Symbol} and ${transaction.token1Symbol}
+              Collect {transaction.token0Symbol} and {transaction.token1Symbol}
             </Trans>
           ) : transaction.type === LiquidityTransactionType.REMOVE ? (
             <Trans>
-              Remove ${transaction.token0Symbol} and ${transaction.token1Symbol}
+              Remove {transaction.token0Symbol} and {transaction.token1Symbol}
             </Trans>
           ) : (
             <Trans>Error</Trans>
@@ -260,10 +260,10 @@ export default function LiquidityTransactionTable({
             <Trans>Total Value</Trans> {arrow(SORT_FIELD.amountUSD)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken0)}
+            <Trans>Token 1</Trans> {arrow(SORT_FIELD.amountToken0)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken1)}
+            <Trans>Token 2</Trans> {arrow(SORT_FIELD.amountToken1)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)}>
             <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}

@@ -29,6 +29,8 @@ export function useTokensPriceInUSD(
       ])
       tokensPools.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), weth9, FeeAmount.LOW])
       tokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), data.amount])
+
+      return null
     })
   }
 
@@ -48,8 +50,10 @@ export function useTokensPriceInUSD(
           if (token.toUpperCase() === token2.toUpperCase()) {
             tokensPriceInUSD.push([data2[0], tokenAmount, tokenAmount * priceInETH * ethPriceInUSDC])
           }
+          return null
         })
       }
+      return null
     })
   }
   return tokensPriceInUSD

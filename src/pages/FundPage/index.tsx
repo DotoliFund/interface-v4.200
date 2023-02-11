@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
-import { FeeAmount } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import FeeBarChart from 'components/BarChart/fee'
 import TokenBarChart from 'components/BarChart/token'
@@ -13,25 +12,28 @@ import PieChart from 'components/PieChart'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { MonoSpace } from 'components/shared'
 import InvestorTable from 'components/Tables/InvestorTable'
+import ManagerTable from 'components/Tables/ManagerTable'
 import TransactionTable from 'components/Tables/TransactionTable'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useFundChartData } from 'data/FundPage/chartData'
 import { useFundData } from 'data/FundPage/fundData'
-import { useFundInvestors } from 'data/FundPage/investors'
+import { useInvestorList } from 'data/FundPage/investorList'
+import { useManagerData } from 'data/FundPage/managerData'
 import { useFundTransactions } from 'data/FundPage/transactions'
+import { useVolumeChartData } from 'data/FundPage/volumeChartData'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useETHPriceInUSD, useTokensPriceInETH } from 'hooks/usePools'
+import { useETHPriceInUSD } from 'hooks/usePools'
+import { useTokensPriceInUSD } from 'hooks/useTokensPriceInUSD'
 import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -107,7 +109,6 @@ export default function FundPage() {
 
   // theming
   const backgroundColor = useColor()
-  const theme = useTheme()
 
   const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
     DotoliFactoryContract,
@@ -147,11 +148,11 @@ export default function FundPage() {
     }
   }, [isInvestorLoading, isSubscribed, myFund])
 
-  // token data
   const fundData = useFundData(fundAddress).data
-  const chartData = useFundChartData(fundAddress).data
+  const volumeChartData = useVolumeChartData(fundAddress).data
   const transactions = useFundTransactions(fundAddress).data
-  const investors = useFundInvestors(fundAddress).data
+  const managerData = useManagerData(fundAddress).data
+  const investorList = useInvestorList(fundAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -161,11 +162,11 @@ export default function FundPage() {
   const [feeIndexHover, setFeeIndexHover] = useState<number | undefined>()
 
   const formattedVolumeUSD = useMemo(() => {
-    if (chartData) {
-      return chartData.map((data, index) => {
+    if (volumeChartData) {
+      return volumeChartData.map((data, index) => {
         return {
           time: data.timestamp,
-          volume: data.currentUSD,
+          current: data.currentUSD,
           tokens: data.currentTokens,
           symbols: data.currentTokensSymbols,
           tokensVolume: data.currentTokensAmountUSD,
@@ -175,25 +176,7 @@ export default function FundPage() {
     } else {
       return []
     }
-  }, [chartData])
-
-  const formattedLatestTokens = useMemo(() => {
-    if (fundData) {
-      const fundTokenData = fundData.currentTokens.map((data, index) => {
-        return {
-          token: data,
-          symbol: fundData.currentTokensSymbols[index],
-          decimal: fundData.currentTokensDecimals[index],
-          amount: fundData.currentTokensAmount[index],
-          volume: fundData.currentTokensAmountUSD[index],
-          index,
-        }
-      })
-      return fundTokenData
-    } else {
-      return []
-    }
-  }, [fundData])
+  }, [volumeChartData])
 
   const formattedFeeTokens = useMemo(() => {
     if (fundData) {
@@ -213,92 +196,67 @@ export default function FundPage() {
   const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
 
-  const currentTokenPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
-  const currentTokensAmount: [Token, number][] = []
-  if (formattedLatestTokens) {
-    formattedLatestTokens.map((data, index) => {
-      currentTokenPools.push([
-        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
-        weth9,
-        FeeAmount.HIGH,
-      ])
-      currentTokenPools.push([
-        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
-        weth9,
-        FeeAmount.MEDIUM,
-      ])
-      currentTokenPools.push([
-        new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol),
-        weth9,
-        FeeAmount.LOW,
-      ])
-      currentTokensAmount.push([new Token(chainId ? chainId : 0, data.token, data.decimal, data.symbol), data.amount])
-    })
-  }
-
-  const currentTokensPriceInETH = useTokensPriceInETH(chainId, currentTokenPools)
-
-  // remove duplicated tokens and get tokens amountUSD
-  // currentTokensAmount + currentTokensPriceInETH => currentTokensAmountUSD
-  const currentTokensAmountUSD: [Token, number][] = []
-
-  if (weth9 && ethPriceInUSDC && currentTokensAmount && currentTokensAmount.length > 0 && currentTokensPriceInETH) {
-    for (let i = 0; i < currentTokensAmount.length; i++) {
-      const newToken: Token = currentTokensAmount[i][0]
-      const newTokenAddress: string = newToken.address
-      const newTokenAmount: number = currentTokensAmount[i][1]
-      let newTokenPriceETH = 0
-
-      // get token's priceUSD
-      for (let j = 0; j < currentTokensPriceInETH.length; j++) {
-        const tokenAddress: string = currentTokensPriceInETH[j][0].address
-        const tokenPriceETH: number = currentTokensPriceInETH[j][1]
-        // WETH => priceETH = 1
-        if (newTokenAddress.toUpperCase() === weth9.address.toUpperCase()) {
-          newTokenPriceETH = 1
-          break
-        } else if (newTokenAddress.toUpperCase() === tokenAddress.toUpperCase()) {
-          newTokenPriceETH = tokenPriceETH
-          break
+  const currentTokensAmount = useMemo(() => {
+    if (fundData) {
+      return fundData.currentTokens.map((data, index) => {
+        return {
+          token: data,
+          symbol: fundData.currentTokensSymbols[index],
+          decimal: fundData.currentTokensDecimals[index],
+          amount: fundData.currentTokensAmount[index],
         }
-      }
-
-      // console.log('newTokenAddress', newTokenAddress)
-      // console.log('newTokenAmount', newTokenAmount)
-      // console.log('newTokenPriceETH', newTokenPriceETH)
-      // console.log('ethPriceInUSDC', ethPriceInUSDC)
-
-      // sum duplicated token's amountUSD
-      let isAdded = false
-      for (let j = 0; j < currentTokensAmountUSD.length; j++) {
-        const filteredTokenAddress: string = currentTokensAmountUSD[j][0].address
-        if (newTokenAddress.toUpperCase() === filteredTokenAddress.toUpperCase()) {
-          currentTokensAmountUSD[j][1] += newTokenAmount * newTokenPriceETH * ethPriceInUSDC
-          isAdded = true
-          break
-        }
-      }
-      if (!isAdded) {
-        currentTokensAmountUSD.push([newToken, newTokenAmount * newTokenPriceETH * ethPriceInUSDC])
-      }
+      })
+    } else {
+      return []
     }
-  }
+  }, [fundData])
+
+  const currentTokensAmountUSD: [Token, number, number][] = useTokensPriceInUSD(
+    chainId,
+    weth9,
+    ethPriceInUSDC,
+    currentTokensAmount
+  )
 
   if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
     let totalCurrentAmountUSD = 0
     currentTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[1]
+      const tokenAmountUSD = value[2]
       totalCurrentAmountUSD += tokenAmountUSD
+      return null
     })
     formattedVolumeUSD.push({
       time: nowDate,
-      volume: totalCurrentAmountUSD,
+      current: totalCurrentAmountUSD,
       tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
       symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
       tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
       index: formattedVolumeUSD.length,
     })
   }
+
+  const formattedLatestTokens = useMemo(() => {
+    if (currentTokensAmountUSD) {
+      const tokensData = currentTokensAmountUSD.map((data, index) => {
+        const token = data[0].address
+        const symbol = data[0].symbol ? data[0].symbol : 'Unknown'
+        const decimal = data[0].decimals
+        const amount = data[1]
+        const amountUSD = data[2]
+        return {
+          token,
+          symbol,
+          decimal,
+          amount,
+          volume: amountUSD,
+          index,
+        }
+      })
+      return tokensData
+    } else {
+      return []
+    }
+  }, [currentTokensAmountUSD])
 
   const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
@@ -480,9 +438,9 @@ export default function FundPage() {
                         <MonoSpace>
                           {formatDollarAmount(
                             volumeIndexHover !== undefined && formattedVolumeUSD && formattedVolumeUSD.length > 0
-                              ? formattedVolumeUSD[volumeIndexHover].volume
+                              ? formattedVolumeUSD[volumeIndexHover].current
                               : formattedVolumeUSD && formattedVolumeUSD.length > 0
-                              ? formattedVolumeUSD[formattedVolumeUSD.length - 1].volume
+                              ? formattedVolumeUSD[formattedVolumeUSD.length - 1].current
                               : 0
                           )}
                         </MonoSpace>
@@ -621,11 +579,23 @@ export default function FundPage() {
             </DarkGreyCard>
           </ContentLayout>
           <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <Trans>Manager</Trans>
+          </ThemedText.DeprecatedMain>
+          <DarkGreyCard>
+            {managerData ? (
+              <ManagerTable managerData={managerData} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}{' '}
+          </DarkGreyCard>
+          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
             <Trans>Investors</Trans>
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
-            {investors ? (
-              <InvestorTable investors={investors} />
+            {investorList ? (
+              <InvestorTable investors={investorList} />
             ) : (
               <LoadingRows>
                 <div />
@@ -637,7 +607,7 @@ export default function FundPage() {
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
             {transactions ? (
-              <TransactionTable transactions={transactions} />
+              <TransactionTable transactions={transactions} isFundPage={true} />
             ) : (
               <LoadingRows>
                 <div />

@@ -340,23 +340,19 @@ export default function Staking() {
                 <RowBetween>
                   <AutoColumn gap="10px">
                     <Text ml={'20px'}>
-                      <Trans>UnStaked</Trans>
+                      <Trans>Holding</Trans>
                     </Text>
                     <Text ml={'20px'}>
-                      <Trans>Earned</Trans>
+                      <Trans>Reward</Trans>
                     </Text>
                     <Text ml={'20px'}>
                       <Trans>Staked</Trans>
-                    </Text>
-                    <Text ml={'20px'}>
-                      <Trans>Total Staked</Trans>
                     </Text>
                   </AutoColumn>
                   <AutoColumn gap="10px" justify="end">
                     <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
                     <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.earnedAmount, 12)}</Text>
                     <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
-                    <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.totalStakedAmount, 12)}</Text>
                   </AutoColumn>
                 </RowBetween>
               </Card>

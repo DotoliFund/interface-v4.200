@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
-import { Transaction, TransactionType } from 'types'
+import { Transaction, TransactionType } from 'types/fund'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
@@ -21,15 +21,15 @@ const Wrapper = styled(DarkGreyCard)`
   width: 100%;
 `
 
-const ResponsiveGrid = styled.div`
+const ResponsiveGrid = styled.div<{ isFundPage: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(5, 1fr);
+  grid-template-columns: 1.5fr repeat(${({ isFundPage }) => (isFundPage ? 5 : 4)}, 1fr);
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(4, 1fr);
+    grid-template-columns: 1.5fr repeat(${({ isFundPage }) => (isFundPage ? 4 : 3)}, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
@@ -88,7 +88,15 @@ const SORT_FIELD = {
   amountToken1: 'amountToken1',
 }
 
-const DataRow = ({ transaction, color }: { transaction: Transaction; color?: string }) => {
+const DataRow = ({
+  transaction,
+  isFundPage,
+  color,
+}: {
+  transaction: Transaction
+  isFundPage: boolean
+  color?: string
+}) => {
   const { chainId } = useWeb3React()
   const abs0 = Math.abs(transaction.amount0)
   const abs1 = Math.abs(transaction.amount1) > 0 ? Math.abs(transaction.amount1) : undefined
@@ -96,17 +104,17 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   const theme = useTheme()
 
   return (
-    <ResponsiveGrid>
+    <ResponsiveGrid isFundPage={isFundPage}>
       <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction', activeNetwork)}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === TransactionType.SWAP ? (
             <Trans>
-              Swap ${transaction.token0Symbol} to ${transaction.token1Symbol}
+              Swap {transaction.token0Symbol} to {transaction.token1Symbol}
             </Trans>
           ) : transaction.type === TransactionType.DEPOSIT ? (
-            <Trans>Deposit ${transaction.token0Symbol}</Trans>
+            <Trans>Deposit {transaction.token0Symbol}</Trans>
           ) : transaction.type === TransactionType.WITHDRAW ? (
-            <Trans>Withdraw ${transaction.token0Symbol}</Trans>
+            <Trans>Withdraw {transaction.token0Symbol}</Trans>
           ) : (
             <Trans>Error</Trans>
           )}
@@ -121,14 +129,16 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       <Label end={1} fontWeight={400}>
         <HoverInlineText text={`${formatAmount(abs1)}`} maxCharacters={16} />
       </Label>
-      <Label end={1} fontWeight={400}>
-        <ExternalLink
-          href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address', activeNetwork)}
-          style={{ color: color ?? theme.deprecated_blue1 }}
-        >
-          {shortenAddress(transaction.sender)}
-        </ExternalLink>
-      </Label>
+      {isFundPage ? (
+        <Label end={1} fontWeight={400}>
+          <ExternalLink
+            href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address', activeNetwork)}
+            style={{ color: color ?? theme.deprecated_blue1 }}
+          >
+            {shortenAddress(transaction.sender)}
+          </ExternalLink>
+        </Label>
+      ) : null}
       <Label end={1} fontWeight={400}>
         {formatTime(transaction.timestamp, activeNetwork === OptimismNetworkInfo ? 8 : 0)}
       </Label>
@@ -138,10 +148,12 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
 
 export default function TransactionTable({
   transactions,
+  isFundPage,
   maxItems = 10,
   color,
 }: {
   transactions: Transaction[]
+  isFundPage: boolean
   maxItems?: number
   color?: string
 }) {
@@ -213,7 +225,7 @@ export default function TransactionTable({
   return (
     <Wrapper>
       <AutoColumn gap="16px">
-        <ResponsiveGrid>
+        <ResponsiveGrid isFundPage={isFundPage}>
           <RowFixed>
             <SortText
               onClick={() => {
@@ -249,17 +261,19 @@ export default function TransactionTable({
             </SortText>
           </RowFixed>
           <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
-            <Trans>Total Value</Trans> {arrow(SORT_FIELD.amountUSD)}
+            <Trans>Value</Trans> {arrow(SORT_FIELD.amountUSD)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken0)}
+            <Trans>Token 1</Trans> {arrow(SORT_FIELD.amountToken0)}
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            <Trans>Token Amount</Trans> {arrow(SORT_FIELD.amountToken1)}
+            <Trans>Token 2</Trans> {arrow(SORT_FIELD.amountToken1)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)}>
-            <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
-          </ClickableText>
+          {isFundPage ? (
+            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)}>
+              <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
+            </ClickableText>
+          ) : null}
           <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
@@ -270,7 +284,7 @@ export default function TransactionTable({
           if (t) {
             return (
               <React.Fragment key={i}>
-                <DataRow transaction={t} color={color} />
+                <DataRow transaction={t} isFundPage={isFundPage} color={color} />
                 <Break />
               </React.Fragment>
             )

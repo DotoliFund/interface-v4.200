@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { unixToDate } from 'utils/date'
@@ -113,7 +113,8 @@ const Chart = ({
                 minTickGap={10}
               />
               <Tooltip cursor={false} content={<CustomTooltip />} />
-              <Bar dataKey="volume" type="monotone" stroke={color} fill={color} maxBarSize={80} />
+              <Legend />
+              <Bar dataKey="current" type="monotone" stroke={color} fill={color} maxBarSize={80} />
             </BarChart>
           )}
         </ResponsiveContainer>
