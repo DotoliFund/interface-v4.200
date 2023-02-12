@@ -89,7 +89,7 @@ const MoreOptionsText = styled(ThemedText.DeprecatedBody)`
   display: flex;
 `
 
-const ErrorContainer = styled.div`
+export const ErrorContainer = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -105,7 +105,7 @@ const IconStyle = css`
   margin-bottom: 0.5rem;
 `
 
-const NetworkIcon = styled(AlertTriangle)`
+export const NetworkIcon = styled(AlertTriangle)`
   ${IconStyle}
 `
 
@@ -123,7 +123,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
   `};
 `
 
-const MainContentWrapper = styled.main`
+export const MainContentWrapper = styled.main`
   background-color: ${({ theme }) => theme.deprecated_bg0};
   padding: 8px;
   border-radius: 20px;

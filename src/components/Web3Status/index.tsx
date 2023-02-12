@@ -2,13 +2,12 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import WalletDropdown from 'components/WalletDropdown'
 import { getConnection } from 'connection/utils'
+import { isSupportedChain } from 'constants/chains'
 import { Portal } from 'nft/components/common/Portal'
-import { getIsValidSwapQuote } from 'pages/Swap'
 import { darken } from 'polished'
 import { useMemo, useRef } from 'react'
 import { AlertTriangle, ChevronDown, ChevronUp } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
-import { useDerivedSwapInfo } from 'state/swap/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
@@ -172,11 +171,6 @@ const CHEVRON_PROPS = {
 function Web3StatusInner() {
   const { account, connector, chainId, ENSName } = useWeb3React()
   const connectionType = getConnection(connector).type
-  const {
-    trade: { state: tradeState, trade },
-    inputError: swapInputError,
-  } = useDerivedSwapInfo()
-  const validSwapQuote = getIsValidSwapQuote(trade, tradeState, swapInputError)
   const theme = useTheme()
   const toggleWalletDropdown = useToggleWalletDropdown()
   const toggleWalletModal = useToggleWalletModal()
@@ -201,6 +195,15 @@ function Web3StatusInner() {
   } else if (error) {
     return (
       <Web3StatusError onClick={toggleWallet}>
+        <NetworkIcon />
+        <Text>
+          <Trans>Error</Trans>
+        </Text>
+      </Web3StatusError>
+    )
+  } else if (!isSupportedChain(chainId)) {
+    return (
+      <Web3StatusError onClick={undefined}>
         <NetworkIcon />
         <Text>
           <Trans>Error</Trans>

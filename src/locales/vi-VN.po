@@ -89,8 +89,8 @@ msgid "Add"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
-msgid "Add ${0} and ${1}"
-msgstr ""
+#~ msgid "Add ${0} and ${1}"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Add <0/> and <1/> to Uniswap V2"
@@ -110,6 +110,10 @@ msgstr ""
 msgid "Add {0}"
 msgstr ""
 
+#: src/components/Tables/LiquidityTransactionTable.tsx
+msgid "Add {0} and {1}"
+msgstr ""
+
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Add {0}/{1} V3 liquidity"
 msgstr ""
@@ -126,7 +130,7 @@ msgstr ""
 msgid "Adding"
 msgstr ""
 
-#: src/components/Tables/TokensTable.tsx
+#: src/components/Tables/TokenTable.tsx
 msgid "Address"
 msgstr ""
 
@@ -303,8 +307,8 @@ msgid "Collect"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
-msgid "Collect ${0} and ${1}"
-msgstr ""
+#~ msgid "Collect ${0} and ${1}"
+#~ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -313,6 +317,10 @@ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "Collect fees"
+msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
+msgid "Collect {0} and {1}"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
@@ -451,6 +459,7 @@ msgid "Creating"
 msgstr ""
 
 #: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx
 #: src/components/Tables/TopManagerTable.tsx
 msgid "Current"
@@ -497,8 +506,8 @@ msgid "Deposit"
 msgstr ""
 
 #: src/components/Tables/TransactionTable.tsx
-msgid "Deposit ${0}"
-msgstr ""
+#~ msgid "Deposit ${0}"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Deposit <0/>"
@@ -514,6 +523,10 @@ msgstr ""
 
 #: src/components/NetworkAlert/NetworkAlert.tsx
 msgid "Deposit tokens to the {label} network."
+msgstr ""
+
+#: src/components/Tables/TransactionTable.tsx
+msgid "Deposit {0}"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
@@ -555,8 +568,8 @@ msgid "Dotoli' Terms of Service"
 msgstr ""
 
 #: src/pages/Staking/index.tsx
-msgid "Earned"
-msgstr ""
+#~ msgid "Earned"
+#~ msgstr ""
 
 #: src/components/FeeSelector/index.tsx
 msgid "Edit"
@@ -718,6 +731,7 @@ msgstr ""
 
 #: src/components/Header/index.tsx
 #: src/components/Tables/TopFundTable.tsx
+#: src/pages/FundAccount/index.tsx
 msgid "Fund"
 msgstr ""
 
@@ -761,6 +775,10 @@ msgstr ""
 
 #: src/components/FeeSelector/index.tsx
 msgid "Hide"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "Holding"
 msgstr ""
 
 #: src/components/NavBar/index.tsx
@@ -923,8 +941,11 @@ msgstr ""
 msgid "Manage or Invest crypto fund with confidence"
 msgstr ""
 
+#: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx
 #: src/components/Tables/TopManagerTable.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
 msgid "Manager"
 msgstr ""
 
@@ -994,7 +1015,11 @@ msgid "Mint"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
-msgid "Mint ${0} and ${1}"
+#~ msgid "Mint ${0} and ${1}"
+#~ msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
+msgid "Mint {0} and {1}"
 msgstr ""
 
 #: src/lib/hooks/swap/useSwapCallback.tsx
@@ -1024,7 +1049,7 @@ msgstr ""
 #~ msgid "My Funds"
 #~ msgstr ""
 
-#: src/components/Tables/TokensTable.tsx
+#: src/components/Tables/TokenTable.tsx
 msgid "Name"
 msgstr ""
 
@@ -1183,11 +1208,13 @@ msgid "Price range"
 msgstr ""
 
 #: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopManagerTable.tsx
 msgid "Principal"
 msgstr ""
 
 #: src/components/Tables/InvestorTable.tsx
+#: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopManagerTable.tsx
 msgid "Profit"
 msgstr ""
@@ -1220,8 +1247,8 @@ msgid "Remove"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
-msgid "Remove ${0} and ${1}"
-msgstr ""
+#~ msgid "Remove ${0} and ${1}"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Remove <0/> and <1/>"
@@ -1232,6 +1259,10 @@ msgstr ""
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Remove Liquidity"
+msgstr ""
+
+#: src/components/Tables/LiquidityTransactionTable.tsx
+msgid "Remove {0} and {1}"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
@@ -1255,6 +1286,7 @@ msgstr ""
 msgid "Return"
 msgstr ""
 
+#: src/pages/Staking/index.tsx
 #: src/pages/Staking/index.tsx
 msgid "Reward"
 msgstr ""
@@ -1372,8 +1404,8 @@ msgid "Swap"
 msgstr ""
 
 #: src/components/Tables/TransactionTable.tsx
-msgid "Swap ${0} to ${1}"
-msgstr ""
+#~ msgid "Swap ${0} to ${1}"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Swap <0/> for exactly <1/>"
@@ -1394,6 +1426,10 @@ msgstr ""
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
 msgid "Swap failed: {0}"
+msgstr ""
+
+#: src/components/Tables/TransactionTable.tsx
+msgid "Swap {0} to {1}"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
@@ -1547,6 +1583,7 @@ msgstr ""
 
 #: src/components/Tables/InvestorTable.tsx
 #: src/components/Tables/LiquidityTransactionTable.tsx
+#: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TransactionTable.tsx
 msgid "Time"
 msgstr ""
@@ -1603,8 +1640,8 @@ msgid "Top funds"
 msgstr ""
 
 #: src/pages/Staking/index.tsx
-msgid "Total Staked"
-msgstr ""
+#~ msgid "Total Staked"
+#~ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Tokens"
@@ -1663,8 +1700,8 @@ msgid "Turn On Expert Mode"
 msgstr ""
 
 #: src/pages/Staking/index.tsx
-msgid "UnStaked"
-msgstr ""
+#~ msgid "UnStaked"
+#~ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "Unclaimed fees"
@@ -1713,7 +1750,7 @@ msgstr ""
 msgid "Unwrapping"
 msgstr ""
 
-#: src/components/Tables/TokensTable.tsx
+#: src/components/Tables/TokenTable.tsx
 msgid "Update"
 msgstr ""
 
@@ -1785,8 +1822,8 @@ msgid "Withdraw"
 msgstr ""
 
 #: src/components/Tables/TransactionTable.tsx
-msgid "Withdraw ${0}"
-msgstr ""
+#~ msgid "Withdraw ${0}"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Withdraw <0/>"
@@ -1794,6 +1831,10 @@ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Withdraw deposited liquidity"
+msgstr ""
+
+#: src/components/Tables/TransactionTable.tsx
+msgid "Withdraw {0}"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx

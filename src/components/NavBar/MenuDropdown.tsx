@@ -4,19 +4,10 @@ import { PrivacyPolicyModal } from 'components/PrivacyPolicy'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { Box } from 'nft/components/Box'
 import { Column, Row } from 'nft/components/Flex'
-import {
-  BarChartIcon,
-  DiscordIconMenu,
-  EllipsisIcon,
-  GithubIconMenu,
-  GovernanceIcon,
-  TwitterIconMenu,
-} from 'nft/components/icons'
+import { EllipsisIcon, GithubIconMenu } from 'nft/components/icons'
 import { body, bodySmall } from 'nft/css/common.css'
-import { themeVars } from 'nft/css/sprinkles.css'
 import { ReactNode, useReducer, useRef } from 'react'
 import { NavLink, NavLinkProps } from 'react-router-dom'
-import { isDevelopmentEnv, isStagingEnv } from 'utils/env'
 
 import { useToggleModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
@@ -130,24 +121,16 @@ export const MenuDropdown = () => {
           <NavDropdown top={{ sm: 'unset', lg: '56' }} bottom={{ sm: '56', lg: 'unset' }} right="0">
             <Column gap="16">
               <Column paddingX="8" gap="4">
-                <PrimaryMenuRow to="/vote" close={toggleOpen}>
+                <PrimaryMenuRow href="https://github.com/DotoliFund/interface">
                   <Icon>
-                    <GovernanceIcon width={24} height={24} />
+                    <GithubIconMenu width={24} height={24} />
                   </Icon>
                   <PrimaryMenuRow.Text>
-                    <Trans>Vote in governance</Trans>
-                  </PrimaryMenuRow.Text>
-                </PrimaryMenuRow>
-                <PrimaryMenuRow href="https://info.uniswap.org/#/">
-                  <Icon>
-                    <BarChartIcon width={24} height={24} />
-                  </Icon>
-                  <PrimaryMenuRow.Text>
-                    <Trans>View token analytics</Trans>
+                    <Trans>Github</Trans>
                   </PrimaryMenuRow.Text>
                 </PrimaryMenuRow>
               </Column>
-              <Separator />
+              {/* <Separator />
               <Box
                 display="flex"
                 flexDirection={{ sm: 'row', md: 'column' }}
@@ -185,7 +168,7 @@ export const MenuDropdown = () => {
                 <Icon href="https://github.com/Uniswap">
                   <GithubIconMenu className={styles.hover} width={24} height={24} color={themeVars.colors.darkGray} />
                 </Icon>
-              </IconRow>
+              </IconRow> */}
             </Column>
           </NavDropdown>
         )}

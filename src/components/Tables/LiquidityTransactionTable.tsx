@@ -7,7 +7,6 @@ import { LoadingRows } from 'components/Loader/styled'
 import { RowFixed } from 'components/Row'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
-import { OptimismNetworkInfo } from 'constants/networks'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
@@ -138,7 +137,7 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
         </ExternalLink>
       </Label>
       <Label end={1} fontWeight={400}>
-        {formatTime(transaction.timestamp, activeNetwork === OptimismNetworkInfo ? 8 : 0)}
+        {formatTime(transaction.timestamp, 0)}
       </Label>
     </ResponsiveGrid>
   )

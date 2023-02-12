@@ -219,7 +219,6 @@ export default function FeeCurrencyInputPanel({
   ...rest
 }: FeeCurrencyInputPanelProps) {
   const params = useParams()
-  const fundAddress = params.fundAddress
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
   const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false

@@ -4,20 +4,12 @@ import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
-import {
-  ArbitrumNetworkInfo,
-  CeloNetworkInfo,
-  NetworkInfo,
-  OptimismNetworkInfo,
-  PolygonNetworkInfo,
-} from 'constants/networks'
+import { NetworkInfo } from 'constants/networks'
 import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 const ETHERSCAN_PREFIXES: { [chainId: number]: string } = {
   [SupportedChainId.MAINNET]: '',
   [SupportedChainId.GOERLI]: 'goerli.',
-  [SupportedChainId.OPTIMISM]: 'optimistic.',
-  [SupportedChainId.OPTIMISM_GOERLI]: 'goerli-optimistic.',
 }
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -78,52 +70,7 @@ export function getEtherscanLink(
   if (!data) {
     return ''
   }
-  const prefix =
-    networkVersion === PolygonNetworkInfo
-      ? 'https://polygonscan.com/'
-      : networkVersion === CeloNetworkInfo
-      ? 'https://explorer.celo.org'
-      : networkVersion === ArbitrumNetworkInfo
-      ? 'https://arbiscan.io/'
-      : networkVersion === OptimismNetworkInfo
-      ? 'https://optimistic.etherscan.io'
-      : `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
-
-  if (networkVersion === OptimismNetworkInfo) {
-    switch (type) {
-      case 'transaction': {
-        return `${prefix}/tx/${data}`
-      }
-      case 'token': {
-        return `${prefix}/address/${data}`
-      }
-      case 'block': {
-        return `https://optimistic.etherscan.io`
-      }
-      case 'address':
-      default: {
-        return `${prefix}/address/${data}`
-      }
-    }
-  }
-
-  if (networkVersion === ArbitrumNetworkInfo) {
-    switch (type) {
-      case 'transaction': {
-        return `${prefix}/tx/${data}`
-      }
-      case 'token': {
-        return `${prefix}/address/${data}`
-      }
-      case 'block': {
-        return 'https://arbiscan.io/'
-      }
-      case 'address':
-      default: {
-        return `${prefix}/address/${data}`
-      }
-    }
-  }
+  const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
 
   switch (type) {
     case 'transaction': {

@@ -1,4 +1,5 @@
 import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 import AreaChart from 'components/AreaChart'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -7,14 +8,16 @@ import { MonoSpace } from 'components/shared'
 import TokenTable from 'components/Tables/TokenTable'
 import FundTable from 'components/Tables/TopFundTable'
 import TopManagerTable from 'components/Tables/TopManagerTable'
+import { isSupportedChain } from 'constants/chains'
 import { useFactoryChartData } from 'data/Overview/factoryChartData'
 import { useFactoryData } from 'data/Overview/factoryData'
 import { useTopFunds } from 'data/Overview/topFunds'
 import { useTopManagers } from 'data/Overview/topManagers'
 import { useWhiteListTokens } from 'data/Overview/whiteListTokens'
+import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { formatTime, unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
@@ -74,6 +77,8 @@ export default function Overview() {
   }, [])
 
   const [activeNetwork] = useActiveNetworkVersion()
+  const { chainId } = useWeb3React()
+  const theme = useTheme()
 
   const [currentVolumeIndexHover, setCurrentVolumeIndexHover] = useState<number | undefined>()
   const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
@@ -114,174 +119,189 @@ export default function Overview() {
 
   return (
     <PageWrapper>
-      <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
-      <AutoColumn gap="16px">
-        <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-          <Trans>Overview</Trans>
-        </ThemedText.DeprecatedMain>
-        <ResponsiveRow>
-          <ChartWrapper>
-            <AreaChart
-              data={formattedTotalCurrent}
-              color={activeNetwork.primaryColor}
-              setIndex={setCurrentVolumeIndexHover}
-              topLeft={
-                <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">Current</ThemedText.MediumHeader>
-                  <ThemedText.LargeHeader fontSize="32px">
-                    <MonoSpace>
-                      {formatDollarAmount(
-                        currentVolumeIndexHover !== undefined &&
-                          formattedTotalCurrent &&
-                          formattedTotalCurrent.length > 0
-                          ? formattedTotalCurrent[currentVolumeIndexHover].value
-                          : formattedTotalCurrent && formattedTotalCurrent.length > 0
-                          ? formattedTotalCurrent[formattedTotalCurrent.length - 1].value
-                          : 0
-                      )}
-                    </MonoSpace>
-                  </ThemedText.LargeHeader>
-                </AutoColumn>
-              }
-              topRight={
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                    {currentVolumeIndexHover !== undefined &&
-                    formattedTotalCurrent &&
-                    formattedTotalCurrent.length > 0 ? (
-                      <MonoSpace>
-                        {unixToDate(Number(formattedTotalCurrent[currentVolumeIndexHover].time))} ({' '}
-                        {formatTime(formattedTotalCurrent[currentVolumeIndexHover].time.toString(), 8)} )
-                      </MonoSpace>
-                    ) : formattedTotalCurrent && formattedTotalCurrent.length > 0 ? (
-                      <MonoSpace>
-                        {unixToDate(formattedTotalCurrent[formattedTotalCurrent.length - 1].time)} ({' '}
-                        {formatTime(formattedTotalCurrent[formattedTotalCurrent.length - 1].time.toString(), 8)} )
-                      </MonoSpace>
-                    ) : null}
-                  </ThemedText.DeprecatedMain>
-                  <br />
-                  <br />
-                </AutoColumn>
-              }
-            />
-          </ChartWrapper>
-          <ChartWrapper>
-            <AreaChart
-              data={formattedInvestorCount}
-              color={activeNetwork.primaryColor}
-              setIndex={setInvestorCountIndexHover}
-              topLeft={
-                <AutoColumn gap="4px">
-                  <ThemedText.MediumHeader fontSize="16px">
-                    <Trans>Investor</Trans>
-                  </ThemedText.MediumHeader>
-                  <ThemedText.LargeHeader fontSize="32px">
-                    <MonoSpace>
-                      {investorCountIndexHover !== undefined &&
-                      formattedInvestorCount &&
-                      formattedInvestorCount.length > 0
-                        ? formattedInvestorCount[investorCountIndexHover].value
-                        : formattedInvestorCount && formattedInvestorCount.length > 0
-                        ? formattedInvestorCount[formattedInvestorCount.length - 1].value
-                        : 0}
-                    </MonoSpace>
-                  </ThemedText.LargeHeader>
-                </AutoColumn>
-              }
-              topRight={
-                <AutoColumn gap="4px">
-                  <ThemedText.DeprecatedMain fontSize="14px" height="14px">
-                    {investorCountIndexHover !== undefined &&
-                    formattedInvestorCount &&
-                    formattedInvestorCount.length > 0 ? (
-                      <MonoSpace>
-                        {unixToDate(Number(formattedInvestorCount[investorCountIndexHover].time))} ({' '}
-                        {formatTime(formattedInvestorCount[investorCountIndexHover].time.toString(), 8)} )
-                      </MonoSpace>
-                    ) : formattedInvestorCount && formattedInvestorCount.length > 0 ? (
-                      <MonoSpace>
-                        {unixToDate(Number(formattedInvestorCount[formattedInvestorCount.length - 1].time))} ({' '}
-                        {formatTime(formattedInvestorCount[formattedInvestorCount.length - 1].time.toString(), 8)} )
-                      </MonoSpace>
-                    ) : (
-                      0
-                    )}
-                  </ThemedText.DeprecatedMain>
-                  <br />
-                  <br />
-                </AutoColumn>
-              }
-            />
-          </ChartWrapper>
-        </ResponsiveRow>
-        <HideSmall>
-          <DarkGreyCard mt="10px">
-            <RowBetween>
-              <RowFixed>
-                <RowFixed mr="20px">
-                  <ThemedText.DeprecatedMain ml="10px">
-                    <Trans>Funds :</Trans>
-                  </ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.fundCount}</ThemedText.DeprecatedLabel>
-                  <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
-                </RowFixed>
-                <RowFixed mr="20px">
-                  <ThemedText.DeprecatedMain ml="10px">
-                    <Trans>Investors : </Trans>
-                  </ThemedText.DeprecatedMain>
-                  <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.investorCount}</ThemedText.DeprecatedLabel>
-                  <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
-                </RowFixed>
-                <HideMedium>
-                  <RowFixed mr="20px">
-                    <ThemedText.DeprecatedMain ml="10px">
-                      <Trans>Manager Fee : </Trans>
-                    </ThemedText.DeprecatedMain>
-                    <ThemedText.DeprecatedLabel ml="10px">
-                      {factoryData.data ? (factoryData.data.managerFee / 10000).toFixed(2) : ''} %
-                    </ThemedText.DeprecatedLabel>
+      {isSupportedChain(chainId) ? (
+        <>
+          <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
+          <AutoColumn gap="16px">
+            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+              <Trans>Overview</Trans>
+            </ThemedText.DeprecatedMain>
+            <ResponsiveRow>
+              <ChartWrapper>
+                <AreaChart
+                  data={formattedTotalCurrent}
+                  color={activeNetwork.primaryColor}
+                  setIndex={setCurrentVolumeIndexHover}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.MediumHeader fontSize="16px">Current</ThemedText.MediumHeader>
+                      <ThemedText.LargeHeader fontSize="32px">
+                        <MonoSpace>
+                          {formatDollarAmount(
+                            currentVolumeIndexHover !== undefined &&
+                              formattedTotalCurrent &&
+                              formattedTotalCurrent.length > 0
+                              ? formattedTotalCurrent[currentVolumeIndexHover].value
+                              : formattedTotalCurrent && formattedTotalCurrent.length > 0
+                              ? formattedTotalCurrent[formattedTotalCurrent.length - 1].value
+                              : 0
+                          )}
+                        </MonoSpace>
+                      </ThemedText.LargeHeader>
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontSize="14px" height="14px">
+                        {currentVolumeIndexHover !== undefined &&
+                        formattedTotalCurrent &&
+                        formattedTotalCurrent.length > 0 ? (
+                          <MonoSpace>
+                            {unixToDate(Number(formattedTotalCurrent[currentVolumeIndexHover].time))} ({' '}
+                            {formatTime(formattedTotalCurrent[currentVolumeIndexHover].time.toString(), 8)} )
+                          </MonoSpace>
+                        ) : formattedTotalCurrent && formattedTotalCurrent.length > 0 ? (
+                          <MonoSpace>
+                            {unixToDate(formattedTotalCurrent[formattedTotalCurrent.length - 1].time)} ({' '}
+                            {formatTime(formattedTotalCurrent[formattedTotalCurrent.length - 1].time.toString(), 8)} )
+                          </MonoSpace>
+                        ) : null}
+                      </ThemedText.DeprecatedMain>
+                      <br />
+                      <br />
+                    </AutoColumn>
+                  }
+                />
+              </ChartWrapper>
+              <ChartWrapper>
+                <AreaChart
+                  data={formattedInvestorCount}
+                  color={activeNetwork.primaryColor}
+                  setIndex={setInvestorCountIndexHover}
+                  topLeft={
+                    <AutoColumn gap="4px">
+                      <ThemedText.MediumHeader fontSize="16px">
+                        <Trans>Investor</Trans>
+                      </ThemedText.MediumHeader>
+                      <ThemedText.LargeHeader fontSize="32px">
+                        <MonoSpace>
+                          {investorCountIndexHover !== undefined &&
+                          formattedInvestorCount &&
+                          formattedInvestorCount.length > 0
+                            ? formattedInvestorCount[investorCountIndexHover].value
+                            : formattedInvestorCount && formattedInvestorCount.length > 0
+                            ? formattedInvestorCount[formattedInvestorCount.length - 1].value
+                            : 0}
+                        </MonoSpace>
+                      </ThemedText.LargeHeader>
+                    </AutoColumn>
+                  }
+                  topRight={
+                    <AutoColumn gap="4px">
+                      <ThemedText.DeprecatedMain fontSize="14px" height="14px">
+                        {investorCountIndexHover !== undefined &&
+                        formattedInvestorCount &&
+                        formattedInvestorCount.length > 0 ? (
+                          <MonoSpace>
+                            {unixToDate(Number(formattedInvestorCount[investorCountIndexHover].time))} ({' '}
+                            {formatTime(formattedInvestorCount[investorCountIndexHover].time.toString(), 8)} )
+                          </MonoSpace>
+                        ) : formattedInvestorCount && formattedInvestorCount.length > 0 ? (
+                          <MonoSpace>
+                            {unixToDate(Number(formattedInvestorCount[formattedInvestorCount.length - 1].time))} ({' '}
+                            {formatTime(formattedInvestorCount[formattedInvestorCount.length - 1].time.toString(), 8)} )
+                          </MonoSpace>
+                        ) : (
+                          0
+                        )}
+                      </ThemedText.DeprecatedMain>
+                      <br />
+                      <br />
+                    </AutoColumn>
+                  }
+                />
+              </ChartWrapper>
+            </ResponsiveRow>
+            <HideSmall>
+              <DarkGreyCard mt="10px">
+                <RowBetween>
+                  <RowFixed>
+                    <RowFixed mr="20px">
+                      <ThemedText.DeprecatedMain ml="10px">
+                        <Trans>Funds :</Trans>
+                      </ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.fundCount}</ThemedText.DeprecatedLabel>
+                      <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
+                    </RowFixed>
+                    <RowFixed mr="20px">
+                      <ThemedText.DeprecatedMain ml="10px">
+                        <Trans>Investors : </Trans>
+                      </ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel ml="10px">
+                        {factoryData.data?.investorCount}
+                      </ThemedText.DeprecatedLabel>
+                      <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
+                    </RowFixed>
+                    <HideMedium>
+                      <RowFixed mr="20px">
+                        <ThemedText.DeprecatedMain ml="10px">
+                          <Trans>Manager Fee : </Trans>
+                        </ThemedText.DeprecatedMain>
+                        <ThemedText.DeprecatedLabel ml="10px">
+                          {factoryData.data ? (factoryData.data.managerFee / 10000).toFixed(2) : ''} %
+                        </ThemedText.DeprecatedLabel>
+                      </RowFixed>
+                    </HideMedium>
+                    <HideMedium>
+                      <RowFixed mr="20px">
+                        <ThemedText.DeprecatedMain ml="10px">
+                          <Trans>Pool size to be whitelisted tokens: </Trans>
+                        </ThemedText.DeprecatedMain>
+                        <ThemedText.DeprecatedLabel ml="10px">
+                          {factoryData.data ? factoryData.data.minPoolAmount / 1e18 : ''} ETH
+                        </ThemedText.DeprecatedLabel>
+                      </RowFixed>
+                    </HideMedium>
                   </RowFixed>
-                </HideMedium>
-                <HideMedium>
-                  <RowFixed mr="20px">
-                    <ThemedText.DeprecatedMain ml="10px">
-                      <Trans>Pool size to be whitelisted tokens: </Trans>
-                    </ThemedText.DeprecatedMain>
-                    <ThemedText.DeprecatedLabel ml="10px">
-                      {factoryData.data ? factoryData.data.minPoolAmount / 1e18 : ''} ETH
-                    </ThemedText.DeprecatedLabel>
-                  </RowFixed>
-                </HideMedium>
-              </RowFixed>
+                </RowBetween>
+              </DarkGreyCard>
+            </HideSmall>
+            <RowBetween mt={'16px'}>
+              <ThemedText.DeprecatedMain fontSize="22px">
+                <Trans>Top Managers</Trans>
+              </ThemedText.DeprecatedMain>
             </RowBetween>
-          </DarkGreyCard>
-        </HideSmall>
-        <RowBetween mt={'16px'}>
-          <ThemedText.DeprecatedMain fontSize="22px">
-            <Trans>Top Managers</Trans>
-          </ThemedText.DeprecatedMain>
-        </RowBetween>
-        <DarkGreyCard>
-          <TopManagerTable managerDatas={topManagers.data} />
-        </DarkGreyCard>
-        <RowBetween mt={'16px'}>
-          <ThemedText.DeprecatedMain fontSize="22px">
-            <Trans>Top Funds</Trans>
-          </ThemedText.DeprecatedMain>
-        </RowBetween>
-        <DarkGreyCard>
-          <FundTable fundDatas={topFunds.data} />
-        </DarkGreyCard>
-        <RowBetween mt={'16px'}>
-          <ThemedText.DeprecatedMain fontSize="22px">
-            <Trans>Tokens</Trans>
-          </ThemedText.DeprecatedMain>
-        </RowBetween>
-        <DarkGreyCard>
-          <TokenTable tokenDatas={whiteListTokens.data} />
-        </DarkGreyCard>
-      </AutoColumn>
+            <DarkGreyCard>
+              <TopManagerTable managerDatas={topManagers.data} />
+            </DarkGreyCard>
+            <RowBetween mt={'16px'}>
+              <ThemedText.DeprecatedMain fontSize="22px">
+                <Trans>Top Funds</Trans>
+              </ThemedText.DeprecatedMain>
+            </RowBetween>
+            <DarkGreyCard>
+              <FundTable fundDatas={topFunds.data} />
+            </DarkGreyCard>
+            <RowBetween mt={'16px'}>
+              <ThemedText.DeprecatedMain fontSize="22px">
+                <Trans>Tokens</Trans>
+              </ThemedText.DeprecatedMain>
+            </RowBetween>
+            <DarkGreyCard>
+              <TokenTable tokenDatas={whiteListTokens.data} />
+            </DarkGreyCard>
+          </AutoColumn>
+        </>
+      ) : chainId !== undefined ? (
+        <ErrorContainer>
+          <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+            <NetworkIcon strokeWidth={1.2} />
+            <div data-testid="pools-unsupported-err">
+              <Trans>Your connected network is unsupported.</Trans>
+            </div>
+          </ThemedText.DeprecatedBody>
+        </ErrorContainer>
+      ) : null}
     </PageWrapper>
   )
 }

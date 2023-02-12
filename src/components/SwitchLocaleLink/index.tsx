@@ -38,7 +38,7 @@ export function SwitchLocaleLink() {
   return (
     <Container>
       <Trans>
-        Dotoli available in:{' '}
+        language :{' '}
         <StyledInternalLink onClick={onClick} to={to}>
           {LOCALE_LABEL[targetLocale]}
         </StyledInternalLink>

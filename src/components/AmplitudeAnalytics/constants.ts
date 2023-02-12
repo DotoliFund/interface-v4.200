@@ -68,13 +68,13 @@ export enum SWAP_PRICE_UPDATE_USER_RESPONSE {
  * Known pages in the app. Highest order context.
  */
 export enum PageName {
-  TOKENS_PAGE = 'tokens-page',
   POOL_PAGE = 'pool-page',
   SWAP_PAGE = 'swap-page',
   VOTE_PAGE = 'vote-page',
   DEPOSIT_PAGE = 'deposit-page',
   WITHDRAW_PAGE = 'withdraw-page',
   FEE_PAGE = 'fee-page',
+  STAKING_PAGE = 'staking-page',
   // alphabetize additional page names.
 }
 

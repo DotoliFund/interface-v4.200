@@ -5,7 +5,6 @@ import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
-import { OptimismNetworkInfo } from 'constants/networks'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
@@ -72,7 +71,7 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
         {tokenData.symbol}
       </Label>
       <Label end={1} fontWeight={400}>
-        {formatTime(tokenData.updatedTimestamp, activeNetwork === OptimismNetworkInfo ? 8 : 0)}
+        {formatTime(tokenData.updatedTimestamp, 0)}
       </Label>
     </ResponsiveGrid>
   )

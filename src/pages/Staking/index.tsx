@@ -11,17 +11,18 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInp
 import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/StakingRewardCurrencyInputPanel'
 import WithdrawCurrencyInputPanel from 'components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel'
 import Loader from 'components/Loader'
-import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
-import { PageWrapper, SwapWrapper } from 'components/swap/styleds'
+import { PageWrapper, SwapWrapper as StakingWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { DOTOLI_ADDRESS, DOTOLI_STAKING_ADDRESS } from 'constants/addresses'
+import { isSupportedChain } from 'constants/chains'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { DotoliStaking } from 'interface/DotoliStaking'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { Text } from 'rebass'
@@ -296,280 +297,290 @@ export default function Staking() {
   const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
 
   return (
-    <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
-      <>
-        <PageWrapper>
-          <SwapWrapper id="swap-page">
-            <StyledStakingHeader>
-              <RowBetween>
-                <RowFixed>
-                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
-                    <Trans>Staking</Trans>
-                  </ThemedText.DeprecatedBlack>
-                </RowFixed>
-                <ToggleRow style={{ marginRight: '30px', marginTop: '10px' }}>
-                  <ToggleWrapper width="240px">
-                    <ToggleElement
-                      isActive={view === StakeView.STAKE}
-                      fontSize="12px"
-                      onClick={() => (view === StakeView.STAKE ? {} : setView(StakeView.STAKE))}
-                    >
-                      <Trans>Stake</Trans>
-                    </ToggleElement>
-                    <ToggleElement
-                      isActive={view === StakeView.WITHDRAW}
-                      fontSize="12px"
-                      onClick={() => (view === StakeView.WITHDRAW ? {} : setView(StakeView.WITHDRAW))}
-                    >
-                      <Trans>Withdraw</Trans>
-                    </ToggleElement>
-
-                    <ToggleElement
-                      isActive={view === StakeView.REWARD}
-                      fontSize="12px"
-                      onClick={() => (view === StakeView.REWARD ? {} : setView(StakeView.REWARD))}
-                    >
-                      <Trans>Reward</Trans>
-                    </ToggleElement>
-                  </ToggleWrapper>
-                </ToggleRow>
-              </RowBetween>
-            </StyledStakingHeader>
-            <AutoColumn gap={'12px'}>
-              <Card backgroundColor={'#202B58'}>
+    <Trace page={PageName.STAKING_PAGE} shouldLogImpression>
+      {isSupportedChain(chainId) ? (
+        <>
+          <PageWrapper>
+            <StakingWrapper id="staking-page">
+              <StyledStakingHeader>
                 <RowBetween>
-                  <AutoColumn gap="10px">
-                    <Text ml={'20px'}>
-                      <Trans>Holding</Trans>
-                    </Text>
-                    <Text ml={'20px'}>
-                      <Trans>Reward</Trans>
-                    </Text>
-                    <Text ml={'20px'}>
-                      <Trans>Staked</Trans>
-                    </Text>
-                  </AutoColumn>
-                  <AutoColumn gap="10px" justify="end">
-                    <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
-                    <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.earnedAmount, 12)}</Text>
-                    <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
-                  </AutoColumn>
+                  <RowFixed>
+                    <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                      <Trans>Staking</Trans>
+                    </ThemedText.DeprecatedBlack>
+                  </RowFixed>
+                  <ToggleRow style={{ marginRight: '30px', marginTop: '10px' }}>
+                    <ToggleWrapper width="240px">
+                      <ToggleElement
+                        isActive={view === StakeView.STAKE}
+                        fontSize="12px"
+                        onClick={() => (view === StakeView.STAKE ? {} : setView(StakeView.STAKE))}
+                      >
+                        <Trans>Stake</Trans>
+                      </ToggleElement>
+                      <ToggleElement
+                        isActive={view === StakeView.WITHDRAW}
+                        fontSize="12px"
+                        onClick={() => (view === StakeView.WITHDRAW ? {} : setView(StakeView.WITHDRAW))}
+                      >
+                        <Trans>Withdraw</Trans>
+                      </ToggleElement>
+
+                      <ToggleElement
+                        isActive={view === StakeView.REWARD}
+                        fontSize="12px"
+                        onClick={() => (view === StakeView.REWARD ? {} : setView(StakeView.REWARD))}
+                      >
+                        <Trans>Reward</Trans>
+                      </ToggleElement>
+                    </ToggleWrapper>
+                  </ToggleRow>
                 </RowBetween>
-              </Card>
-              {view === StakeView.STAKE ? (
-                <>
-                  <div style={{ display: 'relative' }}>
-                    <StakingSection>
-                      <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                        <CurrencyInputPanel
-                          label={<Trans>staking</Trans>}
-                          value={formattedAmounts ?? ''}
-                          showMaxButton={showMaxStakingButton}
-                          currency={currency ?? null}
-                          onUserInput={handleTypeInput}
-                          onMax={handleMaxStakeInput}
-                          fiatValue={undefined}
-                          onCurrencySelect={undefined}
-                          otherCurrency={undefined}
-                          showCommonBases={true}
-                          id={SectionName.CURRENCY_INPUT_PANEL}
-                          loading={false}
-                        />
-                      </Trace>
-                    </StakingSection>
-                  </div>
-                  <AutoColumn gap={'8px'}>
-                    <div>
-                      {!account ? (
-                        <ButtonLight onClick={toggleWalletModal}>
-                          <Trans>Connect Wallet</Trans>
-                        </ButtonLight>
-                      ) : showApproveFlow ? (
-                        <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                          <AutoColumn style={{ width: '100%' }} gap="12px">
-                            <ButtonConfirmed
-                              onClick={handleApprove}
-                              disabled={approveTokenButtonDisabled}
-                              width="100%"
-                              altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                              confirmed={approvalState === ApprovalState.APPROVED}
-                            >
-                              <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                                <span style={{ display: 'flex', alignItems: 'center' }}>
-                                  {/* we need to shorten this string on mobile */}
-                                  {approvalState === ApprovalState.APPROVED ? (
-                                    <Trans>You can now stake {currency?.symbol}</Trans>
+              </StyledStakingHeader>
+              <AutoColumn gap={'12px'}>
+                <Card backgroundColor={'#202B58'}>
+                  <RowBetween>
+                    <AutoColumn gap="10px">
+                      <Text ml={'20px'}>
+                        <Trans>Holding</Trans>
+                      </Text>
+                      <Text ml={'20px'}>
+                        <Trans>Reward</Trans>
+                      </Text>
+                      <Text ml={'20px'}>
+                        <Trans>Staked</Trans>
+                      </Text>
+                    </AutoColumn>
+                    <AutoColumn gap="10px" justify="end">
+                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
+                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.earnedAmount, 12)}</Text>
+                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
+                    </AutoColumn>
+                  </RowBetween>
+                </Card>
+                {view === StakeView.STAKE ? (
+                  <>
+                    <div style={{ display: 'relative' }}>
+                      <StakingSection>
+                        <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                          <CurrencyInputPanel
+                            label={<Trans>staking</Trans>}
+                            value={formattedAmounts ?? ''}
+                            showMaxButton={showMaxStakingButton}
+                            currency={currency ?? null}
+                            onUserInput={handleTypeInput}
+                            onMax={handleMaxStakeInput}
+                            fiatValue={undefined}
+                            onCurrencySelect={undefined}
+                            otherCurrency={undefined}
+                            showCommonBases={true}
+                            id={SectionName.CURRENCY_INPUT_PANEL}
+                            loading={false}
+                          />
+                        </Trace>
+                      </StakingSection>
+                    </div>
+                    <AutoColumn gap={'8px'}>
+                      <div>
+                        {!account ? (
+                          <ButtonLight onClick={toggleWalletModal}>
+                            <Trans>Connect Wallet</Trans>
+                          </ButtonLight>
+                        ) : showApproveFlow ? (
+                          <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
+                            <AutoColumn style={{ width: '100%' }} gap="12px">
+                              <ButtonConfirmed
+                                onClick={handleApprove}
+                                disabled={approveTokenButtonDisabled}
+                                width="100%"
+                                altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
+                                confirmed={approvalState === ApprovalState.APPROVED}
+                              >
+                                <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
+                                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                                    {/* we need to shorten this string on mobile */}
+                                    {approvalState === ApprovalState.APPROVED ? (
+                                      <Trans>You can now stake {currency?.symbol}</Trans>
+                                    ) : (
+                                      <Trans>Allow the Dotoli Protocol to use your {currency?.symbol}</Trans>
+                                    )}
+                                  </span>
+                                  {approvalState === ApprovalState.PENDING ? (
+                                    <Loader stroke="white" />
+                                  ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
+                                    <CheckCircle size="20" color={theme.deprecated_green1} />
                                   ) : (
-                                    <Trans>Allow the Dotoli Protocol to use your {currency?.symbol}</Trans>
+                                    <MouseoverTooltip
+                                      text={
+                                        <Trans>
+                                          You must give the Dotoli smart contracts permission to use your{' '}
+                                          {currency?.symbol}. You only have to do this once per token.
+                                        </Trans>
+                                      }
+                                    >
+                                      <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
+                                    </MouseoverTooltip>
                                   )}
-                                </span>
-                                {approvalState === ApprovalState.PENDING ? (
-                                  <Loader stroke="white" />
-                                ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                                  <CheckCircle size="20" color={theme.deprecated_green1} />
-                                ) : (
-                                  <MouseoverTooltip
-                                    text={
-                                      <Trans>
-                                        You must give the Dotoli smart contracts permission to use your{' '}
-                                        {currency?.symbol}. You only have to do this once per token.
-                                      </Trans>
-                                    }
-                                  >
-                                    <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                                  </MouseoverTooltip>
-                                )}
-                              </AutoRow>
-                            </ButtonConfirmed>
-                            <ButtonError
-                              onClick={() => {
-                                if (isExpertMode) {
-                                  //handleSwap()
-                                } else {
-                                  onStake()
-                                }
-                              }}
-                              width="100%"
-                              id="swap-button"
-                              disabled={approvalState !== ApprovalState.APPROVED}
-                              error={true}
-                            >
-                              <Text fontSize={16} fontWeight={500}>
-                                <Trans>Stake</Trans>
-                              </Text>
-                            </ButtonError>
-                          </AutoColumn>
-                        </AutoRow>
-                      ) : (
-                        <ButtonError
-                          onClick={() => {
-                            if (isExpertMode) {
-                              //handleSwap()
-                            } else {
-                              onStake()
-                            }
-                          }}
-                          id="swap-button"
-                          disabled={false}
-                          error={true}
-                        >
-                          <Text fontSize={20} fontWeight={500}>
-                            <Trans>Stake</Trans>
-                          </Text>
-                        </ButtonError>
-                      )}
+                                </AutoRow>
+                              </ButtonConfirmed>
+                              <ButtonError
+                                onClick={() => {
+                                  if (isExpertMode) {
+                                    //onStake()
+                                  } else {
+                                    onStake()
+                                  }
+                                }}
+                                width="100%"
+                                id="staking-button"
+                                disabled={approvalState !== ApprovalState.APPROVED}
+                                error={true}
+                              >
+                                <Text fontSize={16} fontWeight={500}>
+                                  <Trans>Stake</Trans>
+                                </Text>
+                              </ButtonError>
+                            </AutoColumn>
+                          </AutoRow>
+                        ) : (
+                          <ButtonError
+                            onClick={() => {
+                              if (isExpertMode) {
+                                //onStake()
+                              } else {
+                                onStake()
+                              }
+                            }}
+                            id="staking-button"
+                            disabled={false}
+                            error={true}
+                          >
+                            <Text fontSize={20} fontWeight={500}>
+                              <Trans>Stake</Trans>
+                            </Text>
+                          </ButtonError>
+                        )}
+                      </div>
+                    </AutoColumn>
+                  </>
+                ) : view === StakeView.WITHDRAW ? (
+                  <>
+                    <div style={{ display: 'relative' }}>
+                      <StakingSection>
+                        <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                          <WithdrawCurrencyInputPanel
+                            label={<Trans>staking</Trans>}
+                            value={formattedAmounts ?? ''}
+                            showMaxButton={showMaxWithdrawButton}
+                            currency={currency ?? null}
+                            withdrawCurrencyBalance={stakingInfo?.stakedAmount}
+                            onUserInput={handleTypeInput}
+                            onMax={handleMaxWithdrawInput}
+                            fiatValue={undefined}
+                            onCurrencySelect={undefined}
+                            otherCurrency={undefined}
+                            showCommonBases={true}
+                            id={SectionName.CURRENCY_INPUT_PANEL}
+                            loading={false}
+                          />
+                        </Trace>
+                      </StakingSection>
                     </div>
-                  </AutoColumn>
-                </>
-              ) : view === StakeView.WITHDRAW ? (
-                <>
-                  <div style={{ display: 'relative' }}>
-                    <StakingSection>
-                      <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                        <WithdrawCurrencyInputPanel
-                          label={<Trans>staking</Trans>}
-                          value={formattedAmounts ?? ''}
-                          showMaxButton={showMaxWithdrawButton}
-                          currency={currency ?? null}
-                          withdrawCurrencyBalance={stakingInfo?.stakedAmount}
-                          onUserInput={handleTypeInput}
-                          onMax={handleMaxWithdrawInput}
-                          fiatValue={undefined}
-                          onCurrencySelect={undefined}
-                          otherCurrency={undefined}
-                          showCommonBases={true}
-                          id={SectionName.CURRENCY_INPUT_PANEL}
-                          loading={false}
-                        />
-                      </Trace>
-                    </StakingSection>
-                  </div>
-                  <AutoColumn gap={'8px'}>
-                    <div>
-                      {!account ? (
-                        <ButtonLight onClick={toggleWalletModal}>
-                          <Trans>Connect Wallet</Trans>
-                        </ButtonLight>
-                      ) : (
-                        <ButtonError
-                          onClick={() => {
-                            if (isExpertMode) {
-                              //handleSwap()
-                            } else {
-                              onWithdraw()
-                            }
-                          }}
-                          id="swap-button"
-                          disabled={false}
-                          error={true}
-                        >
-                          <Text fontSize={20} fontWeight={500}>
-                            <Trans>Withdraw</Trans>
-                          </Text>
-                        </ButtonError>
-                      )}
+                    <AutoColumn gap={'8px'}>
+                      <div>
+                        {!account ? (
+                          <ButtonLight onClick={toggleWalletModal}>
+                            <Trans>Connect Wallet</Trans>
+                          </ButtonLight>
+                        ) : (
+                          <ButtonError
+                            onClick={() => {
+                              if (isExpertMode) {
+                                //onWithdraw()
+                              } else {
+                                onWithdraw()
+                              }
+                            }}
+                            id="unstake-button"
+                            disabled={false}
+                            error={true}
+                          >
+                            <Text fontSize={20} fontWeight={500}>
+                              <Trans>Withdraw</Trans>
+                            </Text>
+                          </ButtonError>
+                        )}
+                      </div>
+                    </AutoColumn>
+                  </>
+                ) : view === StakeView.REWARD ? (
+                  <>
+                    <div style={{ display: 'relative' }}>
+                      <StakingSection>
+                        <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                          <RewardCurrencyInputPanel
+                            label={<Trans>staking</Trans>}
+                            value={formattedAmounts ?? ''}
+                            showMaxButton={showMaxRewardButton}
+                            currency={currency ?? null}
+                            rewardCurrencyBalance={stakingInfo?.earnedAmount}
+                            onUserInput={handleTypeInput}
+                            onMax={handleMaxRewardInput}
+                            fiatValue={undefined}
+                            onCurrencySelect={undefined}
+                            otherCurrency={undefined}
+                            showCommonBases={true}
+                            id={SectionName.CURRENCY_INPUT_PANEL}
+                            loading={false}
+                          />
+                        </Trace>
+                      </StakingSection>
                     </div>
-                  </AutoColumn>
-                </>
-              ) : view === StakeView.REWARD ? (
-                <>
-                  <div style={{ display: 'relative' }}>
-                    <StakingSection>
-                      <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                        <RewardCurrencyInputPanel
-                          label={<Trans>staking</Trans>}
-                          value={formattedAmounts ?? ''}
-                          showMaxButton={showMaxRewardButton}
-                          currency={currency ?? null}
-                          rewardCurrencyBalance={stakingInfo?.earnedAmount}
-                          onUserInput={handleTypeInput}
-                          onMax={handleMaxRewardInput}
-                          fiatValue={undefined}
-                          onCurrencySelect={undefined}
-                          otherCurrency={undefined}
-                          showCommonBases={true}
-                          id={SectionName.CURRENCY_INPUT_PANEL}
-                          loading={false}
-                        />
-                      </Trace>
-                    </StakingSection>
-                  </div>
-                  <AutoColumn gap={'8px'}>
-                    <div>
-                      {!account ? (
-                        <ButtonLight onClick={toggleWalletModal}>
-                          <Trans>Connect Wallet</Trans>
-                        </ButtonLight>
-                      ) : (
-                        <ButtonError
-                          onClick={() => {
-                            if (isExpertMode) {
-                              //handleSwap()
-                            } else {
-                              onGetReward()
-                            }
-                          }}
-                          id="swap-button"
-                          disabled={false}
-                          error={true}
-                        >
-                          <Text fontSize={20} fontWeight={500}>
-                            <Trans>Get Reward</Trans>
-                          </Text>
-                        </ButtonError>
-                      )}
-                    </div>
-                  </AutoColumn>
-                </>
-              ) : (
-                <></>
-              )}
-            </AutoColumn>
-          </SwapWrapper>
-          <NetworkAlert />
-        </PageWrapper>
-        <SwitchLocaleLink />
-      </>
+                    <AutoColumn gap={'8px'}>
+                      <div>
+                        {!account ? (
+                          <ButtonLight onClick={toggleWalletModal}>
+                            <Trans>Connect Wallet</Trans>
+                          </ButtonLight>
+                        ) : (
+                          <ButtonError
+                            onClick={() => {
+                              if (isExpertMode) {
+                                //onGetReward()
+                              } else {
+                                onGetReward()
+                              }
+                            }}
+                            id="reward-button"
+                            disabled={false}
+                            error={true}
+                          >
+                            <Text fontSize={20} fontWeight={500}>
+                              <Trans>Get Reward</Trans>
+                            </Text>
+                          </ButtonError>
+                        )}
+                      </div>
+                    </AutoColumn>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </AutoColumn>
+            </StakingWrapper>
+          </PageWrapper>
+          <SwitchLocaleLink />
+        </>
+      ) : chainId !== undefined ? (
+        <ErrorContainer>
+          <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+            <NetworkIcon strokeWidth={1.2} />
+            <div data-testid="pools-unsupported-err">
+              <Trans>Your connected network is unsupported.</Trans>
+            </div>
+          </ThemedText.DeprecatedBody>
+        </ErrorContainer>
+      ) : null}
     </Trace>
   )
 }
