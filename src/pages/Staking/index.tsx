@@ -7,9 +7,9 @@ import { sendEvent } from 'components/analytics'
 import { ButtonConfirmed, ButtonError, ButtonLight } from 'components/Button'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import CurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInputPanel'
-import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/StakingRewardCurrencyInputPanel'
-import WithdrawCurrencyInputPanel from 'components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel'
+import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/RewardCurrencyInputPanel'
+import StakingCurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInputPanel'
+import UnstakingCurrencyInputPanel from 'components/CurrencyInputPanel/UnstakingCurrencyInputPanel'
 import Loader from 'components/Loader'
 import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { PageWrapper, SwapWrapper as StakingWrapper } from 'components/swap/styleds'
@@ -85,7 +85,7 @@ const ToggleRow = styled(RowFlat)`
 
 enum StakeView {
   STAKE,
-  WITHDRAW,
+  UNSTAKE,
   REWARD,
 }
 
@@ -125,12 +125,12 @@ export default function Staking() {
     maxStakingInputAmount?.greaterThan(0) && !parsedAmount?.equalTo(maxStakingInputAmount)
   )
 
-  const maxWithdrawInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
+  const maxUnstakingInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
     () => maxAmountSpend(stakingInfo?.stakedAmount),
     [stakingInfo]
   )
-  const showMaxWithdrawButton = Boolean(
-    maxWithdrawInputAmount?.greaterThan(0) && !parsedAmount?.equalTo(maxWithdrawInputAmount)
+  const showMaxUnstakingButton = Boolean(
+    maxUnstakingInputAmount?.greaterThan(0) && !parsedAmount?.equalTo(maxUnstakingInputAmount)
   )
 
   const maxRewardInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
@@ -236,11 +236,11 @@ export default function Staking() {
       })
   }
 
-  async function onWithdraw() {
+  async function onUnstake() {
     if (!chainId || !provider || !account) return
     if (!currency || !parsedAmount) return
 
-    const { calldata, value } = DotoliStaking.withdrawCallParameters(parsedAmount)
+    const { calldata, value } = DotoliStaking.unstakingCallParameters(parsedAmount)
     const txn: { to: string; data: string; value: string } = {
       to: DOTOLI_STAKING_ADDRESS[chainId],
       data: calldata,
@@ -278,13 +278,13 @@ export default function Staking() {
     })
   }, [maxStakingInputAmount, setTypedValue])
 
-  const handleMaxWithdrawInput = useCallback(() => {
-    maxWithdrawInputAmount && setTypedValue(maxWithdrawInputAmount.toExact())
+  const handleMaxUnstakingInput = useCallback(() => {
+    maxUnstakingInputAmount && setTypedValue(maxUnstakingInputAmount.toExact())
     sendEvent({
-      category: 'Staking Withdraw',
+      category: 'UnStaking',
       action: 'Max',
     })
-  }, [maxWithdrawInputAmount, setTypedValue])
+  }, [maxUnstakingInputAmount, setTypedValue])
 
   const handleMaxRewardInput = useCallback(() => {
     maxRewardInputAmount && setTypedValue(maxRewardInputAmount.toExact())
@@ -319,11 +319,11 @@ export default function Staking() {
                         <Trans>Stake</Trans>
                       </ToggleElement>
                       <ToggleElement
-                        isActive={view === StakeView.WITHDRAW}
+                        isActive={view === StakeView.UNSTAKE}
                         fontSize="12px"
-                        onClick={() => (view === StakeView.WITHDRAW ? {} : setView(StakeView.WITHDRAW))}
+                        onClick={() => (view === StakeView.UNSTAKE ? {} : setView(StakeView.UNSTAKE))}
                       >
-                        <Trans>Withdraw</Trans>
+                        <Trans>Unstake</Trans>
                       </ToggleElement>
 
                       <ToggleElement
@@ -363,7 +363,7 @@ export default function Staking() {
                     <div style={{ display: 'relative' }}>
                       <StakingSection>
                         <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                          <CurrencyInputPanel
+                          <StakingCurrencyInputPanel
                             label={<Trans>staking</Trans>}
                             value={formattedAmounts ?? ''}
                             showMaxButton={showMaxStakingButton}
@@ -463,19 +463,19 @@ export default function Staking() {
                       </div>
                     </AutoColumn>
                   </>
-                ) : view === StakeView.WITHDRAW ? (
+                ) : view === StakeView.UNSTAKE ? (
                   <>
                     <div style={{ display: 'relative' }}>
                       <StakingSection>
                         <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                          <WithdrawCurrencyInputPanel
-                            label={<Trans>staking</Trans>}
+                          <UnstakingCurrencyInputPanel
+                            label={<Trans>unstaking</Trans>}
                             value={formattedAmounts ?? ''}
-                            showMaxButton={showMaxWithdrawButton}
+                            showMaxButton={showMaxUnstakingButton}
                             currency={currency ?? null}
-                            withdrawCurrencyBalance={stakingInfo?.stakedAmount}
+                            unstakingCurrencyBalance={stakingInfo?.stakedAmount}
                             onUserInput={handleTypeInput}
-                            onMax={handleMaxWithdrawInput}
+                            onMax={handleMaxUnstakingInput}
                             fiatValue={undefined}
                             onCurrencySelect={undefined}
                             otherCurrency={undefined}
@@ -496,9 +496,9 @@ export default function Staking() {
                           <ButtonError
                             onClick={() => {
                               if (isExpertMode) {
-                                //onWithdraw()
+                                //onUnstake()
                               } else {
-                                onWithdraw()
+                                onUnstake()
                               }
                             }}
                             id="unstake-button"
@@ -506,7 +506,7 @@ export default function Staking() {
                             error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
-                              <Trans>Withdraw</Trans>
+                              <Trans>Unstake</Trans>
                             </Text>
                           </ButtonError>
                         )}
@@ -519,7 +519,7 @@ export default function Staking() {
                       <StakingSection>
                         <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
                           <RewardCurrencyInputPanel
-                            label={<Trans>staking</Trans>}
+                            label={<Trans>reward</Trans>}
                             value={formattedAmounts ?? ''}
                             showMaxButton={showMaxRewardButton}
                             currency={currency ?? null}

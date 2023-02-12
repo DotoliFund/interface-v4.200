@@ -177,7 +177,7 @@ interface CurrencyInputPanelProps {
   label?: ReactNode
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
-  withdrawCurrencyBalance: CurrencyAmount<Currency> | undefined
+  unstakingCurrencyBalance: CurrencyAmount<Currency> | undefined
   hideBalance?: boolean
   pair?: Pair | null
   hideInput?: boolean
@@ -200,7 +200,7 @@ export default function CurrencyInputPanel({
   showMaxButton,
   onCurrencySelect,
   currency,
-  withdrawCurrencyBalance,
+  unstakingCurrencyBalance,
   otherCurrency,
   id,
   showCommonBases,
@@ -288,15 +288,15 @@ export default function CurrencyInputPanel({
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer' }}
                   >
-                    {!hideBalance && currency && withdrawCurrencyBalance ? (
+                    {!hideBalance && currency && unstakingCurrencyBalance ? (
                       renderBalance ? (
-                        renderBalance(withdrawCurrencyBalance)
+                        renderBalance(unstakingCurrencyBalance)
                       ) : (
-                        <Trans>Balance: {formatCurrencyAmount(withdrawCurrencyBalance, currency.decimals)}</Trans>
+                        <Trans>Balance: {formatCurrencyAmount(unstakingCurrencyBalance, currency.decimals)}</Trans>
                       )
                     ) : null}
                   </ThemedText.DeprecatedBody>
-                  {showMaxButton && withdrawCurrencyBalance ? (
+                  {showMaxButton && unstakingCurrencyBalance ? (
                     <TraceEvent
                       events={[Event.onClick]}
                       name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}

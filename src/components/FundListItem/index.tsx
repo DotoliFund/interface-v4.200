@@ -183,9 +183,10 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             </PrimaryPositionIdData>
           </RowBetween>
           <RangeLineItem>
+            &nbsp;&nbsp;&nbsp;
             <RangeText>
               <ExtentsText>
-                <Trans>TVL : </Trans>
+                <Trans>Current : </Trans>
               </ExtentsText>
               {formatDollarAmount(fundData.currentUSD)}
             </RangeText>
@@ -194,12 +195,6 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
                 <Trans>Investors : </Trans>
               </ExtentsText>
               {fundData.investorCount}
-            </RangeText>
-            <RangeText>
-              <ExtentsText>
-                <Trans>Manager : </Trans>
-              </ExtentsText>
-              {shortenAddress(fundData.manager)}
             </RangeText>
             <RangeText>
               <ExtentsText>

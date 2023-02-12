@@ -5,7 +5,7 @@ import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonGray, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FundList from 'components/FundList'
-import { FlyoutAlignment, NewMenu } from 'components/Menu'
+import { NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
@@ -15,14 +15,13 @@ import { useDotoliFactoryContract } from 'hooks/useContract'
 import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
-import { AlertTriangle, BookOpen, ChevronDown, Inbox, PlusCircle } from 'react-feather'
+import { AlertTriangle, Inbox } from 'react-feather'
 import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
-import { HideSmall, ThemedText } from 'theme'
+import { ThemedText } from 'theme'
 import { FundDetails } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
-import CTACards from './CTACards'
 import { LoadingRows } from './styleds'
 
 const PageWrapper = styled(AutoColumn)`
@@ -257,28 +256,28 @@ export default function Account() {
     }
   }, [investingFundsLoading, managingFund, investingFunds, provider, account])
 
-  const menuItems = [
-    {
-      content: (
-        <MenuItem>
-          <Trans>Invest</Trans>
-          <PlusCircle size={16} />
-        </MenuItem>
-      ),
-      link: '/overview',
-      external: false,
-    },
-    {
-      content: (
-        <MenuItem>
-          <Trans>Learn</Trans>
-          <BookOpen size={16} />
-        </MenuItem>
-      ),
-      link: 'https://docs.uniswap.org/',
-      external: true,
-    },
-  ]
+  // const menuItems = [
+  //   {
+  //     content: (
+  //       <MenuItem>
+  //         <Trans>Invest</Trans>
+  //         <PlusCircle size={16} />
+  //       </MenuItem>
+  //     ),
+  //     link: '/overview',
+  //     external: false,
+  //   },
+  //   {
+  //     content: (
+  //       <MenuItem>
+  //         <Trans>Learn</Trans>
+  //         <BookOpen size={16} />
+  //       </MenuItem>
+  //     ),
+  //     link: 'https://docs.uniswap.org/',
+  //     external: true,
+  //   },
+  // ]
 
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />
@@ -328,7 +327,7 @@ export default function Account() {
                   <Trans>My Account</Trans>
                 </ThemedText.DeprecatedBody>
                 <ButtonRow>
-                  {
+                  {/* {
                     <Menu
                       menuItems={menuItems}
                       flyoutAlignment={FlyoutAlignment.LEFT}
@@ -341,7 +340,7 @@ export default function Account() {
                         </MoreOptionsButton>
                       )}
                     />
-                  }
+                  } */}
                   {managingFundInfo && managingFundInfo.length > 0 ? (
                     <></>
                   ) : (
@@ -400,9 +399,9 @@ export default function Account() {
                   </ErrorContainer>
                 )}
               </MainContentWrapper>
-              <HideSmall>
+              {/* <HideSmall>
                 <CTACards />
-              </HideSmall>
+              </HideSmall> */}
             </AutoColumn>
           </AutoColumn>
         </PageWrapper>

@@ -19,7 +19,7 @@ export abstract class DotoliStaking {
     }
   }
 
-  public static withdrawCallParameters(amount: CurrencyAmount<Currency>): MethodParameters {
+  public static unstakingCallParameters(amount: CurrencyAmount<Currency>): MethodParameters {
     const calldata: string = DotoliStaking.INTERFACE.encodeFunctionData('withdraw', [toHex(amount.quotient)])
     const value: string = toHex(0)
     return {
