@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2023-02-06 16:22+0900\n"
+"POT-Creation-Date: 2023-02-13 10:33+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -87,10 +87,6 @@ msgstr ""
 #: src/pages/AddLiquidity/index.tsx
 msgid "Add"
 msgstr ""
-
-#: src/components/Tables/LiquidityTransactionTable.tsx
-#~ msgid "Add ${0} and ${1}"
-#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Add <0/> and <1/> to Uniswap V2"
@@ -193,10 +189,10 @@ msgid "Back to wallet selection"
 msgstr ""
 
 #: src/components/CurrencyInputPanel/FundCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
 msgid "Balance: {0}"
 msgstr ""
 
@@ -222,10 +218,6 @@ msgstr ""
 
 #: src/components/swap/SwapRoute.tsx
 msgid "Best price route costs ~{formattedGasPriceString} in gas."
-msgstr ""
-
-#: src/components/Header/NetworkSelector.tsx
-msgid "Blockscout"
 msgstr ""
 
 #: src/components/Header/NetworkSelector.tsx
@@ -305,10 +297,6 @@ msgstr ""
 #: src/pages/Pool/PositionPage.tsx
 msgid "Collect"
 msgstr ""
-
-#: src/components/Tables/LiquidityTransactionTable.tsx
-#~ msgid "Collect ${0} and ${1}"
-#~ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -465,6 +453,10 @@ msgstr ""
 msgid "Current"
 msgstr ""
 
+#: src/components/FundListItem/index.tsx
+msgid "Current :"
+msgstr ""
+
 #: src/pages/FundPage/index.tsx
 msgid "Current Tokens"
 msgstr ""
@@ -504,10 +496,6 @@ msgstr ""
 #: src/pages/FundAccount/index.tsx
 msgid "Deposit"
 msgstr ""
-
-#: src/components/Tables/TransactionTable.tsx
-#~ msgid "Deposit ${0}"
-#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Deposit <0/>"
@@ -555,21 +543,9 @@ msgstr ""
 msgid "Docs"
 msgstr ""
 
-#: src/components/NavBar/MenuDropdown.tsx
-msgid "Documentation"
-msgstr ""
-
-#: src/components/SwitchLocaleLink/index.tsx
-msgid "Dotoli available in: <0>{0}</0>"
-msgstr ""
-
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Dotoli' Terms of Service"
 msgstr ""
-
-#: src/pages/Staking/index.tsx
-#~ msgid "Earned"
-#~ msgstr ""
 
 #: src/components/FeeSelector/index.tsx
 msgid "Edit"
@@ -621,6 +597,7 @@ msgstr ""
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/Web3Status/index.tsx
+#: src/components/Web3Status/index.tsx
 msgid "Error"
 msgstr ""
 
@@ -666,10 +643,6 @@ msgstr ""
 
 #: src/components/Popups/FailedNetworkSwitchPopup.tsx
 msgid "Failed to switch networks from the Dotoli Interface. In order to use Dotoli on {0}, you must change the network in your wallet."
-msgstr ""
-
-#: src/components/NavBar/MenuDropdown.tsx
-msgid "Feature Flags"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
@@ -739,10 +712,6 @@ msgstr ""
 msgid "Fund :"
 msgstr ""
 
-#: src/pages/FundPage/index.tsx
-#~ msgid "Funds"
-#~ msgstr ""
-
 #: src/pages/Overview/index.tsx
 msgid "Funds :"
 msgstr ""
@@ -759,6 +728,10 @@ msgstr ""
 msgid "Get support on Discord"
 msgstr ""
 
+#: src/components/NavBar/MenuDropdown.tsx
+msgid "Github"
+msgstr ""
+
 #: src/pages/Home/index.tsx
 #: src/pages/Home/index.tsx
 msgid "Governance"
@@ -767,10 +740,6 @@ msgstr ""
 #: src/components/Header/NetworkSelector.tsx
 #: src/components/Menu/index.tsx
 msgid "Help Center"
-msgstr ""
-
-#: src/components/NavBar/MenuDropdown.tsx
-msgid "Help center"
 msgstr ""
 
 #: src/components/FeeSelector/index.tsx
@@ -856,10 +825,6 @@ msgstr ""
 msgid "Invalid sender"
 msgstr ""
 
-#: src/pages/Account/index.tsx
-msgid "Invest"
-msgstr ""
-
 #: src/components/FundList/index.tsx
 #: src/components/FundList/index.tsx
 msgid "Investing Funds"
@@ -890,10 +855,6 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: src/pages/Account/index.tsx
-msgid "Learn"
-msgstr ""
-
 #: src/pages/Account/CTACards.tsx
 msgid "Learn about managing fund"
 msgstr ""
@@ -905,7 +866,6 @@ msgid "Learn more"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-#: src/components/NavBar/MenuDropdown.tsx
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Legal & Privacy"
 msgstr ""
@@ -930,10 +890,10 @@ msgstr ""
 msgid "Liquidity data not available."
 msgstr ""
 
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
 msgid "MAX"
 msgstr ""
 
@@ -947,10 +907,6 @@ msgstr ""
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
 msgid "Manager"
-msgstr ""
-
-#: src/components/FundListItem/index.tsx
-msgid "Manager :"
 msgstr ""
 
 #: src/pages/Overview/index.tsx
@@ -1015,10 +971,6 @@ msgid "Mint"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
-#~ msgid "Mint ${0} and ${1}"
-#~ msgstr ""
-
-#: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Mint {0} and {1}"
 msgstr ""
 
@@ -1026,7 +978,6 @@ msgstr ""
 msgid "Missing dependencies"
 msgstr ""
 
-#: src/pages/Account/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 msgid "More"
@@ -1043,11 +994,6 @@ msgstr ""
 #: src/pages/FundPage/index.tsx
 msgid "My Account"
 msgstr ""
-
-#: src/pages/Account/index.tsx
-#: src/pages/Account/index.tsx
-#~ msgid "My Funds"
-#~ msgstr ""
 
 #: src/components/Tables/TokenTable.tsx
 msgid "Name"
@@ -1114,14 +1060,6 @@ msgstr ""
 msgid "Only investors can withdraw their own funds. Fund managers can only swap token or manage pool via Dotoli and Uniswap"
 msgstr ""
 
-#: src/components/Header/NetworkSelector.tsx
-msgid "Optimism Bridge"
-msgstr ""
-
-#: src/components/Header/NetworkSelector.tsx
-msgid "Optimistic Etherscan"
-msgstr ""
-
 #: src/components/Badge/RangeBadge.tsx
 msgid "Out of range"
 msgstr ""
@@ -1152,14 +1090,6 @@ msgstr ""
 msgid "Please type the word \"{confirmWord}\" to enable expert mode."
 msgstr ""
 
-#: src/components/Header/NetworkSelector.tsx
-msgid "Polygon Bridge"
-msgstr ""
-
-#: src/components/Header/NetworkSelector.tsx
-msgid "Polygonscan"
-msgstr ""
-
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Pool"
 msgstr ""
@@ -1173,10 +1103,6 @@ msgstr ""
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Pooled {0}:"
-msgstr ""
-
-#: src/components/Header/NetworkSelector.tsx
-msgid "Portal Bridge"
 msgstr ""
 
 #: src/pages/FundAccount/index.tsx
@@ -1246,10 +1172,6 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/components/Tables/LiquidityTransactionTable.tsx
-#~ msgid "Remove ${0} and ${1}"
-#~ msgstr ""
-
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Remove <0/> and <1/>"
 msgstr ""
@@ -1299,10 +1221,10 @@ msgstr ""
 msgid "Select Pair"
 msgstr ""
 
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
 #: src/components/SearchModal/CurrencySearch.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
 #: src/components/SearchModal/FundCurrencySearch.tsx
@@ -1394,18 +1316,14 @@ msgid "Success"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/Tables/TransactionTable.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx
 #: src/pages/Swap/index.tsx
 msgid "Swap"
 msgstr ""
-
-#: src/components/Tables/TransactionTable.tsx
-#~ msgid "Swap ${0} to ${1}"
-#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Swap <0/> for exactly <1/>"
@@ -1442,10 +1360,6 @@ msgstr ""
 
 #: src/components/swap/ConfirmSwapModal.tsx
 msgid "Swapping {0} {1} for {2} {3}"
-msgstr ""
-
-#: src/components/FundListItem/index.tsx
-msgid "TVL :"
 msgstr ""
 
 #: src/components/Popups/SurveyPopup.tsx
@@ -1514,10 +1428,10 @@ msgstr ""
 
 #: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/FundCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingRewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingWithdrawCurrencyInputPanel.tsx
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
 msgid "The market price is outside your specified price range. Single-asset deposit only."
 msgstr ""
 
@@ -1610,13 +1524,6 @@ msgstr ""
 msgid "Token 2"
 msgstr ""
 
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/LiquidityTransactionTable.tsx
-#: src/components/TransactionsTable/index.tsx
-#: src/components/TransactionsTable/index.tsx
-#~ msgid "Token Amount"
-#~ msgstr ""
-
 #: src/components/SearchModal/BlockedToken.tsx
 msgid "Token not supported"
 msgstr ""
@@ -1638,10 +1545,6 @@ msgstr ""
 #: src/pages/Account/CTACards.tsx
 msgid "Top funds"
 msgstr ""
-
-#: src/pages/Staking/index.tsx
-#~ msgid "Total Staked"
-#~ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Tokens"
@@ -1699,10 +1602,6 @@ msgstr ""
 msgid "Turn On Expert Mode"
 msgstr ""
 
-#: src/pages/Staking/index.tsx
-#~ msgid "UnStaked"
-#~ msgstr ""
-
 #: src/pages/Pool/PositionPage.tsx
 msgid "Unclaimed fees"
 msgstr ""
@@ -1721,6 +1620,11 @@ msgstr ""
 
 #: src/utils/swapErrorToUserReadableMessage.tsx
 msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Unstake"
 msgstr ""
 
 #: src/pages/AddLiquidity/index.tsx
@@ -1771,10 +1675,6 @@ msgstr ""
 msgid "View on Explorer"
 msgstr ""
 
-#: src/components/NavBar/MenuDropdown.tsx
-msgid "View token analytics"
-msgstr ""
-
 #: src/components/ModalViews/index.tsx
 msgid "View transaction on Explorer"
 msgstr ""
@@ -1787,10 +1687,6 @@ msgstr ""
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
 msgid "Vote"
-msgstr ""
-
-#: src/components/NavBar/MenuDropdown.tsx
-msgid "Vote in governance"
 msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
@@ -1813,17 +1709,11 @@ msgstr ""
 #: src/components/Tables/TransactionTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
-#: src/pages/Staking/index.tsx
-#: src/pages/Staking/index.tsx
 #: src/pages/Withdraw/index.tsx
 #: src/pages/Withdraw/index.tsx
 #: src/pages/Withdraw/index.tsx
 msgid "Withdraw"
 msgstr ""
-
-#: src/components/Tables/TransactionTable.tsx
-#~ msgid "Withdraw ${0}"
-#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Withdraw <0/>"
@@ -1893,6 +1783,9 @@ msgid "Your active V3 liquidity positions will appear here."
 msgstr ""
 
 #: src/pages/Account/index.tsx
+#: src/pages/Home/index.tsx
+#: src/pages/Overview/index.tsx
+#: src/pages/Staking/index.tsx
 msgid "Your connected network is unsupported."
 msgstr ""
 
@@ -1990,22 +1883,29 @@ msgstr ""
 msgid "here."
 msgstr ""
 
+#: src/components/SwitchLocaleLink/index.tsx
+msgid "language : <0>{0}</0>"
+msgstr ""
+
 #: src/components/TransactionSettings/index.tsx
 msgid "minutes"
 msgstr ""
 
 #: src/components/WalletDropdown/AuthenticatedHeader.tsx
+#: src/pages/Staking/index.tsx
 msgid "reward"
 msgstr ""
 
-#: src/pages/Staking/index.tsx
-#: src/pages/Staking/index.tsx
 #: src/pages/Staking/index.tsx
 msgid "staking"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "to"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "unstaking"
 msgstr ""
 
 #: src/components/SearchModal/ImportRow.tsx
@@ -2055,10 +1955,6 @@ msgstr ""
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "{0} per {1}"
-msgstr ""
-
-#: src/components/Header/TopBar.tsx
-msgid "{0} {nativeCurrencySymbol}"
 msgstr ""
 
 #: src/components/CurrencyInputPanel/FiatValue.tsx
