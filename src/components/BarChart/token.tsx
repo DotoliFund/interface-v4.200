@@ -63,7 +63,7 @@ const Chart = ({
   const { chainId } = useWeb3React()
   const [activeNetwork] = useActiveNetworkVersion()
 
-  const isEmptyData = !data || data.length === 0
+  const isEmptyData = !data || data.length <= 0
 
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
@@ -86,46 +86,44 @@ const Chart = ({
           </>
         )}
       </RowBetween>
-      {
-        <ResponsiveContainer width="100%" height="100%">
-          {isEmptyData ? (
-            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
-              <BarChartIconComponent strokeWidth={1} />
-              <div>
-                <Trans>No token data</Trans>
-              </div>
-            </ThemedText.DeprecatedBody>
-          ) : (
-            <BarChart
-              width={500}
-              height={300}
-              data={data}
-              margin={{
-                top: 5,
-                right: 10,
-                left: 10,
-                bottom: 5,
+      <ResponsiveContainer width="100%" height="100%">
+        {isEmptyData ? (
+          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+            <BarChartIconComponent strokeWidth={1} />
+            <div>
+              <Trans>No token data</Trans>
+            </div>
+          </ThemedText.DeprecatedBody>
+        ) : (
+          <BarChart
+            width={500}
+            height={300}
+            data={data}
+            margin={{
+              top: 5,
+              right: 10,
+              left: 10,
+              bottom: 5,
+            }}
+          >
+            <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
+            <Tooltip cursor={false} content={<CustomTooltip />} />
+            <Bar
+              dataKey="volume"
+              type="monotone"
+              stroke={color}
+              fill={color}
+              maxBarSize={80}
+              onClick={(data: any) => {
+                if (chainId) {
+                  const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
+                  window.open(link)
+                }
               }}
-            >
-              <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
-              <Tooltip cursor={false} content={<CustomTooltip />} />
-              <Bar
-                dataKey="volume"
-                type="monotone"
-                stroke={color}
-                fill={color}
-                maxBarSize={80}
-                onClick={(data: any) => {
-                  if (chainId) {
-                    const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
-                    window.open(link)
-                  }
-                }}
-              />
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      }
+            />
+          </BarChart>
+        )}
+      </ResponsiveContainer>
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

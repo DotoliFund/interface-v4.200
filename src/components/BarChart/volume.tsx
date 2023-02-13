@@ -6,8 +6,9 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
+import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled, { useTheme } from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { unixToDate } from 'utils/date'
 
@@ -26,6 +27,16 @@ const Wrapper = styled(Card)`
   > * {
     font-size: 1rem;
   }
+`
+
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const BarChartIconComponent = styled(BarChartIcon)`
+  ${IconStyle}
 `
 
 export type BarChartProps = {
@@ -52,7 +63,7 @@ const Chart = ({
   ...rest
 }: BarChartProps) => {
   const theme = useTheme()
-  const isEmptyData = !data || data.length === 0
+  const isEmptyData = !data || data.length <= 1
 
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
@@ -66,7 +77,7 @@ const Chart = ({
   }
 
   return (
-    <Wrapper>
+    <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
       <RowBetween>
         {isEmptyData ? null : (
           <>
@@ -83,8 +94,9 @@ const Chart = ({
         <ResponsiveContainer width="100%" height="100%">
           {isEmptyData ? (
             <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+              <BarChartIconComponent strokeWidth={1} />
               <div>
-                <Trans>No token data</Trans>
+                <Trans>No volume data</Trans>
               </div>
             </ThemedText.DeprecatedBody>
           ) : (

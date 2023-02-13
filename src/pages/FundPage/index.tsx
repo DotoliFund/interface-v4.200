@@ -218,7 +218,7 @@ export default function FundPage() {
     currentTokensAmount
   )
 
-  if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
+  if (formattedVolumeUSD && formattedVolumeUSD.length > 1) {
     let totalCurrentAmountUSD = 0
     currentTokensAmountUSD.map((value, index) => {
       const tokenAmountUSD = value[2]

@@ -602,7 +602,7 @@ export default function FundAccount() {
     }
   }, [currentTokensAmountUSD, poolTokensAmountUSD])
 
-  if (formattedVolumeChart && formattedVolumeChart.length > 0 && formattedLatestTokens) {
+  if (formattedVolumeChart && formattedVolumeChart.length > 1 && formattedLatestTokens) {
     let totalCurrentAmountUSD = 0
     currentTokensAmountUSD.map((value, index) => {
       const tokenAmountUSD = value[2]
