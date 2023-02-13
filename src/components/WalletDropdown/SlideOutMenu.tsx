@@ -68,7 +68,7 @@ const StyledChevron = styled(ChevronLeft)`
 const BackSection = styled.div`
   position: absolute;
   background-color: ${({ theme }) => theme.backgroundSurface};
-  width: 99%;
+  width: 85%;
   padding: 0 16px 16px 16px;
   color: ${({ theme }) => theme.textSecondary};
   cursor: default;
