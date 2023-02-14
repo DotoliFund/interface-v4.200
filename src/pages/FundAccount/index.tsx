@@ -40,12 +40,11 @@ import { useToggleWalletModal } from 'state/application/hooks'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useUserHideClosedPositions } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
-import { ExternalLink, StyledInternalLink, ThemedText } from 'theme'
+import { ExternalLink, ThemedText } from 'theme'
 import { PositionDetails } from 'types/position'
 import { IERC20MetadataInterface } from 'types/v3/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { formatTime, unixToDate } from 'utils/date'
-import { networkPrefix } from 'utils/networkPrefix'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 const PageWrapper = styled.div`
@@ -187,6 +186,15 @@ const MainContentWrapper = styled.main`
   border-radius: 20px;
   display: flex;
   flex-direction: column;
+`
+
+const HoverText = styled(ThemedText.DeprecatedMain)`
+  text-decoration: none;
+  color: ${({ theme }) => theme.deprecated_text3};
+  :hover {
+    color: ${({ theme }) => theme.deprecated_text1};
+    text-decoration: none;
+  }
 `
 
 enum ChartView {
@@ -831,17 +839,26 @@ export default function FundAccount() {
         <AutoColumn gap="16px">
           <RowBetween>
             <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund}>
+              <Link
+                data-cy="visit-pool"
+                style={{ textDecoration: 'none', width: 'fit-content', marginBottom: '0.5rem' }}
+                to={`/fund/${investorData.fund}`}
+              >
+                <HoverText>
+                  <Trans>← Back to Fund</Trans>
+                </HoverText>
+              </Link>
+              {/* <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund}>
                 <ThemedText.DeprecatedLabel>
                   <Trans>Fund</Trans> {shortenAddress(investorData.fund)}
                 </ThemedText.DeprecatedLabel>
-              </StyledInternalLink>
-              <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
+              </StyledInternalLink> */}
+              {/* <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
               <StyledInternalLink
                 to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund + '/' + investorData.investor}
               >
                 <ThemedText.DeprecatedLabel>{shortenAddress(investorData.investor)}</ThemedText.DeprecatedLabel>
-              </StyledInternalLink>
+              </StyledInternalLink> */}
             </AutoRow>
           </RowBetween>
           <ResponsiveRow align="flex-end">
