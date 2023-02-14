@@ -134,7 +134,7 @@ export default function Staking() {
   )
 
   const maxRewardInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
-    () => maxAmountSpend(stakingInfo?.earnedAmount),
+    () => maxAmountSpend(stakingInfo?.rewardAmount),
     [stakingInfo]
   )
   const showMaxRewardButton = Boolean(
@@ -345,16 +345,20 @@ export default function Staking() {
                         <Trans>Holding</Trans>
                       </Text>
                       <Text ml={'20px'}>
+                        <Trans>Staked</Trans>
+                      </Text>
+                      <Text ml={'20px'}>
                         <Trans>Reward</Trans>
                       </Text>
                       <Text ml={'20px'}>
-                        <Trans>Staked</Trans>
+                        <Trans>Remaining Reward</Trans>
                       </Text>
                     </AutoColumn>
                     <AutoColumn gap="10px" justify="end">
                       <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.earnedAmount, 12)}</Text>
                       <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
+                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.rewardAmount, 12)}</Text>
+                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.remainingReward, 12)}</Text>
                     </AutoColumn>
                   </RowBetween>
                 </Card>
@@ -523,7 +527,7 @@ export default function Staking() {
                             value={formattedAmounts ?? ''}
                             showMaxButton={showMaxRewardButton}
                             currency={currency ?? null}
-                            rewardCurrencyBalance={stakingInfo?.earnedAmount}
+                            rewardCurrencyBalance={stakingInfo?.rewardAmount}
                             onUserInput={handleTypeInput}
                             onMax={handleMaxRewardInput}
                             fiatValue={undefined}

@@ -31,6 +31,7 @@ import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import ClipLoader from 'react-spinners/ClipLoader'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
@@ -616,9 +617,9 @@ export default function FundPage() {
           </DarkGreyCard>
         </AutoColumn>
       ) : (
-        <LoadingRows>
-          <div />
-        </LoadingRows>
+        <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>
+          <ClipLoader color={'#ffffff'} loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
+        </div>
       )}
     </PageWrapper>
   )
