@@ -197,7 +197,7 @@ export default function SwapToInputPanel({
       {onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
-          isInvestorHolding={false}
+          showInvestorFundBalance={false}
           showWrappedETH={false}
           fundAddress={null}
           investorAddress={null}

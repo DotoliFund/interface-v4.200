@@ -202,7 +202,7 @@ export default function AddLiquidityInputPanel({
       {onCurrencySelect && fundAddress && investorAddress ? (
         <CurrencySearchModal
           isOpen={modalOpen}
-          isInvestorHolding={true}
+          showInvestorFundBalance={true}
           showWrappedETH={false}
           fundAddress={fundAddress}
           investorAddress={investorAddress}

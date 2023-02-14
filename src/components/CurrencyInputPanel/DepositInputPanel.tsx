@@ -197,7 +197,7 @@ export default function DepositInputPanel({
       {onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
-          isInvestorHolding={false}
+          showInvestorFundBalance={false}
           showWrappedETH={true}
           fundAddress={null}
           investorAddress={null}

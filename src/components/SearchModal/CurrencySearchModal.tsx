@@ -11,7 +11,7 @@ import { WhiteListCurrencySearch } from './WhiteListCurrencySearch'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
-  isInvestorHolding: boolean
+  showInvestorFundBalance: boolean
   showWrappedETH: boolean
   fundAddress: string | null
   investorAddress: string | null
@@ -32,7 +32,7 @@ export enum CurrencyModalView {
 
 export default memo(function CurrencySearchModal({
   isOpen,
-  isInvestorHolding,
+  showInvestorFundBalance,
   showWrappedETH,
   fundAddress,
   investorAddress,
@@ -83,7 +83,7 @@ export default memo(function CurrencySearchModal({
         // Converts pixel units to vh for Modal component
         modalHeight = Math.min(Math.round((680 / windowHeight) * 100), 80)
       }
-      if (isInvestorHolding && fundAddress && investorAddress) {
+      if (showInvestorFundBalance && fundAddress && investorAddress) {
         content = (
           <InvestorHoldingCurrencySearch
             isOpen={isOpen}
@@ -130,8 +130,8 @@ export default memo(function CurrencySearchModal({
     <Modal
       isOpen={isOpen}
       onDismiss={onDismiss}
-      maxHeight={isInvestorHolding && modalHeight ? modalHeight * 0.6 : modalHeight}
-      minHeight={isInvestorHolding && modalHeight ? modalHeight * 0.6 : modalHeight}
+      maxHeight={showInvestorFundBalance && modalHeight ? modalHeight * 0.6 : modalHeight}
+      minHeight={showInvestorFundBalance && modalHeight ? modalHeight * 0.6 : modalHeight}
     >
       {content}
     </Modal>

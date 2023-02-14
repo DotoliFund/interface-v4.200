@@ -202,7 +202,7 @@ export default function SwapFromInputPanel({
       {onCurrencySelect && fundAddress && investorAddress ? (
         <CurrencySearchModal
           isOpen={modalOpen}
-          isInvestorHolding={true}
+          showInvestorFundBalance={true}
           showWrappedETH={false}
           fundAddress={fundAddress}
           investorAddress={investorAddress}
