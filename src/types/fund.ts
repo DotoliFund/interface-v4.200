@@ -10,6 +10,7 @@ export interface FundToken {
 
 export interface Token {
   address: string
+  decimals: string
   symbol: string
   updatedTimestamp: string
 }

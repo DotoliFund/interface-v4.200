@@ -7,7 +7,7 @@ import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { ButtonError, ButtonLight } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import FundCurrencyInputPanel from 'components/CurrencyInputPanel/FundCurrencyInputPanel'
+import WithdrawCurrencyInputPanel from 'components/CurrencyInputPanel/WithdrawInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { RowBetween, RowFixed } from 'components/Row'
 import { PageWrapper, SwapWrapper as WithdrawWrapper } from 'components/swap/styleds'
@@ -242,7 +242,7 @@ export default function Withdraw() {
             <div style={{ display: 'relative' }}>
               <WithdrawSection>
                 <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                  <FundCurrencyInputPanel
+                  <WithdrawCurrencyInputPanel
                     label={<Trans>Withdraw</Trans>}
                     value={formattedAmounts[Field.INPUT]}
                     showMaxButton={showMaxButton}

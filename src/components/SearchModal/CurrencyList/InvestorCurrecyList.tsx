@@ -228,7 +228,7 @@ const LoadingRow = () => (
   </LoadingRows>
 )
 
-export default function FundCurrencyList({
+export default function InvestorCurrencyList({
   height,
   currencies,
   otherListTokens,

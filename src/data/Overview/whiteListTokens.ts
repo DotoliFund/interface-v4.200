@@ -9,6 +9,7 @@ export const WHITELIST_TOKENS = () => {
       tokens(first: 100, orderBy: id, orderDirection: asc, where: { active: true }, subgraphError: allow) {
         id
         address
+        decimals
         symbol
         updatedTimestamp
       }
@@ -20,6 +21,7 @@ export const WHITELIST_TOKENS = () => {
 export interface WhiteListTokenFields {
   id: string
   address: string
+  decimals: string
   symbol: string
   updatedTimestamp: string
 }
@@ -59,6 +61,7 @@ export function useWhiteListTokens(): {
     ? data.tokens.map((data2, index) => {
         const tokenData: Token = {
           address: data2.address,
+          decimals: data2.decimals,
           symbol: data2.symbol,
           updatedTimestamp: data2.updatedTimestamp,
         }

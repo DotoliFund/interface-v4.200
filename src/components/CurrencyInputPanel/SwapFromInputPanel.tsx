@@ -171,7 +171,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   font-variant: small-caps;
 `
 
-interface FundCurrencyInputPanelProps {
+interface SwapFromInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -194,7 +194,7 @@ interface FundCurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function FundCurrencyInputPanel({
+export default function SwapFromInputPanel({
   value,
   onUserInput,
   onMax,
@@ -215,7 +215,7 @@ export default function FundCurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: FundCurrencyInputPanelProps) {
+}: SwapFromInputPanelProps) {
   const params = useParams()
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
@@ -342,6 +342,7 @@ export default function FundCurrencyInputPanel({
         <CurrencySearchModal
           isOpen={modalOpen}
           isFund={true}
+          showWrappedETH={false}
           fundAddress={fundAddress}
           investorAddress={investorAddress}
           onDismiss={handleDismissSearch}

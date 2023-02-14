@@ -6,12 +6,13 @@ import { useUserAddedTokens } from 'state/user/hooks'
 import useLast from '../../hooks/useLast'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import Modal from '../Modal'
-import { CurrencySearch } from './CurrencySearch'
-import { FundCurrencySearch } from './FundCurrencySearch'
+import { InvestorCurrencySearch } from './InvestorCurrencySearch'
+import { WhiteListCurrencySearch } from './WhiteListCurrencySearch'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
   isFund: boolean
+  showWrappedETH: boolean
   fundAddress: string | null
   investorAddress: string | null
   onDismiss: () => void
@@ -32,6 +33,7 @@ export enum CurrencyModalView {
 export default memo(function CurrencySearchModal({
   isOpen,
   isFund,
+  showWrappedETH,
   fundAddress,
   investorAddress,
   onDismiss,
@@ -83,7 +85,7 @@ export default memo(function CurrencySearchModal({
       }
       if (isFund && fundAddress && investorAddress) {
         content = (
-          <FundCurrencySearch
+          <InvestorCurrencySearch
             isOpen={isOpen}
             onDismiss={onDismiss}
             onCurrencySelect={handleCurrencySelect}
@@ -95,8 +97,9 @@ export default memo(function CurrencySearchModal({
         )
       } else {
         content = (
-          <CurrencySearch
+          <WhiteListCurrencySearch
             isOpen={isOpen}
+            showWrappedETH={showWrappedETH}
             onDismiss={onDismiss}
             onCurrencySelect={handleCurrencySelect}
             selectedCurrency={selectedCurrency}

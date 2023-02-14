@@ -10,8 +10,8 @@ import { sendEvent } from 'components/analytics'
 import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import FundCurrencyInputPanel from 'components/CurrencyInputPanel/FundCurrencyInputPanel'
-import CurrencyInputPanel from 'components/CurrencyInputPanel/index'
+import SwapFromCurrencyInputPanel from 'components/CurrencyInputPanel/SwapFromInputPanel'
+import SwapToCurrencyInputPanel from 'components/CurrencyInputPanel/SwapToInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
@@ -452,7 +452,7 @@ export default function Swap() {
           <div style={{ display: 'relative' }}>
             <SwapSection>
               <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                <FundCurrencyInputPanel
+                <SwapFromCurrencyInputPanel
                   label={
                     independentField === Field.OUTPUT && !showWrap ? <Trans>From (at most)</Trans> : <Trans>From</Trans>
                   }
@@ -498,7 +498,7 @@ export default function Swap() {
             <div>
               <OutputSwapSection showDetailsDropdown={showDetailsDropdown}>
                 <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
-                  <CurrencyInputPanel
+                  <SwapToCurrencyInputPanel
                     value={formattedAmounts[Field.OUTPUT]}
                     onUserInput={handleTypeOutput}
                     label={

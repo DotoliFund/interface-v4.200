@@ -25,7 +25,7 @@ import { IERC20MetadataInterface } from 'types/v3/v3-periphery/artifacts/contrac
 import { CloseIcon, ThemedText } from '../../theme'
 import Column from '../Column'
 import { RowBetween } from '../Row'
-import FundCurrencyList from './CurrencyList/FundCurrecyList'
+import InvestorCurrecyList from './CurrencyList/InvestorCurrecyList'
 import { PaddedColumn, Separator } from './styleds'
 
 const ContentWrapper = styled(Column)`
@@ -35,7 +35,7 @@ const ContentWrapper = styled(Column)`
   position: relative;
 `
 
-interface FundCurrencySearchProps {
+interface InvestorCurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
@@ -45,7 +45,7 @@ interface FundCurrencySearchProps {
   disableNonToken?: boolean
 }
 
-export function FundCurrencySearch({
+export function InvestorCurrencySearch({
   isOpen,
   onDismiss,
   selectedCurrency,
@@ -53,7 +53,7 @@ export function FundCurrencySearch({
   otherSelectedCurrency,
   showCurrencyAmount,
   disableNonToken,
-}: FundCurrencySearchProps) {
+}: InvestorCurrencySearchProps) {
   const { chainId } = useWeb3React()
   const theme = useTheme()
   const params = useParams()
@@ -159,7 +159,7 @@ export function FundCurrencySearch({
     const s = debouncedQuery.toLowerCase().trim()
 
     const tokens = filteredSortedTokens.filter((t) => !(t.equals(wrapped) || (disableNonToken && t.isNative)))
-    const natives = (disableNonToken || native.equals(wrapped) ? [wrapped] : [native, wrapped]).filter(
+    const natives = (disableNonToken || native.equals(wrapped) ? [] : [native]).filter(
       (n) => n.symbol?.toLowerCase()?.indexOf(s) !== -1 || n.name?.toLowerCase()?.indexOf(s) !== -1
     )
     return [...natives, ...tokens]
@@ -206,7 +206,7 @@ export function FundCurrencySearch({
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>
             {({ height }) => (
-              <FundCurrencyList
+              <InvestorCurrecyList
                 height={height}
                 currencies={searchCurrencies}
                 otherListTokens={undefined}

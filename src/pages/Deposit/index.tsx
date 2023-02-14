@@ -7,7 +7,7 @@ import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import DepositCurrencyInputPanel from 'components/CurrencyInputPanel/DepositInputPanel'
 import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { AutoRow } from 'components/Row'
@@ -296,7 +296,7 @@ export default function Deposit() {
             <div style={{ display: 'relative' }}>
               <DepositSection>
                 <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                  <CurrencyInputPanel
+                  <DepositCurrencyInputPanel
                     label={<Trans>Deposit</Trans>}
                     value={formattedAmounts[Field.INPUT]}
                     showMaxButton={showMaxButton}

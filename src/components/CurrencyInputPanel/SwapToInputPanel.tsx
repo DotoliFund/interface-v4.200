@@ -8,9 +8,11 @@ import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { ButtonGray } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
+import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
 import { Input as NumericalInput } from 'components/NumericalInput'
 import { RowBetween, RowFixed } from 'components/Row'
+import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { isSupportedChain } from 'constants/chains'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
@@ -170,7 +172,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   font-variant: small-caps;
 `
 
-interface CurrencyInputPanelProps {
+interface SwapToInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -193,7 +195,7 @@ interface CurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function CurrencyInputPanel({
+export default function SwapToInputPanel({
   value,
   onUserInput,
   onMax,
@@ -214,7 +216,7 @@ export default function CurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: CurrencyInputPanelProps) {
+}: SwapToInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -251,23 +253,39 @@ export default function CurrencyInputPanel({
           )}
 
           <CurrencySelect
-            disabled={true}
+            disabled={!chainAllowed}
             visible={currency !== undefined}
             selected={!!currency}
             hideInput={hideInput}
             className="open-currency-select-button"
-            onClick={undefined}
+            onClick={() => {
+              if (onCurrencySelect) {
+                setModalOpen(true)
+              }
+            }}
           >
             <Aligner>
               <RowFixed>
-                {currency ? <CurrencyLogo style={{ marginRight: '0.5rem' }} currency={currency} size={'24px'} /> : null}
-                <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                  {(currency && currency.symbol && currency.symbol.length > 20
-                    ? currency.symbol.slice(0, 4) +
-                      '...' +
-                      currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                    : currency?.symbol) || <Trans>Select a token</Trans>}
-                </StyledTokenName>
+                {pair ? (
+                  <span style={{ marginRight: '0.5rem' }}>
+                    <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
+                  </span>
+                ) : currency ? (
+                  <CurrencyLogo style={{ marginRight: '0.5rem' }} currency={currency} size={'24px'} />
+                ) : null}
+                {pair ? (
+                  <StyledTokenName className="pair-name-container">
+                    {pair?.token0.symbol}:{pair?.token1.symbol}
+                  </StyledTokenName>
+                ) : (
+                  <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                    {(currency && currency.symbol && currency.symbol.length > 20
+                      ? currency.symbol.slice(0, 4) +
+                        '...' +
+                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                      : currency?.symbol) || <Trans>Select a token</Trans>}
+                  </StyledTokenName>
+                )}
               </RowFixed>
               {onCurrencySelect && <StyledDropDown selected={!!currency} />}
             </Aligner>
@@ -315,6 +333,22 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
       </Container>
+      {onCurrencySelect && (
+        <CurrencySearchModal
+          isOpen={modalOpen}
+          isFund={false}
+          showWrappedETH={false}
+          fundAddress={null}
+          investorAddress={null}
+          onDismiss={handleDismissSearch}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={currency}
+          otherSelectedCurrency={otherCurrency}
+          showCommonBases={showCommonBases}
+          showCurrencyAmount={showCurrencyAmount}
+          disableNonToken={disableNonToken}
+        />
+      )}
     </InputPanel>
   )
 }

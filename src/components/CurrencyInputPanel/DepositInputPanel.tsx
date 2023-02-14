@@ -2,26 +2,27 @@ import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
+import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
+import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
+import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
+import { ButtonGray } from 'components/Button'
 import { AutoColumn } from 'components/Column'
+import CurrencyLogo from 'components/CurrencyLogo'
+import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
+import { Input as NumericalInput } from 'components/NumericalInput'
+import { RowBetween, RowFixed } from 'components/Row'
+import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { isSupportedChain } from 'constants/chains'
 import { darken } from 'polished'
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import { useParams } from 'react-router-dom'
+import { useCurrencyBalance } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
-import { FundToken } from 'types/fund'
-import { getFeeTokenAmountDecimal } from 'utils/formatCurrencyAmount'
+import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
-import { ThemedText } from '../../theme'
-import { ButtonGray } from '../Button'
-import CurrencyLogo from '../CurrencyLogo'
-import DoubleCurrencyLogo from '../DoubleLogo'
-import { Input as NumericalInput } from '../NumericalInput'
-import { RowBetween, RowFixed } from '../Row'
-import FeeCurrencySearchModal from '../SearchModal/Fee/FeeCurrencySearchModal'
 import { FiatValue } from './FiatValue'
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
@@ -171,7 +172,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   font-variant: small-caps;
 `
 
-interface FeeCurrencyInputPanelProps {
+interface DepositInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -179,7 +180,6 @@ interface FeeCurrencyInputPanelProps {
   label?: ReactNode
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
-  feeTokens: FundToken[]
   hideBalance?: boolean
   pair?: Pair | null
   hideInput?: boolean
@@ -195,14 +195,13 @@ interface FeeCurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function FeeCurrencyInputPanel({
+export default function DepositInputPanel({
   value,
   onUserInput,
   onMax,
   showMaxButton,
   onCurrencySelect,
   currency,
-  feeTokens,
   otherCurrency,
   id,
   showCommonBases,
@@ -217,28 +216,17 @@ export default function FeeCurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: FeeCurrencyInputPanelProps) {
-  const params = useParams()
+}: DepositInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
-  const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false
-  const feeToken = feeTokens
-    ? feeTokens.filter((t) => t.tokenAddress.toUpperCase() === currency?.wrapped.address.toUpperCase())
-    : undefined
-  const selectedCurrencyBalance =
-    currency && feeToken && feeToken.length > 0 ? getFeeTokenAmountDecimal(currency, feeToken[0].amount) : undefined
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useTheme()
-  const [fiatValueIsLoading, setFiatValueIsLoading] = useState(false)
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
 
   const chainAllowed = isSupportedChain(chainId)
-
-  useEffect(() => {
-    !!value && !fiatValue ? setFiatValueIsLoading(true) : setFiatValueIsLoading(false)
-  }, [fiatValueIsLoading, value, fiatValue])
 
   return (
     <InputPanel id={id} hideInput={hideInput} {...rest}>
@@ -259,13 +247,13 @@ export default function FeeCurrencyInputPanel({
               className="token-amount-input"
               value={value}
               onUserInput={onUserInput}
-              disabled={!chainAllowed || isFeeEmpty}
+              disabled={!chainAllowed}
               $loading={loading}
             />
           )}
 
           <CurrencySelect
-            disabled={!chainAllowed || isFeeEmpty}
+            disabled={!chainAllowed}
             visible={currency !== undefined}
             selected={!!currency}
             hideInput={hideInput}
@@ -283,7 +271,7 @@ export default function FeeCurrencyInputPanel({
                     <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
                   </span>
                 ) : currency ? (
-                  <CurrencyLogo style={{ marginRight: '2px' }} currency={currency} size={'24px'} />
+                  <CurrencyLogo style={{ marginRight: '0.5rem' }} currency={currency} size={'24px'} />
                 ) : null}
                 {pair ? (
                   <StyledTokenName className="pair-name-container">
@@ -295,7 +283,7 @@ export default function FeeCurrencyInputPanel({
                       ? currency.symbol.slice(0, 4) +
                         '...' +
                         currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                      : currency?.symbol) || <Trans>Select token</Trans>}
+                      : currency?.symbol) || <Trans>Select a token</Trans>}
                   </StyledTokenName>
                 )}
               </RowFixed>
@@ -303,29 +291,39 @@ export default function FeeCurrencyInputPanel({
             </Aligner>
           </CurrencySelect>
         </InputRow>
-
-        {Boolean(!hideInput && !hideBalance) && (
+        {!hideInput && !hideBalance && currency && (
           <FiatRow>
             <RowBetween>
               <LoadingOpacityContainer $loading={loading}>
-                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} isLoading={fiatValueIsLoading} />
+                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
               </LoadingOpacityContainer>
               {account ? (
                 <RowFixed style={{ height: '17px' }}>
                   <ThemedText.DeprecatedBody
-                    color={theme.textSecondary}
-                    fontWeight={400}
+                    onClick={onMax}
+                    color={theme.deprecated_text3}
+                    fontWeight={500}
                     fontSize={14}
-                    style={{ display: 'inline' }}
+                    style={{ display: 'inline', cursor: 'pointer' }}
                   >
                     {!hideBalance && currency && selectedCurrencyBalance ? (
-                      <Trans>Balance: {selectedCurrencyBalance}</Trans>
+                      renderBalance ? (
+                        renderBalance(selectedCurrencyBalance)
+                      ) : (
+                        <Trans>Balance: {formatCurrencyAmount(selectedCurrencyBalance, currency.decimals)}</Trans>
+                      )
                     ) : null}
                   </ThemedText.DeprecatedBody>
                   {showMaxButton && selectedCurrencyBalance ? (
-                    <StyledBalanceMax onClick={onMax}>
-                      <Trans>Max</Trans>
-                    </StyledBalanceMax>
+                    <TraceEvent
+                      events={[Event.onClick]}
+                      name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
+                      element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
+                    >
+                      <StyledBalanceMax onClick={onMax}>
+                        <Trans>MAX</Trans>
+                      </StyledBalanceMax>
+                    </TraceEvent>
                   ) : null}
                 </RowFixed>
               ) : (
@@ -336,12 +334,15 @@ export default function FeeCurrencyInputPanel({
         )}
       </Container>
       {onCurrencySelect && (
-        <FeeCurrencySearchModal
+        <CurrencySearchModal
           isOpen={modalOpen}
+          isFund={false}
+          showWrappedETH={true}
+          fundAddress={null}
+          investorAddress={null}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
-          feeTokens={feeTokens}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
           showCurrencyAmount={showCurrencyAmount}
