@@ -6,12 +6,12 @@ import { useUserAddedTokens } from 'state/user/hooks'
 import useLast from '../../hooks/useLast'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import Modal from '../Modal'
-import { InvestorCurrencySearch } from './InvestorCurrencySearch'
+import { InvestorHoldingCurrencySearch } from './InvestorHoldingCurrencySearch'
 import { WhiteListCurrencySearch } from './WhiteListCurrencySearch'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
-  isFund: boolean
+  isInvestorHolding: boolean
   showWrappedETH: boolean
   fundAddress: string | null
   investorAddress: string | null
@@ -32,7 +32,7 @@ export enum CurrencyModalView {
 
 export default memo(function CurrencySearchModal({
   isOpen,
-  isFund,
+  isInvestorHolding,
   showWrappedETH,
   fundAddress,
   investorAddress,
@@ -83,9 +83,9 @@ export default memo(function CurrencySearchModal({
         // Converts pixel units to vh for Modal component
         modalHeight = Math.min(Math.round((680 / windowHeight) * 100), 80)
       }
-      if (isFund && fundAddress && investorAddress) {
+      if (isInvestorHolding && fundAddress && investorAddress) {
         content = (
-          <InvestorCurrencySearch
+          <InvestorHoldingCurrencySearch
             isOpen={isOpen}
             onDismiss={onDismiss}
             onCurrencySelect={handleCurrencySelect}
@@ -130,8 +130,8 @@ export default memo(function CurrencySearchModal({
     <Modal
       isOpen={isOpen}
       onDismiss={onDismiss}
-      maxHeight={isFund && modalHeight ? modalHeight * 0.6 : modalHeight}
-      minHeight={isFund && modalHeight ? modalHeight * 0.6 : modalHeight}
+      maxHeight={isInvestorHolding && modalHeight ? modalHeight * 0.6 : modalHeight}
+      minHeight={isInvestorHolding && modalHeight ? modalHeight * 0.6 : modalHeight}
     >
       {content}
     </Modal>

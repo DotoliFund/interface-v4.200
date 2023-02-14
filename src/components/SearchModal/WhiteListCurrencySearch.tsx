@@ -8,7 +8,6 @@ import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useToggle from 'hooks/useToggle'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -18,7 +17,7 @@ import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { Token as WhiteListToken } from 'types/fund'
 
-import { useActiveTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from '../../hooks/Tokens'
+import { useActiveTokens, useIsUserAddedToken, useToken } from '../../hooks/Tokens'
 import { CloseIcon, ThemedText } from '../../theme'
 import { isAddress } from '../../utils'
 import Column from '../Column'
@@ -69,11 +68,25 @@ export function WhiteListCurrencySearch({
   const { chainId } = useWeb3React()
   const theme = useTheme()
 
-  const whiteListTokens = useWhiteListTokens()
-  const whiteListTokensData: WhiteListToken[] = whiteListTokens.data
+  const whiteListTokensInfo = useWhiteListTokens()
+  const whiteListTokensData: WhiteListToken[] = whiteListTokensInfo.data
   const whiteListTokenAddresses = whiteListTokensData.map((data, index) => {
     return data.address
   })
+
+  const whiteListTokens: Token[] = useMemo(() => {
+    if (chainId && whiteListTokensData && whiteListTokensData.length > 0) {
+      const tokens: Token[] = whiteListTokensData.map((data, index) => {
+        const token: string = data.address
+        const decimals = Number(data.decimals)
+        const symbol: string = data.symbol
+        return new Token(chainId, token, decimals, symbol)
+      })
+      return tokens
+    } else {
+      return []
+    }
+  }, [chainId, whiteListTokensData])
 
   const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false)
 
@@ -103,14 +116,10 @@ export function WhiteListCurrencySearch({
     }
   }, [isAddressSearch])
 
-  const filteredTokens: Token[] = useMemo(() => {
-    return Object.values(defaultTokens).filter(getTokenFilter(debouncedQuery))
-  }, [defaultTokens, debouncedQuery])
-
   const [balances, balancesAreLoading] = useAllTokenBalances()
   const sortedTokens: Token[] = useMemo(
-    () => (!balancesAreLoading ? [...filteredTokens].sort(tokenComparator.bind(null, balances)) : []),
-    [balances, filteredTokens, balancesAreLoading]
+    () => (!balancesAreLoading ? [...whiteListTokens].sort(tokenComparator.bind(null, balances)) : []),
+    [balances, whiteListTokens, balancesAreLoading]
   )
   const isLoading = Boolean(balancesAreLoading && !tokenLoaderTimerElapsed)
 
@@ -181,11 +190,6 @@ export function WhiteListCurrencySearch({
   const node = useRef<HTMLDivElement>()
   useOnClickOutside(node, open ? toggle : undefined)
 
-  // if no results on main list, show option to expand into inactive
-  const filteredInactiveTokens = useSearchInactiveTokenLists(
-    filteredTokens.length === 0 || (debouncedQuery.length > 2 && !isAddressSearch) ? debouncedQuery : undefined
-  )
-
   // Timeout token loader after 3 seconds to avoid hanging in a loading state.
   useEffect(() => {
     const tokenLoaderTimer = setTimeout(() => {
@@ -243,14 +247,14 @@ export function WhiteListCurrencySearch({
             )}
           />
         </Column>
-      ) : searchCurrencies?.length > 0 || filteredInactiveTokens?.length > 0 || isLoading ? (
+      ) : searchCurrencies?.length > 0 || isLoading ? (
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>
             {({ height }) => (
               <CurrencyList
                 height={height}
                 currencies={searchCurrencies}
-                otherListTokens={filteredInactiveTokens}
+                otherListTokens={undefined}
                 onCurrencySelect={handleCurrencySelect}
                 otherCurrency={otherSelectedCurrency}
                 selectedCurrency={selectedCurrency}

@@ -396,10 +396,10 @@ export default function AddLiquidity() {
     if (txHash) {
       onFieldAInput('')
       // dont jump to pool page if creating
-      navigate(`/fund/${fundAddress}/${investorAddress}`)
+      navigate(`/pool/${fundAddress}/${investorAddress}/${tokenId}`)
     }
     setTxHash('')
-  }, [navigate, onFieldAInput, txHash, fundAddress, investorAddress])
+  }, [navigate, onFieldAInput, txHash, fundAddress, investorAddress, tokenId])
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
 

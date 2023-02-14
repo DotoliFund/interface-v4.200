@@ -35,7 +35,7 @@ const ContentWrapper = styled(Column)`
   position: relative;
 `
 
-interface InvestorCurrencySearchProps {
+interface InvestorHoldingCurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
@@ -45,7 +45,7 @@ interface InvestorCurrencySearchProps {
   disableNonToken?: boolean
 }
 
-export function InvestorCurrencySearch({
+export function InvestorHoldingCurrencySearch({
   isOpen,
   onDismiss,
   selectedCurrency,
@@ -53,7 +53,7 @@ export function InvestorCurrencySearch({
   otherSelectedCurrency,
   showCurrencyAmount,
   disableNonToken,
-}: InvestorCurrencySearchProps) {
+}: InvestorHoldingCurrencySearchProps) {
   const { chainId } = useWeb3React()
   const theme = useTheme()
   const params = useParams()

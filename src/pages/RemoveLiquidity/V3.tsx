@@ -15,7 +15,6 @@ import Loader from 'components/Loader'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import Slider from 'components/Slider'
-import Toggle from 'components/Toggle'
 import { NULL_ADDRESS } from 'constants/addresses'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
 import useDebouncedChangeHandler from 'hooks/useDebouncedChangeHandler'
@@ -34,7 +33,6 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
-import { WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
 import { currencyId } from '../../utils/currencyId'
@@ -285,14 +283,6 @@ function Remove({
     )
   }
 
-  const showCollectAsWeth = Boolean(
-    liquidityValue0?.currency &&
-      liquidityValue1?.currency &&
-      (liquidityValue0.currency.isNative ||
-        liquidityValue1.currency.isNative ||
-        WRAPPED_NATIVE_CURRENCY[liquidityValue0.currency.chainId]?.equals(liquidityValue0.currency.wrapped) ||
-        WRAPPED_NATIVE_CURRENCY[liquidityValue1.currency.chainId]?.equals(liquidityValue1.currency.wrapped))
-  )
   return (
     <AutoColumn>
       <TransactionConfirmationModal
@@ -313,6 +303,8 @@ function Remove({
         <AddRemoveTabs
           creating={false}
           adding={false}
+          fundAddress={fundAddress}
+          investorAddress={investorAddress}
           positionID={tokenId.toString()}
           defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}
         />
@@ -414,20 +406,6 @@ function Remove({
                   ) : null}
                 </AutoColumn>
               </LightCard>
-
-              {showCollectAsWeth && (
-                <RowBetween>
-                  <ThemedText.DeprecatedMain>
-                    <Trans>Collect as {nativeWrappedSymbol}</Trans>
-                  </ThemedText.DeprecatedMain>
-                  <Toggle
-                    id="receive-as-weth"
-                    isActive={receiveWETH}
-                    toggle={() => setReceiveWETH((receiveWETH) => !receiveWETH)}
-                  />
-                </RowBetween>
-              )}
-
               <div style={{ display: 'flex' }}>
                 <AutoColumn gap="md" style={{ flex: '1' }}>
                   <ButtonConfirmed

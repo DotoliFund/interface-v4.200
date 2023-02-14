@@ -2,10 +2,8 @@ import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
 import { ReactNode } from 'react'
 import { ArrowLeft } from 'react-feather'
-import { Link as HistoryLink, useLocation } from 'react-router-dom'
+import { Link as HistoryLink } from 'react-router-dom'
 import { Box } from 'rebass'
-import { useAppDispatch } from 'state/hooks'
-import { resetMintState as resetMintV3State } from 'state/mint/v3/actions'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
@@ -82,39 +80,28 @@ export function AddRemoveTabs({
   adding,
   creating,
   defaultSlippage,
+  fundAddress,
+  investorAddress,
   positionID,
   children,
 }: {
   adding: boolean
   creating: boolean
   defaultSlippage: Percent
+  fundAddress: string
+  investorAddress: string
   positionID?: string | undefined
   showBackLink?: boolean
   children?: ReactNode | undefined
 }) {
   const theme = useTheme()
-  // reset states on back
-  const dispatch = useAppDispatch()
-  const location = useLocation()
 
-  // detect if back should redirect to v3 or v2 pool page
-  const poolLink = location.pathname.includes('add/v2')
-    ? '/pool/v2'
-    : '/pool' + (positionID ? `/${positionID.toString()}` : '')
+  const poolLink = `/pool/${fundAddress}/${investorAddress}/${positionID}`
 
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem 1rem 0 1rem' }}>
-        <StyledHistoryLink
-          to={poolLink}
-          onClick={() => {
-            if (adding) {
-              // not 100% sure both of these are needed
-              dispatch(resetMintV3State())
-            }
-          }}
-          flex={children ? '1' : undefined}
-        >
+        <StyledHistoryLink to={poolLink} flex={children ? '1' : undefined}>
           <StyledArrowLeft stroke={theme.textSecondary} />
         </StyledHistoryLink>
         <ThemedText.DeprecatedMediumHeader

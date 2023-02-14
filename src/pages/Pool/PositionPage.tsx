@@ -13,7 +13,6 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { RowBetween, RowFixed } from 'components/Row'
 import { Dots } from 'components/swap/styleds'
-import Toggle from 'components/Toggle'
 import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import { NULL_ADDRESS } from 'constants/addresses'
 import { useToken } from 'hooks/Tokens'
@@ -588,15 +587,6 @@ export function PositionPage() {
     )
   }
 
-  const showCollectAsWeth = Boolean(
-    isManager &&
-      (feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0)) &&
-      currency0 &&
-      currency1 &&
-      (currency0.isNative || currency1.isNative) &&
-      !collectMigrationHash
-  )
-
   return loading || poolState === PoolState.LOADING || !feeAmount ? (
     <LoadingRows>
       <div style={{ height: '250px' }} />
@@ -848,20 +838,6 @@ export function PositionPage() {
                       </RowBetween>
                     </AutoColumn>
                   </LightCard>
-                  {showCollectAsWeth && (
-                    <AutoColumn gap="md">
-                      <RowBetween>
-                        <ThemedText.DeprecatedMain>
-                          <Trans>Collect as {nativeWrappedSymbol}</Trans>
-                        </ThemedText.DeprecatedMain>
-                        <Toggle
-                          id="receive-as-weth"
-                          isActive={receiveWETH}
-                          toggle={() => setReceiveWETH((receiveWETH) => !receiveWETH)}
-                        />
-                      </RowBetween>
-                    </AutoColumn>
-                  )}
                 </AutoColumn>
               </DarkCard>
             </AutoColumn>
