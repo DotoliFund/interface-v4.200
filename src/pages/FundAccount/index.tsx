@@ -1,6 +1,6 @@
 import { Interface } from '@ethersproject/abi'
 import { Trans } from '@lingui/macro'
-import { Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata.sol/IERC20Metadata.json'
 import { FeeAmount, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -27,8 +27,7 @@ import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useVolumeChartData } from 'data/FundAccount/volumeChartData'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useETHPriceInUSD, usePools } from 'hooks/usePools'
-import { useTokensPriceInUSD } from 'hooks/useTokensPriceInUSD'
+import { useETHPriceInUSD, usePools, useTokensPriceInUSD } from 'hooks/usePools'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
@@ -451,6 +450,7 @@ export default function FundAccount() {
             token1Symbol = poolTokensSymbols[index]
             token1Decimals = poolTokensDecimals[index]
           }
+          return undefined
         })
 
         return [
@@ -480,49 +480,50 @@ export default function FundAccount() {
     }
   }
 
-  const currentTokensAmount = useMemo(() => {
-    if (investorData) {
+  const currentTokensAmount: CurrencyAmount<Token>[] = useMemo(() => {
+    if (chainId && investorData) {
       return investorData.currentTokens.map((data, index) => {
-        return {
-          token: data,
-          symbol: investorData.currentTokensSymbols[index],
-          decimal: investorData.currentTokensDecimals[index],
-          amount: investorData.currentTokensAmount[index],
-        }
+        const decimals = investorData.currentTokensDecimals[index]
+        const symbol = investorData.currentTokensSymbols[index]
+        const token = new Token(chainId, data, decimals, symbol)
+        const decimal = 10 ** decimals
+        return CurrencyAmount.fromRawAmount(token, investorData.currentTokensAmount[index] * decimal)
       })
     } else {
       return []
     }
-  }, [investorData])
+  }, [chainId, investorData])
 
-  const poolTokensData = []
+  const findTokenIndex = (tokens: CurrencyAmount<Token>[], token: string): number => {
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i].currency.address.toUpperCase() === token.toUpperCase()) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  const poolTokensAmount: CurrencyAmount<Token>[] = []
   if (poolPositions) {
     for (let i = 0; i < poolPositions.length; i++) {
-      const token0 = poolPositions[i].pool.token0.address
-      const token0Symbol = poolPositions[i].pool.token0.symbol
-      const token0Decimal = poolPositions[i].pool.token0.decimals
-      const token0Amount = parseFloat(poolPositions[i].amount0.quotient.toString())
-      const token0AmountDecimal = Number(token0Amount / parseFloat((10 ** token0Decimal).toString()))
+      const token0Address = poolPositions[i].pool.token0.address
+      const token1Address = poolPositions[i].pool.token1.address
+      const token0Amount = poolPositions[i].amount0
+      const token1Amount = poolPositions[i].amount1
 
-      const token1 = poolPositions[i].pool.token1.address
-      const token1Symbol = poolPositions[i].pool.token1.symbol
-      const token1Decimal = poolPositions[i].pool.token1.decimals
-      const token1Amount = Number(poolPositions[i].amount1.quotient.toString())
-      const token1AmountDecimal = Number(token1Amount / parseFloat((10 ** token1Decimal).toString()))
-
-      if (token0Symbol && token1Symbol) {
-        poolTokensData.push({
-          token: token0,
-          symbol: token0Symbol,
-          decimal: token0Decimal,
-          amount: token0AmountDecimal,
-        })
-        poolTokensData.push({
-          token: token1,
-          symbol: token1Symbol,
-          decimal: token1Decimal,
-          amount: token1AmountDecimal,
-        })
+      // sum if token0 duplicated
+      const token0Index = findTokenIndex(poolTokensAmount, token0Address)
+      if (token0Index > -1) {
+        poolTokensAmount[token0Index] = poolTokensAmount[token0Index].add(token0Amount)
+      } else {
+        poolTokensAmount.push(poolPositions[i].amount0)
+      }
+      // sum if token1 duplicated
+      const token1Index = findTokenIndex(poolTokensAmount, token1Address)
+      if (token1Index > -1) {
+        poolTokensAmount[token1Index] = poolTokensAmount[token1Index].add(token1Amount)
+      } else {
+        poolTokensAmount.push(poolPositions[i].amount1)
       }
     }
   }
@@ -530,43 +531,20 @@ export default function FundAccount() {
   const weth9 = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : undefined
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
   const currentTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, currentTokensAmount)
-  const DuplicatedPoolTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, poolTokensData)
-  const poolTokensAmountUSD = useMemo(() => {
-    const tokensAmountUSD: [Token, number, number][] = []
-    if (DuplicatedPoolTokensAmountUSD) {
-      for (let i = 0; i < DuplicatedPoolTokensAmountUSD.length; i++) {
-        const token = DuplicatedPoolTokensAmountUSD[i][0]
-        const amount = DuplicatedPoolTokensAmountUSD[i][1]
-        const amountUSD = DuplicatedPoolTokensAmountUSD[i][2]
-        let isNew = true
-        for (let j = 0; j < tokensAmountUSD.length; j++) {
-          const _token = tokensAmountUSD[j][0]
-          if (token.address.toUpperCase() === _token.address.toUpperCase()) {
-            tokensAmountUSD[j][1] += amount
-            tokensAmountUSD[j][2] += amountUSD
-            isNew = false
-            break
-          }
-        }
-        if (isNew) {
-          tokensAmountUSD.push([token, amount, amountUSD])
-        }
-      }
-    }
-    return tokensAmountUSD
-  }, [DuplicatedPoolTokensAmountUSD])
+  const poolTokensAmountUSD = useTokensPriceInUSD(chainId, weth9, ethPriceInUSDC, poolTokensAmount)
 
   const formattedLatestTokens = useMemo(() => {
     if (currentTokensAmountUSD && poolTokensAmountUSD) {
       // 1. get current tokens
       const tokensData = currentTokensAmountUSD.map((data, index) => {
-        const token = data[0].address
-        const symbol = data[0].symbol ? data[0].symbol : 'Unknown'
-        const decimal = data[0].decimals
-        const currentAmount = data[1]
-        const currentAmountUSD = data[2]
+        const token = data[0].currency
+        const tokenAddress = token.address
+        const symbol = token.symbol ? token.symbol : 'Unknown'
+        const decimal = token.decimals
+        const currentAmount = Number(data[0].quotient.toString()) / Number(10 ** decimal)
+        const currentAmountUSD = data[1]
         return {
-          token,
+          token: tokenAddress,
           symbol,
           decimal,
           currentAmount,
@@ -579,14 +557,15 @@ export default function FundAccount() {
 
       // 2. get pool tokens
       poolTokensAmountUSD.map((data, index) => {
-        const token = data[0].address
-        const symbol = data[0].symbol ? data[0].symbol : 'Unknown'
-        const decimal = data[0].decimals
-        const poolAmount = data[1]
-        const poolAmountUSD = data[2]
+        const token = data[0].currency
+        const tokenAddress = token.address
+        const symbol = token.symbol ? token.symbol : 'Unknown'
+        const decimal = token.decimals
+        const poolAmount = Number(data[0].quotient.toString()) / Number(10 ** decimal)
+        const poolAmountUSD = data[1]
         let added = false
         for (let i = 0; i < tokensData.length; i++) {
-          if (token.toUpperCase() === tokensData[i].token.toUpperCase()) {
+          if (tokenAddress.toUpperCase() === tokensData[i].token.toUpperCase()) {
             tokensData[i].poolAmount = tokensData[i].poolAmount + poolAmount
             tokensData[i].pool = tokensData[i].pool + poolAmountUSD
             added = true
@@ -594,7 +573,7 @@ export default function FundAccount() {
         }
         if (!added) {
           tokensData.push({
-            token,
+            token: tokenAddress,
             symbol,
             decimal,
             currentAmount: 0,
@@ -604,6 +583,7 @@ export default function FundAccount() {
             index,
           })
         }
+        return undefined
       })
       return tokensData
     } else {
@@ -614,13 +594,15 @@ export default function FundAccount() {
   if (formattedVolumeChart && formattedVolumeChart.length > 1 && formattedLatestTokens) {
     let totalCurrentAmountUSD = 0
     currentTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[2]
+      const tokenAmountUSD = value[1]
       totalCurrentAmountUSD += tokenAmountUSD
+      return undefined
     })
     let totalPoolAmountUSD = 0
     poolTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[2]
+      const tokenAmountUSD = value[1]
       totalPoolAmountUSD += tokenAmountUSD
+      return undefined
     })
 
     const tokens = formattedLatestTokens.map((data, index) => {
@@ -848,17 +830,6 @@ export default function FundAccount() {
                   <Trans>← Back to Fund</Trans>
                 </HoverText>
               </Link>
-              {/* <StyledInternalLink to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund}>
-                <ThemedText.DeprecatedLabel>
-                  <Trans>Fund</Trans> {shortenAddress(investorData.fund)}
-                </ThemedText.DeprecatedLabel>
-              </StyledInternalLink> */}
-              {/* <ThemedText.DeprecatedMain>{` > `}</ThemedText.DeprecatedMain>
-              <StyledInternalLink
-                to={networkPrefix(activeNetwork) + 'fund/' + investorData.fund + '/' + investorData.investor}
-              >
-                <ThemedText.DeprecatedLabel>{shortenAddress(investorData.investor)}</ThemedText.DeprecatedLabel>
-              </StyledInternalLink> */}
             </AutoRow>
           </RowBetween>
           <ResponsiveRow align="flex-end">

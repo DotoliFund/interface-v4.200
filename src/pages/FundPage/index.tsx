@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import FeeBarChart from 'components/BarChart/fee'
 import TokenBarChart from 'components/BarChart/token'
@@ -25,8 +25,7 @@ import { useFundTransactions } from 'data/FundPage/transactions'
 import { useVolumeChartData } from 'data/FundPage/volumeChartData'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useETHPriceInUSD } from 'hooks/usePools'
-import { useTokensPriceInUSD } from 'hooks/useTokensPriceInUSD'
+import { useETHPriceInUSD, useTokensPriceInUSD } from 'hooks/usePools'
 import { DotoliFactory } from 'interface/DotoliFactory'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
@@ -198,21 +197,20 @@ export default function FundPage() {
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
 
   const currentTokensAmount = useMemo(() => {
-    if (fundData) {
+    if (chainId && fundData) {
       return fundData.currentTokens.map((data, index) => {
-        return {
-          token: data,
-          symbol: fundData.currentTokensSymbols[index],
-          decimal: fundData.currentTokensDecimals[index],
-          amount: fundData.currentTokensAmount[index],
-        }
+        const decimals = fundData.currentTokensDecimals[index]
+        const symbol = fundData.currentTokensSymbols[index]
+        const token = new Token(chainId, data, decimals, symbol)
+        const decimal = 10 ** decimals
+        return CurrencyAmount.fromRawAmount(token, fundData.currentTokensAmount[index] * decimal)
       })
     } else {
       return []
     }
-  }, [fundData])
+  }, [chainId, fundData])
 
-  const currentTokensAmountUSD: [Token, number, number][] = useTokensPriceInUSD(
+  const currentTokensAmountUSD: [CurrencyAmount<Token>, number][] = useTokensPriceInUSD(
     chainId,
     weth9,
     ethPriceInUSDC,
@@ -222,7 +220,7 @@ export default function FundPage() {
   if (formattedVolumeUSD && formattedVolumeUSD.length > 1) {
     let totalCurrentAmountUSD = 0
     currentTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[2]
+      const tokenAmountUSD = value[1]
       totalCurrentAmountUSD += tokenAmountUSD
       return null
     })
@@ -239,13 +237,14 @@ export default function FundPage() {
   const formattedLatestTokens = useMemo(() => {
     if (currentTokensAmountUSD) {
       const tokensData = currentTokensAmountUSD.map((data, index) => {
-        const token = data[0].address
-        const symbol = data[0].symbol ? data[0].symbol : 'Unknown'
-        const decimal = data[0].decimals
-        const amount = data[1]
-        const amountUSD = data[2]
+        const token = data[0].currency
+        const tokenAddress = token.address
+        const symbol = token.symbol ? token.symbol : 'Unknown'
+        const decimal = token.decimals
+        const amount = Number(data[0].quotient.toString()) / Number(10 ** decimal)
+        const amountUSD = data[1]
         return {
-          token,
+          token: tokenAddress,
           symbol,
           decimal,
           amount,
