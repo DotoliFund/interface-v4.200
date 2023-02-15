@@ -562,6 +562,7 @@ export default function FundAccount() {
         const symbol = token.symbol ? token.symbol : 'Unknown'
         const decimal = token.decimals
         const poolAmount = Number(data[0].quotient.toString()) / Number(10 ** decimal)
+
         const poolAmountUSD = data[1]
         let added = false
         for (let i = 0; i < tokensData.length; i++) {

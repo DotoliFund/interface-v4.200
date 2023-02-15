@@ -70,7 +70,7 @@ export function useStakingInfo(): StakingInfo | undefined {
   ) {
     if (balanceState?.error || rewardAmountState?.error || totalSupplyState.error) {
       console.error('Failed to load staking rewards info')
-      return undefined
+      //return undefined
     }
 
     // check for account, if no account set to 0

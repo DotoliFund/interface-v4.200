@@ -301,6 +301,15 @@ export function useETHPriceInUSD(chainId: number | undefined): number | undefine
   }
 }
 
+function getCurrencyAmount(tokens: CurrencyAmount<Token>[], tokenAddress: string): CurrencyAmount<Token> | undefined {
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].currency.address.toUpperCase() === tokenAddress.toUpperCase()) {
+      return tokens[i]
+    }
+  }
+  return undefined
+}
+
 function getTokenAmount(tokens: CurrencyAmount<Token>[], tokenAddress: string): number {
   for (let i = 0; i < tokens.length; i++) {
     if (tokens[i].currency.address.toUpperCase() === tokenAddress.toUpperCase()) {
@@ -352,29 +361,30 @@ export function useTokensPriceInUSD(
   const tokensPriceInUSD: [CurrencyAmount<Token>, number][] = []
   if (tokens && ethPriceInUSDC && tokensPriceInETH && weth9 !== undefined) {
     tokensPriceInETH.map((data, index) => {
-      const token = data[0]
       const tokenAddress = data[0].address
-      const decimals = data[0].decimals
       const priceInETH = data[1]
-      const tokenAmount = getTokenAmount(tokens, tokenAddress)
 
-      if (tokenAmount > 0) {
-        tokensPriceInUSD.push([
-          CurrencyAmount.fromRawAmount(token, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))),
-          tokenAmount * priceInETH * ethPriceInUSDC,
-        ])
+      const currencyAmount = getCurrencyAmount(tokens, tokenAddress)
+      if (currencyAmount) {
+        const decimals = currencyAmount.currency.decimals
+        const decimal = 10 ** decimals
+        const tokenAmount = Number(currencyAmount.quotient.toString()) / decimal
+        tokensPriceInUSD.push([currencyAmount, tokenAmount * priceInETH * ethPriceInUSDC])
       }
       return null
     })
 
     // if weth9 exist add amount
-    const weth9Amount = getTokenAmount(tokens, weth9.address)
-    if (weth9Amount > 0) {
+    const weth9CurrencyAmount = getCurrencyAmount(tokens, weth9.address)
+    if (weth9CurrencyAmount) {
+      const weth9Decimal = 10 ** 18
+      const weth9Amount = Number(weth9CurrencyAmount.quotient.toString()) / Number(weth9Decimal)
       tokensPriceInUSD.push([
-        CurrencyAmount.fromRawAmount(weth9, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))),
+        CurrencyAmount.fromRawAmount(weth9, weth9CurrencyAmount.quotient),
         weth9Amount * ethPriceInUSDC,
       ])
     }
   }
+
   return tokensPriceInUSD
 }
