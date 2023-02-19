@@ -23,6 +23,7 @@ import WETH_ABI from 'abis/weth.json'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
   DOTOLI_FACTORY_ADDRESSES,
+  DOTOLI_FUND_ADDRESSES,
   DOTOLI_STAKING_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
   MULTICALL_ADDRESS,
@@ -149,11 +150,8 @@ export function useDotoliFactoryContract(withSignerIfPossible?: boolean): Dotoli
   return useContract<DotoliFactory>(DOTOLI_FACTORY_ADDRESSES, DotoliFactoryABI, withSignerIfPossible)
 }
 
-export function useDotoliFundContract(
-  fundAddress: string | undefined,
-  withSignerIfPossible?: boolean
-): DotoliFund | null {
-  return useContract<DotoliFund>(fundAddress, DotoliFundABI, withSignerIfPossible)
+export function useDotoliFundContract(withSignerIfPossible?: boolean): DotoliFund | null {
+  return useContract<DotoliFund>(DOTOLI_FUND_ADDRESSES, DotoliFundABI, withSignerIfPossible)
 }
 
 export function useDotoliStakingContract(withSignerIfPossible?: boolean): DotoliStaking | null {

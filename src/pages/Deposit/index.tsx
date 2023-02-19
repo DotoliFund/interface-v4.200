@@ -19,6 +19,7 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
@@ -89,7 +90,7 @@ export function getIsValidSwapQuote(
 
 export default function Deposit() {
   const params = useParams()
-  const fundAddress = params.fundAddress
+  const fundId = params.fundId
   const { account, chainId, provider } = useWeb3React()
 
   // modal and loading
@@ -134,7 +135,7 @@ export default function Deposit() {
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], fundAddress)
+  const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], DOTOLI_FUND_ADDRESSES)
 
   const handleApprove = useCallback(async () => {
     await approveCallback()
@@ -164,19 +165,19 @@ export default function Deposit() {
 
   async function onDeposit() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
+    if (!currency || !parsedAmount || !fundId || !tokenAddress) return
 
     let txn = {}
     if (currency?.isNative) {
       txn = {
         from: account,
-        to: fundAddress,
+        to: DOTOLI_FUND_ADDRESSES,
         value: toHex(parsedAmount.quotient),
       }
     } else {
-      const { calldata, value } = DotoliFund.depositCallParameters(tokenAddress, parsedAmount)
+      const { calldata, value } = DotoliFund.depositCallParameters(fundId, tokenAddress, parsedAmount)
       txn = {
-        to: fundAddress,
+        to: DOTOLI_FUND_ADDRESSES,
         data: calldata,
         value,
       }

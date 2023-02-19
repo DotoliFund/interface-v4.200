@@ -26,7 +26,7 @@ import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityT
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useVolumeChartData } from 'data/FundAccount/volumeChartData'
 import { useColor } from 'hooks/useColor'
-import { useDotoliFactoryContract } from 'hooks/useContract'
+import { useDotoliFundContract } from 'hooks/useContract'
 import { useETHPriceInUSD, usePools, useTokensPriceInUSD } from 'hooks/usePools'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useSingleCallResult } from 'lib/hooks/multicall'
@@ -213,12 +213,12 @@ function PositionsLoadingPlaceholder() {
 
 export default function FundAccount() {
   const params = useParams()
-  const fundAddress = params.fundAddress
+  const fundId = params.fundId
   const investorAddress = params.investorAddress
-  const newPositionLink = '/add/' + fundAddress + '/' + investorAddress + '/ETH'
+  const newPositionLink = '/add/' + fundId + '/' + investorAddress + '/ETH'
   const navigate = useNavigate()
   const toggleWalletModal = useToggleWalletModal()
-  const DotoliFactoryContract = useDotoliFactoryContract()
+  const DotoliFundContract = useDotoliFundContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { chainId, account } = useWeb3React()
   const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
@@ -232,19 +232,19 @@ export default function FundAccount() {
   const theme = useTheme()
 
   const { loading: accountManagingFundLoading, result: [accountManagingFund] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
-    'getFundByManager',
+    DotoliFundContract,
+    'managingFund',
     [account ?? undefined]
   )
   const { loading: investorManagingFundLoading, result: [investorManagingFund] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
-    'getFundByManager',
+    DotoliFundContract,
+    'managingFund',
     [investorAddress ?? undefined]
   )
   const { loading: isAccountSubscribedLoading, result: [isAccountSubscribed] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
+    DotoliFundContract,
     'isSubscribed',
-    [account, fundAddress]
+    [account, fundId]
   )
 
   const [accountIsManager, setAccountIsManager] = useState<boolean>(false)
@@ -253,13 +253,13 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (accountManagingFund && fundAddress && accountManagingFund.toUpperCase() === fundAddress.toUpperCase()) {
+      if (accountManagingFund && fundId && accountManagingFund === fundId) {
         setAccountIsManager(true)
       } else {
         setAccountIsManager(false)
       }
     }
-  }, [accountManagingFundLoading, accountManagingFund, fundAddress, account])
+  }, [accountManagingFundLoading, accountManagingFund, fundId, account])
 
   const [accountIsInvestor, setAccountIsInvestor] = useState<boolean>(false)
   useEffect(() => {
@@ -267,18 +267,13 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (
-        accountManagingFund &&
-        fundAddress &&
-        accountManagingFund.toUpperCase() !== fundAddress.toUpperCase() &&
-        isAccountSubscribed
-      ) {
+      if (accountManagingFund && fundId && accountManagingFund !== fundId && isAccountSubscribed) {
         setAccountIsInvestor(true)
       } else {
         setAccountIsInvestor(false)
       }
     }
-  }, [accountManagingFund, fundAddress, isAccountSubscribedLoading, isAccountSubscribed])
+  }, [accountManagingFund, fundId, isAccountSubscribedLoading, isAccountSubscribed])
 
   const [accountIsFundAccount, setAccountIsFundAccount] = useState<boolean>(false)
   useEffect(() => {
@@ -305,13 +300,13 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorManagingFund && fundAddress && investorManagingFund.toUpperCase() === fundAddress.toUpperCase()) {
+      if (investorManagingFund && fundId && investorManagingFund === fundId) {
         setFundAccountIsManager(true)
       } else {
         setFundAccountIsManager(false)
       }
     }
-  }, [investorManagingFundLoading, investorManagingFund, fundAddress, investorAddress])
+  }, [investorManagingFundLoading, investorManagingFund, fundId, investorAddress])
 
   const [fundAccountIsNotManager, setFundAccountIsNotManager] = useState<boolean>(false)
   useEffect(() => {
@@ -319,19 +314,19 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorManagingFund && fundAddress && investorManagingFund.toUpperCase() !== fundAddress.toUpperCase()) {
+      if (investorManagingFund && fundId && investorManagingFund !== fundId) {
         setFundAccountIsNotManager(true)
       } else {
         setFundAccountIsNotManager(false)
       }
     }
-  }, [investorManagingFund, fundAddress, investorManagingFundLoading])
+  }, [investorManagingFund, fundId, investorManagingFundLoading])
 
-  const investorData = useInvestorData(fundAddress, investorAddress).data
-  const volumeChartData = useVolumeChartData(fundAddress, investorAddress).data
+  const investorData = useInvestorData(fundId, investorAddress).data
+  const volumeChartData = useVolumeChartData(fundId, investorAddress).data
 
-  const transactions = useFundAccountTransactions(fundAddress, investorAddress).data
-  const liquidityTransactions = useFundAccountLiquidityTransactions(fundAddress, investorAddress).data
+  const transactions = useFundAccountTransactions(fundId, investorAddress).data
+  const liquidityTransactions = useFundAccountLiquidityTransactions(fundId, investorAddress).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -339,7 +334,7 @@ export default function FundAccount() {
   const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
   const [tokenIndexHover, setTokenIndexHover] = useState<number | undefined>()
 
-  const { positions, loading: positionsLoading } = useV3Positions(fundAddress, investorAddress)
+  const { positions, loading: positionsLoading } = useV3Positions(fundId, investorAddress)
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
     (acc, p) => {
       acc[p.liquidity?.isZero() ? 1 : 0].push(p)
@@ -703,7 +698,7 @@ export default function FundAccount() {
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: `/deposit/${fundAddress}/${investorAddress}`,
+      link: `/deposit/${fundId}/${investorAddress}`,
       external: false,
     },
     {
@@ -713,7 +708,7 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: `/withdraw/${fundAddress}/${investorAddress}`,
+      link: `/withdraw/${fundId}/${investorAddress}`,
       external: false,
     },
   ]
@@ -726,7 +721,7 @@ export default function FundAccount() {
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: `/withdraw/${fundAddress}/${investorAddress}`,
+      link: `/withdraw/${fundId}/${investorAddress}`,
       external: false,
     },
   ]
@@ -751,7 +746,7 @@ export default function FundAccount() {
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/swap/${fundAddress}/${investorAddress}`)
+            navigate(`/swap/${fundId}/${investorAddress}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -778,7 +773,7 @@ export default function FundAccount() {
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/swap/${fundAddress}/${investorAddress}`)
+            navigate(`/swap/${fundId}/${investorAddress}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -793,7 +788,7 @@ export default function FundAccount() {
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/deposit/${fundAddress}/${investorAddress}`)
+            navigate(`/deposit/${fundId}/${investorAddress}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">

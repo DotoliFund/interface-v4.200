@@ -26,7 +26,7 @@ import { useVolumeChartData } from 'data/FundPage/volumeChartData'
 import { useColor } from 'hooks/useColor'
 import { useDotoliFactoryContract } from 'hooks/useContract'
 import { useETHPriceInUSD, useTokensPriceInUSD } from 'hooks/usePools'
-import { DotoliFactory } from 'interface/DotoliFactory'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -95,7 +95,7 @@ enum ChartView {
 
 export default function FundPage() {
   const params = useParams()
-  const fundAddress = params.fundAddress
+  const fundId = params.fundId
   const DotoliFactoryContract = useDotoliFactoryContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
@@ -110,9 +110,9 @@ export default function FundPage() {
   // theming
   const backgroundColor = useColor()
 
-  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
+  const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
     DotoliFactoryContract,
-    'getFundByManager',
+    'managingFund',
     [account ?? undefined]
   )
   const [isManager, setIsManager] = useState<boolean>(false)
@@ -121,18 +121,18 @@ export default function FundPage() {
       setState()
     }
     async function setState() {
-      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
+      if (myFundId && myFundId === fundId) {
         setIsManager(true)
       } else {
         setIsManager(false)
       }
     }
-  }, [isManagerLoading, myFund, fundAddress])
+  }, [isManagerLoading, myFundId, fundId])
 
   const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
     DotoliFactoryContract,
     'isSubscribed',
-    [account, fundAddress]
+    [account, fundId]
   )
   const [isInvestor, setIsInvestor] = useState<boolean>(false)
   useEffect(() => {
@@ -146,13 +146,13 @@ export default function FundPage() {
         setIsInvestor(false)
       }
     }
-  }, [isInvestorLoading, isSubscribed, myFund])
+  }, [isInvestorLoading, isSubscribed])
 
-  const fundData = useFundData(fundAddress).data
-  const volumeChartData = useVolumeChartData(fundAddress).data
-  const transactions = useFundTransactions(fundAddress).data
-  const managerData = useManagerData(fundAddress).data
-  const investorList = useInvestorList(fundAddress).data
+  const fundData = useFundData(fundId).data
+  const volumeChartData = useVolumeChartData(fundId).data
+  const transactions = useFundTransactions(fundId).data
+  const managerData = useManagerData(fundId).data
+  const investorList = useInvestorList(fundId).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -281,8 +281,8 @@ export default function FundPage() {
   }
 
   async function onSubscribe() {
-    if (!chainId || !provider || !account || !fundAddress) return
-    const { calldata, value } = DotoliFactory.subscribeCallParameters(fundAddress)
+    if (!chainId || !provider || !account || !fundId) return
+    const { calldata, value } = DotoliFund.subscribeCallParameters(fundId)
     const txn: { to: string; data: string; value: string } = {
       to: DOTOLI_FACTORY_ADDRESSES,
       data: calldata,
@@ -325,13 +325,8 @@ export default function FundPage() {
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
-    ) : (isManager || isInvestor) && fundAddress ? (
-      <ButtonPrimary
-        $borderRadius="12px"
-        margin={'6px'}
-        padding={'12px'}
-        onClick={() => onAccount(fundAddress, account)}
-      >
+    ) : (isManager || isInvestor) && fundId ? (
+      <ButtonPrimary $borderRadius="12px" margin={'6px'} padding={'12px'} onClick={() => onAccount(fundId, account)}>
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>My Account</Trans>
         </ThemedText.DeprecatedMain>
@@ -345,14 +340,14 @@ export default function FundPage() {
     )
 
   const ButtonB = () =>
-    account && isManager && fundAddress ? (
+    account && isManager && fundId ? (
       <ButtonPrimary
         $borderRadius="12px"
         margin={'6px'}
         padding={'12px'}
         data-testid="navbar-connect-wallet"
         onClick={() => {
-          navigate(`/fee/${fundAddress}`)
+          navigate(`/fee/${fundId}`)
         }}
       >
         <ThemedText.DeprecatedMain mb="4px">

@@ -12,7 +12,7 @@ import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
 import { NULL_ADDRESS } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
 import { useDotoliFactoryContract } from 'hooks/useContract'
-import { DotoliFactory } from 'interface/DotoliFactory'
+import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Inbox } from 'react-feather'
@@ -286,7 +286,7 @@ export default function Account() {
   async function onCreate() {
     if (!chainId || !provider || !account) return
 
-    const { calldata, value } = DotoliFactory.createCallParameters()
+    const { calldata, value } = DotoliFund.createCallParameters()
     const txn: { to: string; data: string; value: string } = {
       to: DOTOLI_FACTORY_ADDRESSES,
       data: calldata,

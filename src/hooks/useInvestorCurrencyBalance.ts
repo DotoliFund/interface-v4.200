@@ -6,17 +6,17 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useDotoliFundContract } from './useContract'
 
 export default function useInvestorCurrencyBalance(
-  fund: string | undefined,
+  fundId: string | undefined,
   investor: string | undefined,
   token: string | undefined
 ): CurrencyAmount<Currency> | undefined {
-  const DotoliFundContract = useDotoliFundContract(fund)
+  const DotoliFundContract = useDotoliFundContract()
   const inputCurrency = useCurrency(token)
 
   const { loading: tokenBalancesLoading, result: [tokenBalances] = [] } = useSingleCallResult(
     DotoliFundContract,
     'getInvestorTokenAmount',
-    [investor, token]
+    [fundId, investor, token]
   )
   if (!tokenBalancesLoading && inputCurrency && tokenBalances) {
     return CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(tokenBalances.toString()))

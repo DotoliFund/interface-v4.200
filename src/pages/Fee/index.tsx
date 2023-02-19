@@ -16,6 +16,7 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { useDotoliFundContract } from 'hooks/useContract'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
@@ -73,7 +74,7 @@ const FeeSection = styled.div`
 
 export default function Fee() {
   const params = useParams()
-  const fundAddress = params.fundAddress
+  const fundId = params.fundId
   const { account, chainId, provider } = useWeb3React()
 
   // modal and loading
@@ -88,7 +89,7 @@ export default function Fee() {
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
-  const DotoliFundContract = useDotoliFundContract(fundAddress)
+  const DotoliFundContract = useDotoliFundContract()
   const { loading: getFeeTokensLoading, result: [getFeeTokens] = [] } = useSingleCallResult(
     DotoliFundContract,
     'getFeeTokens',
@@ -125,11 +126,11 @@ export default function Fee() {
 
   async function onFee() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount || !fundAddress) return
+    if (!currency || !parsedAmount || !fundId) return
 
-    const { calldata, value } = DotoliFund.feeOutCallParameters(currency?.wrapped.address, parsedAmount)
+    const { calldata, value } = DotoliFund.withdrawFeeCallParameters(fundId, currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: fundAddress,
+      to: DOTOLI_FUND_ADDRESSES,
       data: calldata,
       value,
     }

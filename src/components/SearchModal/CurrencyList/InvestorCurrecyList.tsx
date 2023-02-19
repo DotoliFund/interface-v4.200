@@ -127,7 +127,7 @@ export function CurrencyRow({
 
   const key = currencyKey(currency)
 
-  const DotoliFundContract = useDotoliFundContract(fundAddress)
+  const DotoliFundContract = useDotoliFundContract()
   const { loading: getInvestorTokenAmountLoading, result: [getInvestorTokenAmount] = [] } = useSingleCallResult(
     DotoliFundContract,
     'getInvestorTokenAmount',

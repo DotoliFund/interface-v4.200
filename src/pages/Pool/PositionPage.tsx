@@ -14,7 +14,7 @@ import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { RowBetween, RowFixed } from 'components/Row'
 import { Dots } from 'components/swap/styleds'
 import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
-import { NULL_ADDRESS } from 'constants/addresses'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { useToken } from 'hooks/Tokens'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
 import { useDotoliFactoryContract } from 'hooks/useContract'
@@ -325,11 +325,11 @@ const useInverter = ({
 
 export function PositionPage() {
   const {
-    fundAddress: fund,
+    fundId,
     investorAddress: investor,
     tokenId: tokenIdFromUrl,
   } = useParams<{
-    fundAddress?: string
+    fundId?: string
     investorAddress?: string
     tokenId?: string
   }>()
@@ -339,13 +339,12 @@ export function PositionPage() {
   const DotoliFactoryContract = useDotoliFactoryContract()
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined
   const { loading, position: positionDetails } = useV3PositionFromTokenId(
-    fund ?? NULL_ADDRESS,
-    investor ?? NULL_ADDRESS,
+    fundId ?? undefined,
+    investor ?? undefined,
     parsedTokenId
   )
 
   const {
-    fund: fundAddress,
     token0: token0Address,
     token1: token1Address,
     fee: feeAmount,
@@ -455,22 +454,21 @@ export function PositionPage() {
       !account ||
       !tokenId ||
       !provider ||
-      !fund ||
+      !fundId ||
       !investor
     )
       return
 
     setCollecting(true)
 
-    const { calldata, value } = DotoliFund.collectPositionFeeCallParameters(investor, {
+    const { calldata, value } = DotoliFund.collectPositionFeeCallParameters(fundId, investor, {
       tokenId: tokenId.toString(),
       expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(currency0ForFeeCollectionPurposes, 0),
       expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(currency1ForFeeCollectionPurposes, 0),
-      recipient: fund,
     })
 
     const txn = {
-      to: fund,
+      to: DOTOLI_FUND_ADDRESSES,
       data: calldata,
       value,
     }
@@ -511,7 +509,7 @@ export function PositionPage() {
         console.error(error)
       })
   }, [
-    fund,
+    fundId,
     investor,
     chainId,
     feeValue0,
@@ -525,9 +523,9 @@ export function PositionPage() {
     provider,
   ])
 
-  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
+  const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
     DotoliFactoryContract,
-    'getFundByManager',
+    'managingFund',
     [account ?? undefined]
   )
   const [isManager, setIsManager] = useState<boolean>(false)
@@ -536,13 +534,13 @@ export function PositionPage() {
       setState()
     }
     async function setState() {
-      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
+      if (myFundId && fundId && myFundId === fundId) {
         setIsManager(true)
       } else {
         setIsManager(false)
       }
     }
-  }, [isManagerLoading, myFund, fundAddress])
+  }, [isManagerLoading, myFundId, fundId])
 
   const feeValueUpper = inverted ? feeValue0 : feeValue1
   const feeValueLower = inverted ? feeValue1 : feeValue0
@@ -613,7 +611,7 @@ export function PositionPage() {
             <Link
               data-cy="visit-pool"
               style={{ textDecoration: 'none', width: 'fit-content', marginBottom: '0.5rem' }}
-              to={`/fund/${fundAddress}/${investor}`}
+              to={`/fund/${fundId}/${investor}`}
             >
               <HoverText>
                 <Trans>← Back to Fund</Trans>
@@ -636,7 +634,7 @@ export function PositionPage() {
                 {isManager && currency0 && currency1 && feeAmount && tokenId ? (
                   <ButtonGray
                     as={Link}
-                    to={`/increase/${fundAddress}/${investor}/${currencyId(currency0)}/${currencyId(
+                    to={`/increase/${fundId}/${investor}/${currencyId(currency0)}/${currencyId(
                       currency1
                     )}/${feeAmount}/${tokenId}`}
                     width="fit-content"
@@ -650,7 +648,7 @@ export function PositionPage() {
                 {(isManager || account?.toUpperCase() === investor?.toUpperCase()) && tokenId && !removed ? (
                   <ResponsiveButtonPrimary
                     as={Link}
-                    to={`/remove/${fundAddress}/${investor}/${tokenId}`}
+                    to={`/remove/${fundId}/${investor}/${tokenId}`}
                     width="fit-content"
                     padding="6px 8px"
                     $borderRadius="12px"

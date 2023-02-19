@@ -15,7 +15,7 @@ import Loader from 'components/Loader'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import Slider from 'components/Slider'
-import { NULL_ADDRESS } from 'constants/addresses'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
 import useDebouncedChangeHandler from 'hooks/useDebouncedChangeHandler'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
@@ -49,8 +49,8 @@ const Break = styled.div`
 
 // redirect invalid tokenIds
 export default function RemoveLiquidityV3() {
-  const { fundAddress, investorAddress, tokenId } = useParams<{
-    fundAddress: string
+  const { fundId, investorAddress, tokenId } = useParams<{
+    fundId: string
     investorAddress: string
     tokenId: string
   }>()
@@ -67,22 +67,14 @@ export default function RemoveLiquidityV3() {
     return <Navigate to={{ ...location, pathname: '/pool' }} replace />
   }
 
-  if (!fundAddress || !investorAddress) {
+  if (!fundId || !investorAddress) {
     return <Navigate to={{ ...location, pathname: '/fund' }} replace />
   }
 
-  return <Remove fundAddress={fundAddress} investorAddress={investorAddress} tokenId={parsedTokenId} />
+  return <Remove fundId={fundId} investorAddress={investorAddress} tokenId={parsedTokenId} />
 }
-function Remove({
-  fundAddress,
-  investorAddress,
-  tokenId,
-}: {
-  fundAddress: string
-  investorAddress: string
-  tokenId: BigNumber
-}) {
-  const { position } = useV3PositionFromTokenId(fundAddress ?? NULL_ADDRESS, investorAddress ?? NULL_ADDRESS, tokenId)
+function Remove({ fundId, investorAddress, tokenId }: { fundId: string; investorAddress: string; tokenId: BigNumber }) {
+  const { position } = useV3PositionFromTokenId(fundId ?? undefined, investorAddress ?? undefined, tokenId)
   const theme = useTheme()
   const { account, chainId, provider } = useWeb3React()
 
@@ -130,12 +122,13 @@ function Remove({
       !positionSDK ||
       !liquidityPercentage ||
       !provider ||
+      !fundId ||
       !investorAddress
     ) {
       return
     }
 
-    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(investorAddress, positionSDK, {
+    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(fundId, investorAddress, positionSDK, {
       tokenId: tokenId.toString(),
       liquidityPercentage,
       slippageTolerance: allowedSlippage,
@@ -143,12 +136,11 @@ function Remove({
       collectOptions: {
         expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(liquidityValue0.currency, 0),
         expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(liquidityValue1.currency, 0),
-        recipient: account,
       },
     })
 
     const txn = {
-      to: fundAddress,
+      to: DOTOLI_FUND_ADDRESSES,
       data: calldata,
       value,
     }
@@ -187,7 +179,7 @@ function Remove({
         console.error(error)
       })
   }, [
-    fundAddress,
+    fundId,
     investorAddress,
     positionManager,
     liquidityValue0,
@@ -303,7 +295,7 @@ function Remove({
         <AddRemoveTabs
           creating={false}
           adding={false}
-          fundAddress={fundAddress}
+          fundId={fundId}
           investorAddress={investorAddress}
           positionID={tokenId.toString()}
           defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}

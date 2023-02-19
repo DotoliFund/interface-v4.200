@@ -33,14 +33,14 @@ const StyledArrowLeft = styled(ArrowLeft)`
 export function NavigationsTabs({
   adding,
   defaultSlippage,
-  fundAddress,
+  fundId,
   investorAddress,
   tokenId,
   children,
 }: {
   adding: boolean
   defaultSlippage: Percent
-  fundAddress: string | undefined
+  fundId: string | undefined
   investorAddress: string | undefined
   tokenId?: string | undefined
   children?: ReactNode | undefined
@@ -51,14 +51,11 @@ export function NavigationsTabs({
     <Tabs>
       <RowBetween style={{ padding: '1rem 1rem 0 1rem' }}>
         {tokenId ? (
-          <StyledHistoryLink
-            to={`/pool/${fundAddress}/${investorAddress}/${tokenId}`}
-            flex={children ? '1' : undefined}
-          >
+          <StyledHistoryLink to={`/pool/${fundId}/${investorAddress}/${tokenId}`} flex={children ? '1' : undefined}>
             <StyledArrowLeft stroke={theme.deprecated_text2} />
           </StyledHistoryLink>
         ) : (
-          <StyledHistoryLink to={`/fund/${fundAddress}/${investorAddress}`} flex={children ? '1' : undefined}>
+          <StyledHistoryLink to={`/fund/${fundId}/${investorAddress}`} flex={children ? '1' : undefined}>
             <StyledArrowLeft stroke={theme.deprecated_text2} />
           </StyledHistoryLink>
         )}
@@ -80,7 +77,7 @@ export function AddRemoveTabs({
   adding,
   creating,
   defaultSlippage,
-  fundAddress,
+  fundId,
   investorAddress,
   positionID,
   children,
@@ -88,7 +85,7 @@ export function AddRemoveTabs({
   adding: boolean
   creating: boolean
   defaultSlippage: Percent
-  fundAddress: string
+  fundId: string
   investorAddress: string
   positionID?: string | undefined
   showBackLink?: boolean
@@ -96,7 +93,7 @@ export function AddRemoveTabs({
 }) {
   const theme = useTheme()
 
-  const poolLink = `/pool/${fundAddress}/${investorAddress}/${positionID}`
+  const poolLink = `/pool/${fundId}/${investorAddress}/${positionID}`
 
   return (
     <Tabs>

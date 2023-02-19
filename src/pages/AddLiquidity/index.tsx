@@ -7,7 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import AddLiquidityCurrencyInputPanel from 'components/CurrencyInputPanel/AddLiquidityInputPanel'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
-import { NULL_ADDRESS } from 'constants/addresses'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useCallback, useEffect, useState } from 'react'
@@ -105,14 +105,14 @@ const SwapSection = styled.div`
 export default function AddLiquidity() {
   const navigate = useNavigate()
   const {
-    fundAddress,
+    fundId,
     investorAddress,
     currencyIdA,
     currencyIdB,
     feeAmount: feeAmountFromUrl,
     tokenId,
   } = useParams<{
-    fundAddress?: string
+    fundId?: string
     investorAddress?: string
     currencyIdA?: string
     currencyIdB?: string
@@ -130,8 +130,8 @@ export default function AddLiquidity() {
 
   // check for existing position if tokenId in url
   const { position: existingPositionDetails, loading: positionLoading } = useV3PositionFromTokenId(
-    fundAddress ?? NULL_ADDRESS,
-    investorAddress ?? NULL_ADDRESS,
+    fundId ?? undefined,
+    investorAddress ?? undefined,
     tokenId ? BigNumber.from(tokenId) : undefined
   )
   const hasExistingPosition = !!existingPositionDetails && !positionLoading
@@ -173,7 +173,7 @@ export default function AddLiquidity() {
     invertPrice,
     ticksAtLimit,
   } = useV3DerivedMintInfo(
-    fundAddress ?? undefined,
+    fundId ?? undefined,
     investorAddress ?? undefined,
     baseCurrency ?? undefined,
     quoteCurrency ?? undefined,
@@ -264,22 +264,22 @@ export default function AddLiquidity() {
       return
     }
 
-    if (fundAddress && investorAddress && position && account && deadline) {
+    if (fundId && investorAddress && position && account && deadline) {
       const { calldata, value } =
         hasExistingPosition && tokenId
-          ? DotoliFund.addLiquidityCallParameters(investorAddress, position, {
+          ? DotoliFund.addLiquidityCallParameters(fundId, investorAddress, position, {
               tokenId,
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
             })
-          : DotoliFund.addLiquidityCallParameters(investorAddress, position, {
+          : DotoliFund.addLiquidityCallParameters(fundId, investorAddress, position, {
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
               createPool: noLiquidity,
             })
 
       const txn: { to: string; data: string; value: string } = {
-        to: fundAddress,
+        to: DOTOLI_FUND_ADDRESSES,
         data: calldata,
         value,
       }
@@ -361,33 +361,33 @@ export default function AddLiquidity() {
     (currencyANew: Currency) => {
       const [idA, idB] = handleCurrencySelect(currencyANew, currencyIdB)
       if (idB === undefined) {
-        navigate(`/add/${fundAddress}/${investorAddress}/${idA}`)
+        navigate(`/add/${fundId}/${investorAddress}/${idA}`)
       } else {
-        navigate(`/add/${fundAddress}/${investorAddress}/${idA}/${idB}`)
+        navigate(`/add/${fundId}/${investorAddress}/${idA}/${idB}`)
       }
     },
-    [fundAddress, investorAddress, handleCurrencySelect, currencyIdB, navigate]
+    [fundId, investorAddress, handleCurrencySelect, currencyIdB, navigate]
   )
 
   const handleCurrencyBSelect = useCallback(
     (currencyBNew: Currency) => {
       const [idB, idA] = handleCurrencySelect(currencyBNew, currencyIdA)
       if (idA === undefined) {
-        navigate(`/add/${fundAddress}/${investorAddress}/${idB}`)
+        navigate(`/add/${fundId}/${investorAddress}/${idB}`)
       } else {
-        navigate(`/add/${fundAddress}/${investorAddress}/${idA}/${idB}`)
+        navigate(`/add/${fundId}/${investorAddress}/${idA}/${idB}`)
       }
     },
-    [fundAddress, investorAddress, handleCurrencySelect, currencyIdA, navigate]
+    [fundId, investorAddress, handleCurrencySelect, currencyIdA, navigate]
   )
 
   const handleFeePoolSelect = useCallback(
     (newFeeAmount: FeeAmount) => {
       onLeftRangeInput('')
       onRightRangeInput('')
-      navigate(`/add/${fundAddress}/${investorAddress}/${currencyIdA}/${currencyIdB}/${newFeeAmount}`)
+      navigate(`/add/${fundId}/${investorAddress}/${currencyIdA}/${currencyIdB}/${newFeeAmount}`)
     },
-    [fundAddress, investorAddress, currencyIdA, currencyIdB, navigate, onLeftRangeInput, onRightRangeInput]
+    [fundId, investorAddress, currencyIdA, currencyIdB, navigate, onLeftRangeInput, onRightRangeInput]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -396,10 +396,10 @@ export default function AddLiquidity() {
     if (txHash) {
       onFieldAInput('')
       // dont jump to pool page if creating
-      navigate(`/pool/${fundAddress}/${investorAddress}/${tokenId}`)
+      navigate(`/pool/${fundId}/${investorAddress}/${tokenId}`)
     }
     setTxHash('')
-  }, [navigate, onFieldAInput, txHash, fundAddress, investorAddress, tokenId])
+  }, [navigate, onFieldAInput, txHash, fundId, investorAddress, tokenId])
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
 
@@ -487,7 +487,7 @@ export default function AddLiquidity() {
           <NavigationsTabs
             adding={true}
             defaultSlippage={DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE}
-            fundAddress={fundAddress}
+            fundId={fundId}
             investorAddress={investorAddress}
             tokenId={tokenId}
           >
@@ -511,7 +511,7 @@ export default function AddLiquidity() {
                         onFieldAInput(formattedAmounts[Field.CURRENCY_B] ?? '')
                       }
                       navigate(
-                        `/add/${fundAddress}/${investorAddress}/${currencyIdB as string}/${currencyIdA as string}${
+                        `/add/${fundId}/${investorAddress}/${currencyIdB as string}/${currencyIdA as string}${
                           feeAmount ? '/' + feeAmount : ''
                         }`
                       )

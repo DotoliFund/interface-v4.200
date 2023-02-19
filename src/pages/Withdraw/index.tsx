@@ -16,6 +16,7 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useCallback, useMemo, useState } from 'react'
@@ -71,7 +72,7 @@ const WithdrawSection = styled.div`
 
 export default function Withdraw() {
   const params = useParams()
-  const fundAddress = params.fundAddress
+  const fundId = params.fundId
   const { account, chainId, provider } = useWeb3React()
 
   // modal and loading
@@ -88,12 +89,7 @@ export default function Withdraw() {
 
   // withdraw state
   const { typedValue } = useWithdrawState()
-  const {
-    currencyBalances,
-    parsedAmount,
-    currencies,
-    inputError: withdrawInputError,
-  } = useDerivedWithdrawInfo(fundAddress)
+  const { currencyBalances, parsedAmount, currencies, inputError: withdrawInputError } = useDerivedWithdrawInfo(fundId)
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
   const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
@@ -126,11 +122,11 @@ export default function Withdraw() {
 
   async function onWithdraw() {
     if (!chainId || !provider || !account) return
-    if (!currency || !parsedAmount || !fundAddress || !tokenAddress) return
+    if (!currency || !parsedAmount || !fundId || !tokenAddress) return
 
-    const { calldata, value } = DotoliFund.withdrawCallParameters(currency?.wrapped.address, parsedAmount)
+    const { calldata, value } = DotoliFund.withdrawCallParameters(fundId, currency?.wrapped.address, parsedAmount)
     const txn: { to: string; data: string; value: string } = {
-      to: fundAddress,
+      to: DOTOLI_FUND_ADDRESSES,
       data: calldata,
       value,
     }

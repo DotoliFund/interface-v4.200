@@ -60,7 +60,7 @@ export function InvestorHoldingCurrencySearch({
   const fundAddress = params.fundAddress
   const investorAddress = params.investorAddress
 
-  const DotoliFundContract = useDotoliFundContract(fundAddress)
+  const DotoliFundContract = useDotoliFundContract()
   const { loading: getInvestorTokensLoading, result: [getInvestorTokens] = [] } = useSingleCallResult(
     DotoliFundContract,
     'getInvestorTokens',
