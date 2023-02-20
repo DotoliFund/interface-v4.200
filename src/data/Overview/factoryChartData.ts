@@ -67,13 +67,13 @@ export function useFactoryChartData(): {
   }
 
   const formatted: FactoryChart[] = data
-    ? data.factorySnapshots.map((data2, index) => {
+    ? data.factorySnapshots.map((snapshot, index) => {
         const factoryChartData: FactoryChart = {
-          id: data2.id,
-          date: parseFloat(data2.date),
-          fundCount: parseFloat(data2.fundCount),
-          investorCount: parseFloat(data2.investorCount),
-          totalCurrentUSD: parseFloat(data2.totalCurrentUSD),
+          id: snapshot.id,
+          date: parseFloat(snapshot.date),
+          fundCount: parseFloat(snapshot.fundCount),
+          investorCount: parseFloat(snapshot.investorCount),
+          totalCurrentUSD: parseFloat(snapshot.totalCurrentUSD),
         }
         return factoryChartData
       })

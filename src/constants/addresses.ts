@@ -25,14 +25,13 @@ export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d56
 //goerli testnet
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const DOTOLI_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x52904e0B1454B8b1afC29B9A10AD2161ac454257', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0x7ef721d1B2D9c46A271d6796CdADE5beE2ed6978', [SupportedChainId.GOERLI]),
 }
 export const DOTOLI_STAKING_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0x3b6ED5ad20C7C58C35F8eadF8E59707780d9F7c9', [SupportedChainId.GOERLI]),
+  ...constructSameAddressMap('0xb2940768de17585BD7Db8A963767954672Ca1815', [SupportedChainId.GOERLI]),
 }
-export const DOTOLI_FACTORY_ADDRESSES = '0xFB126f7b1E5Ca60097cbab8dbD965B4fFb549E8d'
-export const DOTOLI_FUND_ADDRESSES = '0xd46c35C8693272FDd0B938E12dc53390E7058E08'
-export const LIQUIDITY_ORACLE_ADDRESSES = '0xCBF81C94BD8B73e93f0eB6fB60af0A1fA227e289'
+export const DOTOLI_FACTORY_ADDRESSES = '0x5F9f8177932673e8e8544a97d1c4D75A87660924'
+export const DOTOLI_FUND_ADDRESSES = '0xB46bC4f4B43eA7043f1c6897aD1C77cB07Ef0dBF'
 
 export const VOTE_URL = 'https://www.tally.xyz/gov/eip155:5:0xfbD4900923647c69941c0819B410E3e44c9d024B'
 

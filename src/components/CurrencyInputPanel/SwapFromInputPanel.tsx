@@ -78,13 +78,13 @@ export default function SwapFromInputPanel({
   ...rest
 }: SwapFromInputPanelProps) {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
   const selectedCurrencyBalance = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
+    fundId ?? undefined,
+    investor,
     currency?.wrapped.address ?? undefined
   )
   const theme = useTheme()
@@ -199,13 +199,13 @@ export default function SwapFromInputPanel({
           </FiatRow>
         )}
       </Container>
-      {onCurrencySelect && fundAddress && investorAddress ? (
+      {onCurrencySelect && fundId && investor ? (
         <CurrencySearchModal
           isOpen={modalOpen}
           showInvestorFundBalance={true}
           showWrappedETH={false}
-          fundAddress={fundAddress}
-          investorAddress={investorAddress}
+          fundId={fundId}
+          investor={investor}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}

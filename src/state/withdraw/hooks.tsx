@@ -66,7 +66,7 @@ const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 }
 
 // from the current withdraw inputs, compute the best trade and return it.
-export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
+export function useDerivedWithdrawInfo(fundId: string | undefined): {
   currencies: { [field in Field]?: Currency | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
@@ -89,7 +89,7 @@ export function useDerivedWithdrawInfo(fundAddress: string | undefined): {
   //   useMemo(() => [inputCurrency ?? undefined], [inputCurrency])
   // )
   const relevantTokenBalances = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
+    fundId ?? undefined,
     account,
     inputCurrency?.wrapped.address ?? undefined
   )

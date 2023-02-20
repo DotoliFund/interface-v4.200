@@ -106,14 +106,14 @@ export default function AddLiquidity() {
   const navigate = useNavigate()
   const {
     fundId,
-    investorAddress,
+    investor,
     currencyIdA,
     currencyIdB,
     feeAmount: feeAmountFromUrl,
     tokenId,
   } = useParams<{
     fundId?: string
-    investorAddress?: string
+    investor?: string
     currencyIdA?: string
     currencyIdB?: string
     feeAmount?: string
@@ -131,7 +131,7 @@ export default function AddLiquidity() {
   // check for existing position if tokenId in url
   const { position: existingPositionDetails, loading: positionLoading } = useV3PositionFromTokenId(
     fundId ?? undefined,
-    investorAddress ?? undefined,
+    investor ?? undefined,
     tokenId ? BigNumber.from(tokenId) : undefined
   )
   const hasExistingPosition = !!existingPositionDetails && !positionLoading
@@ -174,7 +174,7 @@ export default function AddLiquidity() {
     ticksAtLimit,
   } = useV3DerivedMintInfo(
     fundId ?? undefined,
-    investorAddress ?? undefined,
+    investor ?? undefined,
     baseCurrency ?? undefined,
     quoteCurrency ?? undefined,
     feeAmount,
@@ -264,15 +264,15 @@ export default function AddLiquidity() {
       return
     }
 
-    if (fundId && investorAddress && position && account && deadline) {
+    if (fundId && investor && position && account && deadline) {
       const { calldata, value } =
         hasExistingPosition && tokenId
-          ? DotoliFund.addLiquidityCallParameters(fundId, investorAddress, position, {
+          ? DotoliFund.addLiquidityCallParameters(fundId, investor, position, {
               tokenId,
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
             })
-          : DotoliFund.addLiquidityCallParameters(fundId, investorAddress, position, {
+          : DotoliFund.addLiquidityCallParameters(fundId, investor, position, {
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
               createPool: noLiquidity,
@@ -361,33 +361,33 @@ export default function AddLiquidity() {
     (currencyANew: Currency) => {
       const [idA, idB] = handleCurrencySelect(currencyANew, currencyIdB)
       if (idB === undefined) {
-        navigate(`/add/${fundId}/${investorAddress}/${idA}`)
+        navigate(`/add/${fundId}/${investor}/${idA}`)
       } else {
-        navigate(`/add/${fundId}/${investorAddress}/${idA}/${idB}`)
+        navigate(`/add/${fundId}/${investor}/${idA}/${idB}`)
       }
     },
-    [fundId, investorAddress, handleCurrencySelect, currencyIdB, navigate]
+    [fundId, investor, handleCurrencySelect, currencyIdB, navigate]
   )
 
   const handleCurrencyBSelect = useCallback(
     (currencyBNew: Currency) => {
       const [idB, idA] = handleCurrencySelect(currencyBNew, currencyIdA)
       if (idA === undefined) {
-        navigate(`/add/${fundId}/${investorAddress}/${idB}`)
+        navigate(`/add/${fundId}/${investor}/${idB}`)
       } else {
-        navigate(`/add/${fundId}/${investorAddress}/${idA}/${idB}`)
+        navigate(`/add/${fundId}/${investor}/${idA}/${idB}`)
       }
     },
-    [fundId, investorAddress, handleCurrencySelect, currencyIdA, navigate]
+    [fundId, investor, handleCurrencySelect, currencyIdA, navigate]
   )
 
   const handleFeePoolSelect = useCallback(
     (newFeeAmount: FeeAmount) => {
       onLeftRangeInput('')
       onRightRangeInput('')
-      navigate(`/add/${fundId}/${investorAddress}/${currencyIdA}/${currencyIdB}/${newFeeAmount}`)
+      navigate(`/add/${fundId}/${investor}/${currencyIdA}/${currencyIdB}/${newFeeAmount}`)
     },
-    [fundId, investorAddress, currencyIdA, currencyIdB, navigate, onLeftRangeInput, onRightRangeInput]
+    [fundId, investor, currencyIdA, currencyIdB, navigate, onLeftRangeInput, onRightRangeInput]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -396,10 +396,10 @@ export default function AddLiquidity() {
     if (txHash) {
       onFieldAInput('')
       // dont jump to pool page if creating
-      navigate(`/pool/${fundId}/${investorAddress}/${tokenId}`)
+      navigate(`/pool/${fundId}/${investor}/${tokenId}`)
     }
     setTxHash('')
-  }, [navigate, onFieldAInput, txHash, fundId, investorAddress, tokenId])
+  }, [navigate, onFieldAInput, txHash, fundId, investor, tokenId])
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
 
@@ -488,7 +488,7 @@ export default function AddLiquidity() {
             adding={true}
             defaultSlippage={DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE}
             fundId={fundId}
-            investorAddress={investorAddress}
+            investor={investor}
             tokenId={tokenId}
           >
             {!hasExistingPosition && (
@@ -511,7 +511,7 @@ export default function AddLiquidity() {
                         onFieldAInput(formattedAmounts[Field.CURRENCY_B] ?? '')
                       }
                       navigate(
-                        `/add/${fundId}/${investorAddress}/${currencyIdB as string}/${currencyIdA as string}${
+                        `/add/${fundId}/${investor}/${currencyIdB as string}/${currencyIdA as string}${
                           feeAmount ? '/' + feeAmount : ''
                         }`
                       )

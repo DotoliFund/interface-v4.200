@@ -122,8 +122,8 @@ export function CurrencyRow({
   eventProperties: Record<string, unknown>
 }) {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
 
   const key = currencyKey(currency)
 
@@ -131,7 +131,7 @@ export function CurrencyRow({
   const { loading: getInvestorTokenAmountLoading, result: [getInvestorTokenAmount] = [] } = useSingleCallResult(
     DotoliFundContract,
     'getInvestorTokenAmount',
-    [investorAddress ?? undefined, currency.wrapped.address]
+    [fundId ?? undefined, investor ?? undefined, currency.wrapped.address]
   )
   const balance = useMemo(() => {
     if (!getInvestorTokenAmountLoading && getInvestorTokenAmount) {
@@ -181,7 +181,7 @@ export function CurrencyRow({
       </Column>
       {showCurrencyAmount ? (
         <RowFixed style={{ justifySelf: 'flex-end' }}>
-          {balance ? <Balance balance={balance} /> : investorAddress ? <Loader /> : null}
+          {balance ? <Balance balance={balance} /> : investor ? <Loader /> : null}
           {isSelected && <CheckIcon />}
         </RowFixed>
       ) : (

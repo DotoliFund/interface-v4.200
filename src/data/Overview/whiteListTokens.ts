@@ -58,12 +58,12 @@ export function useWhiteListTokens(): {
   }
 
   const formatted: Token[] = data
-    ? data.tokens.map((data2, index) => {
+    ? data.tokens.map((token, index) => {
         const tokenData: Token = {
-          address: data2.address,
-          decimals: data2.decimals,
-          symbol: data2.symbol,
-          updatedTimestamp: data2.updatedTimestamp,
+          address: token.address,
+          decimals: token.decimals,
+          symbol: token.symbol,
+          updatedTimestamp: token.updatedTimestamp,
         }
         return tokenData
       })

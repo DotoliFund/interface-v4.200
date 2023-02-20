@@ -17,7 +17,7 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from 'componen
 import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { useToken } from 'hooks/Tokens'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
-import { useDotoliFactoryContract } from 'hooks/useContract'
+import { useDotoliFundContract } from 'hooks/useContract'
 import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
 import { PoolState, usePool } from 'hooks/usePools'
 import useStablecoinPrice from 'hooks/useStablecoinPrice'
@@ -326,17 +326,17 @@ const useInverter = ({
 export function PositionPage() {
   const {
     fundId,
-    investorAddress: investor,
+    investor,
     tokenId: tokenIdFromUrl,
   } = useParams<{
     fundId?: string
-    investorAddress?: string
+    investor?: string
     tokenId?: string
   }>()
   const { chainId, account, provider } = useWeb3React()
   const theme = useTheme()
 
-  const DotoliFactoryContract = useDotoliFactoryContract()
+  const DotoliFundContract = useDotoliFundContract()
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined
   const { loading, position: positionDetails } = useV3PositionFromTokenId(
     fundId ?? undefined,
@@ -524,7 +524,7 @@ export function PositionPage() {
   ])
 
   const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
+    DotoliFundContract,
     'managingFund',
     [account ?? undefined]
   )

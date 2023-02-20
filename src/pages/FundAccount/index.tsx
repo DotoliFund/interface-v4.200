@@ -29,6 +29,7 @@ import { useColor } from 'hooks/useColor'
 import { useDotoliFundContract } from 'hooks/useContract'
 import { useETHPriceInUSD, usePools, useTokensPriceInUSD } from 'hooks/usePools'
 import { useV3Positions } from 'hooks/useV3Positions'
+import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
@@ -214,8 +215,8 @@ function PositionsLoadingPlaceholder() {
 export default function FundAccount() {
   const params = useParams()
   const fundId = params.fundId
-  const investorAddress = params.investorAddress
-  const newPositionLink = '/add/' + fundId + '/' + investorAddress + '/ETH'
+  const investor = params.investor
+  const newPositionLink = '/add/' + fundId + '/' + investor + '/ETH'
   const navigate = useNavigate()
   const toggleWalletModal = useToggleWalletModal()
   const DotoliFundContract = useDotoliFundContract()
@@ -239,7 +240,7 @@ export default function FundAccount() {
   const { loading: investorManagingFundLoading, result: [investorManagingFund] = [] } = useSingleCallResult(
     DotoliFundContract,
     'managingFund',
-    [investorAddress ?? undefined]
+    [investor ?? undefined]
   )
   const { loading: isAccountSubscribedLoading, result: [isAccountSubscribed] = [] } = useSingleCallResult(
     DotoliFundContract,
@@ -253,7 +254,12 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (accountManagingFund && fundId && accountManagingFund === fundId) {
+      if (
+        accountManagingFund &&
+        fundId &&
+        JSBI.BigInt(accountManagingFund).toString() !== '0' &&
+        JSBI.BigInt(accountManagingFund).toString() === JSBI.BigInt(fundId).toString()
+      ) {
         setAccountIsManager(true)
       } else {
         setAccountIsManager(false)
@@ -267,7 +273,13 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (accountManagingFund && fundId && accountManagingFund !== fundId && isAccountSubscribed) {
+      if (
+        accountManagingFund &&
+        fundId &&
+        JSBI.BigInt(accountManagingFund).toString() !== '0' &&
+        JSBI.BigInt(accountManagingFund).toString() !== JSBI.BigInt(fundId).toString() &&
+        isAccountSubscribed
+      ) {
         setAccountIsInvestor(true)
       } else {
         setAccountIsInvestor(false)
@@ -281,18 +293,13 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (
-        account &&
-        investorAddress &&
-        account.toUpperCase() === investorAddress.toUpperCase() &&
-        isAccountSubscribed
-      ) {
+      if (account && investor && account.toUpperCase() === investor.toUpperCase() && isAccountSubscribed) {
         setAccountIsFundAccount(true)
       } else {
         setAccountIsFundAccount(false)
       }
     }
-  }, [account, investorAddress, isAccountSubscribedLoading, isAccountSubscribed])
+  }, [account, investor, isAccountSubscribedLoading, isAccountSubscribed])
 
   const [fundAccountIsManager, setFundAccountIsManager] = useState<boolean>(false)
   useEffect(() => {
@@ -300,13 +307,18 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorManagingFund && fundId && investorManagingFund === fundId) {
+      if (
+        investorManagingFund &&
+        fundId &&
+        JSBI.BigInt(investorManagingFund).toString() !== '0' &&
+        JSBI.BigInt(investorManagingFund).toString() === JSBI.BigInt(fundId).toString()
+      ) {
         setFundAccountIsManager(true)
       } else {
         setFundAccountIsManager(false)
       }
     }
-  }, [investorManagingFundLoading, investorManagingFund, fundId, investorAddress])
+  }, [investorManagingFundLoading, investorManagingFund, fundId, investor])
 
   const [fundAccountIsNotManager, setFundAccountIsNotManager] = useState<boolean>(false)
   useEffect(() => {
@@ -314,7 +326,12 @@ export default function FundAccount() {
       setState()
     }
     async function setState() {
-      if (investorManagingFund && fundId && investorManagingFund !== fundId) {
+      if (
+        investorManagingFund &&
+        fundId &&
+        JSBI.BigInt(investorManagingFund).toString() !== '0' &&
+        JSBI.BigInt(investorManagingFund).toString() !== JSBI.BigInt(fundId).toString()
+      ) {
         setFundAccountIsNotManager(true)
       } else {
         setFundAccountIsNotManager(false)
@@ -322,11 +339,11 @@ export default function FundAccount() {
     }
   }, [investorManagingFund, fundId, investorManagingFundLoading])
 
-  const investorData = useInvestorData(fundId, investorAddress).data
-  const volumeChartData = useVolumeChartData(fundId, investorAddress).data
+  const investorData = useInvestorData(fundId, investor).data
+  const volumeChartData = useVolumeChartData(fundId, investor).data
 
-  const transactions = useFundAccountTransactions(fundId, investorAddress).data
-  const liquidityTransactions = useFundAccountLiquidityTransactions(fundId, investorAddress).data
+  const transactions = useFundAccountTransactions(fundId, investor).data
+  const liquidityTransactions = useFundAccountLiquidityTransactions(fundId, investor).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -334,7 +351,7 @@ export default function FundAccount() {
   const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
   const [tokenIndexHover, setTokenIndexHover] = useState<number | undefined>()
 
-  const { positions, loading: positionsLoading } = useV3Positions(fundId, investorAddress)
+  const { positions, loading: positionsLoading } = useV3Positions(fundId, investor)
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
     (acc, p) => {
       acc[p.liquidity?.isZero() ? 1 : 0].push(p)
@@ -698,7 +715,7 @@ export default function FundAccount() {
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: `/deposit/${fundId}/${investorAddress}`,
+      link: `/deposit/${fundId}/${investor}`,
       external: false,
     },
     {
@@ -708,7 +725,7 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: `/withdraw/${fundId}/${investorAddress}`,
+      link: `/withdraw/${fundId}/${investor}`,
       external: false,
     },
   ]
@@ -721,7 +738,7 @@ export default function FundAccount() {
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: `/withdraw/${fundId}/${investorAddress}`,
+      link: `/withdraw/${fundId}/${investor}`,
       external: false,
     },
   ]
@@ -746,7 +763,7 @@ export default function FundAccount() {
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/swap/${fundId}/${investorAddress}`)
+            navigate(`/swap/${fundId}/${investor}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -773,7 +790,7 @@ export default function FundAccount() {
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/swap/${fundId}/${investorAddress}`)
+            navigate(`/swap/${fundId}/${investor}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -788,7 +805,7 @@ export default function FundAccount() {
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/deposit/${fundId}/${investorAddress}`)
+            navigate(`/deposit/${fundId}/${investor}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
@@ -820,7 +837,7 @@ export default function FundAccount() {
               <Link
                 data-cy="visit-pool"
                 style={{ textDecoration: 'none', width: 'fit-content', marginBottom: '0.5rem' }}
-                to={`/fund/${investorData.fund}`}
+                to={`/fund/${investorData.fundId}`}
               >
                 <HoverText>
                   <Trans>← Back to Fund</Trans>

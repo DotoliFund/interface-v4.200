@@ -57,14 +57,14 @@ export function InvestorHoldingCurrencySearch({
   const { chainId } = useWeb3React()
   const theme = useTheme()
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
 
   const DotoliFundContract = useDotoliFundContract()
   const { loading: getInvestorTokensLoading, result: [getInvestorTokens] = [] } = useSingleCallResult(
     DotoliFundContract,
     'getInvestorTokens',
-    [investorAddress ?? undefined]
+    [fundId ?? undefined, investor ?? undefined]
   )
   const investorTokenInfo: FundToken[] = getInvestorTokens
   const investorTokensAddresses: string[] = useMemo(() => {

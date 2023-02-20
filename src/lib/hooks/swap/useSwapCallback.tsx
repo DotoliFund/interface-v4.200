@@ -22,8 +22,8 @@ interface UseSwapCallbackReturns {
   error?: ReactNode
 }
 interface UseSwapCallbackArgs {
-  fundAddress: string | undefined
-  investorAddress: string | undefined
+  fundId: string | undefined
+  investor: string | undefined
   trade: Trade<Currency, Currency, TradeType> | undefined // trade to execute, required
   allowedSlippage: Percent // in bips
   recipientAddressOrName: string | null | undefined // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
@@ -32,15 +32,15 @@ interface UseSwapCallbackArgs {
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback({
-  fundAddress,
-  investorAddress,
+  fundId,
+  investor,
   trade,
   allowedSlippage,
   recipientAddressOrName,
 }: UseSwapCallbackArgs): UseSwapCallbackReturns {
   const { account, chainId, provider } = useWeb3React()
 
-  const swapCalls = useSwapCallArguments(fundAddress, investorAddress, trade, allowedSlippage)
+  const swapCalls = useSwapCallArguments(fundId, investor, trade, allowedSlippage)
   const { callback } = useSendSwapTransaction(account, chainId, provider, trade, swapCalls)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)

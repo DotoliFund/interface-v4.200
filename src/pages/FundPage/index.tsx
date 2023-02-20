@@ -15,18 +15,19 @@ import InvestorTable from 'components/Tables/InvestorTable'
 import ManagerTable from 'components/Tables/ManagerTable'
 import TransactionTable from 'components/Tables/TransactionTable'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useFundData } from 'data/FundPage/fundData'
-import { useInvestorList } from 'data/FundPage/investorList'
+import { useInvestors } from 'data/FundPage/investors'
 import { useManagerData } from 'data/FundPage/managerData'
 import { useFundTransactions } from 'data/FundPage/transactions'
 import { useVolumeChartData } from 'data/FundPage/volumeChartData'
 import { useColor } from 'hooks/useColor'
-import { useDotoliFactoryContract } from 'hooks/useContract'
+import { useDotoliFundContract } from 'hooks/useContract'
 import { useETHPriceInUSD, useTokensPriceInUSD } from 'hooks/usePools'
 import { DotoliFund } from 'interface/DotoliFund'
+import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -96,7 +97,7 @@ enum ChartView {
 export default function FundPage() {
   const params = useParams()
   const fundId = params.fundId
-  const DotoliFactoryContract = useDotoliFactoryContract()
+  const DotoliFundContract = useDotoliFundContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
   const navigate = useNavigate()
@@ -111,7 +112,7 @@ export default function FundPage() {
   const backgroundColor = useColor()
 
   const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
+    DotoliFundContract,
     'managingFund',
     [account ?? undefined]
   )
@@ -121,7 +122,7 @@ export default function FundPage() {
       setState()
     }
     async function setState() {
-      if (myFundId && myFundId === fundId) {
+      if (myFundId && fundId && JSBI.BigInt(myFundId).toString() === JSBI.BigInt(fundId).toString()) {
         setIsManager(true)
       } else {
         setIsManager(false)
@@ -130,7 +131,7 @@ export default function FundPage() {
   }, [isManagerLoading, myFundId, fundId])
 
   const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
+    DotoliFundContract,
     'isSubscribed',
     [account, fundId]
   )
@@ -152,7 +153,7 @@ export default function FundPage() {
   const volumeChartData = useVolumeChartData(fundId).data
   const transactions = useFundTransactions(fundId).data
   const managerData = useManagerData(fundId).data
-  const investorList = useInvestorList(fundId).data
+  const investors = useInvestors(fundId).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -284,7 +285,7 @@ export default function FundPage() {
     if (!chainId || !provider || !account || !fundId) return
     const { calldata, value } = DotoliFund.subscribeCallParameters(fundId)
     const txn: { to: string; data: string; value: string } = {
-      to: DOTOLI_FACTORY_ADDRESSES,
+      to: DOTOLI_FUND_ADDRESSES,
       data: calldata,
       value,
     }
@@ -364,9 +365,9 @@ export default function FundPage() {
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>
-                <ExternalLink href={getEtherscanLink(chainId, fundData.address, 'address', activeNetwork)}>
+                <ExternalLink href={getEtherscanLink(chainId, fundData.fundId, 'address', activeNetwork)}>
                   <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
-                    <Trans>Fund :</Trans> {shortenAddress(fundData.address)}
+                    <Trans>Fund :</Trans> {fundData.fundId}
                   </ThemedText.DeprecatedLabel>
                 </ExternalLink>
               </RowFixed>
@@ -589,8 +590,8 @@ export default function FundPage() {
             <Trans>Investors</Trans>
           </ThemedText.DeprecatedMain>
           <DarkGreyCard>
-            {investorList ? (
-              <InvestorTable investors={investorList} />
+            {investors ? (
+              <InvestorTable investors={investors} />
             ) : (
               <LoadingRows>
                 <div />

@@ -5,11 +5,11 @@ import { useClients } from 'state/application/hooks'
 import { Transaction, TransactionType } from 'types/fund'
 
 const FUND_TRANSACTIONS = gql`
-  query transactions($fund: Bytes!) {
-    deposits(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+  query transactions($fundId: String!) {
+    deposits(first: 100, orderBy: timestamp, orderDirection: desc, where: { fundId: $fundId }, subgraphError: allow) {
       id
       timestamp
-      fund
+      fundId
       investor
       token
       tokenSymbol
@@ -17,10 +17,10 @@ const FUND_TRANSACTIONS = gql`
       amountETH
       amountUSD
     }
-    withdraws(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+    withdraws(first: 100, orderBy: timestamp, orderDirection: desc, where: { fundId: $fundId }, subgraphError: allow) {
       id
       timestamp
-      fund
+      fundId
       investor
       token
       tokenSymbol
@@ -28,10 +28,10 @@ const FUND_TRANSACTIONS = gql`
       amountETH
       amountUSD
     }
-    swaps(first: 100, orderBy: timestamp, orderDirection: desc, where: { fund: $fund }, subgraphError: allow) {
+    swaps(first: 100, orderBy: timestamp, orderDirection: desc, where: { fundId: $fundId }, subgraphError: allow) {
       id
       timestamp
-      fund
+      fundId
       manager
       investor
       token0
@@ -50,7 +50,7 @@ interface FundTransactionResults {
   deposits: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     investor: string
     token: string
     tokenSymbol: string
@@ -61,7 +61,7 @@ interface FundTransactionResults {
   withdraws: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     investor: string
     token: string
     tokenSymbol: string
@@ -72,7 +72,7 @@ interface FundTransactionResults {
   swaps: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     manager: string
     investor: string
     token0: string
@@ -89,19 +89,19 @@ interface FundTransactionResults {
 /**
  * Fetch ManagerData
  */
-export function useFundTransactions(fund: string | undefined): {
+export function useFundTransactions(fundId: string | undefined): {
   loading: boolean
   error: boolean
   data: Transaction[] | undefined
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   // get client
   const { dataClient } = useClients()
 
   const { loading, error, data } = useQuery<FundTransactionResults>(FUND_TRANSACTIONS, {
-    variables: { fund },
+    variables: { fundId },
     client: dataClient,
   })
 

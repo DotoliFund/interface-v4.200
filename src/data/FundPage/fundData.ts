@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client'
-import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
 const FUND_DATA = gql`
-  query fundData($fund: Bytes!) {
-    fund(id: $fund, subgraphError: allow) {
+  query fundData($fundId: String!) {
+    fund(id: $fundId, subgraphError: allow) {
       id
-      address
+      fundId
       createdAtTimestamp
       manager
       investorCount
@@ -25,7 +24,7 @@ const FUND_DATA = gql`
 
 interface Fund {
   id: string
-  address: string
+  fundId: string
   createdAtTimestamp: number
   manager: string
   investorCount: number
@@ -41,7 +40,7 @@ interface Fund {
 
 interface FundFields {
   id: string
-  address: string
+  fundId: string
   createdAtTimestamp: string
   manager: string
   investorCount: string
@@ -62,19 +61,19 @@ interface FundResponse {
 /**
  * Fetch top funds by profit
  */
-export function useFundData(fund: string | undefined): {
+export function useFundData(fundId: string | undefined): {
   loading: boolean
   error: boolean
   data: Fund | undefined
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   // get client
   const { dataClient } = useClients()
 
   const { loading, error, data } = useQuery<FundResponse>(FUND_DATA, {
-    variables: { fund },
+    variables: { fundId },
     client: dataClient,
   })
 
@@ -95,7 +94,7 @@ export function useFundData(fund: string | undefined): {
   const formatted: Fund | undefined = data
     ? {
         id: data.fund.id,
-        address: data.fund.address,
+        fundId: data.fund.fundId,
         createdAtTimestamp: parseInt(data.fund.createdAtTimestamp),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),

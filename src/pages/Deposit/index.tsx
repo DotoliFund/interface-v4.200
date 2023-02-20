@@ -25,6 +25,7 @@ import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { toHex } from 'interface/utils/calldata'
+import JSBI from 'jsbi'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { CheckCircle, HelpCircle } from 'react-feather'
@@ -169,10 +170,12 @@ export default function Deposit() {
 
     let txn = {}
     if (currency?.isNative) {
+      // if transfer ETH, must send data which is fundId
       txn = {
         from: account,
         to: DOTOLI_FUND_ADDRESSES,
         value: toHex(parsedAmount.quotient),
+        data: toHex(JSBI.BigInt(fundId)),
       }
     } else {
       const { calldata, value } = DotoliFund.depositCallParameters(fundId, tokenAddress, parsedAmount)

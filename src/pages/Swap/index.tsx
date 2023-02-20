@@ -125,8 +125,8 @@ const TRADE_STRING = 'SwapRouter'
 
 export default function Swap() {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
   const navigate = useNavigate()
   const { account, chainId } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -284,8 +284,8 @@ export default function Swap() {
 
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
-    fundAddress,
-    investorAddress,
+    fundId,
+    investor,
     trade,
     allowedSlippage,
     recipient

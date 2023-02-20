@@ -60,7 +60,7 @@ const LinkWrapper = styled(Link)`
 
 const DataRow = ({ managerData }: { managerData: Manager }) => {
   return (
-    <LinkWrapper to={'/fund/' + managerData.fund + '/' + managerData.investor}>
+    <LinkWrapper to={'/fund/' + managerData.fundId + '/' + managerData.investor}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(managerData.investor)}</Label>
         <Label end={1} fontWeight={400}>

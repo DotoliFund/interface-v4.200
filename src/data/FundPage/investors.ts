@@ -1,37 +1,31 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import { TopManager } from 'types/fund'
+import { Investor } from 'types/fund'
 
-export const TOP_MANAGERS_BULK = () => {
-  const queryString = `
-    query topManagers($updated: BigInt!) {
-      investors(
-        first: 100,
-        orderBy: profitRatio,
-        orderDirection: desc,
-        where: { 
-          isManager: true,
-          updatedAtTimestamp_gt: $updated
-        },
-        subgraphError: allow)
-      {
-        id
-        createdAtTimestamp
-        updatedAtTimestamp
-        fundId
-        investor
-        isManager
-        principalUSD
-        currentUSD
-        profitRatio
-      }
+const INVESTORS = gql`
+  query investors($fundId: String!) {
+    investors(
+      first: 100
+      orderBy: principalUSD
+      orderDirection: desc
+      where: { isManager: false, fundId: $fundId }
+      subgraphError: allow
+    ) {
+      id
+      createdAtTimestamp
+      updatedAtTimestamp
+      fundId
+      investor
+      isManager
+      principalUSD
+      currentUSD
+      profitRatio
     }
-  `
-  return gql(queryString)
-}
+  }
+`
 
-export interface TopManagerFields {
+export interface InvestorFields {
   id: string
   createdAtTimestamp: string
   updatedAtTimestamp: string
@@ -43,26 +37,26 @@ export interface TopManagerFields {
   profitRatio: string
 }
 
-interface TopManagerResponse {
-  investors: TopManagerFields[]
+interface InvestorResponse {
+  investors: InvestorFields[]
 }
 
 /**
- * Fetch top managers by profitRatio
+ * Fetch Investor list data
  */
-export function useTopManagers(): {
+export function useInvestors(fundId: string | undefined): {
   loading: boolean
   error: boolean
-  data: TopManager[]
+  data: Investor[] | undefined
 } {
+  if (fundId === undefined) {
+    fundId = '0'
+  }
   // get client
   const { dataClient } = useClients()
-  const now = new Date()
-  const lastMonth = new Date(now.setMonth(now.getMonth() - 1))
-  const updated = Math.floor(lastMonth.getTime() / 1000)
 
-  const { loading, error, data } = useQuery<TopManagerResponse>(TOP_MANAGERS_BULK(), {
-    variables: { updated },
+  const { loading, error, data } = useQuery<InvestorResponse>(INVESTORS, {
+    variables: { fundId },
     client: dataClient,
   })
 
@@ -74,13 +68,13 @@ export function useTopManagers(): {
     return {
       loading: anyLoading,
       error: anyError,
-      data: [],
+      data: undefined,
     }
   }
 
-  const formatted: TopManager[] = data
+  const investors: Investor[] = data
     ? data.investors.map((investor, index) => {
-        const investorData: TopManager = {
+        const investorData: Investor = {
           id: investor.id,
           createdAtTimestamp: parseInt(investor.createdAtTimestamp),
           updatedAtTimestamp: parseInt(investor.updatedAtTimestamp),
@@ -95,9 +89,5 @@ export function useTopManagers(): {
       })
     : []
 
-  return {
-    loading: anyLoading,
-    error: anyError,
-    data: formatted,
-  }
+  return { data: [...investors], error: false, loading: false }
 }

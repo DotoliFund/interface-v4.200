@@ -115,7 +115,7 @@ export default function FundList({
         </ToggleWrap>
       </MobileHeader>
       {funds.map((p) => {
-        return <FundListItem key={p.fund} fundDetails={p} />
+        return <FundListItem key={p.fundId} fundDetails={p} />
       })}
     </>
   )

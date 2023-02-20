@@ -2,13 +2,11 @@ import { Trans } from '@lingui/macro'
 import { Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
 import { LoadingRows } from 'components/Loader/styled'
-import { RowBetween } from 'components/Row'
 import { useFundData } from 'data/FundPage/fundData'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { FundDetails } from 'types/fund'
-import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
@@ -51,14 +49,6 @@ const LinkRow = styled(Link)`
   `};
 `
 
-const BadgeText = styled.div`
-  font-weight: 500;
-  font-size: 14px;
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
-    font-size: 12px;
-  `};
-`
-
 const DataLineItem = styled.div`
   font-size: 14px;
 `
@@ -68,13 +58,12 @@ const RangeLineItem = styled(DataLineItem)`
   flex-direction: row;
   align-items: center;
 
-  margin-top: 4px;
   width: 100%;
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
   background-color: ${({ theme }) => theme.deprecated_bg2};
     border-radius: 12px;
-    padding: 8px 0;
+    padding: 4px 0;
 `};
 `
 
@@ -90,24 +79,6 @@ const ExtentsText = styled.span`
   margin-right: 4px;
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     display: none;
-  `};
-`
-
-const PrimaryPositionIdData = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  > * {
-    margin-right: 8px;
-  }
-`
-
-const DataText = styled.div`
-  font-weight: 600;
-  font-size: 18px;
-
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
-    font-size: 14px;
   `};
 `
 
@@ -170,20 +141,16 @@ export function getPriceOrderingFromPositionForUI(position?: Position): {
 }
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
-  const { fund: fundAddress } = fundDetails
-  const fundData = useFundData(fundAddress).data
-  const fundLink = '/fund/' + fundAddress
+  const { fundId } = fundDetails
+  const fundData = useFundData(fundId).data
+  const fundLink = '/fund/' + fundId
+
   return (
     <>
       {fundData ? (
         <LinkRow to={fundLink}>
-          <RowBetween>
-            <PrimaryPositionIdData>
-              <DataText>{shortenAddress(fundData.address)}</DataText>
-            </PrimaryPositionIdData>
-          </RowBetween>
           <RangeLineItem>
-            &nbsp;&nbsp;&nbsp;
+            &nbsp;
             <RangeText>
               <ExtentsText>
                 <Trans>Current : </Trans>

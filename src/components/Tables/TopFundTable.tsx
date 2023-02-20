@@ -67,9 +67,9 @@ const SORT_FIELD = {
 
 const DataRow = ({ fundData, index }: { fundData: TopFund; index: number }) => {
   return (
-    <LinkWrapper to={'/fund/' + fundData.address}>
+    <LinkWrapper to={'/fund/' + fundData.fundId}>
       <ResponsiveGrid>
-        <Label fontWeight={400}>{shortenAddress(fundData.address)}</Label>
+        <Label fontWeight={400}>{fundData.fundId}</Label>
         <Label end={1} fontWeight={400}>
           {formatDollarAmount(fundData.currentUSD)}
         </Label>

@@ -433,7 +433,7 @@ export abstract class DotoliFund {
 
   public static swapCallParameters(
     fundId: string,
-    investorAddress: string,
+    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
@@ -442,7 +442,7 @@ export abstract class DotoliFund {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = DotoliFund.encodeSwaps(fundId, investorAddress, trades, options)
+    const { params } = DotoliFund.encodeSwaps(fundId, investor, trades, options)
 
     return {
       calldata: DotoliFund.INTERFACE.encodeFunctionData('swap', [params]),
@@ -452,7 +452,7 @@ export abstract class DotoliFund {
 
   public static addLiquidityCallParameters(
     fundId: string,
-    investorAddress: string,
+    investor: string,
     position: Position,
     options: AddLiquidityOptions
   ): MethodParameters {
@@ -472,7 +472,7 @@ export abstract class DotoliFund {
     if (isMint(options)) {
       const params: MintPositionParams = {
         fundId,
-        investor: investorAddress,
+        investor,
         token0: position.pool.token0.address,
         token1: position.pool.token1.address,
         fee: position.pool.fee,
@@ -493,7 +493,7 @@ export abstract class DotoliFund {
       // increase
       const params: IncreaseLiquidityParams = {
         fundId,
-        investor: investorAddress,
+        investor,
         tokenId: toHex(options.tokenId),
         amount0Desired: toHex(amount0Desired),
         amount1Desired: toHex(amount1Desired),
@@ -510,7 +510,7 @@ export abstract class DotoliFund {
 
   public static collectPositionFeeCallParameters(
     fundId: string,
-    investorAddress: string,
+    investor: string,
     options: CollectOptions
   ): MethodParameters {
     const tokenId = toHex(options.tokenId)
@@ -518,7 +518,7 @@ export abstract class DotoliFund {
     // collect
     const params: CollectPositionFeeParams = {
       fundId,
-      investor: investorAddress,
+      investor,
       tokenId,
       amount0Max: MaxUint128,
       amount1Max: MaxUint128,
@@ -532,7 +532,7 @@ export abstract class DotoliFund {
 
   public static decreaseLiquidityCallParameters(
     fundId: string,
-    investorAddress: string,
+    investor: string,
     position: Position,
     options: RemoveLiquidityOptions
   ): MethodParameters {
@@ -556,7 +556,7 @@ export abstract class DotoliFund {
     // remove liquidity
     const params: DecreaseLiquidityParams = {
       fundId,
-      investor: investorAddress,
+      investor,
       tokenId,
       liquidity: toHex(partialPosition.liquidity),
       amount0Min: toHex(amount0Min),

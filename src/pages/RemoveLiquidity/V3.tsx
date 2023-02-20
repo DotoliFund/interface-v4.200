@@ -49,9 +49,9 @@ const Break = styled.div`
 
 // redirect invalid tokenIds
 export default function RemoveLiquidityV3() {
-  const { fundId, investorAddress, tokenId } = useParams<{
+  const { fundId, investor, tokenId } = useParams<{
     fundId: string
-    investorAddress: string
+    investor: string
     tokenId: string
   }>()
   const location = useLocation()
@@ -67,14 +67,14 @@ export default function RemoveLiquidityV3() {
     return <Navigate to={{ ...location, pathname: '/pool' }} replace />
   }
 
-  if (!fundId || !investorAddress) {
+  if (!fundId || !investor) {
     return <Navigate to={{ ...location, pathname: '/fund' }} replace />
   }
 
-  return <Remove fundId={fundId} investorAddress={investorAddress} tokenId={parsedTokenId} />
+  return <Remove fundId={fundId} investor={investor} tokenId={parsedTokenId} />
 }
-function Remove({ fundId, investorAddress, tokenId }: { fundId: string; investorAddress: string; tokenId: BigNumber }) {
-  const { position } = useV3PositionFromTokenId(fundId ?? undefined, investorAddress ?? undefined, tokenId)
+function Remove({ fundId, investor, tokenId }: { fundId: string; investor: string; tokenId: BigNumber }) {
+  const { position } = useV3PositionFromTokenId(fundId ?? undefined, investor ?? undefined, tokenId)
   const theme = useTheme()
   const { account, chainId, provider } = useWeb3React()
 
@@ -123,12 +123,12 @@ function Remove({ fundId, investorAddress, tokenId }: { fundId: string; investor
       !liquidityPercentage ||
       !provider ||
       !fundId ||
-      !investorAddress
+      !investor
     ) {
       return
     }
 
-    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(fundId, investorAddress, positionSDK, {
+    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(fundId, investor, positionSDK, {
       tokenId: tokenId.toString(),
       liquidityPercentage,
       slippageTolerance: allowedSlippage,
@@ -180,7 +180,7 @@ function Remove({ fundId, investorAddress, tokenId }: { fundId: string; investor
       })
   }, [
     fundId,
-    investorAddress,
+    investor,
     positionManager,
     liquidityValue0,
     liquidityValue1,
@@ -296,7 +296,7 @@ function Remove({ fundId, investorAddress, tokenId }: { fundId: string; investor
           creating={false}
           adding={false}
           fundId={fundId}
-          investorAddress={investorAddress}
+          investor={investor}
           positionID={tokenId.toString()}
           defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}
         />

@@ -89,8 +89,8 @@ export function useDerivedSwapInfo(): {
   allowedSlippage: Percent
 } {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
   const { account } = useWeb3React()
 
   const {
@@ -107,13 +107,13 @@ export function useDerivedSwapInfo(): {
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
   const inputTokenBalances = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
+    fundId ?? undefined,
+    investor,
     inputCurrency?.wrapped.address ?? undefined
   )
   const outputTokenBalances = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
+    fundId ?? undefined,
+    investor,
     outputCurrency?.wrapped.address ?? undefined
   )
 
