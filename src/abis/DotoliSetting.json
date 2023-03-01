@@ -18,12 +18,6 @@
     },
     {
       "anonymous": false,
-      "inputs": [],
-      "name": "FactoryCreated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
       "inputs": [
         {
           "indexed": false,
@@ -52,19 +46,25 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": true,
+          "indexed": false,
           "internalType": "address",
           "name": "oldOwner",
           "type": "address"
         },
         {
-          "indexed": true,
+          "indexed": false,
           "internalType": "address",
           "name": "newOwner",
           "type": "address"
         }
       ],
       "name": "OwnerChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "SettingCreated",
       "type": "event"
     },
     {
@@ -254,6 +254,6 @@
       ],
       "stateMutability": "view",
       "type": "function"
-    }  
+    }
   ]
 }

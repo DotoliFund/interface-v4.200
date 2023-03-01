@@ -2,10 +2,10 @@ import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
-export const FACTORY_CHART = () => {
+export const INFO_CHART = () => {
   const queryString = `
-    query factorySnapshots {
-      factorySnapshots(orderBy: date, orderDirection: asc, subgraphError: allow) {
+    query infoSnapshots {
+      infoSnapshots(orderBy: date, orderDirection: asc, subgraphError: allow) {
         id
         date
         fundCount
@@ -17,7 +17,7 @@ export const FACTORY_CHART = () => {
   return gql(queryString)
 }
 
-export interface FactoryChart {
+export interface InfoChart {
   id: string
   date: number
   fundCount: number
@@ -25,7 +25,7 @@ export interface FactoryChart {
   totalCurrentUSD: number
 }
 
-export interface FactoryChartFields {
+export interface InfoChartFields {
   id: string
   date: string
   fundCount: string
@@ -33,26 +33,26 @@ export interface FactoryChartFields {
   totalCurrentUSD: string
 }
 
-interface FactoryChartResponse {
-  factorySnapshots: FactoryChartFields[]
+interface InfoChartResponse {
+  infoSnapshots: InfoChartFields[]
 }
 
 /**
- * Fetch DotoliFund Factory chart data
+ * Fetch DotoliInfo chart data
  */
-export function useFactoryChartData(): {
+export function useInfoChartData(): {
   loading: boolean
   error: boolean
-  data: FactoryChart[]
+  data: InfoChart[]
 } {
   // get client
   const { dataClient } = useClients()
 
-  const { loading, error, data } = useQuery<FactoryChartResponse>(FACTORY_CHART(), {
+  const { loading, error, data } = useQuery<InfoChartResponse>(INFO_CHART(), {
     client: dataClient,
   })
 
-  if (!data || (data && !data.factorySnapshots)) return { data: [], error: false, loading: false }
+  if (!data || (data && !data.infoSnapshots)) return { data: [], error: false, loading: false }
 
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
@@ -66,16 +66,16 @@ export function useFactoryChartData(): {
     }
   }
 
-  const formatted: FactoryChart[] = data
-    ? data.factorySnapshots.map((snapshot, index) => {
-        const factoryChartData: FactoryChart = {
+  const formatted: InfoChart[] = data
+    ? data.infoSnapshots.map((snapshot, index) => {
+        const infoChartData: InfoChart = {
           id: snapshot.id,
           date: parseFloat(snapshot.date),
           fundCount: parseFloat(snapshot.fundCount),
           investorCount: parseFloat(snapshot.investorCount),
           totalCurrentUSD: parseFloat(snapshot.totalCurrentUSD),
         }
-        return factoryChartData
+        return infoChartData
       })
     : []
 

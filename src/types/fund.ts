@@ -4,7 +4,7 @@ export interface FundDetails {
 }
 
 export interface FundToken {
-  tokenAddress: string
+  token: string
   amount: number
 }
 

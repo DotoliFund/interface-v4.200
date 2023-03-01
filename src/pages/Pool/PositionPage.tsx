@@ -17,7 +17,7 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from 'componen
 import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
 import { useToken } from 'hooks/Tokens'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
 import { PoolState, usePool } from 'hooks/usePools'
 import useStablecoinPrice from 'hooks/useStablecoinPrice'
@@ -336,7 +336,7 @@ export function PositionPage() {
   const { chainId, account, provider } = useWeb3React()
   const theme = useTheme()
 
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined
   const { loading, position: positionDetails } = useV3PositionFromTokenId(
     fundId ?? undefined,
@@ -454,14 +454,13 @@ export function PositionPage() {
       !account ||
       !tokenId ||
       !provider ||
-      !fundId ||
-      !investor
+      !fundId
     )
       return
 
     setCollecting(true)
 
-    const { calldata, value } = DotoliFund.collectPositionFeeCallParameters(fundId, investor, {
+    const { calldata, value } = DotoliFund.collectPositionFeeCallParameters(fundId, {
       tokenId: tokenId.toString(),
       expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(currency0ForFeeCollectionPurposes, 0),
       expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(currency1ForFeeCollectionPurposes, 0),
@@ -510,7 +509,6 @@ export function PositionPage() {
       })
   }, [
     fundId,
-    investor,
     chainId,
     feeValue0,
     feeValue1,
@@ -524,7 +522,7 @@ export function PositionPage() {
   ])
 
   const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
   )

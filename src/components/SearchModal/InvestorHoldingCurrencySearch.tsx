@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces/IERC20Metadata.sol/IERC20Metadata.json'
 import { useWeb3React } from '@web3-react/core'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useToggle from 'hooks/useToggle'
@@ -60,9 +60,9 @@ export function InvestorHoldingCurrencySearch({
   const fundId = params.fundId
   const investor = params.investor
 
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const { loading: getInvestorTokensLoading, result: [getInvestorTokens] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'getInvestorTokens',
     [fundId ?? undefined, investor ?? undefined]
   )
@@ -70,7 +70,7 @@ export function InvestorHoldingCurrencySearch({
   const investorTokensAddresses: string[] = useMemo(() => {
     if (investorTokenInfo && investorTokenInfo.length > 0) {
       return investorTokenInfo.map((data, index) => {
-        return data.tokenAddress
+        return data.token
       })
     } else {
       return []

@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
 import { checkWarning } from 'constants/tokenSafety'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
@@ -127,9 +127,9 @@ export function CurrencyRow({
 
   const key = currencyKey(currency)
 
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const { loading: getInvestorTokenAmountLoading, result: [getInvestorTokenAmount] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'getInvestorTokenAmount',
     [fundId ?? undefined, investor ?? undefined, currency.wrapped.address]
   )

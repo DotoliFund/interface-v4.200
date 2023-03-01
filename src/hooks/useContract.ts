@@ -8,8 +8,8 @@ import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contr
 import NonfungiblePositionManagerJson from '@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json'
 import { useWeb3React } from '@web3-react/core'
 import ARGENT_WALLET_DETECTOR_ABI from 'abis/argent-wallet-detector.json'
-import DotoliFactoryJson from 'abis/DotoliFactory.json'
 import DotoliFundJson from 'abis/DotoliFund.json'
+import DotoliInfoJson from 'abis/DotoliInfo.json'
 import DotoliStakingJson from 'abis/DotoliStaking.json'
 import EIP_2612 from 'abis/eip_2612.json'
 import ENS_PUBLIC_RESOLVER_ABI from 'abis/ens-public-resolver.json'
@@ -22,8 +22,8 @@ import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, E
 import WETH_ABI from 'abis/weth.json'
 import {
   ARGENT_WALLET_DETECTOR_ADDRESS,
-  DOTOLI_FACTORY_ADDRESSES,
   DOTOLI_FUND_ADDRESSES,
+  DOTOLI_INFO_ADDRESSES,
   DOTOLI_STAKING_ADDRESS,
   ENS_REGISTRAR_ADDRESSES,
   MULTICALL_ADDRESS,
@@ -34,8 +34,8 @@ import {
 } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
-import { DotoliFactory } from 'types/dotoli/DotoliFactory'
 import { DotoliFund } from 'types/dotoli/DotoliFund'
+import { DotoliInfo } from 'types/dotoli/DotoliInfo'
 import { DotoliStaking } from 'types/dotoli/DotoliStaking'
 import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall } from 'types/v3'
 
@@ -48,7 +48,7 @@ const { abi: QuoterV2ABI } = QuoterV2Json
 const { abi: TickLensABI } = TickLensJson
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 const { abi: NFTPositionManagerABI } = NonfungiblePositionManagerJson
-const { abi: DotoliFactoryABI } = DotoliFactoryJson
+const { abi: DotoliInfoABI } = DotoliInfoJson
 const { abi: DotoliFundABI } = DotoliFundJson
 const { abi: DotoliStakingABI } = DotoliStakingJson
 
@@ -146,8 +146,8 @@ export function useTickLens(): TickLens | null {
   return useContract(address, TickLensABI) as TickLens | null
 }
 
-export function useDotoliFactoryContract(withSignerIfPossible?: boolean): DotoliFactory | null {
-  return useContract<DotoliFactory>(DOTOLI_FACTORY_ADDRESSES, DotoliFactoryABI, withSignerIfPossible)
+export function useDotoliInfoContract(withSignerIfPossible?: boolean): DotoliInfo | null {
+  return useContract<DotoliInfo>(DOTOLI_INFO_ADDRESSES, DotoliInfoABI, withSignerIfPossible)
 }
 
 export function useDotoliFundContract(withSignerIfPossible?: boolean): DotoliFund | null {

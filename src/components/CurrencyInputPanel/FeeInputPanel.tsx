@@ -84,7 +84,7 @@ export default function FeeInputPanel({
   const { account, chainId } = useWeb3React()
   const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false
   const feeToken = feeTokens
-    ? feeTokens.filter((t) => t.tokenAddress.toUpperCase() === currency?.wrapped.address.toUpperCase())
+    ? feeTokens.filter((t) => t.token.toUpperCase() === currency?.wrapped.address.toUpperCase())
     : undefined
   const selectedCurrencyBalance =
     currency && feeToken && feeToken.length > 0 ? getFeeTokenAmountDecimal(currency, feeToken[0].amount) : undefined

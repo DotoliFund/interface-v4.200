@@ -9,8 +9,8 @@ import TokenTable from 'components/Tables/TokenTable'
 import FundTable from 'components/Tables/TopFundTable'
 import TopManagerTable from 'components/Tables/TopManagerTable'
 import { isSupportedChain } from 'constants/chains'
-import { useFactoryChartData } from 'data/Overview/factoryChartData'
-import { useFactoryData } from 'data/Overview/factoryData'
+import { useInfoChartData } from 'data/Overview/infoChartData'
+import { useInfoData } from 'data/Overview/infoData'
 import { useTopFunds } from 'data/Overview/topFunds'
 import { useTopManagers } from 'data/Overview/topManagers'
 import { useWhiteListTokens } from 'data/Overview/whiteListTokens'
@@ -83,15 +83,15 @@ export default function Overview() {
   const [currentVolumeIndexHover, setCurrentVolumeIndexHover] = useState<number | undefined>()
   const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
 
-  const factoryData = useFactoryData()
+  const infoData = useInfoData()
   const topManagers = useTopManagers()
   const topFunds = useTopFunds()
   const whiteListTokens = useWhiteListTokens()
-  const factoryChartData = useFactoryChartData().data
+  const infoChartData = useInfoChartData().data
 
   const formattedTotalCurrent = useMemo(() => {
-    if (factoryChartData) {
-      return factoryChartData.map((day, index) => {
+    if (infoChartData) {
+      return infoChartData.map((day, index) => {
         return {
           time: day.date,
           value: day.totalCurrentUSD,
@@ -101,11 +101,11 @@ export default function Overview() {
     } else {
       return []
     }
-  }, [factoryChartData])
+  }, [infoChartData])
 
   const formattedInvestorCount = useMemo(() => {
-    if (factoryChartData) {
-      return factoryChartData.map((day, index) => {
+    if (infoChartData) {
+      return infoChartData.map((day, index) => {
         return {
           time: day.date,
           value: day.investorCount,
@@ -115,7 +115,7 @@ export default function Overview() {
     } else {
       return []
     }
-  }, [factoryChartData])
+  }, [infoChartData])
 
   return (
     <PageWrapper>
@@ -230,16 +230,14 @@ export default function Overview() {
                       <ThemedText.DeprecatedMain ml="10px">
                         <Trans>Funds :</Trans>
                       </ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel ml="10px">{factoryData.data?.fundCount}</ThemedText.DeprecatedLabel>
+                      <ThemedText.DeprecatedLabel ml="10px">{infoData.data?.fundCount}</ThemedText.DeprecatedLabel>
                       <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
                     </RowFixed>
                     <RowFixed mr="20px">
                       <ThemedText.DeprecatedMain ml="10px">
                         <Trans>Investors : </Trans>
                       </ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLabel ml="10px">
-                        {factoryData.data?.investorCount}
-                      </ThemedText.DeprecatedLabel>
+                      <ThemedText.DeprecatedLabel ml="10px">{infoData.data?.investorCount}</ThemedText.DeprecatedLabel>
                       <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
                     </RowFixed>
                     <HideMedium>
@@ -248,7 +246,7 @@ export default function Overview() {
                           <Trans>Manager Fee : </Trans>
                         </ThemedText.DeprecatedMain>
                         <ThemedText.DeprecatedLabel ml="10px">
-                          {factoryData.data ? (factoryData.data.managerFee / 10000).toFixed(2) : ''} %
+                          {infoData.data ? (infoData.data.managerFee / 10000).toFixed(2) : ''} %
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
                     </HideMedium>
@@ -258,7 +256,7 @@ export default function Overview() {
                           <Trans>Pool size to be whitelisted tokens: </Trans>
                         </ThemedText.DeprecatedMain>
                         <ThemedText.DeprecatedLabel ml="10px">
-                          {factoryData.data ? factoryData.data.minPoolAmount / 1e18 : ''} ETH
+                          {infoData.data ? infoData.data.minPoolAmount / 1e18 : ''} ETH
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
                     </HideMedium>

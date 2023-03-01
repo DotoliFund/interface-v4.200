@@ -35,8 +35,6 @@ export interface SwapParams {
 }
 
 export interface MintPositionParams {
-  fundId: string
-  investor: string
   token0: string
   token1: string
   fee: number
@@ -50,8 +48,6 @@ export interface MintPositionParams {
 }
 
 export interface IncreaseLiquidityParams {
-  fundId: string
-  investor: string
   tokenId: string
   amount0Desired: string
   amount1Desired: string
@@ -61,16 +57,12 @@ export interface IncreaseLiquidityParams {
 }
 
 export interface CollectPositionFeeParams {
-  fundId: string
-  investor: string
   tokenId: string
   amount0Max: string
   amount1Max: string
 }
 
 export interface DecreaseLiquidityParams {
-  fundId: string
-  investor: string
   tokenId: string
   liquidity: string
   amount0Min: string
@@ -197,24 +189,6 @@ export interface RemoveLiquidityOptions {
 
 export abstract class DotoliFund {
   public static INTERFACE: Interface = new Interface(DotoliFundABI.abi)
-
-  public static createCallParameters(): MethodParameters {
-    const calldata: string = DotoliFund.INTERFACE.encodeFunctionData('createFund')
-    const value: string = toHex(0)
-    return {
-      calldata,
-      value,
-    }
-  }
-
-  public static subscribeCallParameters(fundId: string): MethodParameters {
-    const calldata: string = DotoliFund.INTERFACE.encodeFunctionData('subscribe', [fundId])
-    const value: string = toHex(0)
-    return {
-      calldata,
-      value,
-    }
-  }
 
   public static depositCallParameters(
     fundId: string,
@@ -354,16 +328,12 @@ export abstract class DotoliFund {
    * @returns A string array of calldatas for the trade.
    */
   private static encodeSwaps(
-    fundId: string,
-    investor: string,
     trades:
       | Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>
       | V3Trade<Currency, Currency, TradeType>[],
     options: SwapOptions
   ): {
-    fundId: string
-    investor: string
     params: SwapParams[]
   } {
     // If dealing with an instance of the aggregated Trade object, unbundle it to individual trade objects.
@@ -425,8 +395,6 @@ export abstract class DotoliFund {
     }
 
     return {
-      fundId,
-      investor,
       params,
     }
   }
@@ -442,17 +410,16 @@ export abstract class DotoliFund {
   ): MethodParameters {
     const value = toHex(0)
 
-    const { params } = DotoliFund.encodeSwaps(fundId, investor, trades, options)
+    const { params } = DotoliFund.encodeSwaps(trades, options)
 
     return {
-      calldata: DotoliFund.INTERFACE.encodeFunctionData('swap', [params]),
+      calldata: DotoliFund.INTERFACE.encodeFunctionData('swap', [fundId, investor, params]),
       value,
     }
   }
 
   public static addLiquidityCallParameters(
     fundId: string,
-    investor: string,
     position: Position,
     options: AddLiquidityOptions
   ): MethodParameters {
@@ -471,8 +438,6 @@ export abstract class DotoliFund {
     // mint
     if (isMint(options)) {
       const params: MintPositionParams = {
-        fundId,
-        investor,
         token0: position.pool.token0.address,
         token1: position.pool.token1.address,
         fee: position.pool.fee,
@@ -486,14 +451,12 @@ export abstract class DotoliFund {
       }
 
       return {
-        calldata: DotoliFund.INTERFACE.encodeFunctionData('mintNewPosition', [params]),
+        calldata: DotoliFund.INTERFACE.encodeFunctionData('mintNewPosition', [fundId, params]),
         value: toHex(0),
       }
     } else {
       // increase
       const params: IncreaseLiquidityParams = {
-        fundId,
-        investor,
         tokenId: toHex(options.tokenId),
         amount0Desired: toHex(amount0Desired),
         amount1Desired: toHex(amount1Desired),
@@ -502,37 +465,30 @@ export abstract class DotoliFund {
         deadline,
       }
       return {
-        calldata: DotoliFund.INTERFACE.encodeFunctionData('increaseLiquidity', [params]),
+        calldata: DotoliFund.INTERFACE.encodeFunctionData('increaseLiquidity', [fundId, params]),
         value: toHex(0),
       }
     }
   }
 
-  public static collectPositionFeeCallParameters(
-    fundId: string,
-    investor: string,
-    options: CollectOptions
-  ): MethodParameters {
+  public static collectPositionFeeCallParameters(fundId: string, options: CollectOptions): MethodParameters {
     const tokenId = toHex(options.tokenId)
 
     // collect
     const params: CollectPositionFeeParams = {
-      fundId,
-      investor,
       tokenId,
       amount0Max: MaxUint128,
       amount1Max: MaxUint128,
     }
 
     return {
-      calldata: DotoliFund.INTERFACE.encodeFunctionData('collectPositionFee', [params]),
+      calldata: DotoliFund.INTERFACE.encodeFunctionData('collectPositionFee', [fundId, params]),
       value: toHex(0),
     }
   }
 
   public static decreaseLiquidityCallParameters(
     fundId: string,
-    investor: string,
     position: Position,
     options: RemoveLiquidityOptions
   ): MethodParameters {
@@ -555,8 +511,6 @@ export abstract class DotoliFund {
 
     // remove liquidity
     const params: DecreaseLiquidityParams = {
-      fundId,
-      investor,
       tokenId,
       liquidity: toHex(partialPosition.liquidity),
       amount0Min: toHex(amount0Min),
@@ -565,7 +519,7 @@ export abstract class DotoliFund {
     }
 
     return {
-      calldata: DotoliFund.INTERFACE.encodeFunctionData('decreaseLiquidity', [params]),
+      calldata: DotoliFund.INTERFACE.encodeFunctionData('decreaseLiquidity', [fundId, params]),
       value: toHex(0),
     }
   }

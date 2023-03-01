@@ -15,7 +15,7 @@ import InvestorTable from 'components/Tables/InvestorTable'
 import ManagerTable from 'components/Tables/ManagerTable'
 import TransactionTable from 'components/Tables/TransactionTable'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_INFO_ADDRESSES } from 'constants/addresses'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useFundData } from 'data/FundPage/fundData'
@@ -24,9 +24,9 @@ import { useManagerData } from 'data/FundPage/managerData'
 import { useFundTransactions } from 'data/FundPage/transactions'
 import { useVolumeChartData } from 'data/FundPage/volumeChartData'
 import { useColor } from 'hooks/useColor'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import { useETHPriceInUSD, useTokensPriceInUSD } from 'hooks/usePools'
-import { DotoliFund } from 'interface/DotoliFund'
+import { DotoliInfo } from 'interface/DotoliInfo'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
@@ -97,7 +97,7 @@ enum ChartView {
 export default function FundPage() {
   const params = useParams()
   const fundId = params.fundId
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
   const navigate = useNavigate()
@@ -112,7 +112,7 @@ export default function FundPage() {
   const backgroundColor = useColor()
 
   const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
   )
@@ -131,7 +131,7 @@ export default function FundPage() {
   }, [isManagerLoading, myFundId, fundId])
 
   const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'isSubscribed',
     [account, fundId]
   )
@@ -283,9 +283,9 @@ export default function FundPage() {
 
   async function onSubscribe() {
     if (!chainId || !provider || !account || !fundId) return
-    const { calldata, value } = DotoliFund.subscribeCallParameters(fundId)
+    const { calldata, value } = DotoliInfo.subscribeCallParameters(fundId)
     const txn: { to: string; data: string; value: string } = {
-      to: DOTOLI_FUND_ADDRESSES,
+      to: DOTOLI_INFO_ADDRESSES,
       data: calldata,
       value,
     }

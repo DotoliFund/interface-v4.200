@@ -122,13 +122,12 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
       !positionSDK ||
       !liquidityPercentage ||
       !provider ||
-      !fundId ||
-      !investor
+      !fundId
     ) {
       return
     }
 
-    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(fundId, investor, positionSDK, {
+    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(fundId, positionSDK, {
       tokenId: tokenId.toString(),
       liquidityPercentage,
       slippageTolerance: allowedSlippage,
@@ -180,7 +179,6 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
       })
   }, [
     fundId,
-    investor,
     positionManager,
     liquidityValue0,
     liquidityValue1,

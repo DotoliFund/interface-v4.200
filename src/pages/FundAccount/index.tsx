@@ -26,7 +26,7 @@ import { useFundAccountLiquidityTransactions } from 'data/FundAccount/liquidityT
 import { useFundAccountTransactions } from 'data/FundAccount/transactions'
 import { useVolumeChartData } from 'data/FundAccount/volumeChartData'
 import { useColor } from 'hooks/useColor'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import { useETHPriceInUSD, usePools, useTokensPriceInUSD } from 'hooks/usePools'
 import { useV3Positions } from 'hooks/useV3Positions'
 import JSBI from 'jsbi'
@@ -219,7 +219,7 @@ export default function FundAccount() {
   const newPositionLink = '/add/' + fundId + '/' + investor + '/ETH'
   const navigate = useNavigate()
   const toggleWalletModal = useToggleWalletModal()
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { chainId, account } = useWeb3React()
   const [userHideClosedPositions, setUserHideClosedPositions] = useUserHideClosedPositions()
@@ -233,17 +233,17 @@ export default function FundAccount() {
   const theme = useTheme()
 
   const { loading: accountManagingFundLoading, result: [accountManagingFund] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
   )
   const { loading: investorManagingFundLoading, result: [investorManagingFund] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'managingFund',
     [investor ?? undefined]
   )
   const { loading: isAccountSubscribedLoading, result: [isAccountSubscribed] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'isSubscribed',
     [account, fundId]
   )
@@ -499,7 +499,7 @@ export default function FundAccount() {
         const symbol = investorData.currentTokensSymbols[index]
         const token = new Token(chainId, data, decimals, symbol)
         const decimal = 10 ** decimals
-        return CurrencyAmount.fromRawAmount(token, investorData.currentTokensAmount[index] * decimal)
+        return CurrencyAmount.fromRawAmount(token, Math.floor(investorData.currentTokensAmount[index] * decimal))
       })
     } else {
       return []

@@ -6,6 +6,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: ru-RU\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -297,8 +303,8 @@ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
-msgid "Collect as {nativeWrappedSymbol}"
-msgstr ""
+#~ msgid "Collect as {nativeWrappedSymbol}"
+#~ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "Collect fees"
@@ -1028,7 +1034,7 @@ msgid "No fee tokens"
 msgstr ""
 
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/InvestorCurrencySearch.tsx
+#: src/components/SearchModal/InvestorHoldingCurrencySearch.tsx
 #: src/components/SearchModal/WhiteListCurrencySearch.tsx
 msgid "No results found."
 msgstr ""
@@ -1225,12 +1231,9 @@ msgid "Select Pair"
 msgstr ""
 
 #: src/components/CurrencyInputPanel/DepositInputPanel.tsx
-#: src/components/CurrencyInputPanel/RewardInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingInputPanel.tsx
 #: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
-#: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/InvestorCurrencySearch.tsx
+#: src/components/SearchModal/InvestorHoldingCurrencySearch.tsx
 #: src/components/SearchModal/WhiteListCurrencySearch.tsx
 #: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx

@@ -303,8 +303,8 @@ msgstr "징수"
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
-msgid "Collect as {nativeWrappedSymbol}"
-msgstr "{nativeWrappedSymbol}으로 징수"
+#~ msgid "Collect as {nativeWrappedSymbol}"
+#~ msgstr "{nativeWrappedSymbol}으로 징수"
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "Collect fees"
@@ -1034,7 +1034,7 @@ msgid "No fee tokens"
 msgstr "수수료 토큰 없음"
 
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/InvestorCurrencySearch.tsx
+#: src/components/SearchModal/InvestorHoldingCurrencySearch.tsx
 #: src/components/SearchModal/WhiteListCurrencySearch.tsx
 msgid "No results found."
 msgstr "검색 결과가 없습니다"
@@ -1235,12 +1235,9 @@ msgid "Select Pair"
 msgstr "쌍 선택"
 
 #: src/components/CurrencyInputPanel/DepositInputPanel.tsx
-#: src/components/CurrencyInputPanel/RewardInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingInputPanel.tsx
 #: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
-#: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/InvestorCurrencySearch.tsx
+#: src/components/SearchModal/InvestorHoldingCurrencySearch.tsx
 #: src/components/SearchModal/WhiteListCurrencySearch.tsx
 #: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx

@@ -17,7 +17,7 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
@@ -89,11 +89,11 @@ export default function Fee() {
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const { loading: getFeeTokensLoading, result: [getFeeTokens] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'getFeeTokens',
-    []
+    [fundId]
   )
   const feeTokens: FundToken[] = getFeeTokens
   const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false

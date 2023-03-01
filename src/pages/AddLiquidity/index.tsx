@@ -264,15 +264,15 @@ export default function AddLiquidity() {
       return
     }
 
-    if (fundId && investor && position && account && deadline) {
+    if (fundId && position && account && deadline) {
       const { calldata, value } =
         hasExistingPosition && tokenId
-          ? DotoliFund.addLiquidityCallParameters(fundId, investor, position, {
+          ? DotoliFund.addLiquidityCallParameters(fundId, position, {
               tokenId,
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
             })
-          : DotoliFund.addLiquidityCallParameters(fundId, investor, position, {
+          : DotoliFund.addLiquidityCallParameters(fundId, position, {
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
               createPool: noLiquidity,

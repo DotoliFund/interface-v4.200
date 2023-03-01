@@ -50,7 +50,7 @@ interface FeeCurrencySearchProps {
 function isTokenExist(tokens: FundToken[], token: string) {
   let isExist = false
   tokens.map((value, index) => {
-    if (value.tokenAddress.toUpperCase() === token.toUpperCase()) {
+    if (value.token.toUpperCase() === token.toUpperCase()) {
       isExist = true
     }
     return value
@@ -74,7 +74,7 @@ export function FeeCurrencySearch({
   const feeTokensAddresses: string[] = useMemo(() => {
     if (feeTokens && feeTokens.length > 0) {
       return feeTokens.map((data, index) => {
-        return data.tokenAddress
+        return data.token
       })
     } else {
       return []
@@ -170,7 +170,7 @@ export function FeeCurrencySearch({
     )
     if (feeTokens) {
       for (let i = 0; i < feeTokens.length; i++) {
-        if (feeTokens[i].tokenAddress.toUpperCase() === wrapped.address.toUpperCase()) {
+        if (feeTokens[i].token.toUpperCase() === wrapped.address.toUpperCase()) {
           return [native, ...tokens]
         }
       }
@@ -181,16 +181,16 @@ export function FeeCurrencySearch({
   const sortedFeeTokens: FundToken[] = feeCurrencies.map((value, index) => {
     const feeCurrency = value.wrapped.address
     for (let i = 0; i < feeTokens.length; i++) {
-      const unsortedFeeToken = feeTokens[i].tokenAddress
+      const unsortedFeeToken = feeTokens[i].token
       if (unsortedFeeToken.toUpperCase() === feeCurrency.toUpperCase()) {
         return {
-          tokenAddress: unsortedFeeToken,
+          token: unsortedFeeToken,
           amount: feeTokens[i].amount,
         }
       }
     }
     return {
-      tokenAddress: 'Unknown',
+      token: 'Unknown',
       amount: 0,
     }
   })

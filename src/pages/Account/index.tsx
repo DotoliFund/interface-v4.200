@@ -8,10 +8,10 @@ import FundList from 'components/FundList'
 import { NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_INFO_ADDRESSES } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
-import { useDotoliFundContract } from 'hooks/useContract'
-import { DotoliFund } from 'interface/DotoliFund'
+import { useDotoliInfoContract } from 'hooks/useContract'
+import { DotoliInfo } from 'interface/DotoliInfo'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
@@ -182,12 +182,12 @@ function WrongNetworkCard() {
 
 export default function Account() {
   const { account, chainId, provider } = useWeb3React()
-  const DotoliFundContract = useDotoliFundContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const theme = useTheme()
   const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
 
   const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
   )
@@ -217,7 +217,7 @@ export default function Account() {
   }, [managingFundLoading, managingFund, provider, account])
 
   const { loading: investingFundsLoading, result: [investingFunds] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'subscribedFunds',
     [account ?? undefined]
   )
@@ -264,9 +264,9 @@ export default function Account() {
   async function onCreate() {
     if (!chainId || !provider || !account) return
 
-    const { calldata, value } = DotoliFund.createCallParameters()
+    const { calldata, value } = DotoliInfo.createCallParameters()
     const txn: { to: string; data: string; value: string } = {
-      to: DOTOLI_FUND_ADDRESSES,
+      to: DOTOLI_INFO_ADDRESSES,
       data: calldata,
       value,
     }
