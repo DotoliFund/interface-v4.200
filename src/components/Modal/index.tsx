@@ -9,7 +9,7 @@ import { isMobile } from '../../utils/userAgent'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
+const StyledDialogOverlay = styled(AnimatedDialogOverlay)<{ scrollOverlay?: boolean }>`
   &[data-reach-dialog-overlay] {
     z-index: ${Z_INDEX.modalBackdrop};
     background-color: transparent;
@@ -17,7 +17,7 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 
     display: flex;
     align-items: center;
-    overflow-y: scroll;
+    overflow-y: ${({ scrollOverlay }) => scrollOverlay && 'scroll'};
     justify-content: center;
 
     background-color: ${({ theme }) => theme.backgroundScrim};
@@ -27,7 +27,7 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
+const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, scrollOverlay, ...rest }) => (
   <AnimatedDialogContent {...rest} />
 )).attrs({
   'aria-label': 'dialog',
@@ -57,7 +57,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
       css`
         min-height: ${minHeight}vh;
       `}
-    display: inline-table;
+    display: ${({ scrollOverlay }) => (scrollOverlay ? 'inline-table' : 'flex')};
     border-radius: 20px;
     ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
       width: 65vw;
@@ -85,6 +85,7 @@ interface ModalProps {
   maxHeight?: number
   initialFocusRef?: React.RefObject<any>
   children?: React.ReactNode
+  scrollOverlay?: boolean
 }
 
 export default function Modal({
@@ -94,6 +95,7 @@ export default function Modal({
   maxHeight = 90,
   initialFocusRef,
   children,
+  scrollOverlay,
 }: ModalProps) {
   const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
@@ -125,6 +127,7 @@ export default function Modal({
               onDismiss={onDismiss}
               initialFocusRef={initialFocusRef}
               unstable_lockFocusAcrossFrames={false}
+              scrollOverlay={scrollOverlay}
             >
               <StyledDialogContent
                 {...(isMobile
@@ -137,6 +140,7 @@ export default function Modal({
                 minHeight={minHeight}
                 maxHeight={maxHeight}
                 mobile={isMobile}
+                scrollOverlay={scrollOverlay}
               >
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {!initialFocusRef && isMobile ? <div tabIndex={1} /> : null}
