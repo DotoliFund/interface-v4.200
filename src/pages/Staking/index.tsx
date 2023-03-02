@@ -21,6 +21,7 @@ import { isSupportedChain } from 'constants/chains'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { DotoliStaking } from 'interface/DotoliStaking'
+import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -390,6 +391,24 @@ export default function Staking() {
                           <ButtonLight onClick={toggleWalletModal}>
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
+                        ) : !stakingInfo?.remainingReward.greaterThan(JSBI.BigInt(0)) ? (
+                          <ButtonError
+                            onClick={() => {
+                              if (isExpertMode) {
+                                //onStake()
+                              } else {
+                                onStake()
+                              }
+                            }}
+                            width="100%"
+                            id="staking-button"
+                            disabled={true}
+                            error={true}
+                          >
+                            <Text fontSize={20} fontWeight={500}>
+                              <Trans>Closed</Trans>
+                            </Text>
+                          </ButtonError>
                         ) : showApproveFlow ? (
                           <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                             <AutoColumn style={{ width: '100%' }} gap="12px">
@@ -447,7 +466,7 @@ export default function Staking() {
                             </AutoColumn>
                           </AutoRow>
                         ) : (
-                          <ButtonError
+                          <ButtonLight
                             onClick={() => {
                               if (isExpertMode) {
                                 //onStake()
@@ -457,12 +476,11 @@ export default function Staking() {
                             }}
                             id="staking-button"
                             disabled={false}
-                            error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Stake</Trans>
                             </Text>
-                          </ButtonError>
+                          </ButtonLight>
                         )}
                       </div>
                     </AutoColumn>
@@ -497,7 +515,7 @@ export default function Staking() {
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
                         ) : (
-                          <ButtonError
+                          <ButtonLight
                             onClick={() => {
                               if (isExpertMode) {
                                 //onUnstake()
@@ -507,12 +525,11 @@ export default function Staking() {
                             }}
                             id="unstake-button"
                             disabled={false}
-                            error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Unstake</Trans>
                             </Text>
-                          </ButtonError>
+                          </ButtonLight>
                         )}
                       </div>
                     </AutoColumn>
@@ -547,7 +564,7 @@ export default function Staking() {
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
                         ) : (
-                          <ButtonError
+                          <ButtonLight
                             onClick={() => {
                               if (isExpertMode) {
                                 //onGetReward()
@@ -557,12 +574,11 @@ export default function Staking() {
                             }}
                             id="reward-button"
                             disabled={false}
-                            error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Get Reward</Trans>
                             </Text>
-                          </ButtonError>
+                          </ButtonLight>
                         )}
                       </div>
                     </AutoColumn>
