@@ -29,7 +29,6 @@ import { useColor } from 'hooks/useColor'
 import { useDotoliInfoContract } from 'hooks/useContract'
 import { useETHPriceInUSD, usePools, useTokensPriceInUSD } from 'hooks/usePools'
 import { useV3Positions } from 'hooks/useV3Positions'
-import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
@@ -214,9 +213,9 @@ function PositionsLoadingPlaceholder() {
 
 export default function FundAccount() {
   const params = useParams()
-  const fundId = params.fundId
+  const currentPageFund = params.fundId
   const investor = params.investor
-  const newPositionLink = '/add/' + fundId + '/' + investor + '/ETH'
+  const newPositionLink = '/add/' + currentPageFund + '/' + investor + '/ETH'
   const navigate = useNavigate()
   const toggleWalletModal = useToggleWalletModal()
   const DotoliInfoContract = useDotoliInfoContract()
@@ -232,7 +231,9 @@ export default function FundAccount() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
-  const { loading: accountManagingFundLoading, result: [accountManagingFund] = [] } = useSingleCallResult(
+  //TODO : isManagerPage userIsManager userIsInvestor
+
+  const { loading: myManagingFundLoading, result: [myManagingFund] = [] } = useSingleCallResult(
     DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
@@ -242,66 +243,13 @@ export default function FundAccount() {
     'managingFund',
     [investor ?? undefined]
   )
-  const { loading: isAccountSubscribedLoading, result: [isAccountSubscribed] = [] } = useSingleCallResult(
+  const { loading: isUserSubscribedLoading, result: [isUserSubscribed] = [] } = useSingleCallResult(
     DotoliInfoContract,
     'isSubscribed',
-    [account, fundId]
+    [account, currentPageFund]
   )
 
-  const [accountIsManager, setAccountIsManager] = useState<boolean>(false)
-  useEffect(() => {
-    if (!accountManagingFundLoading) {
-      setState()
-    }
-    async function setState() {
-      if (
-        accountManagingFund &&
-        fundId &&
-        JSBI.BigInt(accountManagingFund).toString() !== '0' &&
-        JSBI.BigInt(accountManagingFund).toString() === JSBI.BigInt(fundId).toString()
-      ) {
-        setAccountIsManager(true)
-      } else {
-        setAccountIsManager(false)
-      }
-    }
-  }, [accountManagingFundLoading, accountManagingFund, fundId, account])
-
-  const [accountIsInvestor, setAccountIsInvestor] = useState<boolean>(false)
-  useEffect(() => {
-    if (!isAccountSubscribedLoading) {
-      setState()
-    }
-    async function setState() {
-      if (
-        accountManagingFund &&
-        fundId &&
-        JSBI.BigInt(accountManagingFund).toString() !== '0' &&
-        JSBI.BigInt(accountManagingFund).toString() !== JSBI.BigInt(fundId).toString() &&
-        isAccountSubscribed
-      ) {
-        setAccountIsInvestor(true)
-      } else {
-        setAccountIsInvestor(false)
-      }
-    }
-  }, [accountManagingFund, fundId, isAccountSubscribedLoading, isAccountSubscribed])
-
-  const [accountIsFundAccount, setAccountIsFundAccount] = useState<boolean>(false)
-  useEffect(() => {
-    if (!isAccountSubscribedLoading) {
-      setState()
-    }
-    async function setState() {
-      if (account && investor && account.toUpperCase() === investor.toUpperCase() && isAccountSubscribed) {
-        setAccountIsFundAccount(true)
-      } else {
-        setAccountIsFundAccount(false)
-      }
-    }
-  }, [account, investor, isAccountSubscribedLoading, isAccountSubscribed])
-
-  const [fundAccountIsManager, setFundAccountIsManager] = useState<boolean>(false)
+  const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
   useEffect(() => {
     if (!investorManagingFundLoading) {
       setState()
@@ -309,41 +257,55 @@ export default function FundAccount() {
     async function setState() {
       if (
         investorManagingFund &&
-        fundId &&
-        JSBI.BigInt(investorManagingFund).toString() !== '0' &&
-        JSBI.BigInt(investorManagingFund).toString() === JSBI.BigInt(fundId).toString()
+        currentPageFund &&
+        investorManagingFund.toString() !== '0' &&
+        investorManagingFund.toString() === currentPageFund.toString()
       ) {
-        setFundAccountIsManager(true)
+        setIsManagerAccount(true)
       } else {
-        setFundAccountIsManager(false)
+        setIsManagerAccount(false)
       }
     }
-  }, [investorManagingFundLoading, investorManagingFund, fundId, investor])
+  }, [investorManagingFundLoading, investorManagingFund, currentPageFund, investor])
 
-  const [fundAccountIsNotManager, setFundAccountIsNotManager] = useState<boolean>(false)
+  const [userIsManager, setUserIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!investorManagingFundLoading) {
+    if (!myManagingFundLoading) {
       setState()
     }
     async function setState() {
       if (
-        investorManagingFund &&
-        fundId &&
-        JSBI.BigInt(investorManagingFund).toString() !== '0' &&
-        JSBI.BigInt(investorManagingFund).toString() !== JSBI.BigInt(fundId).toString()
+        myManagingFund &&
+        currentPageFund &&
+        myManagingFund.toString() !== '0' &&
+        myManagingFund.toString() === currentPageFund.toString()
       ) {
-        setFundAccountIsNotManager(true)
+        setUserIsManager(true)
       } else {
-        setFundAccountIsNotManager(false)
+        setUserIsManager(false)
       }
     }
-  }, [investorManagingFund, fundId, investorManagingFundLoading])
+  }, [myManagingFundLoading, myManagingFund, currentPageFund, account])
 
-  const investorData = useInvestorData(fundId, investor).data
-  const volumeChartData = useVolumeChartData(fundId, investor).data
+  const [userIsInvestor, setUserIsInvestor] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isUserSubscribedLoading) {
+      setState()
+    }
+    async function setState() {
+      if (!userIsManager && isUserSubscribed) {
+        setUserIsInvestor(true)
+      } else {
+        setUserIsInvestor(false)
+      }
+    }
+  }, [isUserSubscribedLoading, userIsManager, isUserSubscribed])
 
-  const transactions = useFundAccountTransactions(fundId, investor).data
-  const liquidityTransactions = useFundAccountLiquidityTransactions(fundId, investor).data
+  const investorData = useInvestorData(currentPageFund, investor).data
+  const volumeChartData = useVolumeChartData(currentPageFund, investor).data
+
+  const transactions = useFundAccountTransactions(currentPageFund, investor).data
+  const liquidityTransactions = useFundAccountLiquidityTransactions(currentPageFund, investor).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -351,7 +313,7 @@ export default function FundAccount() {
   const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
   const [tokenIndexHover, setTokenIndexHover] = useState<number | undefined>()
 
-  const { positions, loading: positionsLoading } = useV3Positions(fundId, investor)
+  const { positions, loading: positionsLoading } = useV3Positions(currentPageFund, investor)
   const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
     (acc, p) => {
       acc[p.liquidity?.isZero() ? 1 : 0].push(p)
@@ -715,7 +677,7 @@ export default function FundAccount() {
           <PlusCircle size={16} />
         </MenuItem>
       ),
-      link: `/deposit/${fundId}/${investor}`,
+      link: `/deposit/${currentPageFund}/${investor}`,
       external: false,
     },
     {
@@ -725,20 +687,7 @@ export default function FundAccount() {
           <BookOpen size={16} />
         </MenuItem>
       ),
-      link: `/withdraw/${fundId}/${investor}`,
-      external: false,
-    },
-  ]
-
-  const menuItems2 = [
-    {
-      content: (
-        <MenuItem>
-          <Trans>Withdraw</Trans>
-          <PlusCircle size={16} />
-        </MenuItem>
-      ),
-      link: `/withdraw/${fundId}/${investor}`,
+      link: `/withdraw/${currentPageFund}/${investor}`,
       external: false,
     },
   ]
@@ -756,74 +705,78 @@ export default function FundAccount() {
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
-    ) : accountIsManager && fundAccountIsManager ? (
+    ) : isManagerAccount ? (
+      <>
+        {userIsManager ? (
+          <>
+            <ButtonPrimary
+              $borderRadius="12px"
+              mr="12px"
+              padding={'12px'}
+              onClick={() => {
+                navigate(`/swap/${currentPageFund}/${investor}`)
+              }}
+            >
+              <ThemedText.DeprecatedMain mb="4px">
+                <Trans>Swap</Trans>
+              </ThemedText.DeprecatedMain>
+            </ButtonPrimary>
+            <Menu
+              menuItems={menuItems1}
+              flyoutAlignment={FlyoutAlignment.LEFT}
+              ToggleUI={(props: any) => (
+                <MoreOptionsButton {...props}>
+                  <MoreOptionsText>
+                    <Trans>More</Trans>
+                    <ChevronDown size={15} />
+                  </MoreOptionsText>
+                </MoreOptionsButton>
+              )}
+            />
+          </>
+        ) : null}
+      </>
+    ) : userIsManager ? (
       <>
         <ButtonPrimary
           $borderRadius="12px"
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/swap/${fundId}/${investor}`)
+            navigate(`/swap/${currentPageFund}/${investor}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
             <Trans>Swap</Trans>
           </ThemedText.DeprecatedMain>
         </ButtonPrimary>
-        <Menu
-          menuItems={menuItems1}
-          flyoutAlignment={FlyoutAlignment.LEFT}
-          ToggleUI={(props: any) => (
-            <MoreOptionsButton {...props}>
-              <MoreOptionsText>
-                <Trans>More</Trans>
-                <ChevronDown size={15} />
-              </MoreOptionsText>
-            </MoreOptionsButton>
-          )}
-        />
       </>
-    ) : accountIsManager && fundAccountIsNotManager ? (
+    ) : userIsInvestor ? (
       <>
         <ButtonPrimary
           $borderRadius="12px"
           mr="12px"
           padding={'12px'}
           onClick={() => {
-            navigate(`/swap/${fundId}/${investor}`)
-          }}
-        >
-          <ThemedText.DeprecatedMain mb="4px">
-            <Trans>Swap</Trans>
-          </ThemedText.DeprecatedMain>
-        </ButtonPrimary>
-      </>
-    ) : accountIsInvestor && fundAccountIsNotManager && accountIsFundAccount ? (
-      <>
-        <ButtonPrimary
-          $borderRadius="12px"
-          mr="12px"
-          padding={'12px'}
-          onClick={() => {
-            navigate(`/deposit/${fundId}/${investor}`)
+            navigate(`/deposit/${currentPageFund}/${investor}`)
           }}
         >
           <ThemedText.DeprecatedMain mb="4px">
             <Trans>Deposit</Trans>
           </ThemedText.DeprecatedMain>
         </ButtonPrimary>
-        <Menu
-          menuItems={menuItems2}
-          flyoutAlignment={FlyoutAlignment.LEFT}
-          ToggleUI={(props: any) => (
-            <MoreOptionsButton {...props}>
-              <MoreOptionsText>
-                <Trans>More</Trans>
-                <ChevronDown size={15} />
-              </MoreOptionsText>
-            </MoreOptionsButton>
-          )}
-        />
+        <ButtonPrimary
+          $borderRadius="12px"
+          mr="12px"
+          padding={'12px'}
+          onClick={() => {
+            navigate(`/withdraw/${currentPageFund}/${investor}`)
+          }}
+        >
+          <ThemedText.DeprecatedMain mb="4px">
+            <Trans>Withdraw</Trans>
+          </ThemedText.DeprecatedMain>
+        </ButtonPrimary>
       </>
     ) : null
 
@@ -1076,7 +1029,7 @@ export default function FundAccount() {
             <ThemedText.DeprecatedMain fontSize="24px">
               <Trans>Positions</Trans>
             </ThemedText.DeprecatedMain>
-            {accountIsManager ? (
+            {userIsManager ? (
               <ButtonRow>
                 <ResponsiveButtonPrimary
                   data-cy="join-pool-button"

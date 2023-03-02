@@ -27,7 +27,6 @@ import { useColor } from 'hooks/useColor'
 import { useDotoliInfoContract } from 'hooks/useContract'
 import { useETHPriceInUSD, useTokensPriceInUSD } from 'hooks/usePools'
 import { DotoliInfo } from 'interface/DotoliInfo'
-import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -96,7 +95,7 @@ enum ChartView {
 
 export default function FundPage() {
   const params = useParams()
-  const fundId = params.fundId
+  const currentPageFund = params.fundId
   const DotoliInfoContract = useDotoliInfoContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
@@ -111,49 +110,49 @@ export default function FundPage() {
   // theming
   const backgroundColor = useColor()
 
-  const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
+  const { loading: myManagingFundLoading, result: [myManagingFund] = [] } = useSingleCallResult(
     DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
   )
-  const [isManager, setIsManager] = useState<boolean>(false)
+  const [userIsManager, setUserIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!isManagerLoading) {
+    if (!myManagingFundLoading) {
       setState()
     }
     async function setState() {
-      if (myFundId && fundId && JSBI.BigInt(myFundId).toString() === JSBI.BigInt(fundId).toString()) {
-        setIsManager(true)
+      if (myManagingFund && currentPageFund && myManagingFund.toString() === currentPageFund.toString()) {
+        setUserIsManager(true)
       } else {
-        setIsManager(false)
+        setUserIsManager(false)
       }
     }
-  }, [isManagerLoading, myFundId, fundId])
+  }, [myManagingFundLoading, myManagingFund, currentPageFund])
 
-  const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
+  const { loading: isSubscribedLoading, result: [isSubscribed] = [] } = useSingleCallResult(
     DotoliInfoContract,
     'isSubscribed',
-    [account, fundId]
+    [account, currentPageFund]
   )
-  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  const [userIsInvestor, setUserIsInvestor] = useState<boolean>(false)
   useEffect(() => {
-    if (!isInvestorLoading) {
+    if (!isSubscribedLoading) {
       setState()
     }
     async function setState() {
       if (isSubscribed) {
-        setIsInvestor(true)
+        setUserIsInvestor(true)
       } else {
-        setIsInvestor(false)
+        setUserIsInvestor(false)
       }
     }
-  }, [isInvestorLoading, isSubscribed])
+  }, [isSubscribedLoading, isSubscribed])
 
-  const fundData = useFundData(fundId).data
-  const volumeChartData = useVolumeChartData(fundId).data
-  const transactions = useFundTransactions(fundId).data
-  const managerData = useManagerData(fundId).data
-  const investors = useInvestors(fundId).data
+  const fundData = useFundData(currentPageFund).data
+  const volumeChartData = useVolumeChartData(currentPageFund).data
+  const transactions = useFundTransactions(currentPageFund).data
+  const managerData = useManagerData(currentPageFund).data
+  const investors = useInvestors(currentPageFund).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -282,8 +281,8 @@ export default function FundPage() {
   }
 
   async function onSubscribe() {
-    if (!chainId || !provider || !account || !fundId) return
-    const { calldata, value } = DotoliInfo.subscribeCallParameters(fundId)
+    if (!chainId || !provider || !account || !currentPageFund) return
+    const { calldata, value } = DotoliInfo.subscribeCallParameters(currentPageFund)
     const txn: { to: string; data: string; value: string } = {
       to: DOTOLI_INFO_ADDRESSES,
       data: calldata,
@@ -326,8 +325,13 @@ export default function FundPage() {
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
-    ) : (isManager || isInvestor) && fundId ? (
-      <ButtonPrimary $borderRadius="12px" margin={'6px'} padding={'12px'} onClick={() => onAccount(fundId, account)}>
+    ) : (userIsManager || userIsInvestor) && currentPageFund ? (
+      <ButtonPrimary
+        $borderRadius="12px"
+        margin={'6px'}
+        padding={'12px'}
+        onClick={() => onAccount(currentPageFund, account)}
+      >
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>My Account</Trans>
         </ThemedText.DeprecatedMain>
@@ -341,14 +345,14 @@ export default function FundPage() {
     )
 
   const ButtonB = () =>
-    account && isManager && fundId ? (
+    account && userIsManager && currentPageFund ? (
       <ButtonPrimary
         $borderRadius="12px"
         margin={'6px'}
         padding={'12px'}
         data-testid="navbar-connect-wallet"
         onClick={() => {
-          navigate(`/fee/${fundId}`)
+          navigate(`/fee/${currentPageFund}`)
         }}
       >
         <ThemedText.DeprecatedMain mb="4px">
@@ -410,7 +414,7 @@ export default function FundPage() {
                   >
                     <Trans>Tokens</Trans>
                   </ToggleElement>
-                  {isManager ? (
+                  {userIsManager ? (
                     <ToggleElement
                       isActive={view === ChartView.FEES}
                       fontSize="12px"
@@ -517,7 +521,7 @@ export default function FundPage() {
                     </AutoColumn>
                   }
                 />
-              ) : isManager && view === ChartView.FEES ? (
+              ) : userIsManager && view === ChartView.FEES ? (
                 <FeeBarChart
                   data={formattedFeeTokens}
                   color={activeNetwork.primaryColor}
