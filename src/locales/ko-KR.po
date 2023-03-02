@@ -1329,8 +1329,8 @@ msgid "Success"
 msgstr "성공"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/Tables/TransactionTable.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx

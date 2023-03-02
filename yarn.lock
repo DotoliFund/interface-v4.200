@@ -1299,7 +1299,7 @@
   resolved "https://registry.yarnpkg.com/@dotolifund/core/-/core-0.0.3.tgz#918248dd7f5fc2f5c795795fd0809125e043ea4f"
   integrity sha512-EK2X/rNCl2sctux57rAVr9+2SnHyoKMzJeipIfoISnlr4KrCOl+KP6ZQJYWKDZH5eZmA2nL4tHB0pgLTYGnjiQ==
 
-"@dotolifund/staking@^0.0.2":
+"@dotolifund/staking@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@dotolifund/staking/-/staking-0.0.1.tgz#0a6eecf778b72d8e55ac41348288fc9ef3a48a9f"
   integrity sha512-ciUZ4D/XaZERwGy9DMf53ZBbdGpi9sQ1iF0APt6QAyOS2nik7Tqrb+mNXZtW+9+uFrH5sLNCFngXl8yOWa3T1g==
