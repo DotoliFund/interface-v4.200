@@ -6,7 +6,7 @@ import { Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Badge from 'components/Badge'
-import { ButtonConfirmed, ButtonGray, ButtonPrimary } from 'components/Button'
+import { ButtonConfirmed, ButtonPrimary } from 'components/Button'
 import { DarkCard, LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -521,24 +521,29 @@ export function PositionPage() {
     provider,
   ])
 
-  const { loading: isManagerLoading, result: [myFundId] = [] } = useSingleCallResult(
+  const { loading: myManagingFundLoading, result: [myManagingFund] = [] } = useSingleCallResult(
     DotoliInfoContract,
     'managingFund',
     [account ?? undefined]
   )
-  const [isManager, setIsManager] = useState<boolean>(false)
+  const [userIsManager, setUserIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!isManagerLoading) {
+    if (!myManagingFundLoading) {
       setState()
     }
     async function setState() {
-      if (myFundId && fundId && myFundId === fundId) {
-        setIsManager(true)
+      if (
+        myManagingFund &&
+        fundId &&
+        myManagingFund.toString() !== '0' &&
+        myManagingFund.toString() === fundId.toString()
+      ) {
+        setUserIsManager(true)
       } else {
-        setIsManager(false)
+        setUserIsManager(false)
       }
     }
-  }, [isManagerLoading, myFundId, fundId])
+  }, [myManagingFundLoading, myManagingFund, fundId])
 
   const feeValueUpper = inverted ? feeValue0 : feeValue1
   const feeValueLower = inverted ? feeValue1 : feeValue0
@@ -629,8 +634,8 @@ export function PositionPage() {
                 <RangeBadge removed={removed} inRange={inRange} />
               </RowFixed>
               <RowFixed>
-                {isManager && currency0 && currency1 && feeAmount && tokenId ? (
-                  <ButtonGray
+                {userIsManager && currency0 && currency1 && feeAmount && tokenId ? (
+                  <ResponsiveButtonPrimary
                     as={Link}
                     to={`/increase/${fundId}/${investor}/${currencyId(currency0)}/${currencyId(
                       currency1
@@ -641,9 +646,9 @@ export function PositionPage() {
                     style={{ marginRight: '8px' }}
                   >
                     <Trans>Increase Liquidity</Trans>
-                  </ButtonGray>
+                  </ResponsiveButtonPrimary>
                 ) : null}
-                {(isManager || account?.toUpperCase() === investor?.toUpperCase()) && tokenId && !removed ? (
+                {(userIsManager || account?.toUpperCase() === investor?.toUpperCase()) && tokenId && !removed ? (
                   <ResponsiveButtonPrimary
                     as={Link}
                     to={`/remove/${fundId}/${investor}/${tokenId}`}
@@ -768,7 +773,7 @@ export function PositionPage() {
                           </ThemedText.DeprecatedLargeHeader>
                         )}
                       </AutoColumn>
-                      {(isManager || account?.toUpperCase() === investor?.toUpperCase()) &&
+                      {(userIsManager || account?.toUpperCase() === investor?.toUpperCase()) &&
                       (feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) || !!collectMigrationHash) ? (
                         <ButtonConfirmed
                           disabled={collecting || !!collectMigrationHash}

@@ -420,6 +420,7 @@ export abstract class DotoliFund {
 
   public static addLiquidityCallParameters(
     fundId: string,
+    investor: string,
     position: Position,
     options: AddLiquidityOptions
   ): MethodParameters {
@@ -451,7 +452,7 @@ export abstract class DotoliFund {
       }
 
       return {
-        calldata: DotoliFund.INTERFACE.encodeFunctionData('mintNewPosition', [fundId, params]),
+        calldata: DotoliFund.INTERFACE.encodeFunctionData('mintNewPosition', [fundId, investor, params]),
         value: toHex(0),
       }
     } else {

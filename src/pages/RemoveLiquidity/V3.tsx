@@ -23,7 +23,7 @@ import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
 import { DotoliFund } from 'interface/DotoliFund'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useCallback, useMemo, useState } from 'react'
-import { Navigate, useLocation, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useBurnV3ActionHandlers, useBurnV3State, useDerivedV3BurnInfo } from 'state/burn/v3/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -74,6 +74,8 @@ export default function RemoveLiquidityV3() {
   return <Remove fundId={fundId} investor={investor} tokenId={parsedTokenId} />
 }
 function Remove({ fundId, investor, tokenId }: { fundId: string; investor: string; tokenId: BigNumber }) {
+  const navigate = useNavigate()
+
   const { position } = useV3PositionFromTokenId(fundId ?? undefined, investor ?? undefined, tokenId)
   const theme = useTheme()
   const { account, chainId, provider } = useWeb3React()
@@ -200,10 +202,11 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
     // if there was a tx hash, we want to clear the input
     if (txnHash) {
       onPercentSelectForSlider(0)
+      navigate(`/fund/${fundId}/${investor}`)
     }
     setAttemptingTxn(false)
     setTxnHash('')
-  }, [onPercentSelectForSlider, txnHash])
+  }, [onPercentSelectForSlider, txnHash, navigate, fundId, investor])
 
   const pendingText = (
     <Trans>

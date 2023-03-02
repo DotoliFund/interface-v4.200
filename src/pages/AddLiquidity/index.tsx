@@ -264,15 +264,15 @@ export default function AddLiquidity() {
       return
     }
 
-    if (fundId && position && account && deadline) {
+    if (fundId && investor && position && account && deadline) {
       const { calldata, value } =
         hasExistingPosition && tokenId
-          ? DotoliFund.addLiquidityCallParameters(fundId, position, {
+          ? DotoliFund.addLiquidityCallParameters(fundId, investor, position, {
               tokenId,
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
             })
-          : DotoliFund.addLiquidityCallParameters(fundId, position, {
+          : DotoliFund.addLiquidityCallParameters(fundId, investor, position, {
               slippageTolerance: allowedSlippage,
               deadline: deadline.toString(),
               createPool: noLiquidity,
@@ -396,10 +396,10 @@ export default function AddLiquidity() {
     if (txHash) {
       onFieldAInput('')
       // dont jump to pool page if creating
-      navigate(`/pool/${fundId}/${investor}/${tokenId}`)
+      navigate(`/fund/${fundId}/${investor}`)
     }
     setTxHash('')
-  }, [navigate, onFieldAInput, txHash, fundId, investor, tokenId])
+  }, [navigate, onFieldAInput, txHash, fundId, investor])
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
 
