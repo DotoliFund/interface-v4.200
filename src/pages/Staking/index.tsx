@@ -297,6 +297,8 @@ export default function Staking() {
 
   const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
 
+  const isClosed = !stakingInfo?.remainingReward.greaterThan(JSBI.BigInt(0))
+
   return (
     <Trace page={PageName.STAKING_PAGE} shouldLogImpression>
       {isSupportedChain(chainId) ? (
@@ -365,46 +367,37 @@ export default function Staking() {
                 </Card>
                 {view === StakeView.STAKE ? (
                   <>
-                    <div style={{ display: 'relative' }}>
-                      <StakingSection>
-                        <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                          <StakingCurrencyInputPanel
-                            label={<Trans>staking</Trans>}
-                            value={formattedAmounts ?? ''}
-                            showMaxButton={showMaxStakingButton}
-                            currency={currency ?? null}
-                            onUserInput={handleTypeInput}
-                            onMax={handleMaxStakeInput}
-                            fiatValue={undefined}
-                            onCurrencySelect={undefined}
-                            otherCurrency={undefined}
-                            showCommonBases={true}
-                            id={SectionName.CURRENCY_INPUT_PANEL}
-                            loading={false}
-                          />
-                        </Trace>
-                      </StakingSection>
-                    </div>
+                    {!isClosed ? (
+                      <div style={{ display: 'relative' }}>
+                        <StakingSection>
+                          <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                            <StakingCurrencyInputPanel
+                              label={<Trans>staking</Trans>}
+                              value={formattedAmounts ?? ''}
+                              showMaxButton={showMaxStakingButton}
+                              currency={currency ?? null}
+                              onUserInput={handleTypeInput}
+                              onMax={handleMaxStakeInput}
+                              fiatValue={undefined}
+                              onCurrencySelect={undefined}
+                              otherCurrency={undefined}
+                              showCommonBases={true}
+                              id={SectionName.CURRENCY_INPUT_PANEL}
+                              loading={false}
+                            />
+                          </Trace>
+                        </StakingSection>
+                      </div>
+                    ) : null}
+
                     <AutoColumn gap={'8px'}>
                       <div>
                         {!account ? (
                           <ButtonLight onClick={toggleWalletModal}>
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
-                        ) : !stakingInfo?.remainingReward.greaterThan(JSBI.BigInt(0)) ? (
-                          <ButtonError
-                            onClick={() => {
-                              if (isExpertMode) {
-                                //onStake()
-                              } else {
-                                onStake()
-                              }
-                            }}
-                            width="100%"
-                            id="staking-button"
-                            disabled={true}
-                            error={true}
-                          >
+                        ) : isClosed ? (
+                          <ButtonError width="100%" id="staking-button" disabled={true} error={true}>
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Closed</Trans>
                             </Text>
@@ -508,6 +501,7 @@ export default function Staking() {
                         </Trace>
                       </StakingSection>
                     </div>
+
                     <AutoColumn gap={'8px'}>
                       <div>
                         {!account ? (
@@ -536,33 +530,41 @@ export default function Staking() {
                   </>
                 ) : view === StakeView.REWARD ? (
                   <>
-                    <div style={{ display: 'relative' }}>
-                      <StakingSection>
-                        <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                          <RewardCurrencyInputPanel
-                            label={<Trans>reward</Trans>}
-                            value={formattedAmounts ?? ''}
-                            showMaxButton={showMaxRewardButton}
-                            currency={currency ?? null}
-                            rewardCurrencyBalance={stakingInfo?.rewardAmount}
-                            onUserInput={handleTypeInput}
-                            onMax={handleMaxRewardInput}
-                            fiatValue={undefined}
-                            onCurrencySelect={undefined}
-                            otherCurrency={undefined}
-                            showCommonBases={true}
-                            id={SectionName.CURRENCY_INPUT_PANEL}
-                            loading={false}
-                          />
-                        </Trace>
-                      </StakingSection>
-                    </div>
+                    {!isClosed ? (
+                      <div style={{ display: 'relative' }}>
+                        <StakingSection>
+                          <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                            <RewardCurrencyInputPanel
+                              label={<Trans>reward</Trans>}
+                              value={formattedAmounts ?? ''}
+                              showMaxButton={showMaxRewardButton}
+                              currency={currency ?? null}
+                              rewardCurrencyBalance={stakingInfo?.rewardAmount}
+                              onUserInput={handleTypeInput}
+                              onMax={handleMaxRewardInput}
+                              fiatValue={undefined}
+                              onCurrencySelect={undefined}
+                              otherCurrency={undefined}
+                              showCommonBases={true}
+                              id={SectionName.CURRENCY_INPUT_PANEL}
+                              loading={false}
+                            />
+                          </Trace>
+                        </StakingSection>
+                      </div>
+                    ) : null}
                     <AutoColumn gap={'8px'}>
                       <div>
                         {!account ? (
                           <ButtonLight onClick={toggleWalletModal}>
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
+                        ) : isClosed ? (
+                          <ButtonError width="100%" id="staking-button" disabled={true} error={true}>
+                            <Text fontSize={20} fontWeight={500}>
+                              <Trans>Closed</Trans>
+                            </Text>
+                          </ButtonError>
                         ) : (
                           <ButtonLight
                             onClick={() => {
