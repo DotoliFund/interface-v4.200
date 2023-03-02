@@ -6,11 +6,13 @@ import {
   ApproveTransactionInfo,
   ClaimTransactionInfo,
   CollectFeesTransactionInfo,
+  CreateFundTransactionInfo,
   DepositTransactionInfo,
   ExactInputSwapTransactionInfo,
   ExactOutputSwapTransactionInfo,
   FeeTransactionInfo,
   RemoveLiquidityV3TransactionInfo,
+  SubscribeTransactionInfo,
   TransactionInfo,
   TransactionType,
   WithdrawTransactionInfo,
@@ -382,6 +384,51 @@ const FeeSummary = ({ info, transactionState }: { info: FeeTransactionInfo; tran
   )
 }
 
+const CreateFundSummary = ({
+  info,
+  transactionState,
+}: {
+  info: CreateFundTransactionInfo
+  transactionState: TransactionState
+}) => {
+  const { manager } = info
+  const actionProps = {
+    transactionState,
+    pending: <Trans>Creating fund</Trans>,
+    success: <Trans>Fund created</Trans>,
+    failed: <Trans>Fund failed</Trans>,
+  }
+
+  return (
+    <BodyWrap>
+      <Action {...actionProps} />
+      <FailedText transactionState={transactionState} />
+    </BodyWrap>
+  )
+}
+
+const SubscribeSummary = ({
+  info,
+  transactionState,
+}: {
+  info: SubscribeTransactionInfo
+  transactionState: TransactionState
+}) => {
+  const { fundId, investor } = info
+  const actionProps = {
+    transactionState,
+    pending: <Trans>Subscribing</Trans>,
+    success: <Trans>Subscribed</Trans>,
+    failed: <Trans>Subscribe to {fundId} failed</Trans>,
+  }
+
+  return (
+    <BodyWrap>
+      <Action {...actionProps} /> <FailedText transactionState={transactionState} />
+    </BodyWrap>
+  )
+}
+
 const TransactionBody = ({ info, transactionState }: { info: TransactionInfo; transactionState: TransactionState }) => {
   switch (info.type) {
     case TransactionType.SWAP:
@@ -404,6 +451,10 @@ const TransactionBody = ({ info, transactionState }: { info: TransactionInfo; tr
       return <WithdrawSummary info={info} transactionState={transactionState} />
     case TransactionType.FEE:
       return <FeeSummary info={info} transactionState={transactionState} />
+    case TransactionType.CREATE_FUND:
+      return <CreateFundSummary info={info} transactionState={transactionState} />
+    case TransactionType.SUBSCRIBE:
+      return <SubscribeSummary info={info} transactionState={transactionState} />
     default:
       return <span />
   }

@@ -33,12 +33,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ClipLoader from 'react-spinners/ClipLoader'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
+import { useTransactionAdder } from 'state/transactions/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatTime, unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
+
+import { TransactionType } from '../../state/transactions/types'
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -280,6 +283,10 @@ export default function FundPage() {
     navigate(`/fund/${fund}/${account}`)
   }
 
+  const [attemptingTxn, setAttemptingTxn] = useState(false)
+  const [txnHash, setTxnHash] = useState<string | undefined>()
+  const addTransaction = useTransactionAdder()
+
   async function onSubscribe() {
     if (!chainId || !provider || !account || !currentPageFund) return
     const { calldata, value } = DotoliInfo.subscribeCallParameters(currentPageFund)
@@ -300,7 +307,13 @@ export default function FundPage() {
           .getSigner()
           .sendTransaction(newTxn)
           .then((response) => {
-            console.log(response)
+            setTxnHash(response.hash)
+            setAttemptingTxn(false)
+            addTransaction(response, {
+              type: TransactionType.SUBSCRIBE,
+              fundId: Number(currentPageFund),
+              investor: account,
+            })
           })
       })
       .catch((error) => {

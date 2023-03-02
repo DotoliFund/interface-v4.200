@@ -1,3 +1,4 @@
+import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -16,12 +17,14 @@ import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Inbox } from 'react-feather'
+import { useTransactionAdder } from 'state/transactions/hooks'
 import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { FundDetails } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
+import { TransactionType } from '../../state/transactions/types'
 import { LoadingRows } from './styleds'
 
 const PageWrapper = styled(AutoColumn)`
@@ -257,6 +260,10 @@ export default function Account() {
     }
   }, [investingFundsLoading, managingFund, investingFunds, provider, account])
 
+  const [attemptingTxn, setAttemptingTxn] = useState(false)
+  const [txnHash, setTxnHash] = useState<string | undefined>()
+  const addTransaction = useTransactionAdder()
+
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />
   }
@@ -281,8 +288,13 @@ export default function Account() {
         return provider
           .getSigner()
           .sendTransaction(newTxn)
-          .then((response) => {
-            console.log(response)
+          .then((response: TransactionResponse) => {
+            setTxnHash(response.hash)
+            setAttemptingTxn(false)
+            addTransaction(response, {
+              type: TransactionType.CREATE_FUND,
+              manager: account,
+            })
           })
       })
       .catch((error) => {
