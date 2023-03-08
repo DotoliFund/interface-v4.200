@@ -410,7 +410,7 @@ export default function FundAccount() {
       return openPositions.map((data, index) => {
         const token0: string = data.token0
         const token1: string = data.token1
-        const fee = data.fee
+        const fee: number = data.fee
 
         let token0Symbol = ''
         let token1Symbol = ''

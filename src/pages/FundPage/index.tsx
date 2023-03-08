@@ -206,7 +206,7 @@ export default function FundPage() {
         const symbol = fundData.currentTokensSymbols[index]
         const token = new Token(chainId, data, decimals, symbol)
         const decimal = 10 ** decimals
-        return CurrencyAmount.fromRawAmount(token, fundData.currentTokensAmount[index] * decimal)
+        return CurrencyAmount.fromRawAmount(token, Math.floor(fundData.currentTokensAmount[index] * decimal))
       })
     } else {
       return []
