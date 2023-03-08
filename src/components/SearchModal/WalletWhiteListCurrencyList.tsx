@@ -33,7 +33,7 @@ const ContentWrapper = styled(Column)`
   position: relative;
 `
 
-interface WhiteListCurrencySearchProps {
+interface WalletWhiteListCurrencyListProps {
   isOpen: boolean
   showWrappedETH: boolean
   onDismiss: () => void
@@ -54,7 +54,7 @@ function isWhiteListToken(token: Token, whiteListTokenAddresses: string[]): bool
   return false
 }
 
-export function WhiteListCurrencySearch({
+export function WalletWhiteListCurrencyList({
   isOpen,
   showWrappedETH,
   onDismiss,
@@ -64,7 +64,7 @@ export function WhiteListCurrencySearch({
   showCommonBases,
   showCurrencyAmount,
   disableNonToken,
-}: WhiteListCurrencySearchProps) {
+}: WalletWhiteListCurrencyListProps) {
   const { chainId } = useWeb3React()
   const theme = useTheme()
 

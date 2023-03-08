@@ -10,6 +10,7 @@ import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { LoadingOpacityContainer } from 'components/Loader/styled'
 import { RowBetween, RowFixed } from 'components/Row'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
+import { CurrencySearchType } from 'components/SearchModal/styleds'
 import { isSupportedChain } from 'constants/chains'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
@@ -197,7 +198,7 @@ export default function SwapToInputPanel({
       {onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
-          showInvestorFundBalance={false}
+          currencySearchType={CurrencySearchType.ALL_WHITELIST_FUND_CURRENCY}
           showWrappedETH={false}
           fundId={null}
           investor={null}

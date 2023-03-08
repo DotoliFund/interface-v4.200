@@ -5,6 +5,12 @@ import styled from 'styled-components/macro'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
 
+export enum CurrencySearchType {
+  WALLET_WHITELIST_CURRENCY, //deposit
+  FUND_CURRENCY, //swap from, withdraw
+  ALL_WHITELIST_FUND_CURRENCY, // swap to
+}
+
 export const TextDot = styled.div`
   height: 3px;
   width: 3px;

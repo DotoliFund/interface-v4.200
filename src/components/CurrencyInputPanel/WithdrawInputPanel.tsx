@@ -4,6 +4,7 @@ import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer } from 'components/Loader/styled'
+import { CurrencySearchType } from 'components/SearchModal/styleds'
 import { isSupportedChain } from 'constants/chains'
 import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
@@ -202,7 +203,7 @@ export default function WithdrawInputPanel({
       {onCurrencySelect && fundId && investor ? (
         <CurrencySearchModal
           isOpen={modalOpen}
-          showInvestorFundBalance={true}
+          currencySearchType={CurrencySearchType.FUND_CURRENCY}
           showWrappedETH={false}
           fundId={fundId}
           investor={investor}
