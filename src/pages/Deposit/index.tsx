@@ -1,16 +1,14 @@
 import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonLight, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import DepositCurrencyInputPanel from 'components/CurrencyInputPanel/DepositInputPanel'
-import Loader from 'components/Loader'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
-import { AutoRow } from 'components/Row'
 import { RowBetween, RowFixed } from 'components/Row'
 import { PageWrapper, SwapWrapper as DepositWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
@@ -27,14 +25,11 @@ import { DotoliFund } from 'interface/DotoliFund'
 import { toHex } from 'interface/utils/calldata'
 import JSBI from 'jsbi'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ReactNode } from 'react'
-import { CheckCircle, HelpCircle } from 'react-feather'
+import { Info } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useDepositActionHandlers, useDepositState, useDerivedDepositInfo } from 'state/deposit/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
 import { Field } from 'state/swap/actions'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { TransactionType } from 'state/transactions/types'
@@ -43,6 +38,8 @@ import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
+
+import Loader from '../../components/Loader'
 
 const StyledDepositHeader = styled.div`
   padding: 8px 12px;
@@ -81,14 +78,6 @@ const DepositSection = styled.div`
   }
 `
 
-export function getIsValidSwapQuote(
-  trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
-  tradeState: TradeState,
-  swapInputError?: ReactNode
-): boolean {
-  return !!swapInputError && !!trade && (tradeState === TradeState.VALID || tradeState === TradeState.SYNCING)
-}
-
 export default function Deposit() {
   const params = useParams()
   const fundId = params.fundId
@@ -110,12 +99,12 @@ export default function Deposit() {
 
   // Deposit state
   const { typedValue } = useDepositState()
-  const { currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedDepositInfo()
+  const { currencyBalances, parsedAmount, currencies, inputError: depositInputError } = useDerivedDepositInfo()
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
   const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
   const { onCurrencySelection, onUserInput } = useDepositActionHandlers()
-  const isValid = !swapInputError
+  const isValid = !depositInputError
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(value)
@@ -139,7 +128,11 @@ export default function Deposit() {
   const [approvalState, approveCallback] = useApproveCallback(parsedAmounts[Field.INPUT], DOTOLI_FUND_ADDRESSES)
 
   const handleApprove = useCallback(async () => {
-    await approveCallback()
+    try {
+      await approveCallback()
+    } catch (e) {
+      console.error(e)
+    }
   }, [approveCallback])
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
@@ -151,13 +144,6 @@ export default function Deposit() {
       setApprovalSubmitted(true)
     }
   }, [approvalState, approvalSubmitted])
-
-  // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-  // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    approvalState === ApprovalState.NOT_APPROVED ||
-    approvalState === ApprovalState.PENDING ||
-    (approvalSubmitted && approvalState === ApprovalState.APPROVED)
 
   const currency = currencies[Field.INPUT]
   const tokenAddress = currency?.wrapped.address
@@ -244,8 +230,6 @@ export default function Deposit() {
     })
   }, [maxInputAmount, onUserInput])
 
-  const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
-
   const handleDismissConfirmation = () => {
     setShowConfirm(false)
     setTxHash('')
@@ -328,79 +312,52 @@ export default function Deposit() {
                 <ButtonLight onClick={toggleWalletModal}>
                   <Trans>Connect Wallet</Trans>
                 </ButtonLight>
-              ) : showApproveFlow ? (
-                <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                  <AutoColumn style={{ width: '100%' }} gap="12px">
-                    <ButtonConfirmed
-                      onClick={handleApprove}
-                      disabled={approveTokenButtonDisabled}
-                      width="100%"
-                      altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                      confirmed={approvalState === ApprovalState.APPROVED}
+              ) : approvalState === ApprovalState.NOT_APPROVED ? (
+                <ButtonPrimary onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
+                  <div style={{ height: 20 }}>
+                    <MouseoverTooltip
+                      text={
+                        <Trans>
+                          Permission is required for Uniswap to swap each token. This will expire after one month for
+                          your security.
+                        </Trans>
+                      }
                     >
-                      <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                        <span style={{ display: 'flex', alignItems: 'center' }}>
-                          {/* we need to shorten this string on mobile */}
-                          {approvalState === ApprovalState.APPROVED ? (
-                            <Trans>You can now deposit {currencies[Field.INPUT]?.symbol}</Trans>
-                          ) : (
-                            <Trans>Allow the Dotoli Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
-                          )}
-                        </span>
-                        {approvalState === ApprovalState.PENDING ? (
-                          <Loader stroke="white" />
-                        ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                          <CheckCircle size="20" color={theme.deprecated_green1} />
-                        ) : (
-                          <MouseoverTooltip
-                            text={
-                              <Trans>
-                                You must give the Dotoli smart contracts permission to use your{' '}
-                                {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
-                              </Trans>
-                            }
-                          >
-                            <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                          </MouseoverTooltip>
-                        )}
-                      </AutoRow>
-                    </ButtonConfirmed>
-                    <ButtonError
-                      onClick={() => {
-                        if (isExpertMode) {
-                          //handleSwap()
-                        } else {
-                          onDeposit()
-                        }
-                      }}
-                      width="100%"
-                      id="swap-button"
-                      disabled={!isValid || approvalState !== ApprovalState.APPROVED}
-                      error={isValid}
-                    >
-                      <Text fontSize={16} fontWeight={500}>
-                        <Trans>Deposit</Trans>
-                      </Text>
-                    </ButtonError>
-                  </AutoColumn>
-                </AutoRow>
-              ) : (
-                <ButtonError
+                      <Info size={20} />
+                    </MouseoverTooltip>
+                  </div>
+                  <Trans>Approve use of {currencies[Field.INPUT]?.symbol}</Trans>
+                </ButtonPrimary>
+              ) : approvalState === ApprovalState.PENDING ? (
+                <ButtonPrimary
                   onClick={() => {
-                    if (isExpertMode) {
-                      //handleSwap()
-                    } else {
-                      onDeposit()
-                    }
+                    return
                   }}
-                  id="swap-button"
-                  disabled={!isValid}
-                  error={isValid}
+                  id="deposit-button"
+                  disabled={true}
+                  style={{ gap: 14 }}
+                >
+                  {depositInputError ? (
+                    depositInputError
+                  ) : (
+                    <>
+                      <Loader size="20px" />
+                      <Trans>Approval pending</Trans>{' '}
+                    </>
+                  )}
+                </ButtonPrimary>
+              ) : (
+                <ButtonPrimary
+                  onClick={() => {
+                    onDeposit()
+                  }}
+                  id="deposit-button"
+                  disabled={false}
                 >
                   <Text fontSize={20} fontWeight={500}>
-                    {swapInputError ? swapInputError : <Trans>Deposit</Trans>}
+                    {depositInputError ? depositInputError : <Trans>Deposit</Trans>}
                   </Text>
-                </ButtonError>
+                </ButtonPrimary>
               )}
             </div>
           </AutoColumn>
