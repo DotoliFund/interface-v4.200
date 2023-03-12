@@ -219,29 +219,25 @@ export function useTokensPriceInETH(
 
   for (let i = 0; i < bestPools.length; i++) {
     if (bestPools[i].token0.equals(weth9)) {
-      const token0Price = bestPools[i].token0Price.quote(
-        CurrencyAmount.fromRawAmount(
-          bestPools[i].token0,
-          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(bestPools[i].token0.decimals))
-        )
-      ).quotient
-      const token0PriceDecimal = parseFloat(token0Price.toString()).toFixed(18)
-      const ethDecimal = Math.pow(10, 18).toFixed(18)
-      const token0PriceInETH = parseFloat(token0PriceDecimal) / parseFloat(ethDecimal)
-      const priceInETH = parseFloat('1') / token0PriceInETH
-      tokensPriceInETH.push([bestPools[i].token1, priceInETH])
-    } else {
       const token1Price = bestPools[i].token1Price.quote(
         CurrencyAmount.fromRawAmount(
           bestPools[i].token1,
           JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(bestPools[i].token1.decimals))
         )
       ).quotient
-      const token1PriceDecimal = parseFloat(token1Price.toString()).toFixed(18)
       const ethDecimal = Math.pow(10, 18).toFixed(18)
-      const token1PriceInETH = parseFloat(token1PriceDecimal) / parseFloat(ethDecimal)
-      const priceInETH = parseFloat('1') / token1PriceInETH
-      tokensPriceInETH.push([bestPools[i].token0, priceInETH])
+      const token1PriceInETH = parseFloat(token1Price.toString()) / parseFloat(ethDecimal)
+      tokensPriceInETH.push([bestPools[i].token1, token1PriceInETH])
+    } else {
+      const token0Price = bestPools[i].token0Price.quote(
+        CurrencyAmount.fromRawAmount(
+          bestPools[i].token0,
+          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(bestPools[i].token0.decimals))
+        )
+      ).quotient
+      const ethDecimal = Math.pow(10, 18).toFixed(18)
+      const token1PriceInETH = parseFloat(token0Price.toString()) / parseFloat(ethDecimal)
+      tokensPriceInETH.push([bestPools[i].token0, token1PriceInETH])
     }
   }
 
@@ -262,7 +258,6 @@ export function useETHPriceInUSD(chainId: number | undefined): number | undefine
 
   let bestLiquidity = '0'
   let bestPool = 0
-
   pools.map((data, index) => {
     const poolState = data[0]
     const newPool = data[1]
@@ -353,10 +348,10 @@ export function useTokensPriceInUSD(
       return null
     })
   }
+
   // get token's price in ETH
   // weth9 is removed after useTokensPriceInETH()
   const tokensPriceInETH = useTokensPriceInETH(chainId, tokensPools)
-
   //[Token, token's amount, token's price in USD]
   const tokensPriceInUSD: [CurrencyAmount<Token>, number][] = []
   if (tokens && ethPriceInUSDC && tokensPriceInETH && weth9 !== undefined) {
