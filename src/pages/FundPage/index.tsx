@@ -220,23 +220,6 @@ export default function FundPage() {
     currentTokensAmount
   )
 
-  if (formattedVolumeUSD && formattedVolumeUSD.length > 1) {
-    let totalCurrentAmountUSD = 0
-    currentTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[1]
-      totalCurrentAmountUSD += tokenAmountUSD
-      return null
-    })
-    formattedVolumeUSD.push({
-      time: nowDate,
-      current: totalCurrentAmountUSD,
-      tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
-      symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
-      tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
-      index: formattedVolumeUSD.length,
-    })
-  }
-
   const formattedLatestTokens = useMemo(() => {
     if (currentTokensAmountUSD) {
       const tokensData = currentTokensAmountUSD.map((data, index) => {
@@ -260,6 +243,41 @@ export default function FundPage() {
       return []
     }
   }, [currentTokensAmountUSD])
+
+  if (
+    formattedVolumeUSD &&
+    formattedVolumeUSD.length > 1 &&
+    formattedLatestTokens &&
+    formattedLatestTokens.length > 0
+  ) {
+    let totalCurrentAmountUSD = 0
+    currentTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[1]
+      totalCurrentAmountUSD += tokenAmountUSD
+      return null
+    })
+
+    const tokens = formattedLatestTokens.map((data, index) => {
+      return data.token
+    })
+
+    const symbols = formattedLatestTokens.map((data, index) => {
+      return data.symbol
+    })
+
+    const tokensVolume = formattedLatestTokens.map((data, index) => {
+      return data.volume
+    })
+
+    formattedVolumeUSD.push({
+      time: nowDate,
+      current: totalCurrentAmountUSD,
+      tokens,
+      symbols,
+      tokensVolume,
+      index: formattedVolumeUSD.length,
+    })
+  }
 
   const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
