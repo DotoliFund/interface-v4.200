@@ -4,14 +4,13 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonConfirmed, ButtonError, ButtonLight } from 'components/Button'
+import { ButtonError, ButtonLight } from 'components/Button'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/RewardInputPanel'
 import StakingCurrencyInputPanel from 'components/CurrencyInputPanel/StakingInputPanel'
 import UnstakingCurrencyInputPanel from 'components/CurrencyInputPanel/UnstakingInputPanel'
-import Loader from 'components/Loader'
-import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
+import { RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { PageWrapper, SwapWrapper as StakingWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
@@ -25,7 +24,7 @@ import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { CheckCircle, HelpCircle } from 'react-feather'
+import { Info } from 'react-feather'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useStakingInfo } from 'state/stake/hooks'
@@ -36,6 +35,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
+import Loader from '../../components/Loader'
 import { DTL } from '../../constants/tokens'
 
 const StyledStakingHeader = styled.div`
@@ -148,7 +148,11 @@ export default function Staking() {
   )
 
   const handleApprove = useCallback(async () => {
-    await approveCallback()
+    try {
+      await approveCallback()
+    } catch (e) {
+      console.error(e)
+    }
   }, [approveCallback])
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
@@ -409,62 +413,36 @@ export default function Staking() {
                               <Trans>Closed</Trans>
                             </Text>
                           </ButtonError>
-                        ) : showApproveFlow ? (
-                          <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                            <AutoColumn style={{ width: '100%' }} gap="12px">
-                              <ButtonConfirmed
-                                onClick={handleApprove}
-                                disabled={approveTokenButtonDisabled}
-                                width="100%"
-                                altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                                confirmed={approvalState === ApprovalState.APPROVED}
+                        ) : approvalState === ApprovalState.NOT_APPROVED ? (
+                          <ButtonLight onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
+                            <div style={{ height: 20 }}>
+                              <MouseoverTooltip
+                                text={
+                                  <Trans>
+                                    Permission is required for Uniswap to swap each token. This will expire after one
+                                    month for your security.
+                                  </Trans>
+                                }
                               >
-                                <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                                    {/* we need to shorten this string on mobile */}
-                                    {approvalState === ApprovalState.APPROVED ? (
-                                      <Trans>You can now stake {currency?.symbol}</Trans>
-                                    ) : (
-                                      <Trans>Allow the Dotoli Protocol to use your {currency?.symbol}</Trans>
-                                    )}
-                                  </span>
-                                  {approvalState === ApprovalState.PENDING ? (
-                                    <Loader stroke="white" />
-                                  ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                                    <CheckCircle size="20" color={theme.deprecated_green1} />
-                                  ) : (
-                                    <MouseoverTooltip
-                                      text={
-                                        <Trans>
-                                          You must give the Dotoli smart contracts permission to use your{' '}
-                                          {currency?.symbol}. You only have to do this once per token.
-                                        </Trans>
-                                      }
-                                    >
-                                      <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                                    </MouseoverTooltip>
-                                  )}
-                                </AutoRow>
-                              </ButtonConfirmed>
-                              <ButtonError
-                                onClick={() => {
-                                  if (isExpertMode) {
-                                    //onStake()
-                                  } else {
-                                    onStake()
-                                  }
-                                }}
-                                width="100%"
-                                id="staking-button"
-                                disabled={approvalState !== ApprovalState.APPROVED}
-                                error={true}
-                              >
-                                <Text fontSize={16} fontWeight={500}>
-                                  <Trans>Stake</Trans>
-                                </Text>
-                              </ButtonError>
-                            </AutoColumn>
-                          </AutoRow>
+                                <Info size={20} />
+                              </MouseoverTooltip>
+                            </div>
+                            <Trans>Approve use of DTL</Trans>
+                          </ButtonLight>
+                        ) : approvalState === ApprovalState.PENDING ? (
+                          <ButtonLight
+                            onClick={() => {
+                              return
+                            }}
+                            id="deposit-button"
+                            disabled={true}
+                            style={{ gap: 14 }}
+                          >
+                            <>
+                              <Loader size="20px" />
+                              <Trans>Approval pending</Trans>{' '}
+                            </>
+                          </ButtonLight>
                         ) : (
                           <ButtonLight
                             onClick={() => {

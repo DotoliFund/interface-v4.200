@@ -33,7 +33,6 @@ import { useDepositActionHandlers, useDepositState, useDerivedDepositInfo } from
 import { Field } from 'state/swap/actions'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { TransactionType } from 'state/transactions/types'
-import { useExpertModeManager } from 'state/user/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -93,9 +92,6 @@ export default function Deposit() {
 
   // toggle wallet when disconnected
   const toggleWalletModal = useToggleWalletModal()
-
-  // for expert mode
-  const [isExpertMode] = useExpertModeManager()
 
   // Deposit state
   const { typedValue } = useDepositState()
