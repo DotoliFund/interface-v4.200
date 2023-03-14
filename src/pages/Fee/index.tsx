@@ -17,10 +17,12 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
+import { isSupportedChain } from 'constants/chains'
 import { useDotoliInfoContract } from 'hooks/useContract'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { useSingleCallResult } from 'lib/hooks/multicall'
+import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -30,7 +32,7 @@ import { useDerivedFeeInfo, useFeeActionHandlers, useFeeState } from 'state/fee/
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { TransactionType } from 'state/transactions/types'
 import { useExpertModeManager } from 'state/user/hooks'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { FundToken } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -76,6 +78,7 @@ export default function Fee() {
   const params = useParams()
   const fundId = params.fundId
   const { account, chainId, provider } = useWeb3React()
+  const theme = useTheme()
 
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -197,110 +200,123 @@ export default function Fee() {
     setTxHash('')
   }
 
-  return (
-    <Trace page={PageName.FEE_PAGE} shouldLogImpression>
-      <>
-        <TransactionConfirmationModal
-          isOpen={showConfirm}
-          onDismiss={() => {
-            handleDismissConfirmation()
-          }}
-          attemptingTxn={attemptingTxn}
-          hash={txHash}
-          content={() =>
-            feeErrorMessage ? (
-              <TransactionErrorContent onDismiss={handleDismissConfirmation} message={feeErrorMessage} />
-            ) : (
-              <ConfirmationModalContent
-                title={<Trans>Confirm Fee</Trans>}
-                onDismiss={handleDismissConfirmation}
-                topContent={() => {
-                  return null
-                }}
-                bottomContent={() => {
-                  return null
-                }}
-              />
-            )
-          }
-          pendingText={
-            <Trans>
-              {/* Withdrawing Fee {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
+  if (!isSupportedChain(chainId)) {
+    return (
+      <ErrorContainer>
+        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+          <NetworkIcon strokeWidth={1.2} />
+          <div data-testid="pools-unsupported-err">
+            <Trans>Your connected network is unsupported.</Trans>
+          </div>
+        </ThemedText.DeprecatedBody>
+      </ErrorContainer>
+    )
+  } else {
+    return (
+      <Trace page={PageName.FEE_PAGE} shouldLogImpression>
+        <>
+          <TransactionConfirmationModal
+            isOpen={showConfirm}
+            onDismiss={() => {
+              handleDismissConfirmation()
+            }}
+            attemptingTxn={attemptingTxn}
+            hash={txHash}
+            content={() =>
+              feeErrorMessage ? (
+                <TransactionErrorContent onDismiss={handleDismissConfirmation} message={feeErrorMessage} />
+              ) : (
+                <ConfirmationModalContent
+                  title={<Trans>Confirm Fee</Trans>}
+                  onDismiss={handleDismissConfirmation}
+                  topContent={() => {
+                    return null
+                  }}
+                  bottomContent={() => {
+                    return null
+                  }}
+                />
+              )
+            }
+            pendingText={
+              <Trans>
+                {/* Withdrawing Fee {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
           {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol} */}
-              Fee receiving
-            </Trans>
-          }
-          currencyToAdd={undefined}
-        />
-        <PageWrapper>
-          <FeeWrapper id="fee-page">
-            <StyledFeeHeader>
-              <RowBetween>
-                <RowFixed>
-                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
-                    <Trans>Fee</Trans>
-                  </ThemedText.DeprecatedBlack>
-                </RowFixed>
-              </RowBetween>
-            </StyledFeeHeader>
-            <AutoColumn gap={'6px'}>
-              <div style={{ display: 'relative' }}>
-                <FeeSection>
-                  <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                    <FeeCurrencyInputPanel
-                      label={<Trans>Fee</Trans>}
-                      value={formattedAmounts[Field.INPUT]}
-                      showMaxButton={showMaxButton}
-                      currency={currency ?? null}
-                      feeTokens={feeTokens}
-                      onUserInput={handleTypeInput}
-                      onMax={handleMaxInput}
-                      fiatValue={fiatValueInput ?? undefined}
-                      onCurrencySelect={handleInputSelect}
-                      otherCurrency={currency}
-                      showCommonBases={true}
-                      id={SectionName.CURRENCY_INPUT_PANEL}
-                      loading={false}
-                    />
-                  </Trace>
-                </FeeSection>
-              </div>
-              <div>
-                {isFeeEmpty ? (
-                  <ButtonPrimary disabled={true}>
-                    <ThemedText.DeprecatedMain mb="4px">
-                      <Trans>No Fees</Trans>
-                    </ThemedText.DeprecatedMain>
-                  </ButtonPrimary>
-                ) : !account ? (
-                  <ButtonLight onClick={toggleWalletModal}>
-                    <Trans>Connect Wallet</Trans>
-                  </ButtonLight>
-                ) : (
-                  <ButtonError
-                    onClick={() => {
-                      if (isExpertMode) {
-                        //onFee()
-                      } else {
-                        onFee()
-                      }
-                    }}
-                    id="fee-button"
-                    disabled={!isValid}
-                    error={isValid}
-                  >
-                    <Text fontSize={20} fontWeight={500}>
-                      {feeInputError ? feeInputError : <Trans>Fee</Trans>}
-                    </Text>
-                  </ButtonError>
-                )}
-              </div>
-            </AutoColumn>
-          </FeeWrapper>
-          <NetworkAlert />
-        </PageWrapper>
-        <SwitchLocaleLink />
-      </>
-    </Trace>
-  )
+                Fee receiving
+              </Trans>
+            }
+            currencyToAdd={undefined}
+          />
+          <PageWrapper>
+            <FeeWrapper id="fee-page">
+              <StyledFeeHeader>
+                <RowBetween>
+                  <RowFixed>
+                    <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                      <Trans>Fee</Trans>
+                    </ThemedText.DeprecatedBlack>
+                  </RowFixed>
+                </RowBetween>
+              </StyledFeeHeader>
+              <AutoColumn gap={'6px'}>
+                <div style={{ display: 'relative' }}>
+                  <FeeSection>
+                    <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                      <FeeCurrencyInputPanel
+                        label={<Trans>Fee</Trans>}
+                        value={formattedAmounts[Field.INPUT]}
+                        showMaxButton={showMaxButton}
+                        currency={currency ?? null}
+                        feeTokens={feeTokens}
+                        onUserInput={handleTypeInput}
+                        onMax={handleMaxInput}
+                        fiatValue={fiatValueInput ?? undefined}
+                        onCurrencySelect={handleInputSelect}
+                        otherCurrency={currency}
+                        showCommonBases={true}
+                        id={SectionName.CURRENCY_INPUT_PANEL}
+                        loading={false}
+                      />
+                    </Trace>
+                  </FeeSection>
+                </div>
+                <div>
+                  {isFeeEmpty ? (
+                    <ButtonPrimary disabled={true}>
+                      <ThemedText.DeprecatedMain mb="4px">
+                        <Trans>No Fees</Trans>
+                      </ThemedText.DeprecatedMain>
+                    </ButtonPrimary>
+                  ) : !account ? (
+                    <ButtonLight onClick={toggleWalletModal}>
+                      <Trans>Connect Wallet</Trans>
+                    </ButtonLight>
+                  ) : (
+                    <ButtonError
+                      onClick={() => {
+                        if (isExpertMode) {
+                          //onFee()
+                        } else {
+                          onFee()
+                        }
+                      }}
+                      id="fee-button"
+                      disabled={!isValid}
+                      error={isValid}
+                    >
+                      <Text fontSize={20} fontWeight={500}>
+                        {feeInputError ? feeInputError : <Trans>Fee</Trans>}
+                      </Text>
+                    </ButtonError>
+                  )}
+                </div>
+              </AutoColumn>
+            </FeeWrapper>
+            <NetworkAlert />
+          </PageWrapper>
+          <SwitchLocaleLink />
+        </>
+      </Trace>
+    )
+  }
 }

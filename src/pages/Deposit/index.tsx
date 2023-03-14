@@ -18,12 +18,14 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
+import { isSupportedChain } from 'constants/chains'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { toHex } from 'interface/utils/calldata'
 import JSBI from 'jsbi'
+import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Info } from 'react-feather'
 import { useParams } from 'react-router-dom'
@@ -231,136 +233,143 @@ export default function Deposit() {
     setTxHash('')
   }
 
-  return (
-    <Trace page={PageName.DEPOSIT_PAGE} shouldLogImpression>
-      <TransactionConfirmationModal
-        isOpen={showConfirm}
-        onDismiss={() => {
-          handleDismissConfirmation()
-        }}
-        attemptingTxn={attemptingTxn}
-        hash={txHash}
-        content={() =>
-          depositErrorMessage ? (
-            <TransactionErrorContent onDismiss={handleDismissConfirmation} message={depositErrorMessage} />
-          ) : (
-            <ConfirmationModalContent
-              title={<Trans>Confirm Deposit</Trans>}
-              onDismiss={handleDismissConfirmation}
-              topContent={() => {
-                return null
-              }}
-              bottomContent={() => {
-                return null
-              }}
-            />
-          )
-        }
-        pendingText={
-          <Trans>
-            {/* Depositing {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
-          {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol} */}
-            Depositing
-          </Trans>
-        }
-        currencyToAdd={undefined}
-      />
-      <PageWrapper>
-        <DepositWrapper id="deposit-page">
-          <StyledDepositHeader>
-            <RowBetween>
-              <RowFixed>
-                <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
-                  <Trans>Deposit</Trans>
-                </ThemedText.DeprecatedBlack>
-              </RowFixed>
-            </RowBetween>
-          </StyledDepositHeader>
-          <AutoColumn gap={'6px'}>
-            <div style={{ display: 'relative' }}>
-              <DepositSection>
-                <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
-                  <DepositCurrencyInputPanel
-                    label={<Trans>Deposit</Trans>}
-                    value={formattedAmounts[Field.INPUT]}
-                    showMaxButton={showMaxButton}
-                    currency={currencies[Field.INPUT] ?? null}
-                    onUserInput={handleTypeInput}
-                    onMax={handleMaxInput}
-                    fiatValue={fiatValueInput ?? undefined}
-                    onCurrencySelect={handleInputSelect}
-                    otherCurrency={currencies[Field.INPUT]}
-                    showCommonBases={true}
-                    id={SectionName.CURRENCY_INPUT_PANEL}
-                    loading={false}
-                  />
-                </Trace>
-              </DepositSection>
-            </div>
-            <div>
-              {addIsUnsupported ? (
-                <ButtonPrimary disabled={true}>
-                  <ThemedText.DeprecatedMain mb="4px">
-                    <Trans>Unsupported Asset</Trans>
-                  </ThemedText.DeprecatedMain>
-                </ButtonPrimary>
-              ) : !account ? (
-                <ButtonLight onClick={toggleWalletModal}>
-                  <Trans>Connect Wallet</Trans>
-                </ButtonLight>
-              ) : approvalState === ApprovalState.NOT_APPROVED ? (
-                <ButtonPrimary onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
-                  <div style={{ height: 20 }}>
-                    <MouseoverTooltip
-                      text={
-                        <Trans>
-                          Permission is required for Uniswap to swap each token. This will expire after one month for
-                          your security.
-                        </Trans>
-                      }
-                    >
-                      <Info size={20} />
-                    </MouseoverTooltip>
-                  </div>
-                  <Trans>Approve use of {currencies[Field.INPUT]?.symbol}</Trans>
-                </ButtonPrimary>
-              ) : approvalState === ApprovalState.PENDING ? (
-                <ButtonPrimary
-                  onClick={() => {
-                    return
-                  }}
-                  id="deposit-button"
-                  disabled={true}
-                  style={{ gap: 14 }}
-                >
-                  {depositInputError ? (
-                    depositInputError
-                  ) : (
-                    <>
-                      <Loader size="20px" />
-                      <Trans>Approval pending</Trans>{' '}
-                    </>
-                  )}
-                </ButtonPrimary>
-              ) : (
-                <ButtonPrimary
-                  onClick={() => {
-                    onDeposit()
-                  }}
-                  id="deposit-button"
-                  disabled={false}
-                >
-                  <Text fontSize={20} fontWeight={500}>
-                    {depositInputError ? depositInputError : <Trans>Deposit</Trans>}
-                  </Text>
-                </ButtonPrimary>
-              )}
-            </div>
-          </AutoColumn>
-        </DepositWrapper>
-        <NetworkAlert />
-      </PageWrapper>
-      <SwitchLocaleLink />
-    </Trace>
-  )
+  if (!isSupportedChain(chainId)) {
+    return (
+      <ErrorContainer>
+        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+          <NetworkIcon strokeWidth={1.2} />
+          <div data-testid="pools-unsupported-err">
+            <Trans>Your connected network is unsupported.</Trans>
+          </div>
+        </ThemedText.DeprecatedBody>
+      </ErrorContainer>
+    )
+  } else {
+    return (
+      <Trace page={PageName.DEPOSIT_PAGE} shouldLogImpression>
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          onDismiss={() => {
+            handleDismissConfirmation()
+          }}
+          attemptingTxn={attemptingTxn}
+          hash={txHash}
+          content={() =>
+            depositErrorMessage ? (
+              <TransactionErrorContent onDismiss={handleDismissConfirmation} message={depositErrorMessage} />
+            ) : (
+              <ConfirmationModalContent
+                title={<Trans>Confirm Deposit</Trans>}
+                onDismiss={handleDismissConfirmation}
+                topContent={() => {
+                  return null
+                }}
+                bottomContent={() => {
+                  return null
+                }}
+              />
+            )
+          }
+          pendingText={<Trans>Depositing</Trans>}
+          currencyToAdd={undefined}
+        />
+        <PageWrapper>
+          <DepositWrapper id="deposit-page">
+            <StyledDepositHeader>
+              <RowBetween>
+                <RowFixed>
+                  <ThemedText.DeprecatedBlack fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                    <Trans>Deposit</Trans>
+                  </ThemedText.DeprecatedBlack>
+                </RowFixed>
+              </RowBetween>
+            </StyledDepositHeader>
+            <AutoColumn gap={'6px'}>
+              <div style={{ display: 'relative' }}>
+                <DepositSection>
+                  <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
+                    <DepositCurrencyInputPanel
+                      label={<Trans>Deposit</Trans>}
+                      value={formattedAmounts[Field.INPUT]}
+                      showMaxButton={showMaxButton}
+                      currency={currencies[Field.INPUT] ?? null}
+                      onUserInput={handleTypeInput}
+                      onMax={handleMaxInput}
+                      fiatValue={fiatValueInput ?? undefined}
+                      onCurrencySelect={handleInputSelect}
+                      otherCurrency={currencies[Field.INPUT]}
+                      showCommonBases={true}
+                      id={SectionName.CURRENCY_INPUT_PANEL}
+                      loading={false}
+                    />
+                  </Trace>
+                </DepositSection>
+              </div>
+              <div>
+                {addIsUnsupported ? (
+                  <ButtonPrimary disabled={true}>
+                    <ThemedText.DeprecatedMain mb="4px">
+                      <Trans>Unsupported Asset</Trans>
+                    </ThemedText.DeprecatedMain>
+                  </ButtonPrimary>
+                ) : !account ? (
+                  <ButtonLight onClick={toggleWalletModal}>
+                    <Trans>Connect Wallet</Trans>
+                  </ButtonLight>
+                ) : approvalState === ApprovalState.NOT_APPROVED ? (
+                  <ButtonPrimary onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
+                    <div style={{ height: 20 }}>
+                      <MouseoverTooltip
+                        text={
+                          <Trans>
+                            Permission is required for Uniswap to swap each token. This will expire after one month for
+                            your security.
+                          </Trans>
+                        }
+                      >
+                        <Info size={20} />
+                      </MouseoverTooltip>
+                    </div>
+                    <Trans>Approve use of {currencies[Field.INPUT]?.symbol}</Trans>
+                  </ButtonPrimary>
+                ) : approvalState === ApprovalState.PENDING ? (
+                  <ButtonPrimary
+                    onClick={() => {
+                      return
+                    }}
+                    id="deposit-button"
+                    disabled={true}
+                    style={{ gap: 14 }}
+                  >
+                    {depositInputError ? (
+                      depositInputError
+                    ) : (
+                      <>
+                        <Loader size="20px" />
+                        <Trans>Approval pending</Trans>{' '}
+                      </>
+                    )}
+                  </ButtonPrimary>
+                ) : (
+                  <ButtonPrimary
+                    onClick={() => {
+                      onDeposit()
+                    }}
+                    id="deposit-button"
+                    disabled={false}
+                  >
+                    <Text fontSize={20} fontWeight={500}>
+                      {depositInputError ? depositInputError : <Trans>Deposit</Trans>}
+                    </Text>
+                  </ButtonPrimary>
+                )}
+              </div>
+            </AutoColumn>
+          </DepositWrapper>
+          <NetworkAlert />
+        </PageWrapper>
+        <SwitchLocaleLink />
+      </Trace>
+    )
+  }
 }

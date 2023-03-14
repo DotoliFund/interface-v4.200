@@ -145,8 +145,8 @@ msgstr "높은 가격 영향 거래를 허용하고 확인 화면을 건너 뜁�
 
 #: src/pages/Deposit/index.tsx
 #: src/pages/Staking/index.tsx
-msgid "Allow the Dotoli Protocol to use your {0}"
-msgstr "Dotoli 프로토콜이 귀하의 {0}을(를) 사용하도록 허용"
+#~ msgid "Allow the Dotoli Protocol to use your {0}"
+#~ msgstr "Dotoli 프로토콜이 귀하의 {0}을(를) 사용하도록 허용"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Amount"
@@ -156,9 +156,22 @@ msgstr "금액"
 msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 msgstr "교환을 실행하는 중에 오류가 발생했습니다. 가격변동 허용치를 높여야 할 수도 있습니다. 그래도 작동하지 않으면 교환중인 토큰이 Uniswap과 호환되지 않는 것일 수 있습니다. 참고: 전송 수수료 및 리베이스 토큰은 Uniswap V3와 호환되지 않습니다."
 
+#: src/pages/Deposit/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Approval pending"
+msgstr ""
+
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Approve"
 msgstr "승인"
+
+#: src/pages/Staking/index.tsx
+msgid "Approve use of DTL"
+msgstr ""
+
+#: src/pages/Deposit/index.tsx
+msgid "Approve use of {0}"
+msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Approve {0}"
@@ -293,6 +306,7 @@ msgstr "닫기"
 
 #: src/components/Badge/RangeBadge.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/Staking/index.tsx
 msgid "Closed"
 msgstr "닫힘"
 
@@ -449,6 +463,10 @@ msgstr "생성 날짜 :"
 msgid "Creating"
 msgstr "생성 중"
 
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Creating fund"
+msgstr ""
+
 #: src/components/Tables/InvestorTable.tsx
 #: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx
@@ -457,12 +475,24 @@ msgid "Current"
 msgstr "유동 자산"
 
 #: src/components/FundListItem/index.tsx
-msgid "Current :"
-msgstr "유동 자산 :"
+#~ msgid "Current :"
+#~ msgstr "유동 자산 :"
 
 #: src/pages/FundPage/index.tsx
-msgid "Current Tokens"
-msgstr "유동 자산 토큰"
+msgid "Current Asset"
+msgstr ""
+
+#: src/components/FundListItem/index.tsx
+msgid "Current Asset :"
+msgstr ""
+
+#: src/pages/FundPage/index.tsx
+msgid "Current Asset Tokens"
+msgstr ""
+
+#: src/pages/FundPage/index.tsx
+#~ msgid "Current Tokens"
+#~ msgstr "유동 자산 토큰"
 
 #: src/components/PositionPreview/index.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -491,7 +521,6 @@ msgstr "{0} 에게 투표권 위임"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 #: src/components/Tables/TransactionTable.tsx
-#: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
@@ -713,6 +742,14 @@ msgstr "펀드"
 #: src/pages/FundPage/index.tsx
 msgid "Fund :"
 msgstr "펀드 :"
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Fund created"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Fund failed"
+msgstr ""
 
 #: src/pages/Overview/index.tsx
 msgid "Funds :"
@@ -984,7 +1021,6 @@ msgid "Missing dependencies"
 msgstr "누락된 종속성"
 
 #: src/pages/FundAccount/index.tsx
-#: src/pages/FundAccount/index.tsx
 msgid "More"
 msgstr "추가"
 
@@ -1033,9 +1069,10 @@ msgstr "데이터 없음"
 msgid "No fee tokens"
 msgstr "수수료 토큰 없음"
 
+#: src/components/SearchModal/AllWhiteListFundCurrencyList.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/InvestorHoldingCurrencySearch.tsx
-#: src/components/SearchModal/WhiteListCurrencySearch.tsx
+#: src/components/SearchModal/FundCurrencyList.tsx
+#: src/components/SearchModal/WalletWhiteListCurrencyList.tsx
 msgid "No results found."
 msgstr "검색 결과가 없습니다"
 
@@ -1090,6 +1127,11 @@ msgstr "개요"
 #: src/components/WalletDropdown/DefaultMenu.tsx
 msgid "Pending"
 msgstr "보류 중"
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Permission is required for Uniswap to swap each token. This will expire after one month for your security."
+msgstr ""
 
 #: src/constants/tokenSafety.tsx
 msgid "Please do your own research before trading."
@@ -1236,9 +1278,10 @@ msgstr "쌍 선택"
 
 #: src/components/CurrencyInputPanel/DepositInputPanel.tsx
 #: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
+#: src/components/SearchModal/AllWhiteListFundCurrencyList.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/InvestorHoldingCurrencySearch.tsx
-#: src/components/SearchModal/WhiteListCurrencySearch.tsx
+#: src/components/SearchModal/FundCurrencyList.tsx
+#: src/components/SearchModal/WalletWhiteListCurrencyList.tsx
 #: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
@@ -1301,7 +1344,6 @@ msgstr "문제가 발생했습니다"
 
 #: src/pages/Staking/index.tsx
 #: src/pages/Staking/index.tsx
-#: src/pages/Staking/index.tsx
 msgid "Stake"
 msgstr "스테이킹"
 
@@ -1324,13 +1366,25 @@ msgstr "새 제안 제출"
 msgid "Subscribe"
 msgstr "구독"
 
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Subscribe to {fundId} failed"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Subscribed"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Subscribing"
+msgstr ""
+
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "Success"
 msgstr "성공"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/swap/SwapHeader.tsx
 #: src/components/Tables/TransactionTable.tsx
+#: src/components/swap/SwapHeader.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx
@@ -1546,7 +1600,6 @@ msgstr "지원되지 않는 토큰"
 
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
-#: src/pages/Overview/index.tsx
 msgid "Tokens"
 msgstr "토큰"
 
@@ -1563,8 +1616,16 @@ msgid "Top funds"
 msgstr "상위 펀드"
 
 #: src/pages/FundAccount/index.tsx
-msgid "Total Tokens"
-msgstr "총 토큰"
+msgid "Total Asset"
+msgstr ""
+
+#: src/pages/FundAccount/index.tsx
+msgid "Total Asset Tokens"
+msgstr ""
+
+#: src/pages/FundAccount/index.tsx
+#~ msgid "Total Tokens"
+#~ msgstr "총 토큰"
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"
@@ -1697,8 +1758,8 @@ msgstr "Explorer에서 거래 보기"
 
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
-msgid "Volume"
-msgstr "Volume"
+#~ msgid "Volume"
+#~ msgstr "Volume"
 
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
@@ -1720,6 +1781,10 @@ msgstr "지갑 주소 또는 ENS 이름"
 #: src/constants/tokenSafety.tsx
 msgid "Warning"
 msgstr "경고"
+
+#: src/pages/Overview/index.tsx
+msgid "WhiteList Tokens"
+msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 #: src/components/Tables/TransactionTable.tsx
@@ -1770,12 +1835,12 @@ msgid "Wrapping"
 msgstr "Wrapping"
 
 #: src/pages/Deposit/index.tsx
-msgid "You can now deposit {0}"
-msgstr "이제 {0}를 입금할 수 있습니다."
+#~ msgid "You can now deposit {0}"
+#~ msgstr "이제 {0}를 입금할 수 있습니다."
 
 #: src/pages/Staking/index.tsx
-msgid "You can now stake {0}"
-msgstr "이제 {0}를 스테이킹할 수 있습니다."
+#~ msgid "You can now stake {0}"
+#~ msgstr "이제 {0}를 스테이킹할 수 있습니다."
 
 #: src/components/Header/ChainConnectivityWarning.tsx
 msgid "You may have lost your network connection, or {label} might be down right now."
@@ -1787,8 +1852,8 @@ msgstr "네트워크 연결이 끊어졌을 수 있습니다."
 
 #: src/pages/Deposit/index.tsx
 #: src/pages/Staking/index.tsx
-msgid "You must give the Dotoli smart contracts permission to use your {0}. You only have to do this once per token."
-msgstr "{0}을 사용하려면 Dotoli 스마트 계약에 권한을 부여해야합니다. 토큰 당 한 번만 이 작업을 수행하면 됩니다."
+#~ msgid "You must give the Dotoli smart contracts permission to use your {0}. You only have to do this once per token."
+#~ msgstr "{0}을 사용하려면 Dotoli 스마트 계약에 권한을 부여해야합니다. 토큰 당 한 번만 이 작업을 수행하면 됩니다."
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "You will also collect fees earned from this position."
@@ -2002,9 +2067,17 @@ msgstr "{description}"
 msgid "{headline}"
 msgstr "{headline}"
 
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "{investor} Subscribe to fund: {fundId}"
+msgstr ""
+
 #: src/components/NetworkAlert/NetworkAlert.tsx
 msgid "{label} token bridge"
 msgstr "{label} 토큰 브릿지"
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "{manager} Create Fund"
+msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "{percentForSlider}%"
