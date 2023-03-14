@@ -506,9 +506,13 @@ export default function FundPage() {
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="16px">
                           {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[tokenIndexHover].symbol
+                            ? formattedLatestTokens[tokenIndexHover].symbol === 'WETH'
+                              ? 'ETH'
+                              : formattedLatestTokens[tokenIndexHover].symbol
                             : formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[0].symbol
+                            ? formattedLatestTokens[0].symbol === 'WETH'
+                              ? 'ETH'
+                              : formattedLatestTokens[0].symbol
                             : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
@@ -562,9 +566,13 @@ export default function FundPage() {
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="16px">
                           {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0
-                            ? formattedFeeTokens[feeIndexHover].symbol
+                            ? formattedFeeTokens[feeIndexHover].symbol === 'WETH'
+                              ? 'ETH'
+                              : formattedFeeTokens[feeIndexHover].symbol
                             : formattedFeeTokens && formattedFeeTokens.length > 0
-                            ? formattedFeeTokens[0].symbol
+                            ? formattedFeeTokens[0].symbol === 'WETH'
+                              ? 'ETH'
+                              : formattedFeeTokens[0].symbol
                             : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>

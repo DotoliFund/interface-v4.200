@@ -931,9 +931,13 @@ export default function FundAccount() {
                       <AutoRow>
                         <ThemedText.DeprecatedMediumHeader fontSize="18px">
                           {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[tokenIndexHover].symbol
+                            ? formattedLatestTokens[tokenIndexHover].symbol === 'WETH'
+                              ? 'ETH'
+                              : formattedLatestTokens[tokenIndexHover].symbol
                             : formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[0].symbol
+                            ? formattedLatestTokens[0].symbol === 'WETH'
+                              ? 'ETH'
+                              : formattedLatestTokens[0].symbol
                             : null}
                           &nbsp;&nbsp;
                         </ThemedText.DeprecatedMediumHeader>
