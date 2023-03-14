@@ -816,7 +816,7 @@ export default function FundAccount() {
               <AutoColumn gap="md">
                 <AutoRow gap="md">
                   <ThemedText.DeprecatedMain ml="8px">
-                    <Trans>Total Tokens</Trans>
+                    <Trans>Total Asset Tokens</Trans>
                   </ThemedText.DeprecatedMain>
                 </AutoRow>
                 <PieChart data={tokenHover} color={activeNetwork.primaryColor} />
@@ -830,7 +830,7 @@ export default function FundAccount() {
                     fontSize="12px"
                     onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                   >
-                    <Trans>Volume</Trans>
+                    <Trans>Total Asset</Trans>
                   </ToggleElement>
                   <ToggleElement
                     isActive={view === ChartView.TOKENS}

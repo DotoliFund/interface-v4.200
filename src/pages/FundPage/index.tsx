@@ -419,7 +419,7 @@ export default function FundPage() {
               <AutoColumn gap="md">
                 <AutoRow gap="md">
                   <ThemedText.DeprecatedMain ml="8px">
-                    <Trans>Current Tokens</Trans>
+                    <Trans>Current Asset Tokens</Trans>
                   </ThemedText.DeprecatedMain>
                 </AutoRow>
                 <PieChart
@@ -430,13 +430,13 @@ export default function FundPage() {
             </DarkGreyCard>
             <DarkGreyCard>
               <ToggleRow>
-                <ToggleWrapper width="240px">
+                <ToggleWrapper width="260px">
                   <ToggleElement
                     isActive={view === ChartView.VOL_USD}
                     fontSize="12px"
                     onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                   >
-                    <Trans>Volume</Trans>
+                    <Trans>Current Asset</Trans>
                   </ToggleElement>
                   <ToggleElement
                     isActive={view === ChartView.TOKENS}

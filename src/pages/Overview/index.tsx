@@ -282,7 +282,7 @@ export default function Overview() {
             </DarkGreyCard>
             <RowBetween mt={'16px'}>
               <ThemedText.DeprecatedMain fontSize="22px">
-                <Trans>Tokens</Trans>
+                <Trans>WhiteList Tokens</Trans>
               </ThemedText.DeprecatedMain>
             </RowBetween>
             <DarkGreyCard>

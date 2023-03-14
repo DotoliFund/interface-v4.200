@@ -153,7 +153,7 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             &nbsp;
             <RangeText>
               <ExtentsText>
-                <Trans>Current : </Trans>
+                <Trans>Current Asset : </Trans>
               </ExtentsText>
               {formatDollarAmount(fundData.currentUSD)}
             </RangeText>
