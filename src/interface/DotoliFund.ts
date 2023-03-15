@@ -268,20 +268,6 @@ export abstract class DotoliFund {
             sqrtPriceLimitX96: 0,
             path: toHex(''),
           })
-        } else {
-          //exactOutputSingleParams
-          params.push({
-            swapType: SwapType.EXACT_OUTPUT_SINGLE_HOP,
-            tokenIn: route.tokenPath[0].address,
-            tokenOut: route.tokenPath[1].address,
-            fee: route.pools[0].fee,
-            amountIn: toHex(0),
-            amountOut,
-            amountInMaximum: amountIn,
-            amountOutMinimum: toHex(0),
-            sqrtPriceLimitX96: 0,
-            path: toHex(''),
-          })
         }
       } else {
         const path: string = encodeRouteToPath(route, trade.tradeType === TradeType.EXACT_OUTPUT)
@@ -297,20 +283,6 @@ export abstract class DotoliFund {
             amountOut: toHex(0),
             amountInMaximum: toHex(0),
             amountOutMinimum: amountOut,
-            sqrtPriceLimitX96: 0,
-            path,
-          })
-        } else {
-          //exactOutputParams
-          params.push({
-            swapType: SwapType.EXACT_OUTPUT_MULTI_HOP,
-            tokenIn: NULL_ADDRESS,
-            tokenOut: NULL_ADDRESS,
-            fee: 0,
-            amountIn: toHex(0),
-            amountOut,
-            amountInMaximum: amountIn,
-            amountOutMinimum: toHex(0),
             sqrtPriceLimitX96: 0,
             path,
           })
