@@ -109,7 +109,7 @@ export default function SwapToInputPanel({
               className="token-amount-input"
               value={value}
               onUserInput={onUserInput}
-              disabled={!chainAllowed}
+              disabled={true}
               $loading={loading}
             />
           )}

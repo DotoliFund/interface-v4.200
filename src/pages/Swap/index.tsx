@@ -487,7 +487,7 @@ export default function Swap() {
                   />
                 </Trace>
               </SwapSection>
-              <ArrowWrapper clickable={isSupportedChain(chainId)}>
+              <ArrowWrapper clickable={false}>
                 <TraceEvent
                   events={[Event.onClick]}
                   name={EventName.SWAP_TOKENS_REVERSED}
@@ -495,7 +495,8 @@ export default function Swap() {
                 >
                   <ArrowContainer
                     onClick={() => {
-                      onSwitchTokens()
+                      //onSwitchTokens()
+                      return null
                     }}
                     color={theme.textPrimary}
                   >
@@ -517,7 +518,9 @@ export default function Swap() {
                   <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
                     <SwapToCurrencyInputPanel
                       value={formattedAmounts[Field.OUTPUT]}
-                      onUserInput={handleTypeOutput}
+                      onUserInput={() => {
+                        return null
+                      }}
                       label={
                         independentField === Field.INPUT && !showWrap ? <Trans>To (at least)</Trans> : <Trans>To</Trans>
                       }
