@@ -41,7 +41,7 @@ import { ExternalLink, ThemedText } from 'theme'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatTime, unixToDate } from 'utils/date'
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 import { TransactionType } from '../../state/transactions/types'
 
@@ -543,15 +543,13 @@ export default function FundPage() {
                             </ThemedText.DeprecatedMain>
                           ) : null}
                         </AutoRow>
-                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                          <MonoSpace>
-                            {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                              ? formattedLatestTokens[tokenIndexHover].amount
-                              : formattedLatestTokens && formattedLatestTokens.length > 0
-                              ? formattedLatestTokens[0].amount
-                              : null}
-                            <br />
-                          </MonoSpace>
+                        <ThemedText.DeprecatedLargeHeader fontSize="30px">
+                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
+                            : formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formatDollarAmount(formattedLatestTokens[0].volume)
+                            : null}
+                          <br />
                         </ThemedText.DeprecatedLargeHeader>
                       </AutoColumn>
                     }
@@ -562,13 +560,15 @@ export default function FundPage() {
                             {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
                           </MonoSpace>
                         </ThemedText.DeprecatedMain>
-                        <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
-                            : formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formatDollarAmount(formattedLatestTokens[0].volume)
-                            : null}
-                          <br />
+                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                          <MonoSpace>
+                            {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                              ? formatAmount(formattedLatestTokens[tokenIndexHover].amount)
+                              : formattedLatestTokens && formattedLatestTokens.length > 0
+                              ? formatAmount(formattedLatestTokens[0].amount)
+                              : null}
+                            <br />
+                          </MonoSpace>
                         </ThemedText.DeprecatedLargeHeader>
                       </AutoColumn>
                     }
@@ -604,9 +604,9 @@ export default function FundPage() {
                         <ThemedText.DeprecatedLargeHeader fontSize="32px">
                           <MonoSpace>
                             {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
-                              formattedFeeTokens[feeIndexHover].amount
+                              formatAmount(formattedFeeTokens[feeIndexHover].amount)
                             ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
-                              formattedFeeTokens[0].amount
+                              formatAmount(formattedFeeTokens[0].amount)
                             ) : (
                               <>
                                 <br />
