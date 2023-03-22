@@ -547,7 +547,7 @@ export default function FundAccount() {
             current: 0, //currentAmountUSD
             poolAmount,
             pool: poolAmountUSD,
-            index,
+            index: tokensData.length,
           })
         }
         return undefined

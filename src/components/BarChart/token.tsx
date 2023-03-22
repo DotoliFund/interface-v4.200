@@ -128,10 +128,6 @@ const Chart = ({
           </BarChart>
         )}
       </ResponsiveContainer>
-      <RowBetween>
-        {bottomLeft ?? null}
-        {bottomRight ?? null}
-      </RowBetween>
     </Wrapper>
   )
 }
