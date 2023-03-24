@@ -337,12 +337,7 @@ export default function Account() {
                 {managingFundLoading || managingFundInfoLoading ? (
                   <FundsLoadingPlaceholder />
                 ) : managingFundInfo && managingFundInfo.length > 0 ? (
-                  <FundList
-                    isManagingFund={true}
-                    funds={managingFundInfo}
-                    setUserHideClosedFunds={setUserHideClosedFunds}
-                    userHideClosedFunds={userHideClosedFunds}
-                  />
+                  <FundList isManagingFund={true} funds={managingFundInfo} />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
@@ -358,12 +353,7 @@ export default function Account() {
                 {investingFundsLoading || investingFundsInfoLoading ? (
                   <FundsLoadingPlaceholder />
                 ) : investingFundsInfo && investingFundsInfo.length > 0 ? (
-                  <FundList
-                    isManagingFund={false}
-                    funds={investingFundsInfo}
-                    setUserHideClosedFunds={setUserHideClosedFunds}
-                    userHideClosedFunds={userHideClosedFunds}
-                  />
+                  <FundList isManagingFund={false} funds={investingFundsInfo} />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">

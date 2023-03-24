@@ -42,37 +42,12 @@ const MobileHeader = styled.div`
   }
 `
 
-const ToggleWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
-const ToggleLabel = styled.div`
-  opacity: 0.6;
-  margin-right: 10px;
-`
-
-const MobileTogglePosition = styled.div`
-  @media screen and (max-width: ${MEDIA_WIDTHS.deprecated_upToExtraSmall}px) {
-    position: absolute;
-    right: 20px;
-  }
-`
-
 type FundListProps = React.PropsWithChildren<{
   isManagingFund: boolean
   funds: FundDetails[]
-  setUserHideClosedFunds: any
-  userHideClosedFunds: boolean
 }>
 
-export default function FundList({
-  isManagingFund,
-  funds,
-  setUserHideClosedFunds,
-  userHideClosedFunds,
-}: FundListProps) {
+export default function FundList({ isManagingFund, funds }: FundListProps) {
   return (
     <>
       <DesktopHeader>
