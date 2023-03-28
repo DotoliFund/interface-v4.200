@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import Card from 'components/Card'
-import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -92,59 +91,54 @@ const Chart = ({
           </>
         )}
       </RowBetween>
-      {data?.length === 0 ? (
-        <LoadingRows>
-          <div style={{ height: '250px' }} />
-        </LoadingRows>
-      ) : (
-        <ResponsiveContainer width="100%" height="100%">
-          {isEmptyData ? (
-            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
-              <BarChartIconComponent strokeWidth={1} />
-              <div>
-                <Trans>No volume data</Trans>
-              </div>
-            </ThemedText.DeprecatedBody>
-          ) : (
-            <ComposedChart
-              width={500}
-              height={300}
-              data={data}
-              margin={{
-                top: 5,
-                right: 5,
-                left: 5,
-                bottom: 5,
-              }}
-            >
-              <defs>
-                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                  <stop offset="100%" stopColor={color} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <defs>
-                <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={darken(0.36, color2)} stopOpacity={0.5} />
-                  <stop offset="100%" stopColor={color2} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="time"
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
-                minTickGap={10}
-              />
-              <Tooltip cursor={false} content={<CustomTooltip />} />
-              <Legend />
-              <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
-              <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
-              <Line dataKey="principal" type="monotone" stroke={color3} />
-            </ComposedChart>
-          )}
-        </ResponsiveContainer>
-      )}
+
+      <ResponsiveContainer width="100%" height="100%">
+        {isEmptyData ? (
+          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+            <BarChartIconComponent strokeWidth={1} />
+            <div>
+              <Trans>No volume data</Trans>
+            </div>
+          </ThemedText.DeprecatedBody>
+        ) : (
+          <ComposedChart
+            width={500}
+            height={300}
+            data={data}
+            margin={{
+              top: 5,
+              right: 5,
+              left: 5,
+              bottom: 5,
+            }}
+          >
+            <defs>
+              <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
+                <stop offset="100%" stopColor={color} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <defs>
+              <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={darken(0.36, color2)} stopOpacity={0.5} />
+                <stop offset="100%" stopColor={color2} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="time"
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
+              minTickGap={10}
+            />
+            <Tooltip cursor={false} content={<CustomTooltip />} />
+            <Legend />
+            <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
+            <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
+            <Line dataKey="principal" type="monotone" stroke={color3} />
+          </ComposedChart>
+        )}
+      </ResponsiveContainer>
     </Wrapper>
   )
 }
