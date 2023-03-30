@@ -5,17 +5,17 @@ import { useClients } from 'state/application/hooks'
 import { LiquidityTransaction, LiquidityTransactionType } from 'types/fund'
 
 const FUND_ACCOUNT_TRANSACTIONS = gql`
-  query transactions($fund: Bytes!, $investor: Bytes!) {
+  query transactions($fundId: String!, $investor: Bytes!) {
     mintNewPositions(
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       manager
       investor
       token0
@@ -30,12 +30,12 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       manager
       investor
       token0
@@ -50,12 +50,12 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       manager
       investor
       token0
@@ -70,12 +70,12 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       manager
       investor
       token0
@@ -93,7 +93,7 @@ interface InvestorTransactionResults {
   mintNewPositions: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     manager: string
     investor: string
     token0: string
@@ -107,7 +107,7 @@ interface InvestorTransactionResults {
   increaseLiquidities: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     manager: string
     investor: string
     token0: string
@@ -121,7 +121,7 @@ interface InvestorTransactionResults {
   collectPositionFees: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     manager: string
     investor: string
     token0: string
@@ -135,7 +135,7 @@ interface InvestorTransactionResults {
   decreaseLiquidities: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     manager: string
     investor: string
     token0: string
@@ -152,15 +152,15 @@ interface InvestorTransactionResults {
  * Fetch ManagerData
  */
 export function useFundAccountLiquidityTransactions(
-  fund: string | undefined,
+  fundId: string | undefined,
   investor: string | undefined
 ): {
   loading: boolean
   error: boolean
   data: LiquidityTransaction[] | undefined
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   if (!investor) {
     investor = NULL_ADDRESS
@@ -169,7 +169,7 @@ export function useFundAccountLiquidityTransactions(
   const { dataClient } = useClients()
 
   const { loading, error, data } = useQuery<InvestorTransactionResults>(FUND_ACCOUNT_TRANSACTIONS, {
-    variables: { fund, investor },
+    variables: { fundId, investor },
     client: dataClient,
   })
 

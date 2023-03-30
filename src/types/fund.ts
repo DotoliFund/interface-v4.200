@@ -1,22 +1,23 @@
 export interface FundDetails {
-  fund: string
+  fundId: string
   investor: string
 }
 
 export interface FundToken {
-  tokenAddress: string
+  token: string
   amount: number
 }
 
 export interface Token {
   address: string
+  decimals: string
   symbol: string
   updatedTimestamp: string
 }
 
 export interface TopFund {
   id: string
-  address: string
+  fundId: string
   createdAtTimestamp: number
   manager: string
   investorCount: number
@@ -27,7 +28,7 @@ export interface Manager {
   id: string
   createdAtTimestamp: number
   updatedAtTimestamp: number
-  fund: string
+  fundId: string
   investor: string
   isManager: boolean
   principalUSD: number
@@ -39,7 +40,7 @@ export interface TopManager {
   id: string
   createdAtTimestamp: number
   updatedAtTimestamp: number
-  fund: string
+  fundId: string
   investor: string
   isManager: boolean
   principalUSD: number
@@ -47,11 +48,11 @@ export interface TopManager {
   profitRatio: number
 }
 
-export interface InvestorList {
+export interface Investor {
   id: string
   createdAtTimestamp: number
   updatedAtTimestamp: number
-  fund: string
+  fundId: string
   investor: string
   isManager: boolean
   principalUSD: number

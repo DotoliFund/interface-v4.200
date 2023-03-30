@@ -50,7 +50,7 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
     return (
       <g>
         <text x={x + 5} y={y - 10} fill="white" textAnchor={x > active.cx ? 'start' : 'end'} dominantBaseline="central">
-          {`${active.payload.symbol}`}
+          {`${active.payload.symbol === 'WETH' ? 'ETH' : active.payload.symbol}`}
         </text>
         {active.payload.token === 'Empty' ? undefined : (
           <text

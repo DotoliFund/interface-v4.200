@@ -1,5 +1,5 @@
 import { AutoColumn } from 'components/Column'
-import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import AddLiquidityCurrencyInputPanel from 'components/CurrencyInputPanel/AddLiquidityInputPanel'
 import Input from 'components/NumericalInput'
 import { BodyWrapper } from 'pages/AppBody'
 import styled from 'styled-components/macro'
@@ -54,7 +54,7 @@ export const DynamicSection = styled(AutoColumn)<{ disabled?: boolean }>`
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'initial')};
 `
 
-export const CurrencyDropdown = styled(CurrencyInputPanel)`
+export const CurrencyDropdown = styled(AddLiquidityCurrencyInputPanel)`
   width: 48.5%;
 `
 

@@ -6,14 +6,17 @@ import { useUserAddedTokens } from 'state/user/hooks'
 import useLast from '../../hooks/useLast'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import Modal from '../Modal'
-import { CurrencySearch } from './CurrencySearch'
-import { FundCurrencySearch } from './FundCurrencySearch'
+import { AllWhiteListFundCurrencyList } from './AllWhiteListFundCurrencyList'
+import { FundCurrencyList } from './FundCurrencyList'
+import { CurrencySearchType } from './styleds'
+import { WalletWhiteListCurrencyList } from './WalletWhiteListCurrencyList'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
-  isFund: boolean
-  fundAddress: string | null
-  investorAddress: string | null
+  currencySearchType: CurrencySearchType
+  showWrappedETH: boolean
+  fundId: string | null
+  investor: string | null
   onDismiss: () => void
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
@@ -31,9 +34,10 @@ export enum CurrencyModalView {
 
 export default memo(function CurrencySearchModal({
   isOpen,
-  isFund,
-  fundAddress,
-  investorAddress,
+  currencySearchType,
+  showWrappedETH,
+  fundId,
+  investor,
   onDismiss,
   onCurrencySelect,
   selectedCurrency,
@@ -81,9 +85,9 @@ export default memo(function CurrencySearchModal({
         // Converts pixel units to vh for Modal component
         modalHeight = Math.min(Math.round((680 / windowHeight) * 100), 80)
       }
-      if (isFund && fundAddress && investorAddress) {
+      if (currencySearchType === CurrencySearchType.FUND_CURRENCY && fundId && investor) {
         content = (
-          <FundCurrencySearch
+          <FundCurrencyList
             isOpen={isOpen}
             onDismiss={onDismiss}
             onCurrencySelect={handleCurrencySelect}
@@ -93,10 +97,25 @@ export default memo(function CurrencySearchModal({
             disableNonToken={disableNonToken}
           />
         )
-      } else {
+      } else if (currencySearchType === CurrencySearchType.ALL_WHITELIST_FUND_CURRENCY) {
         content = (
-          <CurrencySearch
+          <AllWhiteListFundCurrencyList
             isOpen={isOpen}
+            showWrappedETH={showWrappedETH}
+            onDismiss={onDismiss}
+            onCurrencySelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            showCommonBases={showCommonBases}
+            showCurrencyAmount={showCurrencyAmount}
+            disableNonToken={disableNonToken}
+          />
+        )
+      } else if (currencySearchType === CurrencySearchType.WALLET_WHITELIST_CURRENCY) {
+        content = (
+          <WalletWhiteListCurrencyList
+            isOpen={isOpen}
+            showWrappedETH={showWrappedETH}
             onDismiss={onDismiss}
             onCurrencySelect={handleCurrencySelect}
             selectedCurrency={selectedCurrency}
@@ -127,8 +146,12 @@ export default memo(function CurrencySearchModal({
     <Modal
       isOpen={isOpen}
       onDismiss={onDismiss}
-      maxHeight={isFund && modalHeight ? modalHeight * 0.6 : modalHeight}
-      minHeight={isFund && modalHeight ? modalHeight * 0.6 : modalHeight}
+      maxHeight={
+        currencySearchType === CurrencySearchType.FUND_CURRENCY && modalHeight ? modalHeight * 0.6 : modalHeight
+      }
+      minHeight={
+        currencySearchType === CurrencySearchType.FUND_CURRENCY && modalHeight ? modalHeight * 0.6 : modalHeight
+      }
     >
       {content}
     </Modal>

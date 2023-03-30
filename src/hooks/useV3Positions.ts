@@ -1,10 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { NULL_ADDRESS } from 'constants/addresses'
 import { CallStateResult, useSingleCallResult, useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
 import { PositionDetails } from 'types/position'
 
-import { useDotoliFundContract } from './useContract'
+import { useDotoliInfoContract } from './useContract'
 import { useV3NFTPositionManagerContract } from './useContract'
 
 interface UseV3PositionsResults {
@@ -13,8 +12,8 @@ interface UseV3PositionsResults {
 }
 
 function useV3PositionsFromTokenIds(
-  fund: string,
-  investor: string,
+  fundId: string | undefined,
+  investor: string | undefined,
   tokenIds: BigNumber[] | undefined
 ): UseV3PositionsResults {
   const positionManager = useV3NFTPositionManagerContract()
@@ -25,12 +24,12 @@ function useV3PositionsFromTokenIds(
   const error = useMemo(() => results.some(({ error }) => error), [results])
 
   const positions = useMemo(() => {
-    if (!loading && !error && tokenIds) {
+    if (!loading && !error && tokenIds && fundId && investor) {
       return results.map((call, i) => {
         const tokenId = tokenIds[i]
         const result = call.result as CallStateResult
         return {
-          fund,
+          fundId,
           investor,
           tokenId,
           fee: result.fee,
@@ -49,7 +48,7 @@ function useV3PositionsFromTokenIds(
       })
     }
     return undefined
-  }, [fund, investor, loading, error, results, tokenIds])
+  }, [loading, error, results, fundId, investor, tokenIds])
 
   return {
     loading,
@@ -63,27 +62,24 @@ interface UseV3PositionResults {
 }
 
 export function useV3PositionFromTokenId(
-  fund: string,
-  investor: string,
+  fundId: string | undefined,
+  investor: string | undefined,
   tokenId: BigNumber | undefined
 ): UseV3PositionResults {
-  const position = useV3PositionsFromTokenIds(fund, investor, tokenId ? [tokenId] : undefined)
+  const position = useV3PositionsFromTokenIds(fundId, investor, tokenId ? [tokenId] : undefined)
   return {
     loading: position.loading,
     position: position.positions?.[0],
   }
 }
 
-export function useV3Positions(
-  fund: string | null | undefined,
-  investor: string | null | undefined
-): UseV3PositionsResults {
-  const DotoliFundContract = useDotoliFundContract(fund ?? NULL_ADDRESS)
+export function useV3Positions(fundId: string | undefined, investor: string | undefined): UseV3PositionsResults {
+  const DotoliInfoContract = useDotoliInfoContract()
 
   const { loading: tokenIdResultsLoading, result: [tokenIdResults] = [] } = useSingleCallResult(
-    DotoliFundContract,
-    'getPositionTokenIds',
-    [investor ?? undefined]
+    DotoliInfoContract,
+    'getTokenIds',
+    [fundId ?? undefined, investor ?? undefined]
   )
 
   const tokenIds = useMemo(() => {
@@ -93,11 +89,7 @@ export function useV3Positions(
     return []
   }, [tokenIdResults])
 
-  const { positions, loading: positionsLoading } = useV3PositionsFromTokenIds(
-    fund ?? NULL_ADDRESS,
-    investor ?? NULL_ADDRESS,
-    tokenIds
-  )
+  const { positions, loading: positionsLoading } = useV3PositionsFromTokenIds(fundId, investor, tokenIds)
 
   return {
     loading: tokenIdResultsLoading || positionsLoading,

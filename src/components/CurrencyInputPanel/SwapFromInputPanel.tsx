@@ -3,175 +3,37 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
-import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
+import { LoadingOpacityContainer } from 'components/Loader/styled'
+import { CurrencySearchType } from 'components/SearchModal/styleds'
 import { isSupportedChain } from 'constants/chains'
 import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
-import { darken } from 'polished'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { Lock } from 'react-feather'
 import { useParams } from 'react-router-dom'
-import styled, { useTheme } from 'styled-components/macro'
-import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
+import { useTheme } from 'styled-components/macro'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { ThemedText } from '../../theme'
-import { ButtonGray } from '../Button'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
-import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween, RowFixed } from '../Row'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { FiatValue } from './FiatValue'
+import {
+  Aligner,
+  Container,
+  CurrencySelect,
+  FiatRow,
+  FixedContainer,
+  InputPanel,
+  InputRow,
+  StyledBalanceMax,
+  StyledDropDown,
+  StyledNumericalInput,
+  StyledTokenName,
+} from './styled'
 
-const InputPanel = styled.div<{ hideInput?: boolean }>`
-  ${flexColumnNoWrap};
-  position: relative;
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
-  z-index: 1;
-  width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
-  transition: height 1s ease;
-  will-change: height;
-`
-
-const FixedContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-`
-
-const Container = styled.div<{ hideInput: boolean }>`
-  min-height: 44px;
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
-  width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
-`
-
-const CurrencySelect = styled(ButtonGray)<{
-  visible: boolean
-  selected: boolean
-  hideInput?: boolean
-  disabled?: boolean
-}>`
-  align-items: center;
-  background-color: ${({ selected, theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
-  opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
-  color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
-  cursor: pointer;
-  height: unset;
-  border-radius: 16px;
-  outline: none;
-  user-select: none;
-  border: none;
-  font-size: 24px;
-  font-weight: 400;
-  width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
-  padding: ${({ selected }) => (selected ? '4px 8px 4px 4px' : '6px 6px 6px 8px')};
-  gap: 8px;
-  justify-content: space-between;
-  margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
-  &:hover,
-  &:active {
-    background-color: ${({ theme, selected }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
-  }
-  &:before {
-    background-size: 100%;
-    border-radius: inherit;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    content: '';
-  }
-  &:hover:before {
-    background-color: ${({ theme }) => theme.stateOverlayHover};
-  }
-  &:active:before {
-    background-color: ${({ theme }) => theme.stateOverlayPressed};
-  }
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
-`
-
-const InputRow = styled.div`
-  ${flexRowNoWrap};
-  align-items: center;
-  justify-content: space-between;
-`
-
-const LabelRow = styled.div`
-  ${flexRowNoWrap};
-  align-items: center;
-  color: ${({ theme }) => theme.textSecondary};
-  font-size: 0.75rem;
-  line-height: 1rem;
-  span:hover {
-    cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.deprecated_text2)};
-  }
-`
-
-const FiatRow = styled(LabelRow)`
-  justify-content: flex-end;
-  min-height: 20px;
-  padding: 8px 0px 0px 0px;
-`
-
-const Aligner = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`
-
-const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
-  margin: 0 0.25rem 0 0.35rem;
-  height: 35%;
-  margin-left: 8px;
-  path {
-    stroke: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
-    stroke-width: 2px;
-  }
-`
-
-const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size: 20px;
-  font-weight: 600;
-`
-
-const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
-  background-color: transparent;
-  border: none;
-  color: ${({ theme }) => theme.accentAction};
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
-  padding: 4px 6px;
-  pointer-events: ${({ disabled }) => (!disabled ? 'initial' : 'none')};
-  :hover {
-    opacity: ${({ disabled }) => (!disabled ? 0.8 : 0.4)};
-  }
-  :focus {
-    outline: none;
-  }
-`
-
-const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
-  ${loadingOpacityMixin};
-  text-align: left;
-  font-size: 36px;
-  line-height: 44px;
-  font-variant: small-caps;
-`
-
-interface FundCurrencyInputPanelProps {
+interface SwapFromInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -194,7 +56,7 @@ interface FundCurrencyInputPanelProps {
   loading?: boolean
 }
 
-export default function FundCurrencyInputPanel({
+export default function SwapFromInputPanel({
   value,
   onUserInput,
   onMax,
@@ -215,15 +77,15 @@ export default function FundCurrencyInputPanel({
   locked = false,
   loading = false,
   ...rest
-}: FundCurrencyInputPanelProps) {
+}: SwapFromInputPanelProps) {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
   const selectedCurrencyBalance = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
+    fundId ?? undefined,
+    investor,
     currency?.wrapped.address ?? undefined
   )
   const theme = useTheme()
@@ -338,12 +200,13 @@ export default function FundCurrencyInputPanel({
           </FiatRow>
         )}
       </Container>
-      {onCurrencySelect && fundAddress && investorAddress ? (
+      {onCurrencySelect && fundId && investor ? (
         <CurrencySearchModal
           isOpen={modalOpen}
-          isFund={true}
-          fundAddress={fundAddress}
-          investorAddress={investorAddress}
+          currencySearchType={CurrencySearchType.FUND_CURRENCY}
+          showWrappedETH={false}
+          fundId={fundId}
+          investor={investor}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}

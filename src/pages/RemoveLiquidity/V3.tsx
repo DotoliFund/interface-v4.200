@@ -15,16 +15,16 @@ import Loader from 'components/Loader'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import Slider from 'components/Slider'
-import Toggle from 'components/Toggle'
-import { NULL_ADDRESS } from 'constants/addresses'
+import { DOTOLI_FUND_ADDRESSES } from 'constants/addresses'
+import { isSupportedChain } from 'constants/chains'
 import { useV3NFTPositionManagerContract } from 'hooks/useContract'
 import useDebouncedChangeHandler from 'hooks/useDebouncedChangeHandler'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
 import { DotoliFund } from 'interface/DotoliFund'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useMemo, useState } from 'react'
-import { Navigate, useLocation, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useBurnV3ActionHandlers, useBurnV3State, useDerivedV3BurnInfo } from 'state/burn/v3/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -34,7 +34,6 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
-import { WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
 import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
 import { currencyId } from '../../utils/currencyId'
@@ -51,9 +50,9 @@ const Break = styled.div`
 
 // redirect invalid tokenIds
 export default function RemoveLiquidityV3() {
-  const { fundAddress, investorAddress, tokenId } = useParams<{
-    fundAddress: string
-    investorAddress: string
+  const { fundId, investor, tokenId } = useParams<{
+    fundId: string
+    investor: string
     tokenId: string
   }>()
   const location = useLocation()
@@ -69,29 +68,21 @@ export default function RemoveLiquidityV3() {
     return <Navigate to={{ ...location, pathname: '/pool' }} replace />
   }
 
-  if (!fundAddress || !investorAddress) {
+  if (!fundId || !investor) {
     return <Navigate to={{ ...location, pathname: '/fund' }} replace />
   }
 
-  return <Remove fundAddress={fundAddress} investorAddress={investorAddress} tokenId={parsedTokenId} />
+  return <Remove fundId={fundId} investor={investor} tokenId={parsedTokenId} />
 }
-function Remove({
-  fundAddress,
-  investorAddress,
-  tokenId,
-}: {
-  fundAddress: string
-  investorAddress: string
-  tokenId: BigNumber
-}) {
-  const { position } = useV3PositionFromTokenId(fundAddress ?? NULL_ADDRESS, investorAddress ?? NULL_ADDRESS, tokenId)
+function Remove({ fundId, investor, tokenId }: { fundId: string; investor: string; tokenId: BigNumber }) {
+  const navigate = useNavigate()
+
+  const { position } = useV3PositionFromTokenId(fundId ?? undefined, investor ?? undefined, tokenId)
   const theme = useTheme()
   const { account, chainId, provider } = useWeb3React()
 
   // flag for receiving WETH
   const [receiveWETH, setReceiveWETH] = useState(false)
-  const nativeCurrency = useNativeCurrency()
-  const nativeWrappedSymbol = nativeCurrency.wrapped.symbol
 
   // burn state
   const { percent } = useBurnV3State()
@@ -132,12 +123,12 @@ function Remove({
       !positionSDK ||
       !liquidityPercentage ||
       !provider ||
-      !investorAddress
+      !fundId
     ) {
       return
     }
 
-    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(investorAddress, positionSDK, {
+    const { calldata, value } = DotoliFund.decreaseLiquidityCallParameters(fundId, positionSDK, {
       tokenId: tokenId.toString(),
       liquidityPercentage,
       slippageTolerance: allowedSlippage,
@@ -145,12 +136,11 @@ function Remove({
       collectOptions: {
         expectedCurrencyOwed0: feeValue0 ?? CurrencyAmount.fromRawAmount(liquidityValue0.currency, 0),
         expectedCurrencyOwed1: feeValue1 ?? CurrencyAmount.fromRawAmount(liquidityValue1.currency, 0),
-        recipient: account,
       },
     })
 
     const txn = {
-      to: fundAddress,
+      to: DOTOLI_FUND_ADDRESSES,
       data: calldata,
       value,
     }
@@ -189,8 +179,7 @@ function Remove({
         console.error(error)
       })
   }, [
-    fundAddress,
-    investorAddress,
+    fundId,
     positionManager,
     liquidityValue0,
     liquidityValue1,
@@ -212,10 +201,11 @@ function Remove({
     // if there was a tx hash, we want to clear the input
     if (txnHash) {
       onPercentSelectForSlider(0)
+      navigate(`/fund/${fundId}/${investor}`)
     }
     setAttemptingTxn(false)
     setTxnHash('')
-  }, [onPercentSelectForSlider, txnHash])
+  }, [onPercentSelectForSlider, txnHash, navigate, fundId, investor])
 
   const pendingText = (
     <Trans>
@@ -285,166 +275,159 @@ function Remove({
     )
   }
 
-  const showCollectAsWeth = Boolean(
-    liquidityValue0?.currency &&
-      liquidityValue1?.currency &&
-      (liquidityValue0.currency.isNative ||
-        liquidityValue1.currency.isNative ||
-        WRAPPED_NATIVE_CURRENCY[liquidityValue0.currency.chainId]?.equals(liquidityValue0.currency.wrapped) ||
-        WRAPPED_NATIVE_CURRENCY[liquidityValue1.currency.chainId]?.equals(liquidityValue1.currency.wrapped))
-  )
-  return (
-    <AutoColumn>
-      <TransactionConfirmationModal
-        isOpen={showConfirm}
-        onDismiss={handleDismissConfirmation}
-        attemptingTxn={attemptingTxn}
-        hash={txnHash ?? ''}
-        content={() => (
-          <ConfirmationModalContent
-            title={<Trans>Remove Liquidity</Trans>}
-            onDismiss={handleDismissConfirmation}
-            topContent={modalHeader}
-          />
-        )}
-        pendingText={pendingText}
-      />
-      <AppBody $maxWidth="unset">
-        <AddRemoveTabs
-          creating={false}
-          adding={false}
-          positionID={tokenId.toString()}
-          defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}
-        />
-        <Wrapper>
-          {position ? (
-            <AutoColumn gap="lg">
-              <RowBetween>
-                <RowFixed>
-                  <DoubleCurrencyLogo
-                    currency0={feeValue0?.currency}
-                    currency1={feeValue1?.currency}
-                    size={20}
-                    margin={true}
-                  />
-                  <ThemedText.DeprecatedLabel
-                    ml="10px"
-                    fontSize="20px"
-                  >{`${feeValue0?.currency?.symbol}/${feeValue1?.currency?.symbol}`}</ThemedText.DeprecatedLabel>
-                </RowFixed>
-                <RangeBadge removed={removed} inRange={!outOfRange} />
-              </RowBetween>
-              <LightCard>
-                <AutoColumn gap="md">
-                  <ThemedText.DeprecatedMain fontWeight={400}>
-                    <Trans>Amount</Trans>
-                  </ThemedText.DeprecatedMain>
-                  <RowBetween>
-                    <ResponsiveHeaderText>
-                      <Trans>{percentForSlider}%</Trans>
-                    </ResponsiveHeaderText>
-                    <AutoRow gap="4px" justify="flex-end">
-                      <SmallMaxButton onClick={() => onPercentSelect(25)} width="20%">
-                        <Trans>25%</Trans>
-                      </SmallMaxButton>
-                      <SmallMaxButton onClick={() => onPercentSelect(50)} width="20%">
-                        <Trans>50%</Trans>
-                      </SmallMaxButton>
-                      <SmallMaxButton onClick={() => onPercentSelect(75)} width="20%">
-                        <Trans>75%</Trans>
-                      </SmallMaxButton>
-                      <SmallMaxButton onClick={() => onPercentSelect(100)} width="20%">
-                        <Trans>Max</Trans>
-                      </SmallMaxButton>
-                    </AutoRow>
-                  </RowBetween>
-                  <Slider value={percentForSlider} onChange={onPercentSelectForSlider} />
-                </AutoColumn>
-              </LightCard>
-              <LightCard>
-                <AutoColumn gap="md">
-                  <RowBetween>
-                    <Text fontSize={16} fontWeight={500}>
-                      <Trans>Pooled {liquidityValue0?.currency?.symbol}:</Trans>
-                    </Text>
-                    <RowFixed>
-                      <Text fontSize={16} fontWeight={500} marginLeft="6px">
-                        {liquidityValue0 && <FormattedCurrencyAmount currencyAmount={liquidityValue0} />}
-                      </Text>
-                      <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue0?.currency} />
-                    </RowFixed>
-                  </RowBetween>
-                  <RowBetween>
-                    <Text fontSize={16} fontWeight={500}>
-                      <Trans>Pooled {liquidityValue1?.currency?.symbol}:</Trans>
-                    </Text>
-                    <RowFixed>
-                      <Text fontSize={16} fontWeight={500} marginLeft="6px">
-                        {liquidityValue1 && <FormattedCurrencyAmount currencyAmount={liquidityValue1} />}
-                      </Text>
-                      <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue1?.currency} />
-                    </RowFixed>
-                  </RowBetween>
-                  {feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) ? (
-                    <>
-                      <Break />
-                      <RowBetween>
-                        <Text fontSize={16} fontWeight={500}>
-                          <Trans>{feeValue0?.currency?.symbol} Fees Earned:</Trans>
-                        </Text>
-                        <RowFixed>
-                          <Text fontSize={16} fontWeight={500} marginLeft="6px">
-                            {feeValue0 && <FormattedCurrencyAmount currencyAmount={feeValue0} />}
-                          </Text>
-                          <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue0?.currency} />
-                        </RowFixed>
-                      </RowBetween>
-                      <RowBetween>
-                        <Text fontSize={16} fontWeight={500}>
-                          <Trans>{feeValue1?.currency?.symbol} Fees Earned:</Trans>
-                        </Text>
-                        <RowFixed>
-                          <Text fontSize={16} fontWeight={500} marginLeft="6px">
-                            {feeValue1 && <FormattedCurrencyAmount currencyAmount={feeValue1} />}
-                          </Text>
-                          <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue1?.currency} />
-                        </RowFixed>
-                      </RowBetween>
-                    </>
-                  ) : null}
-                </AutoColumn>
-              </LightCard>
-
-              {showCollectAsWeth && (
-                <RowBetween>
-                  <ThemedText.DeprecatedMain>
-                    <Trans>Collect as {nativeWrappedSymbol}</Trans>
-                  </ThemedText.DeprecatedMain>
-                  <Toggle
-                    id="receive-as-weth"
-                    isActive={receiveWETH}
-                    toggle={() => setReceiveWETH((receiveWETH) => !receiveWETH)}
-                  />
-                </RowBetween>
-              )}
-
-              <div style={{ display: 'flex' }}>
-                <AutoColumn gap="md" style={{ flex: '1' }}>
-                  <ButtonConfirmed
-                    confirmed={false}
-                    disabled={removed || percent === 0 || !liquidityValue0}
-                    onClick={() => setShowConfirm(true)}
-                  >
-                    {removed ? <Trans>Closed</Trans> : error ?? <Trans>Remove</Trans>}
-                  </ButtonConfirmed>
-                </AutoColumn>
-              </div>
-            </AutoColumn>
-          ) : (
-            <Loader />
+  if (!isSupportedChain(chainId)) {
+    return (
+      <ErrorContainer>
+        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+          <NetworkIcon strokeWidth={1.2} />
+          <div data-testid="pools-unsupported-err">
+            <Trans>Your connected network is unsupported.</Trans>
+          </div>
+        </ThemedText.DeprecatedBody>
+      </ErrorContainer>
+    )
+  } else {
+    return (
+      <AutoColumn>
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          onDismiss={handleDismissConfirmation}
+          attemptingTxn={attemptingTxn}
+          hash={txnHash ?? ''}
+          content={() => (
+            <ConfirmationModalContent
+              title={<Trans>Remove Liquidity</Trans>}
+              onDismiss={handleDismissConfirmation}
+              topContent={modalHeader}
+            />
           )}
-        </Wrapper>
-      </AppBody>
-    </AutoColumn>
-  )
+          pendingText={pendingText}
+        />
+        <AppBody $maxWidth="unset">
+          <AddRemoveTabs
+            creating={false}
+            adding={false}
+            fundId={fundId}
+            investor={investor}
+            positionID={tokenId.toString()}
+            defaultSlippage={DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE}
+          />
+          <Wrapper>
+            {position ? (
+              <AutoColumn gap="lg">
+                <RowBetween>
+                  <RowFixed>
+                    <DoubleCurrencyLogo
+                      currency0={feeValue0?.currency}
+                      currency1={feeValue1?.currency}
+                      size={20}
+                      margin={true}
+                    />
+                    <ThemedText.DeprecatedLabel
+                      ml="10px"
+                      fontSize="20px"
+                    >{`${feeValue0?.currency?.symbol}/${feeValue1?.currency?.symbol}`}</ThemedText.DeprecatedLabel>
+                  </RowFixed>
+                  <RangeBadge removed={removed} inRange={!outOfRange} />
+                </RowBetween>
+                <LightCard>
+                  <AutoColumn gap="md">
+                    <ThemedText.DeprecatedMain fontWeight={400}>
+                      <Trans>Amount</Trans>
+                    </ThemedText.DeprecatedMain>
+                    <RowBetween>
+                      <ResponsiveHeaderText>
+                        <Trans>{percentForSlider}%</Trans>
+                      </ResponsiveHeaderText>
+                      <AutoRow gap="4px" justify="flex-end">
+                        <SmallMaxButton onClick={() => onPercentSelect(25)} width="20%">
+                          <Trans>25%</Trans>
+                        </SmallMaxButton>
+                        <SmallMaxButton onClick={() => onPercentSelect(50)} width="20%">
+                          <Trans>50%</Trans>
+                        </SmallMaxButton>
+                        <SmallMaxButton onClick={() => onPercentSelect(75)} width="20%">
+                          <Trans>75%</Trans>
+                        </SmallMaxButton>
+                        <SmallMaxButton onClick={() => onPercentSelect(100)} width="20%">
+                          <Trans>Max</Trans>
+                        </SmallMaxButton>
+                      </AutoRow>
+                    </RowBetween>
+                    <Slider value={percentForSlider} onChange={onPercentSelectForSlider} />
+                  </AutoColumn>
+                </LightCard>
+                <LightCard>
+                  <AutoColumn gap="md">
+                    <RowBetween>
+                      <Text fontSize={16} fontWeight={500}>
+                        <Trans>Pooled {liquidityValue0?.currency?.symbol}:</Trans>
+                      </Text>
+                      <RowFixed>
+                        <Text fontSize={16} fontWeight={500} marginLeft="6px">
+                          {liquidityValue0 && <FormattedCurrencyAmount currencyAmount={liquidityValue0} />}
+                        </Text>
+                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue0?.currency} />
+                      </RowFixed>
+                    </RowBetween>
+                    <RowBetween>
+                      <Text fontSize={16} fontWeight={500}>
+                        <Trans>Pooled {liquidityValue1?.currency?.symbol}:</Trans>
+                      </Text>
+                      <RowFixed>
+                        <Text fontSize={16} fontWeight={500} marginLeft="6px">
+                          {liquidityValue1 && <FormattedCurrencyAmount currencyAmount={liquidityValue1} />}
+                        </Text>
+                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={liquidityValue1?.currency} />
+                      </RowFixed>
+                    </RowBetween>
+                    {feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0) ? (
+                      <>
+                        <Break />
+                        <RowBetween>
+                          <Text fontSize={16} fontWeight={500}>
+                            <Trans>{feeValue0?.currency?.symbol} Fees Earned:</Trans>
+                          </Text>
+                          <RowFixed>
+                            <Text fontSize={16} fontWeight={500} marginLeft="6px">
+                              {feeValue0 && <FormattedCurrencyAmount currencyAmount={feeValue0} />}
+                            </Text>
+                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue0?.currency} />
+                          </RowFixed>
+                        </RowBetween>
+                        <RowBetween>
+                          <Text fontSize={16} fontWeight={500}>
+                            <Trans>{feeValue1?.currency?.symbol} Fees Earned:</Trans>
+                          </Text>
+                          <RowFixed>
+                            <Text fontSize={16} fontWeight={500} marginLeft="6px">
+                              {feeValue1 && <FormattedCurrencyAmount currencyAmount={feeValue1} />}
+                            </Text>
+                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={feeValue1?.currency} />
+                          </RowFixed>
+                        </RowBetween>
+                      </>
+                    ) : null}
+                  </AutoColumn>
+                </LightCard>
+                <div style={{ display: 'flex' }}>
+                  <AutoColumn gap="md" style={{ flex: '1' }}>
+                    <ButtonConfirmed
+                      confirmed={false}
+                      disabled={removed || percent === 0 || !liquidityValue0}
+                      onClick={() => setShowConfirm(true)}
+                    >
+                      {removed ? <Trans>Closed</Trans> : error ?? <Trans>Remove</Trans>}
+                    </ButtonConfirmed>
+                  </AutoColumn>
+                </div>
+              </AutoColumn>
+            ) : (
+              <Loader />
+            )}
+          </Wrapper>
+        </AppBody>
+      </AutoColumn>
+    )
+  }
 }

@@ -11,6 +11,7 @@ import {
   ApproveTransactionInfo,
   ClaimTransactionInfo,
   CollectFeesTransactionInfo,
+  CreateFundTransactionInfo,
   CreateV3PoolTransactionInfo,
   DelegateTransactionInfo,
   DepositLiquidityStakingTransactionInfo,
@@ -23,6 +24,7 @@ import {
   QueueTransactionInfo,
   RemoveLiquidityV3TransactionInfo,
   SubmitProposalTransactionInfo,
+  SubscribeTransactionInfo,
   TransactionInfo,
   TransactionType,
   WithdrawLiquidityStakingTransactionInfo,
@@ -303,6 +305,22 @@ function FeeSummary({ info }: { info: FeeTransactionInfo }) {
   )
 }
 
+function CreateFundSummary({ info }: { info: CreateFundTransactionInfo }) {
+  const { manager } = info
+
+  return <Trans>{manager} Create Fund</Trans>
+}
+
+function SubscribeSummary({ info }: { info: SubscribeTransactionInfo }) {
+  const { fundId, investor } = info
+
+  return (
+    <Trans>
+      {investor} Subscribe to fund: {fundId}
+    </Trans>
+  )
+}
+
 export function TransactionSummary({ info }: { info: TransactionInfo }) {
   switch (info.type) {
     case TransactionType.ADD_LIQUIDITY_V3_POOL:
@@ -361,5 +379,11 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
 
     case TransactionType.FEE:
       return <FeeSummary info={info} />
+
+    case TransactionType.CREATE_FUND:
+      return <CreateFundSummary info={info} />
+
+    case TransactionType.SUBSCRIBE:
+      return <SubscribeSummary info={info} />
   }
 }

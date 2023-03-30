@@ -1,11 +1,16 @@
 import { useQuery } from '@apollo/client'
-import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
 const VOLUME_CHART = gql`
-  query volumeChart($fund: Bytes!) {
-    fundSnapshots(first: 100, orderBy: timestamp, orderDirection: asc, where: { fund: $fund }, subgraphError: allow) {
+  query volumeChart($fundId: String!) {
+    fundSnapshots(
+      first: 100
+      orderBy: timestamp
+      orderDirection: asc
+      where: { fundId: $fundId }
+      subgraphError: allow
+    ) {
       id
       timestamp
       currentUSD
@@ -41,19 +46,19 @@ interface VolumeChartResponse {
 /**
  * Fetch fund volume chart data
  */
-export function useVolumeChartData(fund: string | undefined): {
+export function useVolumeChartData(fundId: string | undefined): {
   loading: boolean
   error: boolean
   data: VolumeChart[]
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   // get client
   const { dataClient } = useClients()
 
   const { loading, error, data } = useQuery<VolumeChartResponse>(VOLUME_CHART, {
-    variables: { fund },
+    variables: { fundId },
     client: dataClient,
   })
 
@@ -72,14 +77,14 @@ export function useVolumeChartData(fund: string | undefined): {
   }
 
   const formatted: VolumeChart[] = data
-    ? data.fundSnapshots.map((data2, index) => {
+    ? data.fundSnapshots.map((snapshot, index) => {
         const volumeChartData: VolumeChart = {
-          id: data2.id,
-          timestamp: parseFloat(data2.timestamp),
-          currentUSD: parseFloat(data2.currentUSD),
-          currentTokens: data2.currentTokens,
-          currentTokensSymbols: data2.currentTokensSymbols,
-          currentTokensAmountUSD: data2.currentTokensAmountUSD.map((value) => {
+          id: snapshot.id,
+          timestamp: parseInt(snapshot.timestamp),
+          currentUSD: parseFloat(snapshot.currentUSD),
+          currentTokens: snapshot.currentTokens,
+          currentTokensSymbols: snapshot.currentTokensSymbols,
+          currentTokensAmountUSD: snapshot.currentTokensAmountUSD.map((value) => {
             return parseFloat(value)
           }),
         }

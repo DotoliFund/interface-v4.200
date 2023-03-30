@@ -8,7 +8,7 @@ export const TOP_FUNDS = () => {
     query topFunds {
       funds(orderBy: currentUSD, orderDirection: desc, subgraphError: allow) {
         id
-        address
+        fundId
         createdAtTimestamp
         manager
         investorCount
@@ -21,7 +21,7 @@ export const TOP_FUNDS = () => {
 
 export interface TopFundFields {
   id: string
-  address: string
+  fundId: string
   createdAtTimestamp: string
   manager: string
   investorCount: string
@@ -60,14 +60,14 @@ export function useTopFunds(): {
   }
 
   const formatted: TopFund[] = data
-    ? data.funds.map((data2, index) => {
+    ? data.funds.map((fund, index) => {
         const fundData: TopFund = {
-          id: data2.id,
-          address: data2.address,
-          createdAtTimestamp: parseFloat(data2.createdAtTimestamp),
-          manager: data2.manager,
-          investorCount: parseInt(data2.investorCount),
-          currentUSD: parseFloat(data2.currentUSD),
+          id: fund.id,
+          fundId: fund.fundId,
+          createdAtTimestamp: parseFloat(fund.createdAtTimestamp),
+          manager: fund.manager,
+          investorCount: parseInt(fund.investorCount),
+          currentUSD: parseFloat(fund.currentUSD),
         }
         return fundData
       })

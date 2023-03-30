@@ -35,6 +35,8 @@ export enum TransactionType {
   DEPOSIT,
   WITHDRAW,
   FEE,
+  CREATE_FUND,
+  SUBSCRIBE,
 }
 
 export interface BaseTransactionInfo {
@@ -178,6 +180,17 @@ export interface FeeTransactionInfo {
   amountRaw: string
 }
 
+export interface CreateFundTransactionInfo {
+  type: TransactionType.CREATE_FUND
+  manager: string
+}
+
+export interface SubscribeTransactionInfo {
+  type: TransactionType.SUBSCRIBE
+  fundId: number
+  investor: string
+}
+
 export type TransactionInfo =
   | ApproveTransactionInfo
   | ExactOutputSwapTransactionInfo
@@ -199,6 +212,8 @@ export type TransactionInfo =
   | DepositTransactionInfo
   | WithdrawTransactionInfo
   | FeeTransactionInfo
+  | CreateFundTransactionInfo
+  | SubscribeTransactionInfo
 
 export interface TransactionDetails {
   hash: string

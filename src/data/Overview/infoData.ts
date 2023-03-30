@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_INFO_ADDRESSES } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
-const FACTORY_DATA = gql`
-  query factory($factory: Bytes!) {
-    factory(id: $factory, subgraphError: allow) {
+const INFO_DATA = gql`
+  query info($infoAddress: Bytes!) {
+    info(id: $infoAddress, subgraphError: allow) {
       id
       fundCount
       investorCount
@@ -15,7 +15,7 @@ const FACTORY_DATA = gql`
   }
 `
 
-interface Factory {
+interface Info {
   id: string
   fundCount: number
   investorCount: number
@@ -23,7 +23,7 @@ interface Factory {
   minPoolAmount: number
 }
 
-interface FactoryFields {
+interface InfoFields {
   id: string
   fundCount: string
   investorCount: string
@@ -31,28 +31,28 @@ interface FactoryFields {
   minPoolAmount: string
 }
 
-interface FactoryResponse {
-  factory: FactoryFields
+interface InfoResponse {
+  info: InfoFields
 }
 
 /**
- * Fetch dotoli factory data
+ * Fetch DotoliInfo data
  */
-export function useFactoryData(): {
+export function useInfoData(): {
   loading: boolean
   error: boolean
-  data: Factory | undefined
+  data: Info | undefined
 } {
   // get client
   const { dataClient } = useClients()
-  const factory = DOTOLI_FACTORY_ADDRESSES
+  const infoAddress = DOTOLI_INFO_ADDRESSES
 
-  const { loading, error, data } = useQuery<FactoryResponse>(FACTORY_DATA, {
-    variables: { factory },
+  const { loading, error, data } = useQuery<InfoResponse>(INFO_DATA, {
+    variables: { infoAddress },
     client: dataClient,
   })
 
-  if (!data || (data && !data.factory)) return { data: undefined, error: false, loading: false }
+  if (!data || (data && !data.info)) return { data: undefined, error: false, loading: false }
   const anyError = Boolean(error)
   const anyLoading = Boolean(loading)
 
@@ -65,13 +65,13 @@ export function useFactoryData(): {
     }
   }
 
-  const formatted: Factory | undefined = data
+  const formatted: Info | undefined = data
     ? {
-        id: data.factory.id,
-        fundCount: parseInt(data.factory.fundCount),
-        investorCount: parseInt(data.factory.investorCount),
-        managerFee: parseInt(data.factory.managerFee),
-        minPoolAmount: parseInt(data.factory.minPoolAmount),
+        id: data.info.id,
+        fundCount: parseInt(data.info.fundCount),
+        investorCount: parseInt(data.info.investorCount),
+        managerFee: parseInt(data.info.managerFee),
+        minPoolAmount: parseInt(data.info.minPoolAmount),
       }
     : undefined
 

@@ -1,16 +1,15 @@
 import { useQuery } from '@apollo/client'
-import { NULL_ADDRESS } from 'constants/addresses'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { Manager } from 'types/fund'
 
 const MANAGER_DATA = gql`
-  query managerData($fund: Bytes!) {
-    investors(first: 1, where: { isManager: true, fund: $fund }, subgraphError: allow) {
+  query managerData($fundId: String!) {
+    investors(first: 1, where: { isManager: true, fundId: $fundId }, subgraphError: allow) {
       id
       createdAtTimestamp
       updatedAtTimestamp
-      fund
+      fundId
       investor
       isManager
       principalUSD
@@ -24,7 +23,7 @@ export interface ManagerFields {
   id: string
   createdAtTimestamp: string
   updatedAtTimestamp: string
-  fund: string
+  fundId: string
   investor: string
   isManager: string
   principalUSD: string
@@ -39,19 +38,19 @@ interface ManagerResponse {
 /**
  * Fetch manager data
  */
-export function useManagerData(fund: string | undefined): {
+export function useManagerData(fundId: string | undefined): {
   loading: boolean
   error: boolean
   data: Manager | undefined
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   // get client
   const { dataClient } = useClients()
 
   const { loading, error, data } = useQuery<ManagerResponse>(MANAGER_DATA, {
-    variables: { fund },
+    variables: { fundId },
     client: dataClient,
   })
 
@@ -68,17 +67,17 @@ export function useManagerData(fund: string | undefined): {
   }
 
   const formatted: Manager[] | undefined = data
-    ? data.investors.map((data2, index) => {
+    ? data.investors.map((investor, index) => {
         const fundData: Manager = {
-          id: data2.id,
-          createdAtTimestamp: parseFloat(data2.createdAtTimestamp),
-          updatedAtTimestamp: parseFloat(data2.updatedAtTimestamp),
-          fund: data2.fund,
-          investor: data2.investor,
-          isManager: Boolean(data2.isManager),
-          principalUSD: parseFloat(data2.principalUSD),
-          currentUSD: parseFloat(data2.currentUSD),
-          profitRatio: parseFloat(data2.profitRatio),
+          id: investor.id,
+          createdAtTimestamp: parseInt(investor.createdAtTimestamp),
+          updatedAtTimestamp: parseInt(investor.updatedAtTimestamp),
+          fundId: investor.fundId,
+          investor: investor.investor,
+          isManager: Boolean(investor.isManager),
+          principalUSD: parseFloat(investor.principalUSD),
+          currentUSD: parseFloat(investor.currentUSD),
+          profitRatio: parseFloat(investor.profitRatio),
         }
         return fundData
       })

@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
 import { checkWarning } from 'constants/tokenSafety'
-import { useDotoliFundContract } from 'hooks/useContract'
+import { useDotoliInfoContract } from 'hooks/useContract'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
@@ -122,16 +122,16 @@ export function CurrencyRow({
   eventProperties: Record<string, unknown>
 }) {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const investorAddress = params.investorAddress
+  const fundId = params.fundId
+  const investor = params.investor
 
   const key = currencyKey(currency)
 
-  const DotoliFundContract = useDotoliFundContract(fundAddress)
+  const DotoliInfoContract = useDotoliInfoContract()
   const { loading: getInvestorTokenAmountLoading, result: [getInvestorTokenAmount] = [] } = useSingleCallResult(
-    DotoliFundContract,
+    DotoliInfoContract,
     'getInvestorTokenAmount',
-    [investorAddress ?? undefined, currency.wrapped.address]
+    [fundId ?? undefined, investor ?? undefined, currency.wrapped.address]
   )
   const balance = useMemo(() => {
     if (!getInvestorTokenAmountLoading && getInvestorTokenAmount) {
@@ -181,7 +181,7 @@ export function CurrencyRow({
       </Column>
       {showCurrencyAmount ? (
         <RowFixed style={{ justifySelf: 'flex-end' }}>
-          {balance ? <Balance balance={balance} /> : investorAddress ? <Loader /> : null}
+          {balance ? <Balance balance={balance} /> : investor ? <Loader /> : null}
           {isSelected && <CheckIcon />}
         </RowFixed>
       ) : (
@@ -228,7 +228,7 @@ const LoadingRow = () => (
   </LoadingRows>
 )
 
-export default function FundCurrencyList({
+export default function InvestorCurrencyList({
   height,
   currencies,
   otherListTokens,

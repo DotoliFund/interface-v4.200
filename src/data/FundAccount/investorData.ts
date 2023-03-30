@@ -7,7 +7,7 @@ const INVESTOR_DATA = gql`
   query investor($id: String!) {
     investor(id: $id, subgraphError: allow) {
       id
-      fund
+      fundId
       investor
       isManager
       currentTokens
@@ -20,7 +20,7 @@ const INVESTOR_DATA = gql`
 
 export interface Investor {
   id: string
-  fund: string
+  fundId: string
   investor: string
   isManager: boolean
   currentTokens: string[]
@@ -31,7 +31,7 @@ export interface Investor {
 
 export interface InvestorFields {
   id: string
-  fund: string
+  fundId: string
   investor: string
   isManager: string
   currentTokens: string[]
@@ -48,15 +48,15 @@ interface InvestorResponse {
  * Fetch investor data
  */
 export function useInvestorData(
-  fund: string | undefined,
+  fundId: string | undefined,
   investor: string | undefined
 ): {
   loading: boolean
   error: boolean
   data: Investor | undefined
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   if (!investor) {
     investor = NULL_ADDRESS
@@ -64,7 +64,7 @@ export function useInvestorData(
   // get client
   const { dataClient } = useClients()
 
-  const id = fund.toUpperCase() + '-' + investor.toUpperCase()
+  const id = fundId + '-' + investor.toUpperCase()
   const { loading, error, data } = useQuery<InvestorResponse>(INVESTOR_DATA, {
     variables: { id },
     client: dataClient,
@@ -87,7 +87,7 @@ export function useInvestorData(
   const formatted: Investor | undefined = data
     ? {
         id: data.investor.id,
-        fund: data.investor.fund,
+        fundId: data.investor.fundId,
         investor: data.investor.investor,
         isManager: Boolean(data.investor.isManager),
         currentTokens: data.investor.currentTokens,

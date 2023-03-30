@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import FeeBarChart from 'components/BarChart/fee'
 import TokenBarChart from 'components/BarChart/token'
@@ -15,30 +15,35 @@ import InvestorTable from 'components/Tables/InvestorTable'
 import ManagerTable from 'components/Tables/ManagerTable'
 import TransactionTable from 'components/Tables/TransactionTable'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
-import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
+import { DOTOLI_INFO_ADDRESSES } from 'constants/addresses'
+import { isSupportedChain } from 'constants/chains'
 import { EthereumNetworkInfo } from 'constants/networks'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useFundData } from 'data/FundPage/fundData'
-import { useInvestorList } from 'data/FundPage/investorList'
+import { useInvestors } from 'data/FundPage/investors'
 import { useManagerData } from 'data/FundPage/managerData'
 import { useFundTransactions } from 'data/FundPage/transactions'
 import { useVolumeChartData } from 'data/FundPage/volumeChartData'
 import { useColor } from 'hooks/useColor'
-import { useDotoliFactoryContract } from 'hooks/useContract'
-import { useETHPriceInUSD } from 'hooks/usePools'
-import { useTokensPriceInUSD } from 'hooks/useTokensPriceInUSD'
-import { DotoliFactory } from 'interface/DotoliFactory'
+import { useDotoliInfoContract } from 'hooks/useContract'
+import { useETHPriceInUSD, useTokensPriceInUSD } from 'hooks/usePools'
+import { DotoliInfo } from 'interface/DotoliInfo'
 import { useSingleCallResult } from 'lib/hooks/multicall'
+import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import ClipLoader from 'react-spinners/ClipLoader'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled from 'styled-components/macro'
+import { useTransactionAdder } from 'state/transactions/hooks'
+import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatTime, unixToDate } from 'utils/date'
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
+
+import { TransactionType } from '../../state/transactions/types'
 
 const PageWrapper = styled.div`
   width: 90%;
@@ -95,13 +100,14 @@ enum ChartView {
 
 export default function FundPage() {
   const params = useParams()
-  const fundAddress = params.fundAddress
-  const DotoliFactoryContract = useDotoliFactoryContract()
+  const currentPageFund = params.fundId
+  const DotoliInfoContract = useDotoliInfoContract()
   const [activeNetwork] = useActiveNetworkVersion()
   const { account, chainId, provider } = useWeb3React()
   const navigate = useNavigate()
   const toggleWalletModal = useToggleWalletModal()
   const nowDate = Math.floor(new Date().getTime() / 1000)
+  const theme = useTheme()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -110,49 +116,49 @@ export default function FundPage() {
   // theming
   const backgroundColor = useColor()
 
-  const { loading: isManagerLoading, result: [myFund] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
-    'getFundByManager',
+  const { loading: myManagingFundLoading, result: [myManagingFund] = [] } = useSingleCallResult(
+    DotoliInfoContract,
+    'managingFund',
     [account ?? undefined]
   )
-  const [isManager, setIsManager] = useState<boolean>(false)
+  const [userIsManager, setUserIsManager] = useState<boolean>(false)
   useEffect(() => {
-    if (!isManagerLoading) {
+    if (!myManagingFundLoading) {
       setState()
     }
     async function setState() {
-      if (myFund && fundAddress && myFund.toUpperCase() === fundAddress.toUpperCase()) {
-        setIsManager(true)
+      if (myManagingFund && currentPageFund && myManagingFund.toString() === currentPageFund.toString()) {
+        setUserIsManager(true)
       } else {
-        setIsManager(false)
+        setUserIsManager(false)
       }
     }
-  }, [isManagerLoading, myFund, fundAddress])
+  }, [myManagingFundLoading, myManagingFund, currentPageFund])
 
-  const { loading: isInvestorLoading, result: [isSubscribed] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
+  const { loading: isSubscribedLoading, result: [isSubscribed] = [] } = useSingleCallResult(
+    DotoliInfoContract,
     'isSubscribed',
-    [account, fundAddress]
+    [account, currentPageFund]
   )
-  const [isInvestor, setIsInvestor] = useState<boolean>(false)
+  const [userIsInvestor, setUserIsInvestor] = useState<boolean>(false)
   useEffect(() => {
-    if (!isInvestorLoading) {
+    if (!isSubscribedLoading) {
       setState()
     }
     async function setState() {
       if (isSubscribed) {
-        setIsInvestor(true)
+        setUserIsInvestor(true)
       } else {
-        setIsInvestor(false)
+        setUserIsInvestor(false)
       }
     }
-  }, [isInvestorLoading, isSubscribed, myFund])
+  }, [isSubscribedLoading, isSubscribed])
 
-  const fundData = useFundData(fundAddress).data
-  const volumeChartData = useVolumeChartData(fundAddress).data
-  const transactions = useFundTransactions(fundAddress).data
-  const managerData = useManagerData(fundAddress).data
-  const investorList = useInvestorList(fundAddress).data
+  const fundData = useFundData(currentPageFund).data
+  const volumeChartData = useVolumeChartData(currentPageFund).data
+  const transactions = useFundTransactions(currentPageFund).data
+  const managerData = useManagerData(currentPageFund).data
+  const investors = useInvestors(currentPageFund).data
 
   const [view, setView] = useState(ChartView.VOL_USD)
 
@@ -197,54 +203,37 @@ export default function FundPage() {
   const ethPriceInUSDC = useETHPriceInUSD(chainId)
 
   const currentTokensAmount = useMemo(() => {
-    if (fundData) {
+    if (chainId && fundData) {
       return fundData.currentTokens.map((data, index) => {
-        return {
-          token: data,
-          symbol: fundData.currentTokensSymbols[index],
-          decimal: fundData.currentTokensDecimals[index],
-          amount: fundData.currentTokensAmount[index],
-        }
+        const decimals = fundData.currentTokensDecimals[index]
+        const symbol = fundData.currentTokensSymbols[index]
+        const token = new Token(chainId, data, decimals, symbol)
+        const decimal = 10 ** decimals
+        return CurrencyAmount.fromRawAmount(token, Math.floor(fundData.currentTokensAmount[index] * decimal))
       })
     } else {
       return []
     }
-  }, [fundData])
+  }, [chainId, fundData])
 
-  const currentTokensAmountUSD: [Token, number, number][] = useTokensPriceInUSD(
+  const currentTokensAmountUSD: [CurrencyAmount<Token>, number][] = useTokensPriceInUSD(
     chainId,
     weth9,
     ethPriceInUSDC,
     currentTokensAmount
   )
 
-  if (formattedVolumeUSD && formattedVolumeUSD.length > 0) {
-    let totalCurrentAmountUSD = 0
-    currentTokensAmountUSD.map((value, index) => {
-      const tokenAmountUSD = value[2]
-      totalCurrentAmountUSD += tokenAmountUSD
-      return null
-    })
-    formattedVolumeUSD.push({
-      time: nowDate,
-      current: totalCurrentAmountUSD,
-      tokens: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokens,
-      symbols: formattedVolumeUSD[formattedVolumeUSD.length - 1].symbols,
-      tokensVolume: formattedVolumeUSD[formattedVolumeUSD.length - 1].tokensVolume,
-      index: formattedVolumeUSD.length,
-    })
-  }
-
   const formattedLatestTokens = useMemo(() => {
     if (currentTokensAmountUSD) {
       const tokensData = currentTokensAmountUSD.map((data, index) => {
-        const token = data[0].address
-        const symbol = data[0].symbol ? data[0].symbol : 'Unknown'
-        const decimal = data[0].decimals
-        const amount = data[1]
-        const amountUSD = data[2]
+        const token = data[0].currency
+        const tokenAddress = token.address
+        const symbol = token.symbol ? token.symbol : 'Unknown'
+        const decimal = token.decimals
+        const amount = Number(data[0].quotient.toString()) / Number(10 ** decimal)
+        const amountUSD = data[1]
         return {
-          token,
+          token: tokenAddress,
           symbol,
           decimal,
           amount,
@@ -257,6 +246,41 @@ export default function FundPage() {
       return []
     }
   }, [currentTokensAmountUSD])
+
+  if (
+    formattedVolumeUSD &&
+    formattedVolumeUSD.length > 1 &&
+    formattedLatestTokens &&
+    formattedLatestTokens.length > 0
+  ) {
+    let totalCurrentAmountUSD = 0
+    currentTokensAmountUSD.map((value, index) => {
+      const tokenAmountUSD = value[1]
+      totalCurrentAmountUSD += tokenAmountUSD
+      return null
+    })
+
+    const tokens = formattedLatestTokens.map((data, index) => {
+      return data.token
+    })
+
+    const symbols = formattedLatestTokens.map((data, index) => {
+      return data.symbol
+    })
+
+    const tokensVolume = formattedLatestTokens.map((data, index) => {
+      return data.volume
+    })
+
+    formattedVolumeUSD.push({
+      time: nowDate,
+      current: totalCurrentAmountUSD,
+      tokens,
+      symbols,
+      tokensVolume,
+      index: formattedVolumeUSD.length,
+    })
+  }
 
   const volumeChartHoverIndex = volumeIndexHover !== undefined ? volumeIndexHover : undefined
 
@@ -280,11 +304,15 @@ export default function FundPage() {
     navigate(`/fund/${fund}/${account}`)
   }
 
+  const [attemptingTxn, setAttemptingTxn] = useState(false)
+  const [txnHash, setTxnHash] = useState<string | undefined>()
+  const addTransaction = useTransactionAdder()
+
   async function onSubscribe() {
-    if (!chainId || !provider || !account || !fundAddress) return
-    const { calldata, value } = DotoliFactory.subscribeCallParameters(fundAddress)
+    if (!chainId || !provider || !account || !currentPageFund) return
+    const { calldata, value } = DotoliInfo.subscribeCallParameters(currentPageFund)
     const txn: { to: string; data: string; value: string } = {
-      to: DOTOLI_FACTORY_ADDRESSES,
+      to: DOTOLI_INFO_ADDRESSES,
       data: calldata,
       value,
     }
@@ -300,7 +328,13 @@ export default function FundPage() {
           .getSigner()
           .sendTransaction(newTxn)
           .then((response) => {
-            console.log(response)
+            setTxnHash(response.hash)
+            setAttemptingTxn(false)
+            addTransaction(response, {
+              type: TransactionType.SUBSCRIBE,
+              fundId: Number(currentPageFund),
+              investor: account,
+            })
           })
       })
       .catch((error) => {
@@ -325,12 +359,12 @@ export default function FundPage() {
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
-    ) : (isManager || isInvestor) && fundAddress ? (
+    ) : (userIsManager || userIsInvestor) && currentPageFund ? (
       <ButtonPrimary
         $borderRadius="12px"
         margin={'6px'}
         padding={'12px'}
-        onClick={() => onAccount(fundAddress, account)}
+        onClick={() => onAccount(currentPageFund, account)}
       >
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>My Account</Trans>
@@ -345,14 +379,14 @@ export default function FundPage() {
     )
 
   const ButtonB = () =>
-    account && isManager && fundAddress ? (
+    account && userIsManager && currentPageFund ? (
       <ButtonPrimary
         $borderRadius="12px"
         margin={'6px'}
         padding={'12px'}
         data-testid="navbar-connect-wallet"
         onClick={() => {
-          navigate(`/fee/${fundAddress}`)
+          navigate(`/fee/${currentPageFund}`)
         }}
       >
         <ThemedText.DeprecatedMain mb="4px">
@@ -361,265 +395,288 @@ export default function FundPage() {
       </ButtonPrimary>
     ) : null
 
-  return (
-    <PageWrapper>
-      <ThemedBackground backgroundColor={backgroundColor} />
-      {fundData && chainId ? (
-        <AutoColumn gap="16px">
-          <ResponsiveRow align="flex-end">
-            <AutoColumn gap="lg">
-              <RowFixed>
-                <ExternalLink href={getEtherscanLink(chainId, fundData.address, 'address', activeNetwork)}>
-                  <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
-                    <Trans>Fund :</Trans> {shortenAddress(fundData.address)}
-                  </ThemedText.DeprecatedLabel>
-                </ExternalLink>
-              </RowFixed>
-            </AutoColumn>
-            {activeNetwork !== EthereumNetworkInfo ? null : (
-              <RowFixed>
-                <ButtonA />
-                <ButtonB />
-              </RowFixed>
-            )}
-          </ResponsiveRow>
-          <ContentLayout>
-            <DarkGreyCard>
-              <AutoColumn gap="md">
-                <AutoRow gap="md">
-                  <ThemedText.DeprecatedMain ml="8px">
-                    <Trans>Current Tokens</Trans>
-                  </ThemedText.DeprecatedMain>
-                </AutoRow>
-                <PieChart
-                  data={formattedHoverToken ? formattedHoverToken : formattedLatestTokens}
-                  color={activeNetwork.primaryColor}
-                />
+  if (!isSupportedChain(chainId)) {
+    return (
+      <ErrorContainer>
+        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+          <NetworkIcon strokeWidth={1.2} />
+          <div data-testid="pools-unsupported-err">
+            <Trans>Your connected network is unsupported.</Trans>
+          </div>
+        </ThemedText.DeprecatedBody>
+      </ErrorContainer>
+    )
+  } else {
+    return (
+      <PageWrapper>
+        <ThemedBackground backgroundColor={backgroundColor} />
+        {fundData && chainId ? (
+          <AutoColumn gap="16px">
+            <ResponsiveRow align="flex-end">
+              <AutoColumn gap="lg">
+                <RowFixed>
+                  <ExternalLink href={getEtherscanLink(chainId, fundData.fundId, 'address', activeNetwork)}>
+                    <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
+                      <Trans>Fund :</Trans> {fundData.fundId}
+                    </ThemedText.DeprecatedLabel>
+                  </ExternalLink>
+                </RowFixed>
               </AutoColumn>
-            </DarkGreyCard>
-            <DarkGreyCard>
-              <ToggleRow>
-                <ToggleWrapper width="240px">
-                  <ToggleElement
-                    isActive={view === ChartView.VOL_USD}
-                    fontSize="12px"
-                    onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
-                  >
-                    <Trans>Volume</Trans>
-                  </ToggleElement>
-                  <ToggleElement
-                    isActive={view === ChartView.TOKENS}
-                    fontSize="12px"
-                    onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
-                  >
-                    <Trans>Tokens</Trans>
-                  </ToggleElement>
-                  {isManager ? (
+              {activeNetwork !== EthereumNetworkInfo ? null : (
+                <RowFixed>
+                  <ButtonA />
+                  <ButtonB />
+                </RowFixed>
+              )}
+            </ResponsiveRow>
+            <ContentLayout>
+              <DarkGreyCard>
+                <AutoColumn gap="md">
+                  <AutoRow gap="md">
+                    <ThemedText.DeprecatedMain ml="8px">
+                      <Trans>Current Asset Tokens</Trans>
+                    </ThemedText.DeprecatedMain>
+                  </AutoRow>
+                  <PieChart
+                    data={formattedHoverToken ? formattedHoverToken : formattedLatestTokens}
+                    color={activeNetwork.primaryColor}
+                  />
+                </AutoColumn>
+              </DarkGreyCard>
+              <DarkGreyCard>
+                <ToggleRow>
+                  <ToggleWrapper width="260px">
                     <ToggleElement
-                      isActive={view === ChartView.FEES}
+                      isActive={view === ChartView.VOL_USD}
                       fontSize="12px"
-                      onClick={() => (view === ChartView.FEES ? {} : setView(ChartView.FEES))}
+                      onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
                     >
-                      <Trans>Fees</Trans>
+                      <Trans>Current Asset</Trans>
                     </ToggleElement>
-                  ) : (
-                    <></>
-                  )}
-                </ToggleWrapper>
-              </ToggleRow>
-              {view === ChartView.VOL_USD ? (
-                <VolumeBarChart
-                  data={formattedVolumeUSD}
-                  color={activeNetwork.primaryColor}
-                  setIndex={setVolumeIndexHover}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {formatDollarAmount(
-                            volumeIndexHover !== undefined && formattedVolumeUSD && formattedVolumeUSD.length > 0
-                              ? formattedVolumeUSD[volumeIndexHover].current
-                              : formattedVolumeUSD && formattedVolumeUSD.length > 0
-                              ? formattedVolumeUSD[formattedVolumeUSD.length - 1].current
-                              : 0
-                          )}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                  topRight={
-                    <AutoColumn gap="4px" justify="end">
-                      <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
-                        {volumeIndexHover !== undefined ? (
+                    <ToggleElement
+                      isActive={view === ChartView.TOKENS}
+                      fontSize="12px"
+                      onClick={() => (view === ChartView.TOKENS ? {} : setView(ChartView.TOKENS))}
+                    >
+                      <Trans>Tokens</Trans>
+                    </ToggleElement>
+                    {userIsManager ? (
+                      <ToggleElement
+                        isActive={view === ChartView.FEES}
+                        fontSize="12px"
+                        onClick={() => (view === ChartView.FEES ? {} : setView(ChartView.FEES))}
+                      >
+                        <Trans>Fees</Trans>
+                      </ToggleElement>
+                    ) : (
+                      <></>
+                    )}
+                  </ToggleWrapper>
+                </ToggleRow>
+                {view === ChartView.VOL_USD ? (
+                  <VolumeBarChart
+                    data={formattedVolumeUSD}
+                    color={activeNetwork.primaryColor}
+                    setIndex={setVolumeIndexHover}
+                    topLeft={
+                      <AutoColumn gap="4px">
+                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
                           <MonoSpace>
-                            {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} (
-                            {formatTime(formattedVolumeUSD[volumeIndexHover].time.toString(), 8)})
+                            {formatDollarAmount(
+                              volumeIndexHover !== undefined && formattedVolumeUSD && formattedVolumeUSD.length > 0
+                                ? formattedVolumeUSD[volumeIndexHover].current
+                                : formattedVolumeUSD && formattedVolumeUSD.length > 0
+                                ? formattedVolumeUSD[formattedVolumeUSD.length - 1].current
+                                : 0
+                            )}
                           </MonoSpace>
-                        ) : formattedVolumeUSD && formattedVolumeUSD.length > 0 ? (
-                          <MonoSpace>
-                            {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} (
-                            {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
-                          </MonoSpace>
-                        ) : null}
-                      </ThemedText.DeprecatedMain>
-                    </AutoColumn>
-                  }
-                />
-              ) : view === ChartView.TOKENS ? (
-                <TokenBarChart
-                  data={formattedLatestTokens}
-                  color={activeNetwork.primaryColor}
-                  setIndex={setTokenIndexHover}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <AutoRow>
-                        <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[tokenIndexHover].symbol
-                            : formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[0].symbol
-                            : null}
-                          &nbsp;&nbsp;
-                        </ThemedText.DeprecatedMediumHeader>
-                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0 ? (
-                          <ThemedText.DeprecatedMain fontSize="14px">
-                            <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
-                          </ThemedText.DeprecatedMain>
-                        ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
-                          <ThemedText.DeprecatedMain fontSize="14px">
-                            <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
-                          </ThemedText.DeprecatedMain>
-                        ) : null}
-                      </AutoRow>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[tokenIndexHover].amount
-                            : formattedLatestTokens && formattedLatestTokens.length > 0
-                            ? formattedLatestTokens[0].amount
-                            : null}
-                          <br />
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                  topRight={
-                    <AutoColumn gap="4px" justify="end">
-                      <ThemedText.DeprecatedMain fontSize="14px">
-                        <MonoSpace>
-                          {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
-                        </MonoSpace>
-                      </ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                        {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
-                          ? formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
-                          : formattedLatestTokens && formattedLatestTokens.length > 0
-                          ? formatDollarAmount(formattedLatestTokens[0].volume)
-                          : null}
-                        <br />
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                />
-              ) : isManager && view === ChartView.FEES ? (
-                <FeeBarChart
-                  data={formattedFeeTokens}
-                  color={activeNetwork.primaryColor}
-                  setIndex={setFeeIndexHover}
-                  topLeft={
-                    <AutoColumn gap="4px">
-                      <AutoRow>
-                        <ThemedText.DeprecatedMediumHeader fontSize="16px">
-                          {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0
-                            ? formattedFeeTokens[feeIndexHover].symbol
-                            : formattedFeeTokens && formattedFeeTokens.length > 0
-                            ? formattedFeeTokens[0].symbol
-                            : null}
-                          &nbsp;&nbsp;
-                        </ThemedText.DeprecatedMediumHeader>
-                        <ThemedText.DeprecatedMain fontSize="14px">
-                          {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
-                            <MonoSpace>{shortenAddress(formattedFeeTokens[feeIndexHover].token)}</MonoSpace>
-                          ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
-                            <MonoSpace>{shortenAddress(formattedFeeTokens[0].token)}</MonoSpace>
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                    topRight={
+                      <AutoColumn gap="4px" justify="end">
+                        <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
+                          {volumeIndexHover !== undefined ? (
+                            <MonoSpace>
+                              {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} (
+                              {formatTime(formattedVolumeUSD[volumeIndexHover].time.toString(), 8)})
+                            </MonoSpace>
+                          ) : formattedVolumeUSD && formattedVolumeUSD.length > 0 ? (
+                            <MonoSpace>
+                              {unixToDate(formattedVolumeUSD[formattedVolumeUSD.length - 1].time)} (
+                              {formatTime(formattedVolumeUSD[formattedVolumeUSD.length - 1].time.toString(), 8)})
+                            </MonoSpace>
                           ) : null}
                         </ThemedText.DeprecatedMain>
-                      </AutoRow>
-                      <ThemedText.DeprecatedLargeHeader fontSize="32px">
-                        <MonoSpace>
-                          {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
-                            formattedFeeTokens[feeIndexHover].amount
-                          ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
-                            formattedFeeTokens[0].amount
-                          ) : (
-                            <>
-                              <br />
-                            </>
-                          )}
-                        </MonoSpace>
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                  topRight={
-                    <AutoColumn gap="4px" justify="end">
-                      <ThemedText.DeprecatedMain fontSize="14px">
-                        <MonoSpace>
-                          {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
-                        </MonoSpace>
-                      </ThemedText.DeprecatedMain>
-                      <ThemedText.DeprecatedLargeHeader fontSize="30px">
-                        <>
+                      </AutoColumn>
+                    }
+                  />
+                ) : view === ChartView.TOKENS ? (
+                  <TokenBarChart
+                    data={formattedLatestTokens}
+                    color={activeNetwork.primaryColor}
+                    setIndex={setTokenIndexHover}
+                    topLeft={
+                      <AutoColumn gap="4px">
+                        <AutoRow>
+                          <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                            {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                              ? formattedLatestTokens[tokenIndexHover].symbol === 'WETH'
+                                ? 'ETH'
+                                : formattedLatestTokens[tokenIndexHover].symbol
+                              : formattedLatestTokens && formattedLatestTokens.length > 0
+                              ? formattedLatestTokens[0].symbol === 'WETH'
+                                ? 'ETH'
+                                : formattedLatestTokens[0].symbol
+                              : null}
+                            &nbsp;&nbsp;
+                          </ThemedText.DeprecatedMediumHeader>
+                          {tokenIndexHover !== undefined &&
+                          formattedLatestTokens &&
+                          formattedLatestTokens.length > 0 ? (
+                            <ThemedText.DeprecatedMain fontSize="14px">
+                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
+                            <ThemedText.DeprecatedMain fontSize="14px">
+                              <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
+                            </ThemedText.DeprecatedMain>
+                          ) : null}
+                        </AutoRow>
+                        <ThemedText.DeprecatedLargeHeader fontSize="30px">
+                          {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formatDollarAmount(formattedLatestTokens[tokenIndexHover].volume)
+                            : formattedLatestTokens && formattedLatestTokens.length > 0
+                            ? formatDollarAmount(formattedLatestTokens[0].volume)
+                            : null}
                           <br />
-                        </>
-                      </ThemedText.DeprecatedLargeHeader>
-                    </AutoColumn>
-                  }
-                />
-              ) : null}
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                    topRight={
+                      <AutoColumn gap="4px" justify="end">
+                        <ThemedText.DeprecatedMain fontSize="14px">
+                          <MonoSpace>
+                            {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
+                          </MonoSpace>
+                        </ThemedText.DeprecatedMain>
+                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                          <MonoSpace>
+                            {tokenIndexHover !== undefined && formattedLatestTokens && formattedLatestTokens.length > 0
+                              ? formatAmount(formattedLatestTokens[tokenIndexHover].amount)
+                              : formattedLatestTokens && formattedLatestTokens.length > 0
+                              ? formatAmount(formattedLatestTokens[0].amount)
+                              : null}
+                            <br />
+                          </MonoSpace>
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                  />
+                ) : userIsManager && view === ChartView.FEES ? (
+                  <FeeBarChart
+                    data={formattedFeeTokens}
+                    color={activeNetwork.primaryColor}
+                    setIndex={setFeeIndexHover}
+                    topLeft={
+                      <AutoColumn gap="4px">
+                        <AutoRow>
+                          <ThemedText.DeprecatedMediumHeader fontSize="16px">
+                            {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0
+                              ? formattedFeeTokens[feeIndexHover].symbol === 'WETH'
+                                ? 'ETH'
+                                : formattedFeeTokens[feeIndexHover].symbol
+                              : formattedFeeTokens && formattedFeeTokens.length > 0
+                              ? formattedFeeTokens[0].symbol === 'WETH'
+                                ? 'ETH'
+                                : formattedFeeTokens[0].symbol
+                              : null}
+                            &nbsp;&nbsp;
+                          </ThemedText.DeprecatedMediumHeader>
+                          <ThemedText.DeprecatedMain fontSize="14px">
+                            {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                              <MonoSpace>{shortenAddress(formattedFeeTokens[feeIndexHover].token)}</MonoSpace>
+                            ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                              <MonoSpace>{shortenAddress(formattedFeeTokens[0].token)}</MonoSpace>
+                            ) : null}
+                          </ThemedText.DeprecatedMain>
+                        </AutoRow>
+                        <ThemedText.DeprecatedLargeHeader fontSize="32px">
+                          <MonoSpace>
+                            {feeIndexHover !== undefined && formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                              formatAmount(formattedFeeTokens[feeIndexHover].amount)
+                            ) : formattedFeeTokens && formattedFeeTokens.length > 0 ? (
+                              formatAmount(formattedFeeTokens[0].amount)
+                            ) : (
+                              <>
+                                <br />
+                              </>
+                            )}
+                          </MonoSpace>
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                    topRight={
+                      <AutoColumn gap="4px" justify="end">
+                        <ThemedText.DeprecatedMain fontSize="14px">
+                          <MonoSpace>
+                            {unixToDate(nowDate)} ({formatTime(nowDate.toString(), 8)})
+                          </MonoSpace>
+                        </ThemedText.DeprecatedMain>
+                        <ThemedText.DeprecatedLargeHeader fontSize="30px">
+                          <>
+                            <br />
+                          </>
+                        </ThemedText.DeprecatedLargeHeader>
+                      </AutoColumn>
+                    }
+                  />
+                ) : null}
+              </DarkGreyCard>
+            </ContentLayout>
+            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+              <Trans>Manager</Trans>
+            </ThemedText.DeprecatedMain>
+            <DarkGreyCard>
+              {managerData ? (
+                <ManagerTable managerData={managerData} />
+              ) : (
+                <LoadingRows>
+                  <div />
+                </LoadingRows>
+              )}{' '}
             </DarkGreyCard>
-          </ContentLayout>
-          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            <Trans>Manager</Trans>
-          </ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {managerData ? (
-              <ManagerTable managerData={managerData} />
-            ) : (
-              <LoadingRows>
-                <div />
-              </LoadingRows>
-            )}{' '}
-          </DarkGreyCard>
-          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            <Trans>Investors</Trans>
-          </ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {investorList ? (
-              <InvestorTable investors={investorList} />
-            ) : (
-              <LoadingRows>
-                <div />
-              </LoadingRows>
-            )}{' '}
-          </DarkGreyCard>
-          <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
-            <Trans>Transactions</Trans>
-          </ThemedText.DeprecatedMain>
-          <DarkGreyCard>
-            {transactions ? (
-              <TransactionTable transactions={transactions} isFundPage={true} />
-            ) : (
-              <LoadingRows>
-                <div />
-              </LoadingRows>
-            )}
-          </DarkGreyCard>
-        </AutoColumn>
-      ) : (
-        <LoadingRows>
-          <div />
-        </LoadingRows>
-      )}
-    </PageWrapper>
-  )
+            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+              <Trans>Investors</Trans>
+            </ThemedText.DeprecatedMain>
+            <DarkGreyCard>
+              {investors ? (
+                <InvestorTable investors={investors} />
+              ) : (
+                <LoadingRows>
+                  <div />
+                </LoadingRows>
+              )}{' '}
+            </DarkGreyCard>
+            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+              <Trans>Transactions</Trans>
+            </ThemedText.DeprecatedMain>
+            <DarkGreyCard>
+              {transactions ? (
+                <TransactionTable transactions={transactions} isFundPage={true} />
+              ) : (
+                <LoadingRows>
+                  <div />
+                </LoadingRows>
+              )}
+            </DarkGreyCard>
+          </AutoColumn>
+        ) : (
+          <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>
+            <ClipLoader color={'#ffffff'} loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
+          </div>
+        )}
+      </PageWrapper>
+    )
+  }
 }

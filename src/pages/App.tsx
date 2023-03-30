@@ -134,26 +134,26 @@ export default function App() {
                   <Route path="home" element={<Home />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="account" element={<Account />} />
-                  <Route path="fund/:fundAddress" element={<FundPage />} />
-                  <Route path="fund/:fundAddress/:investorAddress" element={<FundAccount />} />
-                  <Route path="deposit/:fundAddress/:investorAddress" element={<Deposit />} />
-                  <Route path="withdraw/:fundAddress/:investorAddress" element={<Withdraw />} />
-                  <Route path="fee/:fundAddress" element={<Fee />} />
-                  <Route path="swap/:fundAddress/:investorAddress" element={<Swap />} />
-                  <Route path="pool/:fundAddress/:investorAddress/:tokenId" element={<PositionPage />} />
+                  <Route path="fund/:fundId" element={<FundPage />} />
+                  <Route path="fund/:fundId/:investor" element={<FundAccount />} />
+                  <Route path="deposit/:fundId/:investor" element={<Deposit />} />
+                  <Route path="withdraw/:fundId/:investor" element={<Withdraw />} />
+                  <Route path="fee/:fundId" element={<Fee />} />
+                  <Route path="swap/:fundId/:investor" element={<Swap />} />
+                  <Route path="pool/:fundId/:investor/:tokenId" element={<PositionPage />} />
                   <Route path="add" element={<RedirectDuplicateTokenIds />}>
                     {/* this is workaround since react-router-dom v6 doesn't support optional parameters any more */}
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA" />
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB" />
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount" />
+                    <Route path=":fundId/:investor/:currencyIdA" />
+                    <Route path=":fundId/:investor/:currencyIdA/:currencyIdB" />
+                    <Route path=":fundId/:investor/:currencyIdA/:currencyIdB/:feeAmount" />
                   </Route>
                   <Route path="increase" element={<AddLiquidity />}>
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA" />
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB" />
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount" />
-                    <Route path=":fundAddress/:investorAddress/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
+                    <Route path=":fundId/:investor/:currencyIdA" />
+                    <Route path=":fundId/:investor/:currencyIdA/:currencyIdB" />
+                    <Route path=":fundId/:investor/:currencyIdA/:currencyIdB/:feeAmount" />
+                    <Route path=":fundId/:investor/:currencyIdA/:currencyIdB/:feeAmount/:tokenId" />
                   </Route>
-                  <Route path="remove/:fundAddress/:investorAddress/:tokenId" element={<RemoveLiquidityV3 />} />
+                  <Route path="remove/:fundId/:investor/:tokenId" element={<RemoveLiquidityV3 />} />
                   <Route path="staking" element={<Staking />} />
 
                   <Route path="*" element={<Home />} />

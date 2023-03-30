@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import Card from 'components/Card'
 import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween } from 'components/Row'
@@ -6,8 +7,10 @@ import utc from 'dayjs/plugin/utc'
 import { darken } from 'polished'
 import { useEffect } from 'react'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import styled from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { unixToDate } from 'utils/date'
 
 dayjs.extend(utc)
@@ -25,6 +28,16 @@ const Wrapper = styled(Card)`
   > * {
     font-size: 1rem;
   }
+`
+
+const IconStyle = css`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+`
+
+const BarChartIconComponent = styled(BarChartIcon)`
+  ${IconStyle}
 `
 
 export type ComposedChartProps = {
@@ -55,6 +68,9 @@ const Chart = ({
   topLeft,
   topRight,
 }: ComposedChartProps) => {
+  const theme = useTheme()
+  const isEmptyData = !data || data.length <= 1
+
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
     const index = payload ? payload.payload.index : undefined
@@ -67,10 +83,14 @@ const Chart = ({
   }
 
   return (
-    <Wrapper>
+    <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
       <RowBetween>
-        {topLeft ?? null}
-        {topRight ?? null}
+        {isEmptyData ? null : (
+          <>
+            {topLeft ?? null}
+            {topRight ?? null}
+          </>
+        )}
       </RowBetween>
       {data?.length === 0 ? (
         <LoadingRows>
@@ -78,42 +98,51 @@ const Chart = ({
         </LoadingRows>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-              top: 5,
-              right: 5,
-              left: 5,
-              bottom: 5,
-            }}
-          >
-            <defs>
-              <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <defs>
-              <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={darken(0.36, color2)} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={color2} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="time"
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
-              minTickGap={10}
-            />
-            <Tooltip cursor={false} content={<CustomTooltip />} />
-            <Legend />
-            <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
-            <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
-            <Line dataKey="principal" type="monotone" stroke={color3} />
-          </ComposedChart>
+          {isEmptyData ? (
+            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+              <BarChartIconComponent strokeWidth={1} />
+              <div>
+                <Trans>No volume data</Trans>
+              </div>
+            </ThemedText.DeprecatedBody>
+          ) : (
+            <ComposedChart
+              width={500}
+              height={300}
+              data={data}
+              margin={{
+                top: 5,
+                right: 5,
+                left: 5,
+                bottom: 5,
+              }}
+            >
+              <defs>
+                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
+                  <stop offset="100%" stopColor={color} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={darken(0.36, color2)} stopOpacity={0.5} />
+                  <stop offset="100%" stopColor={color2} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="time"
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(time) => dayjs(unixToDate(time)).format('DD')}
+                minTickGap={10}
+              />
+              <Tooltip cursor={false} content={<CustomTooltip />} />
+              <Legend />
+              <Bar dataKey="current" stackId="a" stroke={color} fill={color} maxBarSize={80} />
+              <Bar dataKey="pool" stackId="a" stroke={color2} fill={color2} maxBarSize={80} />
+              <Line dataKey="principal" type="monotone" stroke={color3} />
+            </ComposedChart>
+          )}
         </ResponsiveContainer>
       )}
     </Wrapper>

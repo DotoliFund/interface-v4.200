@@ -68,7 +68,7 @@ const SORT_FIELD = {
 
 const DataRow = ({ managerData, index }: { managerData: TopManager; index: number }) => {
   return (
-    <LinkWrapper to={'/fund/' + managerData.fund + '/' + managerData.investor}>
+    <LinkWrapper to={'/fund/' + managerData.fundId + '/' + managerData.investor}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(managerData.investor)}</Label>
         <Label end={1} fontWeight={400}>

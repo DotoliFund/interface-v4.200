@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import FundListItem from 'components/FundListItem'
-import Toggle from 'components/Toggle'
 import React from 'react'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
@@ -43,37 +42,12 @@ const MobileHeader = styled.div`
   }
 `
 
-const ToggleWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
-const ToggleLabel = styled.div`
-  opacity: 0.6;
-  margin-right: 10px;
-`
-
-const MobileTogglePosition = styled.div`
-  @media screen and (max-width: ${MEDIA_WIDTHS.deprecated_upToExtraSmall}px) {
-    position: absolute;
-    right: 20px;
-  }
-`
-
 type FundListProps = React.PropsWithChildren<{
   isManagingFund: boolean
   funds: FundDetails[]
-  setUserHideClosedFunds: any
-  userHideClosedFunds: boolean
 }>
 
-export default function FundList({
-  isManagingFund,
-  funds,
-  setUserHideClosedFunds,
-  userHideClosedFunds,
-}: FundListProps) {
+export default function FundList({ isManagingFund, funds }: FundListProps) {
   return (
     <>
       <DesktopHeader>
@@ -81,41 +55,13 @@ export default function FundList({
           {!isManagingFund ? <Trans>Investing Funds</Trans> : <Trans>Managing Fund</Trans>}
           {!isManagingFund ? funds && ' (' + funds.length + ')' : null}
         </div>
-        {!isManagingFund ? (
-          <ToggleWrap>
-            <ToggleLabel>
-              <Trans>Show closed positions</Trans>
-            </ToggleLabel>
-            <Toggle
-              id="desktop-hide-closed-positions"
-              isActive={!userHideClosedFunds}
-              toggle={() => {
-                setUserHideClosedFunds(!userHideClosedFunds)
-              }}
-            />
-          </ToggleWrap>
-        ) : null}
       </DesktopHeader>
       <MobileHeader>
         {!isManagingFund ? <Trans>Investing Funds</Trans> : <Trans>Managing Fund</Trans>}
         {!isManagingFund ? funds && ' (' + funds.length + ')' : null}
-        <ToggleWrap>
-          <ToggleLabel>
-            <Trans>Show closed positions</Trans>
-          </ToggleLabel>
-          <MobileTogglePosition>
-            <Toggle
-              id="mobile-hide-closed-positions"
-              isActive={!userHideClosedFunds}
-              toggle={() => {
-                setUserHideClosedFunds(!userHideClosedFunds)
-              }}
-            />
-          </MobileTogglePosition>
-        </ToggleWrap>
       </MobileHeader>
       {funds.map((p) => {
-        return <FundListItem key={p.fund} fundDetails={p} />
+        return <FundListItem key={p.fundId} fundDetails={p} />
       })}
     </>
   )

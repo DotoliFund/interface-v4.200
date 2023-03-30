@@ -87,7 +87,7 @@ export function useDerivedFeeInfo(feeTokens: FundToken[]): {
   let feeTokenBalance = 0
   if (inputCurrency && feeTokens) {
     for (let i = 0; i < feeTokens.length; i++) {
-      const feeTokenAddress = feeTokens[i].tokenAddress
+      const feeTokenAddress = feeTokens[i].token
       const currencyAddress = inputCurrency.wrapped.address
       if (currencyAddress.toUpperCase() === feeTokenAddress.toUpperCase()) {
         feeTokenBalance = feeTokens[i].amount

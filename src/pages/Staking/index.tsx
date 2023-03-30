@@ -4,14 +4,12 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonConfirmed, ButtonError, ButtonLight } from 'components/Button'
-import Card from 'components/Card'
+import { ButtonError, ButtonLight } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/RewardCurrencyInputPanel'
-import StakingCurrencyInputPanel from 'components/CurrencyInputPanel/StakingCurrencyInputPanel'
-import UnstakingCurrencyInputPanel from 'components/CurrencyInputPanel/UnstakingCurrencyInputPanel'
-import Loader from 'components/Loader'
-import { AutoRow, RowBetween, RowFixed, RowFlat } from 'components/Row'
+import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/RewardInputPanel'
+import StakingCurrencyInputPanel from 'components/CurrencyInputPanel/StakingInputPanel'
+import UnstakingCurrencyInputPanel from 'components/CurrencyInputPanel/UnstakingInputPanel'
+import { RowBetween, RowFixed, RowFlat } from 'components/Row'
 import { PageWrapper, SwapWrapper as StakingWrapper } from 'components/swap/styleds'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { ToggleElement, ToggleWrapper } from 'components/Toggle/MultiToggle'
@@ -21,10 +19,11 @@ import { isSupportedChain } from 'constants/chains'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { DotoliStaking } from 'interface/DotoliStaking'
+import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { CheckCircle, HelpCircle } from 'react-feather'
+import { Info } from 'react-feather'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useStakingInfo } from 'state/stake/hooks'
@@ -35,6 +34,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
+import Loader from '../../components/Loader'
 import { DTL } from '../../constants/tokens'
 
 const StyledStakingHeader = styled.div`
@@ -80,6 +80,36 @@ const ToggleRow = styled(RowFlat)`
 
   @media screen and (max-width: 600px) {
     flex-direction: row;
+  }
+`
+
+export const StakingInfoWrapper = styled.button<{ width?: string }>`
+  display: flex;
+  align-items: center;
+  width: ${({ width }) => width ?? '100%'};
+  padding: 1px;
+  background: ${({ theme }) => theme.deprecated_bg1};
+  border-radius: 8px;
+  border: ${({ theme }) => '1px solid ' + theme.backgroundInteractive};
+  outline: none;
+`
+
+export const StakingInfoElement = styled.span<{ isActive?: boolean; fontSize?: string }>`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0.5rem;
+  border-radius: 6px;
+  justify-content: center;
+  height: 100%;
+  background: ${({ theme, isActive }) => (isActive ? theme.backgroundSurface : 'none')};
+  color: ${({ theme, isActive }) => (isActive ? theme.textPrimary : theme.textTertiary)};
+  font-size: ${({ fontSize }) => fontSize ?? '1rem'};
+  font-weight: 500;
+  white-space: nowrap;
+  :hover {
+    user-select: initial;
+    color: ${({ theme, isActive }) => (isActive ? theme.textSecondary : theme.textTertiary)};
   }
 `
 
@@ -134,7 +164,7 @@ export default function Staking() {
   )
 
   const maxRewardInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
-    () => maxAmountSpend(stakingInfo?.earnedAmount),
+    () => maxAmountSpend(stakingInfo?.rewardAmount),
     [stakingInfo]
   )
   const showMaxRewardButton = Boolean(
@@ -147,7 +177,11 @@ export default function Staking() {
   )
 
   const handleApprove = useCallback(async () => {
-    await approveCallback()
+    try {
+      await approveCallback()
+    } catch (e) {
+      console.error(e)
+    }
   }, [approveCallback])
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
@@ -294,8 +328,6 @@ export default function Staking() {
     })
   }, [maxRewardInputAmount, setTypedValue])
 
-  const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
-
   return (
     <Trace page={PageName.STAKING_PAGE} shouldLogImpression>
       {isSupportedChain(chainId) ? (
@@ -338,26 +370,32 @@ export default function Staking() {
                 </RowBetween>
               </StyledStakingHeader>
               <AutoColumn gap={'12px'}>
-                <Card backgroundColor={'#202B58'}>
-                  <RowBetween>
-                    <AutoColumn gap="10px">
-                      <Text ml={'20px'}>
-                        <Trans>Holding</Trans>
-                      </Text>
-                      <Text ml={'20px'}>
-                        <Trans>Reward</Trans>
-                      </Text>
-                      <Text ml={'20px'}>
-                        <Trans>Staked</Trans>
-                      </Text>
-                    </AutoColumn>
-                    <AutoColumn gap="10px" justify="end">
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.earnedAmount, 12)}</Text>
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
-                    </AutoColumn>
-                  </RowBetween>
-                </Card>
+                <StakingInfoWrapper>
+                  <StakingInfoElement>
+                    <RowBetween>
+                      <AutoColumn gap="10px" justify="start">
+                        <Text ml={'20px'}>
+                          <Trans>Holding</Trans>
+                        </Text>
+                        <Text ml={'20px'}>
+                          <Trans>Staked</Trans>
+                        </Text>
+                        <Text ml={'20px'}>
+                          <Trans>Reward</Trans>
+                        </Text>
+                        <Text ml={'20px'}>
+                          <Trans>Remaining Reward</Trans>
+                        </Text>
+                      </AutoColumn>
+                      <AutoColumn gap="10px" justify="end">
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.rewardAmount, 12)}</Text>
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.remainingReward, 12)}</Text>
+                      </AutoColumn>
+                    </RowBetween>
+                  </StakingInfoElement>
+                </StakingInfoWrapper>
                 {view === StakeView.STAKE ? (
                   <>
                     <div style={{ display: 'relative' }}>
@@ -386,64 +424,56 @@ export default function Staking() {
                           <ButtonLight onClick={toggleWalletModal}>
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
-                        ) : showApproveFlow ? (
-                          <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                            <AutoColumn style={{ width: '100%' }} gap="12px">
-                              <ButtonConfirmed
-                                onClick={handleApprove}
-                                disabled={approveTokenButtonDisabled}
-                                width="100%"
-                                altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                                confirmed={approvalState === ApprovalState.APPROVED}
-                              >
-                                <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                                    {/* we need to shorten this string on mobile */}
-                                    {approvalState === ApprovalState.APPROVED ? (
-                                      <Trans>You can now stake {currency?.symbol}</Trans>
-                                    ) : (
-                                      <Trans>Allow the Dotoli Protocol to use your {currency?.symbol}</Trans>
-                                    )}
-                                  </span>
-                                  {approvalState === ApprovalState.PENDING ? (
-                                    <Loader stroke="white" />
-                                  ) : approvalSubmitted && approvalState === ApprovalState.APPROVED ? (
-                                    <CheckCircle size="20" color={theme.deprecated_green1} />
-                                  ) : (
-                                    <MouseoverTooltip
-                                      text={
-                                        <Trans>
-                                          You must give the Dotoli smart contracts permission to use your{' '}
-                                          {currency?.symbol}. You only have to do this once per token.
-                                        </Trans>
-                                      }
-                                    >
-                                      <HelpCircle size="20" color={'deprecated_white'} style={{ marginLeft: '8px' }} />
-                                    </MouseoverTooltip>
-                                  )}
-                                </AutoRow>
-                              </ButtonConfirmed>
-                              <ButtonError
-                                onClick={() => {
-                                  if (isExpertMode) {
-                                    //onStake()
-                                  } else {
-                                    onStake()
-                                  }
-                                }}
-                                width="100%"
-                                id="staking-button"
-                                disabled={approvalState !== ApprovalState.APPROVED}
-                                error={true}
-                              >
-                                <Text fontSize={16} fontWeight={500}>
-                                  <Trans>Stake</Trans>
-                                </Text>
-                              </ButtonError>
-                            </AutoColumn>
-                          </AutoRow>
-                        ) : (
+                        ) : !stakingInfo?.remainingReward.greaterThan(JSBI.BigInt(0)) ? (
                           <ButtonError
+                            onClick={() => {
+                              if (isExpertMode) {
+                                //onStake()
+                              } else {
+                                onStake()
+                              }
+                            }}
+                            width="100%"
+                            id="staking-button"
+                            disabled={true}
+                            error={true}
+                          >
+                            <Text fontSize={20} fontWeight={500}>
+                              <Trans>Closed</Trans>
+                            </Text>
+                          </ButtonError>
+                        ) : approvalState === ApprovalState.NOT_APPROVED ? (
+                          <ButtonLight onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
+                            <div style={{ height: 20 }}>
+                              <MouseoverTooltip
+                                text={
+                                  <Trans>
+                                    Permission is required for Uniswap to swap each token. This will expire after one
+                                    month for your security.
+                                  </Trans>
+                                }
+                              >
+                                <Info size={20} />
+                              </MouseoverTooltip>
+                            </div>
+                            <Trans>Approve use of DTL</Trans>
+                          </ButtonLight>
+                        ) : approvalState === ApprovalState.PENDING ? (
+                          <ButtonLight
+                            onClick={() => {
+                              return
+                            }}
+                            id="deposit-button"
+                            disabled={true}
+                            style={{ gap: 14 }}
+                          >
+                            <>
+                              <Loader size="20px" />
+                              <Trans>Approval pending</Trans>{' '}
+                            </>
+                          </ButtonLight>
+                        ) : (
+                          <ButtonLight
                             onClick={() => {
                               if (isExpertMode) {
                                 //onStake()
@@ -453,12 +483,11 @@ export default function Staking() {
                             }}
                             id="staking-button"
                             disabled={false}
-                            error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Stake</Trans>
                             </Text>
-                          </ButtonError>
+                          </ButtonLight>
                         )}
                       </div>
                     </AutoColumn>
@@ -493,7 +522,7 @@ export default function Staking() {
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
                         ) : (
-                          <ButtonError
+                          <ButtonLight
                             onClick={() => {
                               if (isExpertMode) {
                                 //onUnstake()
@@ -503,12 +532,11 @@ export default function Staking() {
                             }}
                             id="unstake-button"
                             disabled={false}
-                            error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Unstake</Trans>
                             </Text>
-                          </ButtonError>
+                          </ButtonLight>
                         )}
                       </div>
                     </AutoColumn>
@@ -523,7 +551,7 @@ export default function Staking() {
                             value={formattedAmounts ?? ''}
                             showMaxButton={showMaxRewardButton}
                             currency={currency ?? null}
-                            rewardCurrencyBalance={stakingInfo?.earnedAmount}
+                            rewardCurrencyBalance={stakingInfo?.rewardAmount}
                             onUserInput={handleTypeInput}
                             onMax={handleMaxRewardInput}
                             fiatValue={undefined}
@@ -543,7 +571,7 @@ export default function Staking() {
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
                         ) : (
-                          <ButtonError
+                          <ButtonLight
                             onClick={() => {
                               if (isExpertMode) {
                                 //onGetReward()
@@ -553,12 +581,11 @@ export default function Staking() {
                             }}
                             id="reward-button"
                             disabled={false}
-                            error={true}
                           >
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Get Reward</Trans>
                             </Text>
-                          </ButtonError>
+                          </ButtonLight>
                         )}
                       </div>
                     </AutoColumn>

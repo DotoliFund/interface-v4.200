@@ -21,7 +21,7 @@ const Grid = styled.a`
   cursor: pointer;
   display: grid;
   grid-template-columns: 44px auto 24px;
-  width: 100%;
+  width: 90%;
   text-decoration: none;
   border-bottom: ${({ theme }) => `1px solid ${theme.backgroundOutline}`};
   padding: 12px;

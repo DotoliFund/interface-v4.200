@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
-import { InvestorList } from 'types/fund'
+import { Investor } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
@@ -66,9 +66,9 @@ const SORT_FIELD = {
   timestamp: 'time',
 }
 
-const DataRow = ({ investor, color }: { investor: InvestorList; color?: string }) => {
+const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
   return (
-    <LinkWrapper to={'/fund/' + investor.fund + '/' + investor.investor}>
+    <LinkWrapper to={'/fund/' + investor.fundId + '/' + investor.investor}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{shortenAddress(investor.investor)}</Label>
         <Label end={1} fontWeight={400}>
@@ -93,7 +93,7 @@ export default function InvestorTable({
   maxItems = 10,
   color,
 }: {
-  investors: InvestorList[]
+  investors: Investor[]
   maxItems?: number
   color?: string
 }) {
@@ -122,7 +122,7 @@ export default function InvestorTable({
           .slice()
           .sort((a, b) => {
             if (a && b) {
-              return a[sortField as keyof InvestorList] > b[sortField as keyof InvestorList]
+              return a[sortField as keyof Investor] > b[sortField as keyof Investor]
                 ? (sortDirection ? -1 : 1) * 1
                 : (sortDirection ? -1 : 1) * -1
             } else {

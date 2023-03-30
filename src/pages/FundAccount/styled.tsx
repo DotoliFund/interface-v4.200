@@ -1,5 +1,4 @@
 import { AutoColumn } from 'components/Column'
-import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { LoadingRows as BaseLoadingRows } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
 import { BodyWrapper } from 'pages/AppBody'
@@ -50,23 +49,9 @@ export const ScrollablePage = styled.div<{ navBarFlag: boolean }>`
   }
 `
 
-export const FundChart1Wrapper = styled(Wrapper)
-export const FundChart2Wrapper = styled(Wrapper)
-export const FundChart3Wrapper = styled(Wrapper)
-export const MyChart1Wrapper = styled(Wrapper)
-export const MyChart2Wrapper = styled(Wrapper)
-export const MyChart3Wrapper = styled(Wrapper)
-export const DepositWrapper = styled(Wrapper)
-export const WithdrawWrapper = styled(Wrapper)
-export const SwapWrapper = styled(Wrapper)
-
 export const DynamicSection = styled(AutoColumn)<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'initial')};
-`
-
-export const CurrencyDropdown = styled(CurrencyInputPanel)`
-  width: 48.5%;
 `
 
 export const StyledInput = styled(Input)`

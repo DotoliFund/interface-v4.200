@@ -1,3 +1,4 @@
+import type { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -8,20 +9,22 @@ import FundList from 'components/FundList'
 import { NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { DOTOLI_FACTORY_ADDRESSES } from 'constants/addresses'
-import { NULL_ADDRESS } from 'constants/addresses'
+import { DOTOLI_INFO_ADDRESSES } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
-import { useDotoliFactoryContract } from 'hooks/useContract'
-import { DotoliFactory } from 'interface/DotoliFactory'
+import { useDotoliInfoContract } from 'hooks/useContract'
+import { DotoliInfo } from 'interface/DotoliInfo'
+import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Inbox } from 'react-feather'
+import { useTransactionAdder } from 'state/transactions/hooks'
 import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { FundDetails } from 'types/fund'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
+import { TransactionType } from '../../state/transactions/types'
 import { LoadingRows } from './styleds'
 
 const PageWrapper = styled(AutoColumn)`
@@ -182,15 +185,16 @@ function WrongNetworkCard() {
 
 export default function Account() {
   const { account, chainId, provider } = useWeb3React()
-  const DotoliFactoryContract = useDotoliFactoryContract()
+  const DotoliInfoContract = useDotoliInfoContract()
   const theme = useTheme()
   const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
 
   const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
-    'getFundByManager',
+    DotoliInfoContract,
+    'managingFund',
     [account ?? undefined]
   )
+
   const [managingFundInfo, setManagingFundInfo] = useState<FundDetails[]>()
   const [managingFundInfoLoading, setManagingFundInfoLoading] = useState(false)
   useEffect(() => {
@@ -202,10 +206,10 @@ export default function Account() {
       setManagingFundInfoLoading(false)
     }
     async function getInfo() {
-      if (managingFund && managingFund !== NULL_ADDRESS && provider && account) {
+      if (managingFund && JSBI.BigInt(managingFund).toString() !== '0' && provider && account) {
         setManagingFundInfo([
           {
-            fund: managingFund,
+            fundId: JSBI.BigInt(managingFund).toString(),
             investor: account,
           },
         ])
@@ -216,7 +220,7 @@ export default function Account() {
   }, [managingFundLoading, managingFund, provider, account])
 
   const { loading: investingFundsLoading, result: [investingFunds] = [] } = useSingleCallResult(
-    DotoliFactoryContract,
+    DotoliInfoContract,
     'subscribedFunds',
     [account ?? undefined]
   )
@@ -238,9 +242,9 @@ export default function Account() {
 
         for (let i = 0; i < investingFundList.length; i++) {
           const investingFund: string = investingFundList[i]
-          if (investingFund.toUpperCase() === managingFund.toUpperCase()) continue
+          if (JSBI.BigInt(investingFund).toString() === JSBI.BigInt(managingFund).toString()) continue
           const investingFundsInfo: FundDetails = {
-            fund: investingFund,
+            fundId: JSBI.BigInt(investingFund).toString(),
             investor: account,
           }
           investingFundsInfoList.push(investingFundsInfo)
@@ -256,28 +260,9 @@ export default function Account() {
     }
   }, [investingFundsLoading, managingFund, investingFunds, provider, account])
 
-  // const menuItems = [
-  //   {
-  //     content: (
-  //       <MenuItem>
-  //         <Trans>Invest</Trans>
-  //         <PlusCircle size={16} />
-  //       </MenuItem>
-  //     ),
-  //     link: '/overview',
-  //     external: false,
-  //   },
-  //   {
-  //     content: (
-  //       <MenuItem>
-  //         <Trans>Learn</Trans>
-  //         <BookOpen size={16} />
-  //       </MenuItem>
-  //     ),
-  //     link: 'https://docs.uniswap.org/',
-  //     external: true,
-  //   },
-  // ]
+  const [attemptingTxn, setAttemptingTxn] = useState(false)
+  const [txnHash, setTxnHash] = useState<string | undefined>()
+  const addTransaction = useTransactionAdder()
 
   if (!isSupportedChain(chainId)) {
     return <WrongNetworkCard />
@@ -286,9 +271,9 @@ export default function Account() {
   async function onCreate() {
     if (!chainId || !provider || !account) return
 
-    const { calldata, value } = DotoliFactory.createCallParameters()
+    const { calldata, value } = DotoliInfo.createCallParameters()
     const txn: { to: string; data: string; value: string } = {
-      to: DOTOLI_FACTORY_ADDRESSES,
+      to: DOTOLI_INFO_ADDRESSES,
       data: calldata,
       value,
     }
@@ -303,8 +288,13 @@ export default function Account() {
         return provider
           .getSigner()
           .sendTransaction(newTxn)
-          .then((response) => {
-            console.log(response)
+          .then((response: TransactionResponse) => {
+            setTxnHash(response.hash)
+            setAttemptingTxn(false)
+            addTransaction(response, {
+              type: TransactionType.CREATE_FUND,
+              manager: account,
+            })
           })
       })
       .catch((error) => {
@@ -327,20 +317,6 @@ export default function Account() {
                   <Trans>My Account</Trans>
                 </ThemedText.DeprecatedBody>
                 <ButtonRow>
-                  {/* {
-                    <Menu
-                      menuItems={menuItems}
-                      flyoutAlignment={FlyoutAlignment.LEFT}
-                      ToggleUI={(props: any) => (
-                        <MoreOptionsButton {...props}>
-                          <MoreOptionsText>
-                            <Trans>More</Trans>
-                            <ChevronDown size={15} />
-                          </MoreOptionsText>
-                        </MoreOptionsButton>
-                      )}
-                    />
-                  } */}
                   {managingFundInfo && managingFundInfo.length > 0 ? (
                     <></>
                   ) : (
@@ -361,12 +337,7 @@ export default function Account() {
                 {managingFundLoading || managingFundInfoLoading ? (
                   <FundsLoadingPlaceholder />
                 ) : managingFundInfo && managingFundInfo.length > 0 ? (
-                  <FundList
-                    isManagingFund={true}
-                    funds={managingFundInfo}
-                    setUserHideClosedFunds={setUserHideClosedFunds}
-                    userHideClosedFunds={userHideClosedFunds}
-                  />
+                  <FundList isManagingFund={true} funds={managingFundInfo} />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
@@ -382,12 +353,7 @@ export default function Account() {
                 {investingFundsLoading || investingFundsInfoLoading ? (
                   <FundsLoadingPlaceholder />
                 ) : investingFundsInfo && investingFundsInfo.length > 0 ? (
-                  <FundList
-                    isManagingFund={false}
-                    funds={investingFundsInfo}
-                    setUserHideClosedFunds={setUserHideClosedFunds}
-                    userHideClosedFunds={userHideClosedFunds}
-                  />
+                  <FundList isManagingFund={false} funds={investingFundsInfo} />
                 ) : (
                   <ErrorContainer>
                     <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">

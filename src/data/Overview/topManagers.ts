@@ -19,7 +19,7 @@ export const TOP_MANAGERS_BULK = () => {
         id
         createdAtTimestamp
         updatedAtTimestamp
-        fund
+        fundId
         investor
         isManager
         principalUSD
@@ -35,7 +35,7 @@ export interface TopManagerFields {
   id: string
   createdAtTimestamp: string
   updatedAtTimestamp: string
-  fund: string
+  fundId: string
   investor: string
   isManager: string
   principalUSD: string
@@ -79,17 +79,17 @@ export function useTopManagers(): {
   }
 
   const formatted: TopManager[] = data
-    ? data.investors.map((data2, index) => {
+    ? data.investors.map((investor, index) => {
         const investorData: TopManager = {
-          id: data2.id,
-          createdAtTimestamp: parseFloat(data2.createdAtTimestamp),
-          updatedAtTimestamp: parseFloat(data2.updatedAtTimestamp),
-          fund: data2.fund,
-          investor: data2.investor,
-          isManager: Boolean(data2.isManager),
-          principalUSD: parseFloat(data2.principalUSD),
-          currentUSD: parseFloat(data2.currentUSD),
-          profitRatio: parseFloat(data2.profitRatio),
+          id: investor.id,
+          createdAtTimestamp: parseInt(investor.createdAtTimestamp),
+          updatedAtTimestamp: parseInt(investor.updatedAtTimestamp),
+          fundId: investor.fundId,
+          investor: investor.investor,
+          isManager: Boolean(investor.isManager),
+          principalUSD: parseFloat(investor.principalUSD),
+          currentUSD: parseFloat(investor.currentUSD),
+          profitRatio: parseFloat(investor.profitRatio),
         }
         return investorData
       })

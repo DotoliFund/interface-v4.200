@@ -5,17 +5,17 @@ import { useClients } from 'state/application/hooks'
 import { Transaction, TransactionType } from 'types/fund'
 
 const FUND_ACCOUNT_TRANSACTIONS = gql`
-  query transactions($fund: Bytes!, $investor: Bytes!) {
+  query transactions($fundId: String!, $investor: Bytes!) {
     deposits(
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       investor
       token
       tokenSymbol
@@ -26,12 +26,12 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       investor
       token
       tokenSymbol
@@ -42,12 +42,12 @@ const FUND_ACCOUNT_TRANSACTIONS = gql`
       first: 100
       orderBy: timestamp
       orderDirection: desc
-      where: { fund: $fund, investor: $investor }
+      where: { fundId: $fundId, investor: $investor }
       subgraphError: allow
     ) {
       id
       timestamp
-      fund
+      fundId
       manager
       investor
       token0
@@ -65,7 +65,7 @@ interface InvestorTransactionResults {
   deposits: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     investor: string
     token: string
     tokenSymbol: string
@@ -75,7 +75,7 @@ interface InvestorTransactionResults {
   withdraws: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     investor: string
     token: string
     tokenSymbol: string
@@ -85,7 +85,7 @@ interface InvestorTransactionResults {
   swaps: {
     id: string
     timestamp: string
-    fund: string
+    fundId: string
     manager: string
     investor: string
     token0: string
@@ -102,15 +102,15 @@ interface InvestorTransactionResults {
  * Fetch ManagerData
  */
 export function useFundAccountTransactions(
-  fund: string | undefined,
+  fundId: string | undefined,
   investor: string | undefined
 ): {
   loading: boolean
   error: boolean
   data: Transaction[] | undefined
 } {
-  if (!fund) {
-    fund = NULL_ADDRESS
+  if (fundId === undefined) {
+    fundId = '0'
   }
   if (!investor) {
     investor = NULL_ADDRESS
@@ -119,7 +119,7 @@ export function useFundAccountTransactions(
   const { dataClient } = useClients()
 
   const { loading, error, data } = useQuery<InvestorTransactionResults>(FUND_ACCOUNT_TRANSACTIONS, {
-    variables: { fund, investor },
+    variables: { fundId, investor },
     client: dataClient,
   })
 

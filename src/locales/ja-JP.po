@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2023-02-13 10:33+0900\n"
+"POT-Creation-Date: 2023-02-14 19:31+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -145,8 +145,8 @@ msgstr ""
 
 #: src/pages/Deposit/index.tsx
 #: src/pages/Staking/index.tsx
-msgid "Allow the Dotoli Protocol to use your {0}"
-msgstr ""
+#~ msgid "Allow the Dotoli Protocol to use your {0}"
+#~ msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Amount"
@@ -156,8 +156,21 @@ msgstr ""
 msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 msgstr ""
 
+#: src/pages/Deposit/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Approval pending"
+msgstr ""
+
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Approve"
+msgstr ""
+
+#: src/pages/Staking/index.tsx
+msgid "Approve use of DTL"
+msgstr ""
+
+#: src/pages/Deposit/index.tsx
+msgid "Approve use of {0}"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
@@ -188,15 +201,18 @@ msgstr ""
 msgid "Back to wallet selection"
 msgstr ""
 
-#: src/components/CurrencyInputPanel/FundCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/index.tsx
-#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/AddLiquidityInputPanel.tsx
+#: src/components/CurrencyInputPanel/DepositInputPanel.tsx
+#: src/components/CurrencyInputPanel/RewardInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapFromInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
+#: src/components/CurrencyInputPanel/WithdrawInputPanel.tsx
 msgid "Balance: {0}"
 msgstr ""
 
-#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/FeeInputPanel.tsx
 msgid "Balance: {selectedCurrencyBalance}"
 msgstr ""
 
@@ -290,6 +306,7 @@ msgstr ""
 
 #: src/components/Badge/RangeBadge.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
+#: src/pages/Staking/index.tsx
 msgid "Closed"
 msgstr ""
 
@@ -300,8 +317,8 @@ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
-msgid "Collect as {nativeWrappedSymbol}"
-msgstr ""
+#~ msgid "Collect as {nativeWrappedSymbol}"
+#~ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "Collect fees"
@@ -446,6 +463,10 @@ msgstr ""
 msgid "Creating"
 msgstr ""
 
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Creating fund"
+msgstr ""
+
 #: src/components/Tables/InvestorTable.tsx
 #: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx
@@ -454,12 +475,24 @@ msgid "Current"
 msgstr ""
 
 #: src/components/FundListItem/index.tsx
-msgid "Current :"
+#~ msgid "Current :"
+#~ msgstr ""
+
+#: src/pages/FundPage/index.tsx
+msgid "Current Asset"
+msgstr ""
+
+#: src/components/FundListItem/index.tsx
+msgid "Current Asset :"
 msgstr ""
 
 #: src/pages/FundPage/index.tsx
-msgid "Current Tokens"
+msgid "Current Asset Tokens"
 msgstr ""
+
+#: src/pages/FundPage/index.tsx
+#~ msgid "Current Tokens"
+#~ msgstr ""
 
 #: src/components/PositionPreview/index.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -488,7 +521,6 @@ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 #: src/components/Tables/TransactionTable.tsx
-#: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
 #: src/pages/Deposit/index.tsx
@@ -704,12 +736,19 @@ msgstr ""
 
 #: src/components/Header/index.tsx
 #: src/components/Tables/TopFundTable.tsx
-#: src/pages/FundAccount/index.tsx
 msgid "Fund"
 msgstr ""
 
 #: src/pages/FundPage/index.tsx
 msgid "Fund :"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Fund created"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Fund failed"
 msgstr ""
 
 #: src/pages/Overview/index.tsx
@@ -890,10 +929,11 @@ msgstr ""
 msgid "Liquidity data not available."
 msgstr ""
 
-#: src/components/CurrencyInputPanel/index.tsx
-#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/DepositInputPanel.tsx
+#: src/components/CurrencyInputPanel/RewardInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
 msgid "MAX"
 msgstr ""
 
@@ -918,8 +958,10 @@ msgstr ""
 msgid "Managing Fund"
 msgstr ""
 
-#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/FundCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/AddLiquidityInputPanel.tsx
+#: src/components/CurrencyInputPanel/FeeInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapFromInputPanel.tsx
+#: src/components/CurrencyInputPanel/WithdrawInputPanel.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "Max"
 msgstr ""
@@ -979,7 +1021,6 @@ msgid "Missing dependencies"
 msgstr ""
 
 #: src/pages/FundAccount/index.tsx
-#: src/pages/FundAccount/index.tsx
 msgid "More"
 msgstr ""
 
@@ -1028,20 +1069,25 @@ msgstr ""
 msgid "No fee tokens"
 msgstr ""
 
-#: src/components/SearchModal/CurrencySearch.tsx
+#: src/components/SearchModal/AllWhiteListFundCurrencyList.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/FundCurrencySearch.tsx
+#: src/components/SearchModal/FundCurrencyList.tsx
+#: src/components/SearchModal/WalletWhiteListCurrencyList.tsx
 msgid "No results found."
 msgstr ""
 
 #: src/components/BarChart/stacked.tsx
 #: src/components/BarChart/token.tsx
-#: src/components/BarChart/volume.tsx
 msgid "No token data"
 msgstr ""
 
 #: src/components/PieChart/index.tsx
 msgid "No tokens"
+msgstr ""
+
+#: src/components/BarChart/volume.tsx
+#: src/components/ComposedChart/index.tsx
+msgid "No volume data"
 msgstr ""
 
 #: src/constants/tokenSafety.tsx
@@ -1080,6 +1126,11 @@ msgstr ""
 
 #: src/components/WalletDropdown/DefaultMenu.tsx
 msgid "Pending"
+msgstr ""
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Staking/index.tsx
+msgid "Permission is required for Uniswap to swap each token. This will expire after one month for your security."
 msgstr ""
 
 #: src/constants/tokenSafety.tsx
@@ -1165,6 +1216,10 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
+#: src/pages/Staking/index.tsx
+msgid "Remaining Reward"
+msgstr ""
+
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 #: src/components/Tables/LiquidityTransactionTable.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -1213,21 +1268,16 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/SearchModal/CurrencySearch.tsx
-msgid "Search name or paste address"
-msgstr ""
-
 #: src/pages/AddLiquidity/index.tsx
 msgid "Select Pair"
 msgstr ""
 
-#: src/components/CurrencyInputPanel/index.tsx
-#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
-#: src/components/SearchModal/CurrencySearch.tsx
+#: src/components/CurrencyInputPanel/DepositInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
+#: src/components/SearchModal/AllWhiteListFundCurrencyList.tsx
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
-#: src/components/SearchModal/FundCurrencySearch.tsx
+#: src/components/SearchModal/FundCurrencyList.tsx
+#: src/components/SearchModal/WalletWhiteListCurrencyList.tsx
 #: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
@@ -1240,8 +1290,10 @@ msgstr ""
 msgid "Select a {0}network"
 msgstr ""
 
-#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/FundCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/AddLiquidityInputPanel.tsx
+#: src/components/CurrencyInputPanel/FeeInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapFromInputPanel.tsx
+#: src/components/CurrencyInputPanel/WithdrawInputPanel.tsx
 msgid "Select token"
 msgstr ""
 
@@ -1288,7 +1340,6 @@ msgstr ""
 
 #: src/pages/Staking/index.tsx
 #: src/pages/Staking/index.tsx
-#: src/pages/Staking/index.tsx
 msgid "Stake"
 msgstr ""
 
@@ -1311,13 +1362,25 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Subscribe to {fundId} failed"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Subscribed"
+msgstr ""
+
+#: src/components/AccountDetailsV2/TransactionBody.tsx
+msgid "Subscribing"
+msgstr ""
+
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "Success"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/swap/SwapHeader.tsx
 #: src/components/Tables/TransactionTable.tsx
+#: src/components/swap/SwapHeader.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx
@@ -1426,12 +1489,15 @@ msgstr ""
 msgid "The input token cannot be transferred. There may be an issue with the input token."
 msgstr ""
 
-#: src/components/CurrencyInputPanel/FeeCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/FundCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/index.tsx
-#: src/components/CurrencyInputPanel/RewardCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/StakingCurrencyInputPanel.tsx
-#: src/components/CurrencyInputPanel/UnstakingCurrencyInputPanel.tsx
+#: src/components/CurrencyInputPanel/AddLiquidityInputPanel.tsx
+#: src/components/CurrencyInputPanel/DepositInputPanel.tsx
+#: src/components/CurrencyInputPanel/FeeInputPanel.tsx
+#: src/components/CurrencyInputPanel/RewardInputPanel.tsx
+#: src/components/CurrencyInputPanel/StakingInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapFromInputPanel.tsx
+#: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
+#: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
+#: src/components/CurrencyInputPanel/WithdrawInputPanel.tsx
 msgid "The market price is outside your specified price range. Single-asset deposit only."
 msgstr ""
 
@@ -1530,7 +1596,6 @@ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
-#: src/pages/Overview/index.tsx
 msgid "Tokens"
 msgstr ""
 
@@ -1547,8 +1612,16 @@ msgid "Top funds"
 msgstr ""
 
 #: src/pages/FundAccount/index.tsx
-msgid "Total Tokens"
+msgid "Total Asset"
 msgstr ""
+
+#: src/pages/FundAccount/index.tsx
+msgid "Total Asset Tokens"
+msgstr ""
+
+#: src/pages/FundAccount/index.tsx
+#~ msgid "Total Tokens"
+#~ msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"
@@ -1681,8 +1754,8 @@ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
-msgid "Volume"
-msgstr ""
+#~ msgid "Volume"
+#~ msgstr ""
 
 #: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
@@ -1703,6 +1776,10 @@ msgstr ""
 
 #: src/constants/tokenSafety.tsx
 msgid "Warning"
+msgstr ""
+
+#: src/pages/Overview/index.tsx
+msgid "WhiteList Tokens"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
@@ -1754,12 +1831,12 @@ msgid "Wrapping"
 msgstr ""
 
 #: src/pages/Deposit/index.tsx
-msgid "You can now deposit {0}"
-msgstr ""
+#~ msgid "You can now deposit {0}"
+#~ msgstr ""
 
 #: src/pages/Staking/index.tsx
-msgid "You can now stake {0}"
-msgstr ""
+#~ msgid "You can now stake {0}"
+#~ msgstr ""
 
 #: src/components/Header/ChainConnectivityWarning.tsx
 msgid "You may have lost your network connection, or {label} might be down right now."
@@ -1771,8 +1848,8 @@ msgstr ""
 
 #: src/pages/Deposit/index.tsx
 #: src/pages/Staking/index.tsx
-msgid "You must give the Dotoli smart contracts permission to use your {0}. You only have to do this once per token."
-msgstr ""
+#~ msgid "You must give the Dotoli smart contracts permission to use your {0}. You only have to do this once per token."
+#~ msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "You will also collect fees earned from this position."
@@ -1986,8 +2063,16 @@ msgstr ""
 msgid "{headline}"
 msgstr ""
 
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "{investor} Subscribe to fund: {fundId}"
+msgstr ""
+
 #: src/components/NetworkAlert/NetworkAlert.tsx
 msgid "{label} token bridge"
+msgstr ""
+
+#: src/components/AccountDetails/TransactionSummary.tsx
+msgid "{manager} Create Fund"
 msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -1998,6 +2083,7 @@ msgstr ""
 msgid "{tokenB} per {tokenA}"
 msgstr ""
 
+#: src/pages/FundAccount/index.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Fund"
 msgstr ""

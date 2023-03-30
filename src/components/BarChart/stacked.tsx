@@ -64,6 +64,10 @@ const Chart = ({
 
   const isEmptyData = !data || data.length === 0
 
+  const formatXAxis = (props: any) => {
+    return props === 'WETH' ? 'ETH' : props
+  }
+
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined
     const index = payload ? payload.payload.index : undefined
@@ -105,7 +109,7 @@ const Chart = ({
               bottom: 5,
             }}
           >
-            <XAxis dataKey="symbol" axisLine={false} tickLine={false} />
+            <XAxis dataKey="symbol" axisLine={false} tickLine={false} tickFormatter={formatXAxis} />
             <Tooltip cursor={false} content={<CustomTooltip />} />
             <Legend />
             <Bar

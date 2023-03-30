@@ -99,8 +99,8 @@ export function useV3MintActionHandlers(noLiquidity: boolean | undefined): {
 }
 
 export function useV3DerivedMintInfo(
-  fundAddress?: string,
-  investorAddress?: string,
+  fundId?: string,
+  investor?: string,
   currencyA?: Currency,
   currencyB?: Currency,
   feeAmount?: FeeAmount,
@@ -160,13 +160,13 @@ export function useV3DerivedMintInfo(
 
   //TODO : use this
   const balances_A = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
+    fundId ?? undefined,
+    investor,
     currencies[Field.CURRENCY_A]?.wrapped.address ?? undefined
   )
   const balances_B = useInvestorCurrencyBalance(
-    fundAddress ?? undefined,
-    investorAddress,
+    fundId ?? undefined,
+    investor,
     currencies[Field.CURRENCY_B]?.wrapped.address ?? undefined
   )
 

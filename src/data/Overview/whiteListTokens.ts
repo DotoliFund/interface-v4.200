@@ -6,9 +6,10 @@ import { Token } from 'types/fund'
 export const WHITELIST_TOKENS = () => {
   const queryString = `
     query whiteListTokens {
-      tokens(first: 100, orderBy: id, orderDirection: asc, where: { active: true }, subgraphError: allow) {
+      whiteListTokens(first: 100, orderBy: id, orderDirection: asc, where: { isWhiteListToken: true }, subgraphError: allow) {
         id
         address
+        decimals
         symbol
         updatedTimestamp
       }
@@ -20,12 +21,13 @@ export const WHITELIST_TOKENS = () => {
 export interface WhiteListTokenFields {
   id: string
   address: string
+  decimals: string
   symbol: string
   updatedTimestamp: string
 }
 
 interface WhiteListTokenResponse {
-  tokens: WhiteListTokenFields[]
+  whiteListTokens: WhiteListTokenFields[]
 }
 
 /**
@@ -56,16 +58,16 @@ export function useWhiteListTokens(): {
   }
 
   const formatted: Token[] = data
-    ? data.tokens.map((data2, index) => {
+    ? data.whiteListTokens.map((token, index) => {
         const tokenData: Token = {
-          address: data2.address,
-          symbol: data2.symbol,
-          updatedTimestamp: data2.updatedTimestamp,
+          address: token.address,
+          decimals: token.decimals,
+          symbol: token.symbol,
+          updatedTimestamp: token.updatedTimestamp,
         }
         return tokenData
       })
     : []
-
   return {
     loading: anyLoading,
     error: anyError,
