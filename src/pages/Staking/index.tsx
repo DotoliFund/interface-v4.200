@@ -5,7 +5,6 @@ import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { ButtonError, ButtonLight } from 'components/Button'
-import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/RewardInputPanel'
 import StakingCurrencyInputPanel from 'components/CurrencyInputPanel/StakingInputPanel'
@@ -81,6 +80,36 @@ const ToggleRow = styled(RowFlat)`
 
   @media screen and (max-width: 600px) {
     flex-direction: row;
+  }
+`
+
+export const StakingInfoWrapper = styled.button<{ width?: string }>`
+  display: flex;
+  align-items: center;
+  width: ${({ width }) => width ?? '100%'};
+  padding: 1px;
+  background: ${({ theme }) => theme.deprecated_bg1};
+  border-radius: 8px;
+  border: ${({ theme }) => '1px solid ' + theme.backgroundInteractive};
+  outline: none;
+`
+
+export const StakingInfoElement = styled.span<{ isActive?: boolean; fontSize?: string }>`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0.5rem;
+  border-radius: 6px;
+  justify-content: center;
+  height: 100%;
+  background: ${({ theme, isActive }) => (isActive ? theme.backgroundSurface : 'none')};
+  color: ${({ theme, isActive }) => (isActive ? theme.textPrimary : theme.textTertiary)};
+  font-size: ${({ fontSize }) => fontSize ?? '1rem'};
+  font-weight: 500;
+  white-space: nowrap;
+  :hover {
+    user-select: initial;
+    color: ${({ theme, isActive }) => (isActive ? theme.textSecondary : theme.textTertiary)};
   }
 `
 
@@ -299,8 +328,6 @@ export default function Staking() {
     })
   }, [maxRewardInputAmount, setTypedValue])
 
-  const approveTokenButtonDisabled = approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted
-
   return (
     <Trace page={PageName.STAKING_PAGE} shouldLogImpression>
       {isSupportedChain(chainId) ? (
@@ -343,30 +370,32 @@ export default function Staking() {
                 </RowBetween>
               </StyledStakingHeader>
               <AutoColumn gap={'12px'}>
-                <Card backgroundColor={'#202B58'}>
-                  <RowBetween>
-                    <AutoColumn gap="10px">
-                      <Text ml={'20px'}>
-                        <Trans>Holding</Trans>
-                      </Text>
-                      <Text ml={'20px'}>
-                        <Trans>Staked</Trans>
-                      </Text>
-                      <Text ml={'20px'}>
-                        <Trans>Reward</Trans>
-                      </Text>
-                      <Text ml={'20px'}>
-                        <Trans>Remaining Reward</Trans>
-                      </Text>
-                    </AutoColumn>
-                    <AutoColumn gap="10px" justify="end">
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.rewardAmount, 12)}</Text>
-                      <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.remainingReward, 12)}</Text>
-                    </AutoColumn>
-                  </RowBetween>
-                </Card>
+                <StakingInfoWrapper>
+                  <StakingInfoElement>
+                    <RowBetween>
+                      <AutoColumn gap="10px" justify="start">
+                        <Text ml={'20px'}>
+                          <Trans>Holding</Trans>
+                        </Text>
+                        <Text ml={'20px'}>
+                          <Trans>Staked</Trans>
+                        </Text>
+                        <Text ml={'20px'}>
+                          <Trans>Reward</Trans>
+                        </Text>
+                        <Text ml={'20px'}>
+                          <Trans>Remaining Reward</Trans>
+                        </Text>
+                      </AutoColumn>
+                      <AutoColumn gap="10px" justify="end">
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.rewardAmount, 12)}</Text>
+                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.remainingReward, 12)}</Text>
+                      </AutoColumn>
+                    </RowBetween>
+                  </StakingInfoElement>
+                </StakingInfoWrapper>
                 {view === StakeView.STAKE ? (
                   <>
                     <div style={{ display: 'relative' }}>
