@@ -223,8 +223,6 @@ export default function FundAccount() {
   const backgroundColor = useColor()
   const theme = useTheme()
 
-  //TODO : isManagerPage userIsManager userIsInvestor
-
   const { loading: myManagingFundLoading, result: [myManagingFund] = [] } = useSingleCallResult(
     DotoliInfoContract,
     'managingFund',
@@ -234,11 +232,6 @@ export default function FundAccount() {
     DotoliInfoContract,
     'managingFund',
     [investor ?? undefined]
-  )
-  const { loading: isUserSubscribedLoading, result: [isUserSubscribed] = [] } = useSingleCallResult(
-    DotoliInfoContract,
-    'isSubscribed',
-    [account, currentPageFund]
   )
 
   const [isManagerAccount, setIsManagerAccount] = useState<boolean>(false)
@@ -281,17 +274,14 @@ export default function FundAccount() {
 
   const [userIsInvestor, setUserIsInvestor] = useState<boolean>(false)
   useEffect(() => {
-    if (!isUserSubscribedLoading) {
-      setState()
-    }
-    async function setState() {
-      if (!userIsManager && isUserSubscribed) {
+    if (investor && account) {
+      if (!userIsManager && investor.toUpperCase() === account.toUpperCase()) {
         setUserIsInvestor(true)
       } else {
         setUserIsInvestor(false)
       }
     }
-  }, [isUserSubscribedLoading, userIsManager, isUserSubscribed])
+  }, [investor, userIsManager, account])
 
   const investorData = useInvestorData(currentPageFund, investor).data
   const volumeChartData = useVolumeChartData(currentPageFund, investor).data
