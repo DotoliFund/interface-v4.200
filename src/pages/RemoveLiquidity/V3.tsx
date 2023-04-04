@@ -201,11 +201,10 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
     // if there was a tx hash, we want to clear the input
     if (txnHash) {
       onPercentSelectForSlider(0)
-      navigate(`/fund/${fundId}/${investor}`)
     }
     setAttemptingTxn(false)
     setTxnHash('')
-  }, [onPercentSelectForSlider, txnHash, navigate, fundId, investor])
+  }, [onPercentSelectForSlider, txnHash])
 
   const pendingText = (
     <Trans>

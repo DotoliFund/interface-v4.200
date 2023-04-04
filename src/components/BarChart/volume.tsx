@@ -63,7 +63,7 @@ const Chart = ({
   ...rest
 }: BarChartProps) => {
   const theme = useTheme()
-  const isEmptyData = !data || data.length <= 1
+  const isEmptyData = !data || data.length === 0
 
   const CustomTooltip = (props: any) => {
     const payload = props.payload && props.payload.length > 0 ? props.payload[0] : undefined

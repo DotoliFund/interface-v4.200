@@ -614,7 +614,9 @@ export function PositionPage() {
             content={() => (
               <ConfirmationModalContent
                 title={<Trans>Claim fees</Trans>}
-                onDismiss={() => setShowConfirm(false)}
+                onDismiss={() => {
+                  return null
+                }}
                 topContent={modalHeader}
               />
             )}
