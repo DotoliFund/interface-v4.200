@@ -20,15 +20,6 @@ export interface StakingInfo {
   remainingReward: CurrencyAmount<Token>
   // the amount of token distributed per second to all LPs, constant
   totalRewardRate: CurrencyAmount<Token>
-  // the current amount of token distributed to the active account per second.
-  // equivalent to percent of total supply * reward rate
-  rewardRate: CurrencyAmount<Token>
-  // calculates a hypothetical amount of token distributed to the active account per second.
-  getHypotheticalRewardRate: (
-    stakedAmount: CurrencyAmount<Token>,
-    totalStakedAmount: CurrencyAmount<Token>,
-    totalRewardRate: CurrencyAmount<Token>
-  ) => CurrencyAmount<Token>
 }
 
 // gets the staking info from the network for the active chain id
@@ -76,28 +67,6 @@ export function useStakingInfo(): StakingInfo | undefined {
 
     const totalRewardRate = CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(rewardRateState.result?.[0]))
 
-    const getHypotheticalRewardRate = (
-      stakedAmount: CurrencyAmount<Token>,
-      totalStakedAmount: CurrencyAmount<Token>,
-      totalRewardRate: CurrencyAmount<Token>
-    ): CurrencyAmount<Token> => {
-      return CurrencyAmount.fromRawAmount(
-        dtl,
-        JSBI.greaterThan(JSBI.BigInt(totalStakedAmount.toString()), JSBI.BigInt(0))
-          ? JSBI.divide(
-              JSBI.multiply(JSBI.BigInt(totalRewardRate.quotient.toString()), JSBI.BigInt(stakedAmount.toString())),
-              JSBI.BigInt(totalStakedAmount.toString())
-            )
-          : JSBI.BigInt(0)
-      )
-    }
-
-    const individualRewardRate = getHypotheticalRewardRate(
-      stakedAmount.result?.[0],
-      totalStakedAmount.result?.[0],
-      totalRewardRate
-    )
-
     return {
       stakingRewardAddress: DOTOLI_ADDRESS[chainId],
       unStakingBalance: CurrencyAmount.fromRawAmount(dtl, JSBI.BigInt(balance?.result?.[0] ?? 0)),
@@ -109,8 +78,6 @@ export function useStakingInfo(): StakingInfo | undefined {
         JSBI.subtract(JSBI.BigInt(maxReward?.result?.[0] ?? 0), JSBI.BigInt(totalClaimedReward?.result?.[0] ?? 0))
       ),
       totalRewardRate,
-      rewardRate: individualRewardRate,
-      getHypotheticalRewardRate,
     }
   } else {
     return undefined
