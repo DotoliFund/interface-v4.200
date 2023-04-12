@@ -151,6 +151,8 @@
     "@vanilla-extract/css-utils": "^0.1.2",
     "@vanilla-extract/dynamic": "^2.0.2",
     "@vanilla-extract/sprinkles": "^1.4.1",
+    "@visx/group": "^2.10.0",
+    "@visx/shape": "^2.11.1",
     "@walletconnect/ethereum-provider": "1.7.1",
     "@web3-react/coinbase-wallet": "8.1.2-beta.0",
     "@web3-react/core": "8.1.2-beta.0",

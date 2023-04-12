@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
+import AssetLogo from 'components/Logo/AssetLogo'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -63,12 +64,13 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
     <ResponsiveGrid>
       <Label>{index + 1}</Label>
       <Label end={1} fontWeight={400}>
+        <AssetLogo isNative={false} chainId={chainId} address={tokenData.address} symbol={tokenData.symbol} />
+        {tokenData.symbol}
+      </Label>
+      <Label end={1} fontWeight={400}>
         <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address', activeNetwork)}>
           {tokenData.address}
         </ExternalLink>
-      </Label>
-      <Label end={1} fontWeight={400}>
-        {tokenData.symbol}
       </Label>
       <Label end={1} fontWeight={400}>
         {formatTime(tokenData.updatedTimestamp, 0)}
@@ -144,11 +146,11 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
         <AutoColumn gap="16px">
           <ResponsiveGrid>
             <Label color={theme.deprecated_text2}>#</Label>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.address)}>
-              <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
-            </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.name)}>
               <Trans>Name</Trans> {arrow(SORT_FIELD.name)}
+            </ClickableText>
+            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.address)}>
+              <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.updateDate)}>
               <Trans>Update</Trans> {arrow(SORT_FIELD.updateDate)}

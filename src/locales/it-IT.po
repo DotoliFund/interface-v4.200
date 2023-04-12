@@ -291,8 +291,8 @@ msgid "Claiming UNI"
 msgstr ""
 
 #: src/pages/AddLiquidity/index.tsx
-msgid "Clear All"
-msgstr ""
+#~ msgid "Clear All"
+#~ msgstr ""
 
 #: src/components/SearchModal/ManageTokens.tsx
 msgid "Clear all"
@@ -1314,8 +1314,6 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/components/FundList/index.tsx
-#: src/components/FundList/index.tsx
 #: src/components/PositionList/index.tsx
 #: src/components/PositionList/index.tsx
 #: src/pages/FundAccount/index.tsx
@@ -1379,8 +1377,8 @@ msgid "Success"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/Tables/TransactionTable.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/components/Tables/TransactionTable.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx
@@ -1860,9 +1858,18 @@ msgid "Your active V3 liquidity positions will appear here."
 msgstr ""
 
 #: src/pages/Account/index.tsx
+#: src/pages/AddLiquidity/index.tsx
+#: src/pages/Deposit/index.tsx
+#: src/pages/Fee/index.tsx
+#: src/pages/FundAccount/index.tsx
+#: src/pages/FundPage/index.tsx
 #: src/pages/Home/index.tsx
 #: src/pages/Overview/index.tsx
+#: src/pages/Pool/PositionPage.tsx
+#: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/Staking/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Withdraw/index.tsx
 msgid "Your connected network is unsupported."
 msgstr ""
 
