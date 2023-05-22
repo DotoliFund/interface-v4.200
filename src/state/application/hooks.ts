@@ -25,7 +25,7 @@ export function useOpenModal(modal: ApplicationModal): () => void {
   return useCallback(() => dispatch(setOpenModal(modal)), [dispatch, modal])
 }
 
-export function useCloseModal(_modal: ApplicationModal): () => void {
+export function useCloseModal(): () => void {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
@@ -46,28 +46,8 @@ export function useShowClaimPopup(): boolean {
   return useModalIsOpen(ApplicationModal.CLAIM_POPUP)
 }
 
-export function useToggleShowClaimPopup(): () => void {
-  return useToggleModal(ApplicationModal.CLAIM_POPUP)
-}
-
 export function useToggleSelfClaimModal(): () => void {
   return useToggleModal(ApplicationModal.SELF_CLAIM)
-}
-
-export function useToggleDelegateModal(): () => void {
-  return useToggleModal(ApplicationModal.DELEGATE)
-}
-
-export function useToggleVoteModal(): () => void {
-  return useToggleModal(ApplicationModal.VOTE)
-}
-
-export function useToggleQueueModal(): () => void {
-  return useToggleModal(ApplicationModal.QUEUE)
-}
-
-export function useToggleExecuteModal(): () => void {
-  return useToggleModal(ApplicationModal.EXECUTE)
 }
 
 export function useTogglePrivacyPolicy(): () => void {
@@ -121,7 +101,7 @@ export function useActiveNetworkVersion(): [NetworkInfo, (activeNetworkVersion: 
 }
 
 // get the apollo client related to the active network
-export function useDataClient(): ApolloClient<NormalizedCacheObject> {
+function useDataClient(): ApolloClient<NormalizedCacheObject> {
   const [activeNetwork] = useActiveNetworkVersion()
   switch (activeNetwork.id) {
     case SupportedNetwork.ETHEREUM:
@@ -132,7 +112,7 @@ export function useDataClient(): ApolloClient<NormalizedCacheObject> {
 }
 
 // get the apollo client related to the active network for fetching blocks
-export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
+function useBlockClient(): ApolloClient<NormalizedCacheObject> {
   const [activeNetwork] = useActiveNetworkVersion()
   switch (activeNetwork.id) {
     case SupportedNetwork.ETHEREUM:

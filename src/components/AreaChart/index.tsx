@@ -26,7 +26,7 @@ const Wrapper = styled(Card)`
   }
 `
 
-export type AreaChartProps = {
+type AreaChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined

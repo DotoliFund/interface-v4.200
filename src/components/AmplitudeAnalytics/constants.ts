@@ -52,17 +52,7 @@ export enum BROWSER {
   UNKNOWN = 'unknown',
 }
 
-export enum WALLET_CONNECTION_RESULT {
-  SUCCEEDED = 'Succeeded',
-  FAILED = 'Failed',
-}
-
 export const NATIVE_CHAIN_ID = 'NATIVE'
-
-export enum SWAP_PRICE_UPDATE_USER_RESPONSE {
-  ACCEPTED = 'Accepted',
-  REJECTED = 'Rejected',
-}
 
 /**
  * Known pages in the app. Highest order context.

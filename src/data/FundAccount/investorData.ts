@@ -18,7 +18,7 @@ const INVESTOR_DATA = gql`
   }
 `
 
-export interface Investor {
+interface Investor {
   id: string
   fundId: string
   investor: string
@@ -29,7 +29,7 @@ export interface Investor {
   currentTokensAmount: number[]
 }
 
-export interface InvestorFields {
+interface InvestorFields {
   id: string
   fundId: string
   investor: string

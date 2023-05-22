@@ -156,7 +156,7 @@ export function usePool(
 }
 
 //return [Token, best pool's token price in ETH]
-export function useTokensPriceInETH(
+function useTokensPriceInETH(
   chainId: number | undefined,
   poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][]
 ): [Token, number][] | undefined {
@@ -177,7 +177,7 @@ export function useTokensPriceInETH(
   const bestPools: Pool[] = []
 
   // find best pool for get token price in ETH
-  pools.map((data, index) => {
+  pools.map((data) => {
     const poolState = data[0]
     const newPool = data[1]
     if (poolState === PoolState.EXISTS && newPool) {
@@ -305,19 +305,6 @@ function getCurrencyAmount(tokens: CurrencyAmount<Token>[], tokenAddress: string
   return undefined
 }
 
-function getTokenAmount(tokens: CurrencyAmount<Token>[], tokenAddress: string): number {
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].currency.address.toUpperCase() === tokenAddress.toUpperCase()) {
-      const tokenRawAmount = Number(tokens[i].quotient.toString())
-      const decimals = tokens[i].currency.decimals
-      const decimal = 10 ** decimals
-      const tokenAmount = tokenRawAmount / decimal
-      return tokenAmount
-    }
-  }
-  return 0
-}
-
 // return : [Token, token's amount, token's price in USD]
 export function useTokensPriceInUSD(
   chainId: number | undefined,
@@ -328,7 +315,7 @@ export function useTokensPriceInUSD(
   const tokensPools: [Token | undefined, Token | undefined, FeeAmount | undefined][] = []
   // // get token's amount
   if (tokens) {
-    tokens.map((data, index) => {
+    tokens.map((data) => {
       tokensPools.push([
         new Token(chainId ? chainId : 0, data.currency.address, data.currency.decimals, data.currency.symbol),
         weth9,
@@ -355,7 +342,7 @@ export function useTokensPriceInUSD(
   //[Token, token's amount, token's price in USD]
   const tokensPriceInUSD: [CurrencyAmount<Token>, number][] = []
   if (tokens && ethPriceInUSDC && tokensPriceInETH && weth9 !== undefined) {
-    tokensPriceInETH.map((data, index) => {
+    tokensPriceInETH.map((data) => {
       const tokenAddress = data[0].address
       const priceInETH = data[1]
 

@@ -9,7 +9,6 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { useIsUserAddedToken } from '../../../hooks/Tokens'
 import { useCurrencyBalance } from '../../../state/connection/hooks'
 import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 import { ThemedText } from '../../../theme'
@@ -59,7 +58,7 @@ const Tag = styled.div`
   margin-right: 4px;
 `
 
-export const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
+const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
   margin-left: 0.3em;
   width: 1em;
   height: 1em;
@@ -110,7 +109,6 @@ export function CurrencyRow({
   otherSelected,
   style,
   showCurrencyAmount,
-  eventProperties,
 }: {
   currency: Currency
   onSelect: (hasWarning: boolean) => void
@@ -122,7 +120,6 @@ export function CurrencyRow({
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
   // const balance = useCurrencyBalance(account ?? undefined, currency) //TODO : change balance to fee amount
   const warning = currency.isNative ? null : checkWarning(currency.address)
@@ -142,11 +139,7 @@ export function CurrencyRow({
       dim={isBlockedToken}
     >
       <Column>
-        <CurrencyLogo
-          currency={currency}
-          size={'36px'}
-          style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}
-        />
+        <CurrencyLogo currency={currency} size="36px" style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }} />
       </Column>
       <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
         <Row>
@@ -154,7 +147,7 @@ export function CurrencyRow({
           <TokenSafetyIcon warning={warning} />
           {isBlockedToken && <BlockedTokenIcon />}
         </Row>
-        <ThemedText.DeprecatedDarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
+        <ThemedText.DeprecatedDarkGray ml="0px" fontSize="12px" fontWeight={300}>
           {currency.symbol}
         </ThemedText.DeprecatedDarkGray>
       </AutoColumn>

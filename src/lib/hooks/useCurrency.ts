@@ -29,7 +29,7 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
  * Returns null if token is loading or null was passed.
  * Returns undefined if tokenAddress is invalid or token does not exist.
  */
-export function useTokenFromNetwork(tokenAddress: string | null | undefined): Token | null | undefined {
+function useTokenFromNetwork(tokenAddress: string | null | undefined): Token | null | undefined {
   const { chainId } = useWeb3React()
   const supportedChain = isSupportedChain(chainId)
 

@@ -11,8 +11,6 @@ export {
   useCurrencyBalanceString,
   useNativeCurrencyBalances,
   useTokenBalance,
-  useTokenBalances,
-  useTokenBalancesWithLoadingIndicator,
 } from 'lib/hooks/useCurrencyBalance'
 
 // mimics useAllBalances

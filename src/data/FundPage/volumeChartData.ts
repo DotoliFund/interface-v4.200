@@ -21,7 +21,7 @@ const VOLUME_CHART = gql`
   }
 `
 
-export interface VolumeChart {
+interface VolumeChart {
   id: string
   timestamp: number
   currentUSD: number
@@ -30,7 +30,7 @@ export interface VolumeChart {
   currentTokensAmountUSD: number[]
 }
 
-export interface VolumeChartFields {
+interface VolumeChartFields {
   id: string
   timestamp: string
   currentUSD: string
@@ -77,7 +77,7 @@ export function useVolumeChartData(fundId: string | undefined): {
   }
 
   const formatted: VolumeChart[] = data
-    ? data.fundSnapshots.map((snapshot, index) => {
+    ? data.fundSnapshots.map((snapshot) => {
         const volumeChartData: VolumeChart = {
           id: snapshot.id,
           timestamp: parseInt(snapshot.timestamp),

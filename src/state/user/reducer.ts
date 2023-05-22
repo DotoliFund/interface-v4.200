@@ -8,7 +8,7 @@ import { SerializedPair, SerializedToken } from './types'
 
 const currentTimestamp = () => new Date().getTime()
 
-export interface UserState {
+interface UserState {
   selectedWallet?: ConnectionType
 
   // the timestamp of the last updateVersion action
@@ -64,7 +64,7 @@ function pairKey(token0Address: string, token1Address: string) {
   return `${token0Address};${token1Address}`
 }
 
-export const initialState: UserState = {
+const initialState: UserState = {
   selectedWallet: undefined,
   matchesDarkMode: false,
   userDarkMode: null,
@@ -209,14 +209,10 @@ const userSlice = createSlice({
 
 export const {
   updateSelectedWallet,
-  addSerializedPair,
   addSerializedToken,
-  removeSerializedPair,
   removeSerializedToken,
   updateHideClosedPositions,
-  updateHideClosedFunds,
   updateMatchesDarkMode,
-  updateShowDonationLink,
   updateShowSurveyPopup,
   updateUserClientSideRouter,
   updateUserDarkMode,

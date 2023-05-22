@@ -37,7 +37,7 @@ export const Trace = memo(
     const combinedProps = useMemo(
       () => ({
         ...parentTrace,
-        ...Object.fromEntries(Object.entries({ page, section, element }).filter(([_, v]) => v !== undefined)),
+        ...Object.fromEntries(Object.entries({ page, section, element }).filter(([, v]) => v !== undefined)),
       }),
       [element, parentTrace, page, section]
     )

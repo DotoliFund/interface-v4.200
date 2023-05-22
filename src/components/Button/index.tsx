@@ -1,13 +1,13 @@
 import { darken } from 'polished'
-import { Check, ChevronDown } from 'react-feather'
+import { Check } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
-import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 
 import { RowBetween } from '../Row'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 
-export const BaseButton = styled(RebassButton)<
+const BaseButton = styled(RebassButton)<
   {
     padding?: string
     width?: string
@@ -288,28 +288,6 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
   }
 }
 
-export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
-  return (
-    <ButtonPrimary {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
-      </RowBetween>
-    </ButtonPrimary>
-  )
-}
-
-export function ButtonDropdownLight({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
-  return (
-    <ButtonOutlined {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
-      </RowBetween>
-    </ButtonOutlined>
-  )
-}
-
 const ActiveOutlined = styled(ButtonOutlined)`
   border: 1px solid;
   border-color: ${({ theme }) => theme.accentAction};
@@ -360,159 +338,4 @@ export function ButtonRadioChecked({ active = false, children, ...rest }: { acti
       </ActiveOutlined>
     )
   }
-}
-
-const ButtonOverlay = styled.div`
-  background-color: transparent;
-  bottom: 0;
-  border-radius: 16px;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: 150ms ease background-color;
-  width: 100%;
-`
-export enum ButtonSize {
-  small,
-  medium,
-  large,
-}
-export enum ButtonEmphasis {
-  high,
-  promotional,
-  highSoft,
-  medium,
-  low,
-  warning,
-  destructive,
-}
-interface BaseButtonProps {
-  size: ButtonSize
-  emphasis: ButtonEmphasis
-}
-
-function pickThemeButtonBackgroundColor({ theme, emphasis }: { theme: DefaultTheme; emphasis: ButtonEmphasis }) {
-  switch (emphasis) {
-    case ButtonEmphasis.high:
-      return theme.accentAction
-    case ButtonEmphasis.promotional:
-      return theme.accentTextLightPrimary
-    case ButtonEmphasis.highSoft:
-      return theme.accentActionSoft
-    case ButtonEmphasis.low:
-      return 'transparent'
-    case ButtonEmphasis.warning:
-      return theme.accentWarningSoft
-    case ButtonEmphasis.destructive:
-      return theme.accentCritical
-    case ButtonEmphasis.medium:
-    default:
-      return theme.backgroundInteractive
-  }
-}
-function pickThemeButtonFontSize({ size }: { size: ButtonSize }) {
-  switch (size) {
-    case ButtonSize.large:
-      return '20px'
-    case ButtonSize.medium:
-      return '16px'
-    case ButtonSize.small:
-      return '14px'
-    default:
-      return '16px'
-  }
-}
-function pickThemeButtonLineHeight({ size }: { size: ButtonSize }) {
-  switch (size) {
-    case ButtonSize.large:
-      return '24px'
-    case ButtonSize.medium:
-      return '20px'
-    case ButtonSize.small:
-      return '16px'
-    default:
-      return '20px'
-  }
-}
-function pickThemeButtonPadding({ size }: { size: ButtonSize }) {
-  switch (size) {
-    case ButtonSize.large:
-      return '16px'
-    case ButtonSize.medium:
-      return '10px 12px'
-    case ButtonSize.small:
-      return '8px'
-    default:
-      return '10px 12px'
-  }
-}
-function pickThemeButtonTextColor({ theme, emphasis }: { theme: DefaultTheme; emphasis: ButtonEmphasis }) {
-  switch (emphasis) {
-    case ButtonEmphasis.high:
-    case ButtonEmphasis.promotional:
-      return theme.accentTextLightPrimary
-    case ButtonEmphasis.highSoft:
-      return theme.accentAction
-    case ButtonEmphasis.low:
-      return theme.textSecondary
-    case ButtonEmphasis.warning:
-      return theme.accentWarning
-    case ButtonEmphasis.destructive:
-      return theme.accentTextDarkPrimary
-    case ButtonEmphasis.medium:
-    default:
-      return theme.textPrimary
-  }
-}
-
-const BaseThemeButton = styled.button<BaseButtonProps>`
-  align-items: center;
-  background-color: ${pickThemeButtonBackgroundColor};
-  border-radius: 16px;
-  border: 0;
-  color: ${pickThemeButtonTextColor};
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  font-size: ${pickThemeButtonFontSize};
-  font-weight: 600;
-  gap: 12px;
-  justify-content: center;
-  line-height: ${pickThemeButtonLineHeight};
-  padding: ${pickThemeButtonPadding};
-  position: relative;
-  transition: 150ms ease opacity;
-
-  :active {
-    ${ButtonOverlay} {
-      background-color: ${({ theme }) => theme.stateOverlayPressed};
-    }
-  }
-  :disabled {
-    cursor: default;
-    opacity: 0.6;
-  }
-  :focus {
-    ${ButtonOverlay} {
-      background-color: ${({ theme }) => theme.stateOverlayPressed};
-    }
-  }
-  :hover {
-    ${ButtonOverlay} {
-      background-color: ${({ theme }) => theme.stateOverlayHover};
-    }
-  }
-`
-
-interface ThemeButtonProps extends React.ComponentPropsWithoutRef<'button'>, BaseButtonProps {}
-
-export const ThemeButton = ({ children, ...rest }: ThemeButtonProps) => {
-  return (
-    <BaseThemeButton {...rest}>
-      <ButtonOverlay />
-      {children}
-    </BaseThemeButton>
-  )
 }

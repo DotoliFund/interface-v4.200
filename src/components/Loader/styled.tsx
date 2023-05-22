@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components/macro'
 
-export const loadingAnimation = keyframes`
+const loadingAnimation = keyframes`
   0% {
     background-position: 100% 50%;
   }

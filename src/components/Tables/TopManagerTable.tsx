@@ -66,7 +66,7 @@ const SORT_FIELD = {
   created: 'createdAtTimestamp',
 }
 
-const DataRow = ({ managerData, index }: { managerData: TopManager; index: number }) => {
+const DataRow = ({ managerData }: { managerData: TopManager; index: number }) => {
   return (
     <LinkWrapper to={'/fund/' + managerData.fundId + '/' + managerData.investor}>
       <ResponsiveGrid>

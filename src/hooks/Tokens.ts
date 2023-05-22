@@ -1,6 +1,5 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { SupportedChainId } from 'constants/chains'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
@@ -52,23 +51,7 @@ export function useAllTokens(): { [address: string]: Token } {
   return useTokensFromMap(allTokens, true)
 }
 
-export function useActiveTokens(includeUserAdded: boolean): { [address: string]: Token } {
-  const allTokens = useCombinedActiveList()
-  return useTokensFromMap(allTokens, includeUserAdded)
-}
-
-type BridgeInfo = Record<
-  SupportedChainId,
-  {
-    tokenAddress: string
-    originBridgeAddress: string
-    destBridgeAddress: string
-  }
->
-
 export function useUnsupportedTokens(): { [address: string]: Token } {
-  const { chainId } = useWeb3React()
-  const listsByUrl = useAllLists()
   const unsupportedTokensMap = useUnsupportedTokenList()
   const unsupportedTokens = useTokensFromMap(unsupportedTokensMap, false)
 

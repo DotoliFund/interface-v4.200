@@ -40,8 +40,6 @@ const ArrowWrapper = styled.div`
 
 export default function SwapModalHeader({
   trade,
-  shouldLogModalCloseEvent,
-  setShouldLogModalCloseEvent,
   allowedSlippage,
   recipient,
   showAcceptChanges,

@@ -24,7 +24,7 @@ import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
 import { DotoliFund } from 'interface/DotoliFund'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useMemo, useState } from 'react'
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useBurnV3ActionHandlers, useBurnV3State, useDerivedV3BurnInfo } from 'state/burn/v3/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -75,8 +75,6 @@ export default function RemoveLiquidityV3() {
   return <Remove fundId={fundId} investor={investor} tokenId={parsedTokenId} />
 }
 function Remove({ fundId, investor, tokenId }: { fundId: string; investor: string; tokenId: BigNumber }) {
-  const navigate = useNavigate()
-
   const { position } = useV3PositionFromTokenId(fundId ?? undefined, investor ?? undefined, tokenId)
   const theme = useTheme()
   const { account, chainId, provider } = useWeb3React()

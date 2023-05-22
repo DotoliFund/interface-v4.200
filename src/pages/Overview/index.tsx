@@ -59,13 +59,13 @@ const ChartWrapper = styled.div`
   `};
 `
 
-export const HideMedium = styled.span`
+const HideMedium = styled.span`
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
     display: none;
   `};
 `
 
-export const HideSmall = styled.span`
+const HideSmall = styled.span`
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     display: none;
   `};
@@ -123,7 +123,7 @@ export default function Overview() {
         <>
           <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
           <AutoColumn gap="16px">
-            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Overview</Trans>
             </ThemedText.DeprecatedMain>
             <ResponsiveRow>
@@ -264,7 +264,7 @@ export default function Overview() {
                 </RowBetween>
               </DarkGreyCard>
             </HideSmall>
-            <RowBetween mt={'16px'}>
+            <RowBetween mt="16px">
               <ThemedText.DeprecatedMain fontSize="22px">
                 <Trans>Top Managers</Trans>
               </ThemedText.DeprecatedMain>
@@ -272,7 +272,7 @@ export default function Overview() {
             <DarkGreyCard>
               <TopManagerTable managerDatas={topManagers.data} />
             </DarkGreyCard>
-            <RowBetween mt={'16px'}>
+            <RowBetween mt="16px">
               <ThemedText.DeprecatedMain fontSize="22px">
                 <Trans>Top Funds</Trans>
               </ThemedText.DeprecatedMain>
@@ -280,7 +280,7 @@ export default function Overview() {
             <DarkGreyCard>
               <FundTable fundDatas={topFunds.data} />
             </DarkGreyCard>
-            <RowBetween mt={'16px'}>
+            <RowBetween mt="16px">
               <ThemedText.DeprecatedMain fontSize="22px">
                 <Trans>WhiteList Tokens</Trans>
               </ThemedText.DeprecatedMain>

@@ -22,7 +22,7 @@ import wallets from './wallets/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     application,
     deposit,

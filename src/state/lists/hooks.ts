@@ -23,7 +23,7 @@ export function useAllLists(): AppState['lists']['byUrl'] {
  * @param map1 the base token map
  * @param map2 the map of additioanl tokens to add to the base map
  */
-export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
+function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
   const chainIds = Object.keys(
     Object.keys(map1)
       .concat(Object.keys(map2))
@@ -68,7 +68,7 @@ function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMa
 }
 
 // filter out unsupported lists
-export function useActiveListUrls(): string[] | undefined {
+function useActiveListUrls(): string[] | undefined {
   const activeListUrls = useAppSelector((state) => state.lists.activeListUrls)
   return useMemo(() => activeListUrls?.filter((url) => !UNSUPPORTED_LIST_URLS.includes(url)), [activeListUrls])
 }
@@ -105,8 +105,4 @@ export function useUnsupportedTokenList(): TokenAddressMap {
     () => combineMaps(brokenListMap, combineMaps(localUnsupportedListMap, loadedUnsupportedListMap)),
     [brokenListMap, localUnsupportedListMap, loadedUnsupportedListMap]
   )
-}
-export function useIsListActive(url: string): boolean {
-  const activeListUrls = useActiveListUrls()
-  return Boolean(activeListUrls?.includes(url))
 }

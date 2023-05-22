@@ -90,7 +90,7 @@ export function useTokenBalancesWithLoadingIndicator(
   )
 }
 
-export function useTokenBalances(
+function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[]
 ): { [tokenAddress: string]: CurrencyAmount<Token> | undefined } {

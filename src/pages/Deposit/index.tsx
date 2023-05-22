@@ -102,7 +102,6 @@ export default function Deposit() {
   const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
   const { onCurrencySelection, onUserInput } = useDepositActionHandlers()
-  const isValid = !depositInputError
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(value)
@@ -203,7 +202,7 @@ export default function Deposit() {
             // })
           })
       })
-      .catch((error) => {
+      .catch(() => {
         setAttemptingTxn(false)
         //setDepositErrorMessage(error.message)
         setDepositErrorMessage('Deposit failed')
@@ -284,7 +283,7 @@ export default function Deposit() {
                 </RowFixed>
               </RowBetween>
             </StyledDepositHeader>
-            <AutoColumn gap={'6px'}>
+            <AutoColumn gap="6px">
               <div style={{ display: 'relative' }}>
                 <DepositSection>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>

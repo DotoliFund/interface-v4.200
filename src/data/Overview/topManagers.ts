@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { TopManager } from 'types/fund'
 
-export const TOP_MANAGERS_BULK = () => {
+const TOP_MANAGERS_BULK = () => {
   const queryString = `
     query topManagers($updated: BigInt!) {
       investors(
@@ -31,7 +31,7 @@ export const TOP_MANAGERS_BULK = () => {
   return gql(queryString)
 }
 
-export interface TopManagerFields {
+interface TopManagerFields {
   id: string
   createdAtTimestamp: string
   updatedAtTimestamp: string
@@ -79,7 +79,7 @@ export function useTopManagers(): {
   }
 
   const formatted: TopManager[] = data
-    ? data.investors.map((investor, index) => {
+    ? data.investors.map((investor) => {
         const investorData: TopManager = {
           id: investor.id,
           createdAtTimestamp: parseInt(investor.createdAtTimestamp),

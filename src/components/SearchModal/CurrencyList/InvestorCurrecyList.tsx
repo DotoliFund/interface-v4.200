@@ -60,7 +60,7 @@ const Tag = styled.div`
   margin-right: 4px;
 `
 
-export const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
+const BlockedTokenIcon = styled(XOctagon)<{ size?: string }>`
   margin-left: 0.3em;
   width: 1em;
   height: 1em;
@@ -104,14 +104,13 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
-export function CurrencyRow({
+function CurrencyRow({
   currency,
   onSelect,
   isSelected,
   otherSelected,
   style,
   showCurrencyAmount,
-  eventProperties,
 }: {
   currency: Currency
   onSelect: (hasWarning: boolean) => void
@@ -158,11 +157,7 @@ export function CurrencyRow({
       dim={isBlockedToken}
     >
       <Column>
-        <CurrencyLogo
-          currency={currency}
-          size={'36px'}
-          style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}
-        />
+        <CurrencyLogo currency={currency} size="36px" style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }} />
       </Column>
       <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
         <Row>
@@ -170,7 +165,7 @@ export function CurrencyRow({
           <TokenSafetyIcon warning={warning} />
           {isBlockedToken && <BlockedTokenIcon />}
         </Row>
-        <ThemedText.DeprecatedDarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
+        <ThemedText.DeprecatedDarkGray ml="0px" fontSize="12px" fontWeight={300}>
           {currency.symbol}
         </ThemedText.DeprecatedDarkGray>
       </AutoColumn>
@@ -201,7 +196,7 @@ interface TokenRowProps {
   style: CSSProperties
 }
 
-export const formatAnalyticsEventProperties = (
+const formatAnalyticsEventProperties = (
   token: Token,
   index: number,
   data: any[],
