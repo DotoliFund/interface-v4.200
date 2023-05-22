@@ -20,7 +20,7 @@ const VerifiedContainer = styled.div`
   justify-content: center;
 `
 
-export const VerifiedIcon = styled(Verified)<{ size?: string }>`
+const VerifiedIcon = styled(Verified)<{ size?: string }>`
   width: ${({ size }) => size ?? '1em'};
   height: ${({ size }) => size ?? '1em'};
 `

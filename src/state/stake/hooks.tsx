@@ -7,7 +7,7 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { DTL } from '../../constants/tokens'
 
-export interface StakingInfo {
+interface StakingInfo {
   stakingRewardAddress: string
   unStakingBalance: CurrencyAmount<Token>
   // the amount of token currently staked, or undefined if no account

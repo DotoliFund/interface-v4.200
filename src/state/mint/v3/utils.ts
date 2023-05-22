@@ -9,7 +9,7 @@ import {
 } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
 
-export function tryParsePrice(baseToken?: Token, quoteToken?: Token, value?: string) {
+function tryParsePrice(baseToken?: Token, quoteToken?: Token, value?: string) {
   if (!baseToken || !quoteToken || !value) {
     return undefined
   }

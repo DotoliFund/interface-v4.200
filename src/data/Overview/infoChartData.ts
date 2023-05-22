@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
-export const INFO_CHART = () => {
+const INFO_CHART = () => {
   const queryString = `
     query infoSnapshots {
       infoSnapshots(orderBy: date, orderDirection: asc, subgraphError: allow) {
@@ -17,7 +17,7 @@ export const INFO_CHART = () => {
   return gql(queryString)
 }
 
-export interface InfoChart {
+interface InfoChart {
   id: string
   date: number
   fundCount: number
@@ -25,7 +25,7 @@ export interface InfoChart {
   totalCurrentUSD: number
 }
 
-export interface InfoChartFields {
+interface InfoChartFields {
   id: string
   date: string
   fundCount: string
@@ -67,7 +67,7 @@ export function useInfoChartData(): {
   }
 
   const formatted: InfoChart[] = data
-    ? data.infoSnapshots.map((snapshot, index) => {
+    ? data.infoSnapshots.map((snapshot) => {
         const infoChartData: InfoChart = {
           id: snapshot.id,
           date: parseFloat(snapshot.date),

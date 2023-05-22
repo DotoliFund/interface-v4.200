@@ -2,10 +2,7 @@ import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
-import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
-import { NetworkInfo } from 'constants/networks'
-import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 const ETHERSCAN_PREFIXES: { [chainId: number]: string } = {
   [SupportedChainId.MAINNET]: '',
@@ -53,19 +50,10 @@ export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
-export function isTokenOnList(chainTokenMap: ChainTokenMap, token?: Token): boolean {
-  return Boolean(token?.isToken && chainTokenMap[token.chainId]?.[token.address])
-}
-
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}
-
 export function getEtherscanLink(
   chainId: number,
   data: string | undefined,
-  type: 'transaction' | 'token' | 'address' | 'block',
-  networkVersion: NetworkInfo
+  type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
   if (!data) {
     return ''

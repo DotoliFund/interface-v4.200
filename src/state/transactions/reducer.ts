@@ -5,13 +5,13 @@ import { TransactionDetails } from './types'
 
 const now = () => new Date().getTime()
 
-export interface TransactionState {
+interface TransactionState {
   [chainId: number]: {
     [txHash: string]: TransactionDetails
   }
 }
 
-export const initialState: TransactionState = {}
+const initialState: TransactionState = {}
 
 const transactionSlice = createSlice({
   name: 'transactions',

@@ -83,7 +83,7 @@ const ToggleRow = styled(RowFlat)`
   }
 `
 
-export const StakingInfoWrapper = styled.button<{ width?: string }>`
+const StakingInfoWrapper = styled.button<{ width?: string }>`
   display: flex;
   align-items: center;
   width: ${({ width }) => width ?? '100%'};
@@ -94,7 +94,7 @@ export const StakingInfoWrapper = styled.button<{ width?: string }>`
   outline: none;
 `
 
-export const StakingInfoElement = styled.span<{ isActive?: boolean; fontSize?: string }>`
+const StakingInfoElement = styled.span<{ isActive?: boolean; fontSize?: string }>`
   display: flex;
   align-items: center;
   width: 100%;
@@ -194,12 +194,12 @@ export default function Staking() {
     }
   }, [approvalState, approvalSubmitted])
 
-  // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-  // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    approvalState === ApprovalState.NOT_APPROVED ||
-    approvalState === ApprovalState.PENDING ||
-    (approvalSubmitted && approvalState === ApprovalState.APPROVED)
+  // // show approve flow when: no error on inputs, not approved or pending, or approved in current session
+  // // never show if price impact is above threshold in non expert mode
+  // const showApproveFlow =
+  //   approvalState === ApprovalState.NOT_APPROVED ||
+  //   approvalState === ApprovalState.PENDING ||
+  //   (approvalSubmitted && approvalState === ApprovalState.APPROVED)
 
   async function onStake() {
     if (!chainId || !provider || !account) return
@@ -369,29 +369,29 @@ export default function Staking() {
                   </ToggleRow>
                 </RowBetween>
               </StyledStakingHeader>
-              <AutoColumn gap={'12px'}>
+              <AutoColumn gap="12px">
                 <StakingInfoWrapper>
                   <StakingInfoElement>
                     <RowBetween>
                       <AutoColumn gap="10px" justify="start">
-                        <Text ml={'20px'}>
+                        <Text ml="20px">
                           <Trans>Holding</Trans>
                         </Text>
-                        <Text ml={'20px'}>
+                        <Text ml="20px">
                           <Trans>Staked</Trans>
                         </Text>
-                        <Text ml={'20px'}>
+                        <Text ml="20px">
                           <Trans>Reward</Trans>
                         </Text>
-                        <Text ml={'20px'}>
+                        <Text ml="20px">
                           <Trans>Remaining Reward</Trans>
                         </Text>
                       </AutoColumn>
                       <AutoColumn gap="10px" justify="end">
-                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
-                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
-                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.rewardAmount, 12)}</Text>
-                        <Text mr={'20px'}>{formatCurrencyAmount(stakingInfo?.remainingReward, 12)}</Text>
+                        <Text mr="20px">{formatCurrencyAmount(stakingInfo?.unStakingBalance, 12)}</Text>
+                        <Text mr="20px">{formatCurrencyAmount(stakingInfo?.stakedAmount, 12)}</Text>
+                        <Text mr="20px">{formatCurrencyAmount(stakingInfo?.rewardAmount, 12)}</Text>
+                        <Text mr="20px">{formatCurrencyAmount(stakingInfo?.remainingReward, 12)}</Text>
                       </AutoColumn>
                     </RowBetween>
                   </StakingInfoElement>
@@ -411,14 +411,13 @@ export default function Staking() {
                             fiatValue={undefined}
                             onCurrencySelect={undefined}
                             otherCurrency={undefined}
-                            showCommonBases={true}
                             id={SectionName.CURRENCY_INPUT_PANEL}
                             loading={false}
                           />
                         </Trace>
                       </StakingSection>
                     </div>
-                    <AutoColumn gap={'8px'}>
+                    <AutoColumn gap="8px">
                       <div>
                         {!account ? (
                           <ButtonLight onClick={toggleWalletModal}>
@@ -508,14 +507,13 @@ export default function Staking() {
                             fiatValue={undefined}
                             onCurrencySelect={undefined}
                             otherCurrency={undefined}
-                            showCommonBases={true}
                             id={SectionName.CURRENCY_INPUT_PANEL}
                             loading={false}
                           />
                         </Trace>
                       </StakingSection>
                     </div>
-                    <AutoColumn gap={'8px'}>
+                    <AutoColumn gap="8px">
                       <div>
                         {!account ? (
                           <ButtonLight onClick={toggleWalletModal}>
@@ -557,14 +555,13 @@ export default function Staking() {
                             fiatValue={undefined}
                             onCurrencySelect={undefined}
                             otherCurrency={undefined}
-                            showCommonBases={true}
                             id={SectionName.CURRENCY_INPUT_PANEL}
                             loading={false}
                           />
                         </Trace>
                       </StakingSection>
                     </div>
-                    <AutoColumn gap={'8px'}>
+                    <AutoColumn gap="8px">
                       <div>
                         {!account ? (
                           <ButtonLight onClick={toggleWalletModal}>

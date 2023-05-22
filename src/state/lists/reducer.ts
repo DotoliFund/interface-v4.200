@@ -6,7 +6,7 @@ import { DEFAULT_LIST_OF_LISTS } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
 import { acceptListUpdate, addList, disableList, enableList, fetchTokenList, removeList } from './actions'
 
-export interface ListsState {
+interface ListsState {
   readonly byUrl: {
     readonly [url: string]: {
       readonly current: TokenList | null

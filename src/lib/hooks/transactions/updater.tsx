@@ -11,7 +11,7 @@ interface Transaction {
   lastCheckedBlockNumber?: number
 }
 
-export function shouldCheck(lastBlockNumber: number, tx: Transaction): boolean {
+function shouldCheck(lastBlockNumber: number, tx: Transaction): boolean {
   if (tx.receipt) return false
   if (!tx.lastCheckedBlockNumber) return true
   const blocksSinceCheck = lastBlockNumber - tx.lastCheckedBlockNumber

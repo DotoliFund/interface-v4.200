@@ -385,13 +385,11 @@ const FeeSummary = ({ info, transactionState }: { info: FeeTransactionInfo; tran
 }
 
 const CreateFundSummary = ({
-  info,
   transactionState,
 }: {
   info: CreateFundTransactionInfo
   transactionState: TransactionState
 }) => {
-  const { manager } = info
   const actionProps = {
     transactionState,
     pending: <Trans>Creating fund</Trans>,
@@ -414,7 +412,7 @@ const SubscribeSummary = ({
   info: SubscribeTransactionInfo
   transactionState: TransactionState
 }) => {
-  const { fundId, investor } = info
+  const { fundId } = info
   const actionProps = {
     transactionState,
     pending: <Trans>Subscribing</Trans>,

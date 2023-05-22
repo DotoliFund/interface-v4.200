@@ -39,7 +39,7 @@ export enum TransactionType {
   SUBSCRIBE,
 }
 
-export interface BaseTransactionInfo {
+interface BaseTransactionInfo {
   type: TransactionType
 }
 

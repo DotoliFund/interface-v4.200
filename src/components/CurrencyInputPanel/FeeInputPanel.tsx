@@ -7,7 +7,6 @@ import { LoadingOpacityContainer } from 'components/Loader/styled'
 import { isSupportedChain } from 'constants/chains'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { Lock } from 'react-feather'
-import { useParams } from 'react-router-dom'
 import { useTheme } from 'styled-components/macro'
 import { FundToken } from 'types/fund'
 import { getFeeTokenAmountDecimal } from 'utils/formatCurrencyAmount'
@@ -51,7 +50,6 @@ interface FeeInputPanelProps {
   showCommonBases?: boolean
   showCurrencyAmount?: boolean
   disableNonToken?: boolean
-  renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   loading?: boolean
 }
@@ -69,7 +67,6 @@ export default function FeeInputPanel({
   showCommonBases,
   showCurrencyAmount,
   disableNonToken,
-  renderBalance,
   fiatValue,
   priceImpact,
   hideBalance = false,
@@ -79,7 +76,6 @@ export default function FeeInputPanel({
   loading = false,
   ...rest
 }: FeeInputPanelProps) {
-  const params = useParams()
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
   const isFeeEmpty = feeTokens && feeTokens.length === 0 ? true : false
@@ -144,7 +140,7 @@ export default function FeeInputPanel({
                     <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
                   </span>
                 ) : currency ? (
-                  <CurrencyLogo style={{ marginRight: '2px' }} currency={currency} size={'24px'} />
+                  <CurrencyLogo style={{ marginRight: '2px' }} currency={currency} size="24px" />
                 ) : null}
                 {pair ? (
                   <StyledTokenName className="pair-name-container">

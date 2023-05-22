@@ -41,9 +41,6 @@ interface RewardInputPanelProps {
   fiatValue?: CurrencyAmount<Token> | null
   priceImpact?: Percent
   id: string
-  showCommonBases?: boolean
-  showCurrencyAmount?: boolean
-  disableNonToken?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   loading?: boolean
@@ -54,19 +51,13 @@ export default function RewardInputPanel({
   onUserInput,
   onMax,
   showMaxButton,
-  onCurrencySelect,
   currency,
   rewardCurrencyBalance,
-  otherCurrency,
   id,
-  showCommonBases,
-  showCurrencyAmount,
-  disableNonToken,
   renderBalance,
   fiatValue,
   priceImpact,
   hideBalance = false,
-  pair = null, // used for double token logo
   hideInput = false,
   locked = false,
   loading = false,

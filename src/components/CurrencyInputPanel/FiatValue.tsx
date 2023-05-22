@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import HoverInlineText from 'components/HoverInlineText'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { warningSeverity } from 'utils/prices'
@@ -19,7 +19,6 @@ export function FiatValue({
   isLoading?: boolean
 }) {
   const theme = useTheme()
-  const [showLoadingPlaceholder, setShowLoadingPlaceholder] = useState(false)
   const priceImpactColor = useMemo(() => {
     if (!priceImpact) return undefined
     if (priceImpact.lessThan('0')) return theme.deprecated_green1
@@ -33,15 +32,8 @@ export function FiatValue({
   const visibleDecimalPlaces = p < 1.05 ? 4 : 2
 
   useEffect(() => {
-    const stale = false
-    let timeoutId = 0
-    if (isLoading && !fiatValue) {
-      timeoutId = setTimeout(() => {
-        if (!stale) setShowLoadingPlaceholder(true)
-      }, 200) as unknown as number
-    } else {
-      setShowLoadingPlaceholder(false)
-    }
+    const timeoutId = 0
+
     return () => clearTimeout(timeoutId)
   }, [isLoading, fiatValue])
 

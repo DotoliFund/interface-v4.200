@@ -19,20 +19,6 @@ import {
   CoverH1,
   CoverP,
 } from './CoverElements'
-import {
-  BtnWrap,
-  Column1,
-  Column2,
-  Heading,
-  Img,
-  ImgWrap,
-  InfoContainer,
-  InfoRow,
-  InfoWrapper,
-  Subtitle,
-  TextWrapper,
-  TopLine,
-} from './InfoElements'
 
 const Button = styled(RebassButton)<{ primary?: boolean; big?: boolean; dark?: boolean; fontBig?: boolean }>`
   border-radius: 50px;
@@ -54,90 +40,6 @@ const Button = styled(RebassButton)<{ primary?: boolean; big?: boolean; dark?: b
   }
 `
 
-interface CoverSectionProps {
-  headline: string
-  description: string
-  buttonNameA: string | undefined
-}
-
-const CoverSection = ({ headline, description, buttonNameA }: CoverSectionProps) => {
-  const [hover, setHover] = useState(false)
-
-  return (
-    <CoverContainer>
-      <CoverContent>
-        <CoverH1>
-          <Trans>{headline}</Trans>
-        </CoverH1>
-        <CoverP>
-          <Trans>{description}</Trans>
-        </CoverP>
-        <CoverBtnWrapper>
-          <Button primary={true} big={true} dark={true} fontBig={true} marginRight={'15px'}>
-            {buttonNameA} {hover ? <ArrowForward /> : <ArrowRight />}
-          </Button>
-        </CoverBtnWrapper>
-      </CoverContent>
-    </CoverContainer>
-  )
-}
-
-interface InfoSectionProps {
-  lightBg: boolean
-  id: string
-  imgStart: boolean
-  topLine: string
-  lightText: boolean
-  headline: string
-  darkText: boolean
-  description: string
-  buttonLabel: string
-  img: string
-  alt: string
-}
-
-const InfoSection = ({
-  lightBg,
-  id,
-  imgStart,
-  topLine,
-  lightText,
-  headline,
-  darkText,
-  description,
-  buttonLabel,
-  img,
-  alt,
-}: InfoSectionProps) => {
-  return (
-    <>
-      <InfoContainer lightBg={lightBg} id={id}>
-        <InfoWrapper>
-          <InfoRow imgStart={imgStart}>
-            <Column1>
-              <TextWrapper>
-                <TopLine>{topLine}</TopLine>
-                <Heading lightText={lightText}>{headline}</Heading>
-                <Subtitle darkText={darkText}>{description}</Subtitle>
-                <BtnWrap>
-                  <Button primary={true} big={true} dark={true} fontBig={true}>
-                    {buttonLabel}
-                  </Button>
-                </BtnWrap>
-              </TextWrapper>
-            </Column1>
-            <Column2>
-              <ImgWrap>
-                <Img src={img} alt={alt} />
-              </ImgWrap>
-            </Column2>
-          </InfoRow>
-        </InfoWrapper>
-      </InfoContainer>
-    </>
-  )
-}
-
 export default function Home() {
   const { chainId } = useWeb3React()
   const navigate = useNavigate()
@@ -152,10 +54,10 @@ export default function Home() {
           <CoverContainer>
             <CoverContent>
               <CoverH1>
-                <Trans>{'Manage or Invest crypto fund with confidence'}</Trans>
+                <Trans>Manage or Invest crypto fund with confidence</Trans>
               </CoverH1>
               <CoverP>
-                <Trans>{'Swap and Provide Liquidity via Uniswap'}</Trans>
+                <Trans>Swap and Provide Liquidity via Uniswap</Trans>
               </CoverP>
               <CoverBtnWrapper>
                 <Button
@@ -163,10 +65,10 @@ export default function Home() {
                   big={true}
                   dark={true}
                   fontBig={true}
-                  marginRight={'15px'}
+                  marginRight="15px"
                   onClick={() => navigate(`/account`)}
                 >
-                  <Trans>{'Get Started'}</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
+                  <Trans>Get Started</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
                 </Button>
               </CoverBtnWrapper>
             </CoverContent>
@@ -175,13 +77,12 @@ export default function Home() {
           <CoverContainer>
             <CoverContent>
               <CoverH1>
-                <Trans>{'More benefits for investors and fund managers'}</Trans>
+                <Trans>More benefits for investors and fund managers</Trans>
               </CoverH1>
               <CoverP>
                 <Trans>
-                  {
-                    'Since the investor invests directly to the fund manager, the fee is low, and the fund manager get rewards in proportion to the investment performance'
-                  }
+                  Since the investor invests directly to the fund manager, the fee is low, and the fund manager get
+                  rewards in proportion to the investment performance
                 </Trans>
               </CoverP>
             </CoverContent>
@@ -190,13 +91,12 @@ export default function Home() {
           <CoverContainer>
             <CoverContent>
               <CoverH1>
-                <Trans>{'Decentralized fund investment'}</Trans>
+                <Trans>Decentralized fund investment</Trans>
               </CoverH1>
               <CoverP>
                 <Trans>
-                  {
-                    'Only investors can withdraw their own funds. Fund managers can only swap token or manage pool via Dotoli and Uniswap'
-                  }
+                  Only investors can withdraw their own funds. Fund managers can only swap token or manage pool via
+                  Dotoli and Uniswap
                 </Trans>
               </CoverP>
             </CoverContent>
@@ -205,13 +105,12 @@ export default function Home() {
           <CoverContainer>
             <CoverContent>
               <CoverH1>
-                <Trans>{'Transparent fund management'}</Trans>
+                <Trans>Transparent fund management</Trans>
               </CoverH1>
               <CoverP>
                 <Trans>
-                  {
-                    'All investments made by the fund manager are recorded. Investors can find great fund managers. Also, fund managers can attract investors through investment performance.'
-                  }
+                  All investments made by the fund manager are recorded. Investors can find great fund managers. Also,
+                  fund managers can attract investors through investment performance.
                 </Trans>
               </CoverP>
             </CoverContent>
@@ -220,13 +119,12 @@ export default function Home() {
           <CoverContainer>
             <CoverContent>
               <CoverH1>
-                <Trans>{'Governance'}</Trans>
+                <Trans>Governance</Trans>
               </CoverH1>
               <CoverP>
                 <Trans>
-                  {
-                    'Fee rate and investable cryptos are determined by voting. You can vote with governance token and increase governance token by staking'
-                  }
+                  Fee rate and investable cryptos are determined by voting. You can vote with governance token and
+                  increase governance token by staking
                 </Trans>
               </CoverP>
 
@@ -237,10 +135,10 @@ export default function Home() {
                     big={true}
                     dark={true}
                     fontBig={true}
-                    marginRight={'15px'}
+                    marginRight="15px"
                     onClick={() => navigate(`/staking`)}
                   >
-                    <Trans>{'Staking'}</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
+                    <Trans>Staking</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
                   </Button>
                   <Button
                     primary={true}
@@ -251,7 +149,7 @@ export default function Home() {
                       window.open(VOTE_URL)
                     }}
                   >
-                    <Trans>{'Governance'}</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
+                    <Trans>Governance</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
                   </Button>
                 </RowBetween>
               </CoverBtnWrapper>

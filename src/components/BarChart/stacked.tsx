@@ -5,7 +5,6 @@ import { RowBetween } from 'components/Row'
 import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import { BarChart as BarChartIcon } from 'react-feather'
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { getEtherscanLink } from 'utils'
@@ -35,7 +34,7 @@ const BarChartIconComponent = styled(BarChartIcon)`
   ${IconStyle}
 `
 
-export type BarChartProps = {
+type BarChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined
@@ -47,20 +46,9 @@ export type BarChartProps = {
   bottomRight?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({
-  data,
-  color = '#56B2A4',
-  color2 = '#1E90FF',
-  setIndex,
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
-  ...rest
-}: BarChartProps) => {
+const Chart = ({ data, color = '#56B2A4', color2 = '#1E90FF', setIndex, topLeft, topRight }: BarChartProps) => {
   const theme = useTheme()
   const { chainId } = useWeb3React()
-  const [activeNetwork] = useActiveNetworkVersion()
 
   const isEmptyData = !data || data.length === 0
 
@@ -91,7 +79,7 @@ const Chart = ({
       </RowBetween>
       <ResponsiveContainer width="100%" height="100%">
         {isEmptyData ? (
-          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop="80px">
             <BarChartIconComponent strokeWidth={1} />
             <div>
               <Trans>No token data</Trans>
@@ -121,7 +109,7 @@ const Chart = ({
               onClick={(data: any) => {
                 console.log(data)
                 if (chainId) {
-                  const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
+                  const link = getEtherscanLink(chainId, data.token, 'address')
                   window.open(link)
                 }
               }}
@@ -135,7 +123,7 @@ const Chart = ({
               onClick={(data: any) => {
                 console.log(data)
                 if (chainId) {
-                  const link = getEtherscanLink(chainId, data.token, 'address', activeNetwork)
+                  const link = getEtherscanLink(chainId, data.token, 'address')
                   window.open(link)
                 }
               }}

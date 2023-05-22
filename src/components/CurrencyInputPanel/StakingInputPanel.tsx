@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
@@ -35,15 +34,11 @@ interface StakingInputPanelProps {
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
   hideBalance?: boolean
-  pair?: Pair | null
   hideInput?: boolean
   otherCurrency?: Currency | null
   fiatValue?: CurrencyAmount<Token> | null
   priceImpact?: Percent
   id: string
-  showCommonBases?: boolean
-  showCurrencyAmount?: boolean
-  disableNonToken?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   loading?: boolean
@@ -54,18 +49,12 @@ export default function StakingInputPanel({
   onUserInput,
   onMax,
   showMaxButton,
-  onCurrencySelect,
   currency,
-  otherCurrency,
   id,
-  showCommonBases,
-  showCurrencyAmount,
-  disableNonToken,
   renderBalance,
   fiatValue,
   priceImpact,
   hideBalance = false,
-  pair = null, // used for double token logo
   hideInput = false,
   locked = false,
   loading = false,

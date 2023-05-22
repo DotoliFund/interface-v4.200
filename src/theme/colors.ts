@@ -3,7 +3,7 @@
 import { Color } from './styled'
 import { opacify } from './utils'
 
-export interface GlobalPalette {
+interface GlobalPalette {
   white: Color
   black: Color
   gray50: Color
@@ -168,7 +168,7 @@ export const colors: GlobalPalette = {
   networkEthereumSoft: 'rgba(98, 126, 234, 0.16)',
 }
 
-export interface Palette {
+interface Palette {
   userThemeColor: Color
 
   backgroundBackdrop: Color

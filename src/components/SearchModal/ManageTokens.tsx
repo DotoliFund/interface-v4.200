@@ -78,9 +78,9 @@ export default function ManageTokens({
       userAddedTokens.map((token) => (
         <RowBetween key={token.address} width="100%">
           <RowFixed>
-            <CurrencyLogo currency={token} size={'20px'} />
+            <CurrencyLogo currency={token} size="20px" />
             <ExternalLink href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)}>
-              <ThemedText.DeprecatedMain ml={'10px'} fontWeight={600}>
+              <ThemedText.DeprecatedMain ml="10px" fontWeight={600}>
                 {token.symbol}
               </ThemedText.DeprecatedMain>
             </ExternalLink>
@@ -102,7 +102,7 @@ export default function ManageTokens({
             <SearchInput
               type="text"
               id="token-search-input"
-              placeholder={'0x0000'}
+              placeholder="0x0000"
               value={searchQuery}
               autoComplete="off"
               ref={inputRef as RefObject<HTMLInputElement>}

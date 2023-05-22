@@ -103,7 +103,7 @@ const DetailsSwapSection = styled(SwapSection)`
   border-top-right-radius: 0;
 `
 
-export function getIsValidSwapQuote(
+function getIsValidSwapQuote(
   trade: InterfaceTrade<Currency, Currency, TradeType> | undefined,
   tradeState: TradeState,
   swapInputError?: ReactNode
@@ -155,7 +155,7 @@ export default function Swap() {
       urlLoadedTokens &&
       urlLoadedTokens
         .filter((token: Token) => {
-          return !Boolean(token.address in defaultTokens)
+          return !(token.address in defaultTokens)
         })
         .filter((token: Token) => {
           // Any token addresses that are loaded from the shorthands map do not need to show the import URL
@@ -225,19 +225,13 @@ export default function Swap() {
     [fiatValueInput, fiatValueOutput, routeIsSyncing]
   )
 
-  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+  const { onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(Field.INPUT, value)
-    },
-    [onUserInput]
-  )
-  const handleTypeOutput = useCallback(
-    (value: string) => {
-      onUserInput(Field.OUTPUT, value)
     },
     [onUserInput]
   )
@@ -321,7 +315,7 @@ export default function Swap() {
           ),
         })
       })
-      .catch((error) => {
+      .catch(() => {
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,

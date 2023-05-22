@@ -17,7 +17,7 @@ import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { Token as WhiteListToken } from 'types/fund'
 
-import { useActiveTokens, useIsUserAddedToken, useToken } from '../../hooks/Tokens'
+import { useIsUserAddedToken, useToken } from '../../hooks/Tokens'
 import { CloseIcon, ThemedText } from '../../theme'
 import { isAddress } from '../../utils'
 import Column from '../Column'
@@ -61,7 +61,6 @@ export function WalletWhiteListCurrencyList({
   selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
-  showCommonBases,
   showCurrencyAmount,
   disableNonToken,
 }: WalletWhiteListCurrencyListProps) {
@@ -70,13 +69,13 @@ export function WalletWhiteListCurrencyList({
 
   const whiteListTokensInfo = useWhiteListTokens()
   const whiteListTokensData: WhiteListToken[] = whiteListTokensInfo.data
-  const whiteListTokenAddresses = whiteListTokensData.map((data, index) => {
+  const whiteListTokenAddresses = whiteListTokensData.map((data) => {
     return data.address
   })
 
   const whiteListTokens: Token[] = useMemo(() => {
     if (chainId && whiteListTokensData && whiteListTokensData.length > 0) {
-      const tokens: Token[] = whiteListTokensData.map((data, index) => {
+      const tokens: Token[] = whiteListTokensData.map((data) => {
         const token: string = data.address
         const decimals = Number(data.decimals)
         const symbol: string = data.symbol
@@ -95,9 +94,6 @@ export function WalletWhiteListCurrencyList({
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
-
-  // Only display 'imported' tokens when the search filter has input
-  const defaultTokens = useActiveTokens(debouncedQuery.length > 0)
 
   // if they input an address, use it
   const isAddressSearch = isAddress(debouncedQuery)
@@ -252,7 +248,7 @@ export function WalletWhiteListCurrencyList({
           <AutoSizer disableWidth>
             {({ height }) => (
               <CurrencyList
-                height={height}
+                height={height ? height : 0}
                 currencies={searchCurrencies}
                 otherListTokens={undefined}
                 onCurrencySelect={handleCurrencySelect}

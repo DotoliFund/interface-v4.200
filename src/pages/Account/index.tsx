@@ -3,10 +3,9 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { ButtonGray, ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FundList from 'components/FundList'
-import { NewMenu } from 'components/Menu'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { DOTOLI_INFO_ADDRESSES } from 'constants/addresses'
@@ -18,7 +17,6 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Inbox } from 'react-feather'
 import { useTransactionAdder } from 'state/transactions/hooks'
-import { useUserHideClosedFunds } from 'state/user/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { FundDetails } from 'types/fund'
@@ -58,38 +56,6 @@ const ButtonRow = styled(RowFixed)`
     flex-direction: row-reverse;
   `};
 `
-const Menu = styled(NewMenu)`
-  margin-left: 0;
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
-    flex: 1 1 auto;
-    width: 49%;
-    right: 0px;
-  `};
-  a {
-    width: 100%;
-  }
-`
-const MenuItem = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-weight: 500;
-`
-
-const MoreOptionsButton = styled(ButtonGray)`
-  border-radius: 12px;
-  flex: 1 1 auto;
-  padding: 6px 8px;
-  width: 100%;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
-  margin-right: 8px;
-`
-
-const MoreOptionsText = styled(ThemedText.DeprecatedBody)`
-  align-items: center;
-  display: flex;
-`
 
 export const ErrorContainer = styled.div`
   align-items: center;
@@ -125,7 +91,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
   `};
 `
 
-export const MainContentWrapper = styled.main`
+const MainContentWrapper = styled.main`
   background-color: ${({ theme }) => theme.deprecated_bg0};
   padding: 8px;
   border-radius: 20px;
@@ -159,8 +125,8 @@ function WrongNetworkCard() {
       <PageWrapper>
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
-            <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
-              <ThemedText.DeprecatedBody fontSize={'20px'}>
+            <TitleRow style={{ marginTop: '1rem' }} padding="0">
+              <ThemedText.DeprecatedBody fontSize="20px">
                 <Trans>My Account</Trans>
               </ThemedText.DeprecatedBody>
             </TitleRow>
@@ -187,7 +153,6 @@ export default function Account() {
   const { account, chainId, provider } = useWeb3React()
   const DotoliInfoContract = useDotoliInfoContract()
   const theme = useTheme()
-  const [userHideClosedFunds, setUserHideClosedFunds] = useUserHideClosedFunds()
 
   const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
     DotoliInfoContract,
@@ -260,8 +225,8 @@ export default function Account() {
     }
   }, [investingFundsLoading, managingFund, investingFunds, provider, account])
 
-  const [attemptingTxn, setAttemptingTxn] = useState(false)
-  const [txnHash, setTxnHash] = useState<string | undefined>()
+  // const [attemptingTxn, setAttemptingTxn] = useState(false)
+  // const [txnHash, setTxnHash] = useState<string | undefined>()
   const addTransaction = useTransactionAdder()
 
   if (!isSupportedChain(chainId)) {
@@ -289,8 +254,8 @@ export default function Account() {
           .getSigner()
           .sendTransaction(newTxn)
           .then((response: TransactionResponse) => {
-            setTxnHash(response.hash)
-            setAttemptingTxn(false)
+            // setTxnHash(response.hash)
+            // setAttemptingTxn(false)
             addTransaction(response, {
               type: TransactionType.CREATE_FUND,
               manager: account,
@@ -312,8 +277,8 @@ export default function Account() {
         <PageWrapper>
           <AutoColumn gap="lg" justify="center">
             <AutoColumn gap="lg" style={{ width: '100%' }}>
-              <TitleRow padding={'0'}>
-                <ThemedText.DeprecatedBody fontSize={'20px'}>
+              <TitleRow padding="0">
+                <ThemedText.DeprecatedBody fontSize="20px">
                   <Trans>My Account</Trans>
                 </ThemedText.DeprecatedBody>
                 <ButtonRow>

@@ -61,15 +61,14 @@ export function FundCurrencyList({
   const investor = params.investor
 
   const DotoliInfoContract = useDotoliInfoContract()
-  const { loading: getInvestorTokensLoading, result: [getInvestorTokens] = [] } = useSingleCallResult(
-    DotoliInfoContract,
-    'getInvestorTokens',
-    [fundId ?? undefined, investor ?? undefined]
-  )
+  const { result: [getInvestorTokens] = [] } = useSingleCallResult(DotoliInfoContract, 'getInvestorTokens', [
+    fundId ?? undefined,
+    investor ?? undefined,
+  ])
   const investorTokenInfo: FundToken[] = getInvestorTokens
   const investorTokensAddresses: string[] = useMemo(() => {
     if (investorTokenInfo && investorTokenInfo.length > 0) {
-      return investorTokenInfo.map((data, index) => {
+      return investorTokenInfo.map((data) => {
         return data.token
       })
     } else {
@@ -207,7 +206,7 @@ export function FundCurrencyList({
           <AutoSizer disableWidth>
             {({ height }) => (
               <InvestorCurrecyList
-                height={height}
+                height={height ? height : 0}
                 currencies={searchCurrencies}
                 otherListTokens={undefined}
                 onCurrencySelect={handleCurrencySelect}

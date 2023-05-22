@@ -5,16 +5,15 @@ import { useWeb3React } from '@web3-react/core'
 import useInvestorCurrencyBalance from 'hooks/useInvestorCurrencyBalance'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
-import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppState } from '../index'
-import { Field, replaceWithdrawState, selectCurrency, setRecipient, typeInput } from './actions'
+import { Field, selectCurrency, setRecipient, typeInput } from './actions'
 import { WithdrawState } from './reducer'
 
 export function useWithdrawState(): AppState['withdraw'] {
@@ -202,32 +201,4 @@ export function queryParametersToWithdrawState(parsedQs: ParsedQs): WithdrawStat
     typedValue,
     recipient,
   }
-}
-
-// updates the withdraw state to use the defaults for a given network
-export function useDefaultsFromURLSearch(): WithdrawState {
-  const { chainId } = useWeb3React()
-  const dispatch = useAppDispatch()
-  const parsedQs = useParsedQueryString()
-
-  const parsedWithdrawState = useMemo(() => {
-    return queryParametersToWithdrawState(parsedQs)
-  }, [parsedQs])
-
-  useEffect(() => {
-    if (!chainId) return
-    const inputCurrencyId = parsedWithdrawState[Field.INPUT].currencyId ?? undefined
-
-    dispatch(
-      replaceWithdrawState({
-        typedValue: parsedWithdrawState.typedValue,
-        inputCurrencyId,
-        recipient: parsedWithdrawState.recipient,
-      })
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId])
-
-  return parsedWithdrawState
 }

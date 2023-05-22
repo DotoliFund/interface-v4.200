@@ -39,7 +39,7 @@ const BarChartIconComponent = styled(BarChartIcon)`
   ${IconStyle}
 `
 
-export type BarChartProps = {
+type BarChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined
@@ -51,17 +51,7 @@ export type BarChartProps = {
   bottomRight?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({
-  data,
-  color = '#56B2A4',
-  setIndex,
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
-  minHeight = DEFAULT_HEIGHT,
-  ...rest
-}: BarChartProps) => {
+const Chart = ({ data, color = '#56B2A4', setIndex, topLeft, topRight }: BarChartProps) => {
   const theme = useTheme()
   const isEmptyData = !data || data.length === 0
 
@@ -93,7 +83,7 @@ const Chart = ({
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           {isEmptyData ? (
-            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop="80px">
               <BarChartIconComponent strokeWidth={1} />
               <div>
                 <Trans>No volume data</Trans>

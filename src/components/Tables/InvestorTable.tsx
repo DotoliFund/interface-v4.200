@@ -66,7 +66,7 @@ const SORT_FIELD = {
   timestamp: 'time',
 }
 
-const DataRow = ({ investor, color }: { investor: Investor; color?: string }) => {
+const DataRow = ({ investor }: { investor: Investor; color?: string }) => {
   return (
     <LinkWrapper to={'/fund/' + investor.fundId + '/' + investor.investor}>
       <ResponsiveGrid>

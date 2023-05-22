@@ -389,7 +389,7 @@ export default function FundAccount() {
 
   const positionTokens: [Token | undefined, Token | undefined, FeeAmount | undefined][] = useMemo(() => {
     if (chainId && openPositions && openPositions.length > 0) {
-      return openPositions.map((data, index) => {
+      return openPositions.map((data) => {
         const token0: string = data.token0
         const token1: string = data.token1
         const fee: number = data.fee
@@ -512,7 +512,7 @@ export default function FundAccount() {
       })
 
       // 2. get pool tokens
-      poolTokensAmountUSD.map((data, index) => {
+      poolTokensAmountUSD.map((data) => {
         const token = data[0].currency
         const tokenAddress = token.address
         const symbol = token.symbol ? token.symbol : 'Unknown'
@@ -550,27 +550,27 @@ export default function FundAccount() {
 
   if (formattedVolumeChart && formattedVolumeChart.length > 1 && formattedLatestTokens) {
     let totalCurrentAmountUSD = 0
-    currentTokensAmountUSD.map((value, index) => {
+    currentTokensAmountUSD.map((value) => {
       const tokenAmountUSD = value[1]
       totalCurrentAmountUSD += tokenAmountUSD
       return undefined
     })
     let totalPoolAmountUSD = 0
-    poolTokensAmountUSD.map((value, index) => {
+    poolTokensAmountUSD.map((value) => {
       const tokenAmountUSD = value[1]
       totalPoolAmountUSD += tokenAmountUSD
       return undefined
     })
 
-    const tokens = formattedLatestTokens.map((data, index) => {
+    const tokens = formattedLatestTokens.map((data) => {
       return data.token
     })
 
-    const symbols = formattedLatestTokens.map((data, index) => {
+    const symbols = formattedLatestTokens.map((data) => {
       return data.symbol
     })
 
-    const tokensVolume = formattedLatestTokens.map((data, index) => {
+    const tokensVolume = formattedLatestTokens.map((data) => {
       return data.current + data.pool
     })
 
@@ -612,7 +612,7 @@ export default function FundAccount() {
       })
     } else {
       if (formattedLatestTokens) {
-        return formattedLatestTokens.map((data, index) => {
+        return formattedLatestTokens.map((data) => {
           return {
             token: data.token,
             symbol: data.symbol,
@@ -678,8 +678,8 @@ export default function FundAccount() {
     !account ? (
       <ButtonPrimary
         $borderRadius="12px"
-        margin={'6px'}
-        padding={'12px'}
+        margin="6px"
+        padding="12px"
         data-testid="navbar-connect-wallet"
         onClick={toggleWalletModal}
       >
@@ -694,7 +694,7 @@ export default function FundAccount() {
             <ButtonPrimary
               $borderRadius="12px"
               mr="12px"
-              padding={'12px'}
+              padding="12px"
               onClick={() => {
                 navigate(`/swap/${currentPageFund}/${investor}`)
               }}
@@ -723,7 +723,7 @@ export default function FundAccount() {
         <ButtonPrimary
           $borderRadius="12px"
           mr="12px"
-          padding={'12px'}
+          padding="12px"
           onClick={() => {
             navigate(`/swap/${currentPageFund}/${investor}`)
           }}
@@ -738,7 +738,7 @@ export default function FundAccount() {
         <ButtonPrimary
           $borderRadius="12px"
           mr="12px"
-          padding={'12px'}
+          padding="12px"
           onClick={() => {
             navigate(`/deposit/${currentPageFund}/${investor}`)
           }}
@@ -750,7 +750,7 @@ export default function FundAccount() {
         <ButtonPrimary
           $borderRadius="12px"
           mr="12px"
-          padding={'12px'}
+          padding="12px"
           onClick={() => {
             navigate(`/withdraw/${currentPageFund}/${investor}`)
           }}
@@ -793,7 +793,7 @@ export default function FundAccount() {
               </AutoRow>
             </RowBetween>
             <ResponsiveRow align="flex-end">
-              <ExternalLink href={getEtherscanLink(chainId, investorData.investor, 'address', activeNetwork)}>
+              <ExternalLink href={getEtherscanLink(chainId, investorData.investor, 'address')}>
                 <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
                   {investorData.isManager ? <Trans>Manager </Trans> : <Trans>Investor </Trans>} :{' '}
                   {shortenAddress(investorData.investor)}
@@ -863,7 +863,7 @@ export default function FundAccount() {
                     topRight={
                       <AutoColumn gap="4px" justify="end">
                         <AutoRow justify="end">
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#ff1a75'}>
+                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color="#ff1a75">
                             <MonoSpace>
                               {formatDollarAmount(
                                 volumeIndexHover !== undefined
@@ -875,7 +875,7 @@ export default function FundAccount() {
                             </MonoSpace>
                           </ThemedText.DeprecatedMediumHeader>
                           &nbsp;&nbsp;
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#3377ff'}>
+                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color="#3377ff">
                             <MonoSpace>
                               {formatDollarAmount(
                                 volumeIndexHover !== undefined
@@ -887,7 +887,7 @@ export default function FundAccount() {
                             </MonoSpace>
                           </ThemedText.DeprecatedMediumHeader>
                           &nbsp;&nbsp;
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color={'#99FF99'}>
+                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color="#99FF99">
                             <MonoSpace>
                               {formatDollarAmount(
                                 principalHover !== undefined
@@ -899,7 +899,7 @@ export default function FundAccount() {
                             </MonoSpace>
                           </ThemedText.DeprecatedMediumHeader>
                         </AutoRow>
-                        <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
+                        <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb="30px">
                           {volumeIndexHover !== undefined ? (
                             <MonoSpace>
                               {unixToDate(Number(formattedVolumeChart[volumeIndexHover].time))} (
@@ -976,7 +976,7 @@ export default function FundAccount() {
                           formattedLatestTokens &&
                           formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#ff1a75'}>
+                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#ff1a75">
                                 <MonoSpace>
                                   {formatAmount(formattedLatestTokens[tokenIndexHover].currentAmount)}
                                 </MonoSpace>
@@ -990,7 +990,7 @@ export default function FundAccount() {
                             </>
                           ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#ff1a75'}>
+                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#ff1a75">
                                 <MonoSpace>{formatAmount(formattedLatestTokens[0].currentAmount)}</MonoSpace>
                               </ThemedText.DeprecatedMediumHeader>
                               <ThemedText.DeprecatedMain fontSize="20px">
@@ -1004,7 +1004,7 @@ export default function FundAccount() {
                           formattedLatestTokens &&
                           formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#3377ff'}>
+                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#3377ff">
                                 <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].poolAmount)}</MonoSpace>
                               </ThemedText.DeprecatedMediumHeader>
                               <ThemedText.DeprecatedMain fontSize="20px">
@@ -1016,7 +1016,7 @@ export default function FundAccount() {
                             </>
                           ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color={'#3377ff'}>
+                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#3377ff">
                                 <MonoSpace>{formatAmount(formattedLatestTokens[0].poolAmount)}</MonoSpace>
                               </ThemedText.DeprecatedMediumHeader>
                               <ThemedText.DeprecatedMain fontSize="20px">
@@ -1031,7 +1031,7 @@ export default function FundAccount() {
                 ) : null}
               </DarkGreyCard>
             </ContentLayout>
-            <TitleRow mt={'16px'}>
+            <TitleRow mt="16px">
               <ThemedText.DeprecatedMain fontSize="24px">
                 <Trans>Positions</Trans>
               </ThemedText.DeprecatedMain>
@@ -1076,7 +1076,7 @@ export default function FundAccount() {
                 </ErrorContainer>
               )}
             </MainContentWrapper>
-            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Transactions</Trans>
             </ThemedText.DeprecatedMain>
             <DarkGreyCard>
@@ -1088,7 +1088,7 @@ export default function FundAccount() {
                 </LoadingRows>
               )}
             </DarkGreyCard>
-            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Liquidity Transactions</Trans>
             </ThemedText.DeprecatedMain>
             <DarkGreyCard>
@@ -1103,7 +1103,7 @@ export default function FundAccount() {
           </AutoColumn>
         ) : (
           <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>
-            <ClipLoader color={'#ffffff'} loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
+            <ClipLoader color="#ffffff" loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
           </div>
         )}
       </PageWrapper>

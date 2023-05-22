@@ -7,7 +7,6 @@ import AssetLogo from 'components/Logo/AssetLogo'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink } from 'theme'
 import { Token } from 'types/fund'
@@ -58,17 +57,12 @@ const SORT_FIELD = {
 
 const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
   const { chainId } = useWeb3React()
-  const [activeNetwork] = useActiveNetworkVersion()
 
   return (
     <ResponsiveGrid>
       <Label>{index + 1}</Label>
       <Label end={1} fontWeight={400}>
-        <AssetLogo isNative={false} chainId={chainId} address={tokenData.address} symbol={tokenData.symbol} />
-        {tokenData.symbol}
-      </Label>
-      <Label end={1} fontWeight={400}>
-        <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address', activeNetwork)}>
+        <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address')}>
           {tokenData.address}
         </ExternalLink>
       </Label>

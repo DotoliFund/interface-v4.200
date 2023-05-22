@@ -153,7 +153,7 @@ export const TransactionHistoryMenu = ({ onClose }: { onClose: () => void }) => 
       <Divider />
       {transactionGroupsInformation.length > 0 ? (
         <>
-          {transactionGroupsInformation.map((transactionInformation, index) => (
+          {transactionGroupsInformation.map((transactionInformation) => (
             <TransactionList key={transactionInformation.title} transactionInformation={transactionInformation} />
           ))}
         </>

@@ -8,7 +8,6 @@ import { RowFixed } from 'components/Row'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useActiveNetworkVersion } from 'state/application/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 import { LiquidityTransaction, LiquidityTransactionType } from 'types/fund'
@@ -91,12 +90,11 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
   const { chainId } = useWeb3React()
   const abs0 = Math.abs(transaction.amount0)
   const abs1 = Math.abs(transaction.amount1)
-  const [activeNetwork] = useActiveNetworkVersion()
   const theme = useTheme()
 
   return (
     <ResponsiveGrid>
-      <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction', activeNetwork)}>
+      <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction')}>
         <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
           {transaction.type === LiquidityTransactionType.MINT ? (
             <Trans>
@@ -130,7 +128,7 @@ const DataRow = ({ transaction, color }: { transaction: LiquidityTransaction; co
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
-          href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address', activeNetwork)}
+          href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address')}
           style={{ color: color ?? theme.deprecated_blue1 }}
         >
           {shortenAddress(transaction.sender)}
