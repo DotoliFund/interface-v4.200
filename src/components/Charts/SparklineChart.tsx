@@ -1,11 +1,19 @@
-import { loadingAnimation } from 'components/Loader/styled'
 import { curveCardinal, scaleLinear } from 'd3'
 import { SparklineMap, TopToken } from 'graphql/data/TopTokens'
 import { lighten } from 'polished'
 import { memo } from 'react'
-import styled, { useTheme } from 'styled-components/macro'
+import styled, { useTheme, keyframes } from 'styled-components/macro'
 
 import LineChart from './LineChart'
+
+const loadingAnimation = keyframes`
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+`
 
 type PricePoint = { timestamp: number; value: number }
 

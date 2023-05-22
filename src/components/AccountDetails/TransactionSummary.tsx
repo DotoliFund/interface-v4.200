@@ -83,10 +83,6 @@ function ClaimSummary({ info: { recipient, uniAmountRaw } }: { info: ClaimTransa
   )
 }
 
-function SubmitProposalTransactionSummary() {
-  return <Trans>Submit new proposal</Trans>
-}
-
 function ApprovalSummary({ info }: { info: ApproveTransactionInfo }) {
   const token = useToken(info.tokenAddress)
 
@@ -138,16 +134,6 @@ function WrapSummary({ info: { chainId, currencyAmountRaw, unwrapped } }: { info
       </Trans>
     )
   }
-}
-
-function DepositLiquidityStakingSummary() {
-  // not worth rendering the tokens since you can should no longer deposit liquidity in the staking contracts
-  // todo: deprecate and delete the code paths that allow this, show user more information
-  return <Trans>Deposit liquidity</Trans>
-}
-
-function WithdrawLiquidityStakingSummary() {
-  return <Trans>Withdraw deposited liquidity</Trans>
 }
 
 function MigrateLiquidityToV3Summary({
@@ -329,12 +315,6 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
     case TransactionType.CLAIM:
       return <ClaimSummary info={info} />
 
-    case TransactionType.DEPOSIT_LIQUIDITY_STAKING:
-      return <DepositLiquidityStakingSummary />
-
-    case TransactionType.WITHDRAW_LIQUIDITY_STAKING:
-      return <WithdrawLiquidityStakingSummary />
-
     case TransactionType.SWAP:
       return <SwapSummary info={info} />
 
@@ -364,9 +344,6 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
 
     case TransactionType.EXECUTE:
       return <ExecuteSummary info={info} />
-
-    case TransactionType.SUBMIT_PROPOSAL:
-      return <SubmitProposalTransactionSummary />
 
     case TransactionType.DEPOSIT:
       return <DepositSummary info={info} />

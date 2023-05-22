@@ -9,7 +9,6 @@ export {
   default as useCurrencyBalance,
   useCurrencyBalances,
   useCurrencyBalanceString,
-  useNativeCurrencyBalances,
   useTokenBalance,
 } from 'lib/hooks/useCurrencyBalance'
 

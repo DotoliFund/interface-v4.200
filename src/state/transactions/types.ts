@@ -86,18 +86,6 @@ export interface ExactOutputSwapTransactionInfo extends BaseSwapTransactionInfo 
   maximumInputCurrencyAmountRaw: string
 }
 
-export interface DepositLiquidityStakingTransactionInfo {
-  type: TransactionType.DEPOSIT_LIQUIDITY_STAKING
-  token0Address: string
-  token1Address: string
-}
-
-export interface WithdrawLiquidityStakingTransactionInfo {
-  type: TransactionType.WITHDRAW_LIQUIDITY_STAKING
-  token0Address: string
-  token1Address: string
-}
-
 export interface WrapTransactionInfo {
   type: TransactionType.WRAP
   unwrapped: boolean
@@ -158,10 +146,6 @@ export interface RemoveLiquidityV3TransactionInfo {
   expectedAmountQuoteRaw: string
 }
 
-export interface SubmitProposalTransactionInfo {
-  type: TransactionType.SUBMIT_PROPOSAL
-}
-
 export interface DepositTransactionInfo {
   type: TransactionType.DEPOSIT
   tokenAddress: string
@@ -199,8 +183,6 @@ export type TransactionInfo =
   | QueueTransactionInfo
   | ExecuteTransactionInfo
   | DelegateTransactionInfo
-  | DepositLiquidityStakingTransactionInfo
-  | WithdrawLiquidityStakingTransactionInfo
   | WrapTransactionInfo
   | CreateV3PoolTransactionInfo
   | AddLiquidityV3PoolTransactionInfo
@@ -208,7 +190,6 @@ export type TransactionInfo =
   | MigrateV2LiquidityToV3TransactionInfo
   | CollectFeesTransactionInfo
   | RemoveLiquidityV3TransactionInfo
-  | SubmitProposalTransactionInfo
   | DepositTransactionInfo
   | WithdrawTransactionInfo
   | FeeTransactionInfo
