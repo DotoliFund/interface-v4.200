@@ -42,13 +42,6 @@ export function sendAnalyticsEvent(eventName: string, eventProperties?: Record<s
   track(eventName, eventProperties)
 }
 
-/** Sends a draft event to Amplitude test project. */
-export function sendTestAnalyticsEvent(eventName: string, eventProperties?: Record<string, unknown>) {
-  if (isProductionEnv()) return
-
-  track(eventName, eventProperties)
-}
-
 type Value = string | number | boolean | string[] | number[]
 
 /**

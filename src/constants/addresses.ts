@@ -9,7 +9,6 @@ type AddressMap = { [chainId: number]: string }
 export const UNI_ADDRESS: AddressMap = constructSameAddressMap('0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984')
 
 export const V2_FACTORY_ADDRESSES: AddressMap = constructSameAddressMap(V2_FACTORY_ADDRESS)
-export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D')
 
 //mainnet
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -42,10 +41,6 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap(V3_FACTORY_ADDRESS, []),
 }
 
-export const V3_MIGRATOR_ADDRESSES: AddressMap = {
-  ...constructSameAddressMap('0xA5644E29708357803b5A882D272c41cC0dF92B34', []),
-}
-
 export const MULTICALL_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0x1F98415757620B543A52E61c46B32eB19261F984', []),
 }
@@ -53,27 +48,6 @@ export const MULTICALL_ADDRESS: AddressMap = {
 export const SWAP_ROUTER_ADDRESSES: AddressMap = {
   ...constructSameAddressMap('0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', []),
 }
-
-/**
- * The oldest V0 governance address
- */
-export const GOVERNANCE_ALPHA_V0_ADDRESSES: AddressMap = constructSameAddressMap(
-  '0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F'
-)
-/**
- * The older V1 governance address
- */
-export const GOVERNANCE_ALPHA_V1_ADDRESSES: AddressMap = {
-  [SupportedChainId.MAINNET]: '0xC4e172459f1E7939D522503B81AFAaC1014CE6F6',
-}
-/**
- * The latest governor bravo that is currently admin of timelock
- */
-export const GOVERNANCE_BRAVO_ADDRESSES: AddressMap = {
-  [SupportedChainId.MAINNET]: '0x408ED6354d4973f66138C91495F2f2FCbd8724C3',
-}
-
-export const TIMELOCK_ADDRESS: AddressMap = constructSameAddressMap('0x1a9C8182C09F50C8318d769245beA52c32BE35BC')
 
 export const MERKLE_DISTRIBUTOR_ADDRESS: AddressMap = {
   [SupportedChainId.MAINNET]: '0x090D4613473dEE047c3f2706764f49E0821D256e',

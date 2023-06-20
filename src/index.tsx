@@ -22,7 +22,7 @@ import ListsUpdater from './state/lists/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 
-if (!!window.ethereum) {
+if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 

@@ -258,7 +258,7 @@ export default function Fee() {
                   </RowFixed>
                 </RowBetween>
               </StyledFeeHeader>
-              <AutoColumn gap={'6px'}>
+              <AutoColumn gap="6px">
                 <div style={{ display: 'relative' }}>
                   <FeeSection>
                     <Trace section={SectionName.CURRENCY_INPUT_PANEL}>

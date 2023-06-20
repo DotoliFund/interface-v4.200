@@ -43,7 +43,7 @@ const formatAnalyticsEventProperties = ({ trade, hash, allowedSlippage, succeede
 })
 
 export default function Updater() {
-  const { account, chainId } = useWeb3React()
+  const { chainId } = useWeb3React()
   const addPopup = useAddPopup()
   // speed up popup dismisall time if on L2
   const isL2 = false

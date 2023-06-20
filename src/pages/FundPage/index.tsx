@@ -254,21 +254,21 @@ export default function FundPage() {
     formattedLatestTokens.length > 0
   ) {
     let totalCurrentAmountUSD = 0
-    currentTokensAmountUSD.map((value, index) => {
+    currentTokensAmountUSD.map((value) => {
       const tokenAmountUSD = value[1]
       totalCurrentAmountUSD += tokenAmountUSD
       return null
     })
 
-    const tokens = formattedLatestTokens.map((data, index) => {
+    const tokens = formattedLatestTokens.map((data) => {
       return data.token
     })
 
-    const symbols = formattedLatestTokens.map((data, index) => {
+    const symbols = formattedLatestTokens.map((data) => {
       return data.symbol
     })
 
-    const tokensVolume = formattedLatestTokens.map((data, index) => {
+    const tokensVolume = formattedLatestTokens.map((data) => {
       return data.volume
     })
 
@@ -304,8 +304,8 @@ export default function FundPage() {
     navigate(`/fund/${fund}/${account}`)
   }
 
-  const [attemptingTxn, setAttemptingTxn] = useState(false)
-  const [txnHash, setTxnHash] = useState<string | undefined>()
+  // const [attemptingTxn, setAttemptingTxn] = useState(false)
+  // const [txnHash, setTxnHash] = useState<string | undefined>()
   const addTransaction = useTransactionAdder()
 
   async function onSubscribe() {
@@ -328,8 +328,8 @@ export default function FundPage() {
           .getSigner()
           .sendTransaction(newTxn)
           .then((response) => {
-            setTxnHash(response.hash)
-            setAttemptingTxn(false)
+            // setTxnHash(response.hash)
+            // setAttemptingTxn(false)
             addTransaction(response, {
               type: TransactionType.SUBSCRIBE,
               fundId: Number(currentPageFund),
@@ -350,8 +350,8 @@ export default function FundPage() {
     !account ? (
       <ButtonPrimary
         $borderRadius="12px"
-        margin={'6px'}
-        padding={'12px'}
+        margin="6px"
+        padding="12px"
         data-testid="navbar-connect-wallet"
         onClick={toggleWalletModal}
       >
@@ -362,8 +362,8 @@ export default function FundPage() {
     ) : (userIsManager || userIsInvestor) && currentPageFund ? (
       <ButtonPrimary
         $borderRadius="12px"
-        margin={'6px'}
-        padding={'12px'}
+        margin="6px"
+        padding="12px"
         onClick={() => onAccount(currentPageFund, account)}
       >
         <ThemedText.DeprecatedMain mb="4px">
@@ -371,7 +371,7 @@ export default function FundPage() {
         </ThemedText.DeprecatedMain>
       </ButtonPrimary>
     ) : (
-      <ButtonPrimary $borderRadius="12px" margin={'6px'} padding={'12px'} onClick={() => onSubscribe()}>
+      <ButtonPrimary $borderRadius="12px" margin="6px" padding="12px" onClick={() => onSubscribe()}>
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>Subscribe</Trans>
         </ThemedText.DeprecatedMain>
@@ -382,8 +382,8 @@ export default function FundPage() {
     account && userIsManager && currentPageFund ? (
       <ButtonPrimary
         $borderRadius="12px"
-        margin={'6px'}
-        padding={'12px'}
+        margin="6px"
+        padding="12px"
         data-testid="navbar-connect-wallet"
         onClick={() => {
           navigate(`/fee/${currentPageFund}`)
@@ -415,7 +415,7 @@ export default function FundPage() {
             <ResponsiveRow align="flex-end">
               <AutoColumn gap="lg">
                 <RowFixed>
-                  <ExternalLink href={getEtherscanLink(chainId, fundData.fundId, 'address', activeNetwork)}>
+                  <ExternalLink href={getEtherscanLink(chainId, fundData.fundId, 'address')}>
                     <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
                       <Trans>Fund :</Trans> {fundData.fundId}
                     </ThemedText.DeprecatedLabel>
@@ -495,7 +495,7 @@ export default function FundPage() {
                     }
                     topRight={
                       <AutoColumn gap="4px" justify="end">
-                        <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb={'30px'}>
+                        <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb="30px">
                           {volumeIndexHover !== undefined ? (
                             <MonoSpace>
                               {unixToDate(Number(formattedVolumeUSD[volumeIndexHover].time))} (
@@ -634,7 +634,7 @@ export default function FundPage() {
                 ) : null}
               </DarkGreyCard>
             </ContentLayout>
-            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Manager</Trans>
             </ThemedText.DeprecatedMain>
             <DarkGreyCard>
@@ -646,7 +646,7 @@ export default function FundPage() {
                 </LoadingRows>
               )}{' '}
             </DarkGreyCard>
-            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Investors</Trans>
             </ThemedText.DeprecatedMain>
             <DarkGreyCard>
@@ -658,7 +658,7 @@ export default function FundPage() {
                 </LoadingRows>
               )}{' '}
             </DarkGreyCard>
-            <ThemedText.DeprecatedMain mt={'16px'} fontSize="22px">
+            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Transactions</Trans>
             </ThemedText.DeprecatedMain>
             <DarkGreyCard>
@@ -673,7 +673,7 @@ export default function FundPage() {
           </AutoColumn>
         ) : (
           <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>
-            <ClipLoader color={'#ffffff'} loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
+            <ClipLoader color="#ffffff" loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
           </div>
         )}
       </PageWrapper>

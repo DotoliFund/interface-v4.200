@@ -9,7 +9,6 @@ import useStablecoinPrice from 'hooks/useStablecoinPrice'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useCallback, useMemo } from 'react'
 import { Copy, ExternalLink, Power } from 'react-feather'
-import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useCurrencyBalanceString } from 'state/connection/hooks'
 import { useAppDispatch } from 'state/hooks'
@@ -17,7 +16,7 @@ import { updateSelectedWallet } from 'state/user/reducer'
 import styled from 'styled-components/macro'
 
 import { shortenAddress } from '../../nft/utils/address'
-import { useCloseModal, useToggleModal } from '../../state/application/hooks'
+import { useToggleModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
 import { useUserHasAvailableClaim, useUserUnclaimedAmount } from '../../state/claim/hooks'
 import { ButtonPrimary } from '../Button'
@@ -31,12 +30,6 @@ const WalletButton = styled(ButtonPrimary)`
   margin-top: 12px;
   color: white;
   border: none;
-`
-
-const ProfileButton = styled(WalletButton)`
-  background: ${({ theme }) => theme.backgroundInteractive};
-  transition: ${({ theme }) => theme.transition.duration.fast} ${({ theme }) => theme.transition.timing.ease}
-    background-color;
 `
 
 const UNIButton = styled(WalletButton)`
@@ -107,8 +100,6 @@ const AuthenticatedHeader = () => {
     nativeCurrency: { symbol: nativeCurrencySymbol },
     explorer,
   } = getChainInfoOrDefault(chainId ? chainId : SupportedChainId.MAINNET)
-  const navigate = useNavigate()
-  const closeModal = useCloseModal(ApplicationModal.WALLET_DROPDOWN)
 
   const unclaimedAmount: CurrencyAmount<Token> | undefined = useUserUnclaimedAmount(account)
   const isUnclaimed = useUserHasAvailableClaim(account)
@@ -129,11 +120,6 @@ const AuthenticatedHeader = () => {
     const balance = parseFloat(balanceString || '0')
     return price * balance
   }, [balanceString, nativeCurrencyPrice])
-
-  const navigateToProfile = () => {
-    navigate('/profile')
-    closeModal()
-  }
 
   return (
     <AuthenticatedHeaderWrapper>

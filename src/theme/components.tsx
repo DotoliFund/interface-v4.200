@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { outboundLink } from 'components/analytics'
-import { MOBILE_MEDIA_BREAKPOINT } from 'components/Tokens/constants'
 import useCopyClipboard from 'hooks/useCopyClipboard'
 import React, { forwardRef, HTMLProps, ReactNode, useCallback, useImperativeHandle, useState } from 'react'
 import {
@@ -19,6 +18,8 @@ import { Z_INDEX } from 'theme/zIndex'
 import { ReactComponent as TooltipTriangle } from '../assets/svg/tooltip_triangle.svg'
 import { anonymizeLink } from '../utils/anonymizeLink'
 import { Color } from './styled'
+
+const MOBILE_MEDIA_BREAKPOINT = '420px'
 
 // TODO: Break this file into a components folder
 

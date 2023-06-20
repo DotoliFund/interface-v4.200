@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { Token } from 'types/fund'
 
-export const WHITELIST_TOKENS = () => {
+const WHITELIST_TOKENS = () => {
   const queryString = `
     query whiteListTokens {
       whiteListTokens(first: 100, orderBy: id, orderDirection: asc, where: { isWhiteListToken: true }, subgraphError: allow) {
@@ -18,7 +18,7 @@ export const WHITELIST_TOKENS = () => {
   return gql(queryString)
 }
 
-export interface WhiteListTokenFields {
+interface WhiteListTokenFields {
   id: string
   address: string
   decimals: string
@@ -58,7 +58,7 @@ export function useWhiteListTokens(): {
   }
 
   const formatted: Token[] = data
-    ? data.whiteListTokens.map((token, index) => {
+    ? data.whiteListTokens.map((token) => {
         const tokenData: Token = {
           address: token.address,
           decimals: token.decimals,

@@ -1,4 +1,4 @@
-import create from 'zustand'
+import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
 export enum SortBy {
@@ -18,15 +18,16 @@ export const SortByPointers = {
 export type Trait = {
   trait_type: string
   trait_value: string
-  trait_count: number
+  trait_count?: number
   floorPrice?: number
 }
 
 interface State {
   traits: Trait[]
+  hasRarity: boolean
   markets: string[]
-  minPrice: number | ''
-  maxPrice: number | ''
+  minPrice: string
+  maxPrice: string
   minRarity: number | ''
   maxRarity: number | ''
   marketCount: Record<string, number>
@@ -37,14 +38,15 @@ interface State {
 }
 
 type Actions = {
+  setHasRarity: (hasRarity: boolean) => void
   setMarketCount: (_: Record<string, number>) => void
   addMarket: (market: string) => void
   removeMarket: (market: string) => void
   addTrait: (trait: Trait) => void
   removeTrait: (trait: Trait) => void
   reset: () => void
-  setMinPrice: (price: number | '') => void
-  setMaxPrice: (price: number | '') => void
+  setMinPrice: (price: string) => void
+  setMaxPrice: (price: string) => void
   setMinRarity: (range: number | '') => void
   setMaxRarity: (range: number | '') => void
   setBuyNow: (bool: boolean) => void
@@ -61,9 +63,10 @@ export const initialCollectionFilterState: State = {
   minRarity: '',
   maxRarity: '',
   traits: [],
+  hasRarity: false,
   markets: [],
   marketCount: {},
-  buyNow: true,
+  buyNow: false,
   search: '',
   sortBy: SortBy.LowToHigh,
   showFullTraitName: { shouldShow: false, trait_value: '', trait_type: '' },
@@ -73,6 +76,7 @@ export const useCollectionFilters = create<CollectionFilters>()(
   devtools(
     (set) => ({
       ...initialCollectionFilterState,
+      setHasRarity: (hasRarity) => set({ hasRarity }),
       setSortBy: (sortBy) => set({ sortBy }),
       setSearch: (search) => set({ search }),
       setBuyNow: (buyNow) => set({ buyNow }),
@@ -84,7 +88,7 @@ export const useCollectionFilters = create<CollectionFilters>()(
         set(({ traits }) => ({
           traits: traits.filter((x) => JSON.stringify(x) !== JSON.stringify(trait)),
         })),
-      reset: () => set(() => ({ traits: [], minRarity: '', maxRarity: '', markets: [] })),
+      reset: () => set(() => ({ traits: [], minRarity: '', maxRarity: '', markets: [], minPrice: '', maxPrice: '' })),
       setMinPrice: (price) => set(() => ({ minPrice: price })),
       setMaxPrice: (price) => set(() => ({ maxPrice: price })),
       setMinRarity: (range) => set(() => ({ minRarity: range })),

@@ -86,31 +86,3 @@ export const COMMON_BASES: ChainCurrencyList = {
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI] as Token,
   ],
 }
-
-// used to construct the list of all pairs we consider by default in the frontend
-export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  ...WRAPPED_NATIVE_CURRENCIES_ONLY,
-  [SupportedChainId.MAINNET]: [
-    ...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.MAINNET],
-    DAI,
-    USDC_MAINNET,
-    USDT,
-    WBTC,
-  ],
-}
-export const PINNED_PAIRS: { readonly [chainId: number]: [Token, Token][] } = {
-  [SupportedChainId.MAINNET]: [
-    [
-      new Token(SupportedChainId.MAINNET, '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643', 8, 'cDAI', 'Compound Dai'),
-      new Token(
-        SupportedChainId.MAINNET,
-        '0x39AA39c021dfbaE8faC545936693aC917d5E7563',
-        8,
-        'cUSDC',
-        'Compound USD Coin'
-      ),
-    ],
-    [USDC_MAINNET, USDT],
-    [DAI, USDT],
-  ],
-}

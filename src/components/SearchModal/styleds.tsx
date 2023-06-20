@@ -11,19 +11,6 @@ export enum CurrencySearchType {
   ALL_WHITELIST_FUND_CURRENCY, // swap to
 }
 
-export const TextDot = styled.div`
-  height: 3px;
-  width: 3px;
-  background-color: ${({ theme }) => theme.deprecated_text2};
-  border-radius: 50%;
-`
-
-export const Checkbox = styled.input`
-  border: 1px solid ${({ theme }) => theme.deprecated_red3};
-  height: 20px;
-  margin: 0;
-`
-
 export const PaddedColumn = styled(AutoColumn)`
   padding: 20px;
 `
@@ -81,12 +68,6 @@ export const Separator = styled.div`
   width: 100%;
   height: 1px;
   background-color: ${({ theme }) => theme.backgroundOutline};
-`
-
-export const SeparatorDark = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.deprecated_bg3};
 `
 
 export const LoadingRows = styled(BaseLoadingRows)`

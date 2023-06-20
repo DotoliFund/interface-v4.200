@@ -14,13 +14,6 @@ const L2Icon = styled.img`
   margin-right: 16px;
 `
 
-export const Controls = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-start;
-  padding: 0 20px 20px 20px;
-`
-
 const BodyText = styled.div`
   color: ${({ color }) => color};
   display: flex;
@@ -36,7 +29,7 @@ const RootWrapper = styled.div`
 
 const SHOULD_SHOW_ALERT = {}
 
-export type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
+type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
 
 const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
   [darkMode in 'dark' | 'light']: { [chainId in NetworkAlertChains]: string }

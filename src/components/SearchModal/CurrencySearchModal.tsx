@@ -106,7 +106,6 @@ export default memo(function CurrencySearchModal({
             onCurrencySelect={handleCurrencySelect}
             selectedCurrency={selectedCurrency}
             otherSelectedCurrency={otherSelectedCurrency}
-            showCommonBases={showCommonBases}
             showCurrencyAmount={showCurrencyAmount}
             disableNonToken={disableNonToken}
           />

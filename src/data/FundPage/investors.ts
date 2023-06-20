@@ -25,7 +25,7 @@ const INVESTORS = gql`
   }
 `
 
-export interface InvestorFields {
+interface InvestorFields {
   id: string
   createdAtTimestamp: string
   updatedAtTimestamp: string
@@ -73,7 +73,7 @@ export function useInvestors(fundId: string | undefined): {
   }
 
   const investors: Investor[] = data
-    ? data.investors.map((investor, index) => {
+    ? data.investors.map((investor) => {
         const investorData: Investor = {
           id: investor.id,
           createdAtTimestamp: parseInt(investor.createdAtTimestamp),

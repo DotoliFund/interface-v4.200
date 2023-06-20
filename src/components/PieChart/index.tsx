@@ -32,12 +32,12 @@ const Wrapper = styled(Card)`
   }
 `
 
-export type PieChartProps = {
+type PieChartProps = {
   data: any[]
   topLeft?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({ data, topLeft }: PieChartProps) => {
+const Chart = ({ data }: PieChartProps) => {
   const theme = useTheme()
 
   const isEmptyData = !data || data.length === 0
@@ -71,7 +71,7 @@ const Chart = ({ data, topLeft }: PieChartProps) => {
     <Wrapper>
       <ResponsiveContainer width="100%" height="100%">
         {isEmptyData ? (
-          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
+          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop="80px">
             <PieChartIconComponent strokeWidth={1} />
             <div>
               <Trans>No tokens</Trans>

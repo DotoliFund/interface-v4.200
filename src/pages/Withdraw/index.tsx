@@ -96,7 +96,7 @@ export default function Withdraw() {
   const parsedAmounts = useMemo(() => ({ [Field.INPUT]: parsedAmount }), [parsedAmount])
   const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
 
-  const { onCurrencySelection, onUserInput, onChangeRecipient } = useWithdrawActionHandlers()
+  const { onCurrencySelection, onUserInput } = useWithdrawActionHandlers()
   const isValid = !withdrawInputError
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -165,7 +165,7 @@ export default function Withdraw() {
             // })
           })
       })
-      .catch((error) => {
+      .catch(() => {
         setAttemptingTxn(false)
         //setWithdrawErrorMessage(error.message)
         setWithdrawErrorMessage('Withdraw failed')
@@ -249,7 +249,7 @@ export default function Withdraw() {
                 </RowFixed>
               </RowBetween>
             </StyledWithdrawHeader>
-            <AutoColumn gap={'6px'}>
+            <AutoColumn gap="6px">
               <div style={{ display: 'relative' }}>
                 <WithdrawSection>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>

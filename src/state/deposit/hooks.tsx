@@ -3,17 +3,16 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
-import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { useCurrencyBalances } from '../connection/hooks'
 import { AppState } from '../index'
-import { Field, replaceDepositState, selectCurrency, setRecipient, typeInput } from './actions'
+import { Field, selectCurrency, setRecipient, typeInput } from './actions'
 import { DepositState } from './reducer'
 
 export function useDepositState(): AppState['deposit'] {
@@ -196,32 +195,4 @@ export function queryParametersToDepositState(parsedQs: ParsedQs): DepositState 
     typedValue,
     recipient,
   }
-}
-
-// updates the deposit state to use the defaults for a given network
-export function useDefaultsFromURLSearch(): DepositState {
-  const { chainId } = useWeb3React()
-  const dispatch = useAppDispatch()
-  const parsedQs = useParsedQueryString()
-
-  const parsedDepositState = useMemo(() => {
-    return queryParametersToDepositState(parsedQs)
-  }, [parsedQs])
-
-  useEffect(() => {
-    if (!chainId) return
-    const inputCurrencyId = parsedDepositState[Field.INPUT].currencyId ?? undefined
-
-    dispatch(
-      replaceDepositState({
-        typedValue: parsedDepositState.typedValue,
-        inputCurrencyId,
-        recipient: parsedDepositState.recipient,
-      })
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId])
-
-  return parsedDepositState
 }

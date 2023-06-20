@@ -19,7 +19,7 @@ const MANAGER_DATA = gql`
   }
 `
 
-export interface ManagerFields {
+interface ManagerFields {
   id: string
   createdAtTimestamp: string
   updatedAtTimestamp: string
@@ -67,7 +67,7 @@ export function useManagerData(fundId: string | undefined): {
   }
 
   const formatted: Manager[] | undefined = data
-    ? data.investors.map((investor, index) => {
+    ? data.investors.map((investor) => {
         const fundData: Manager = {
           id: investor.id,
           createdAtTimestamp: parseInt(investor.createdAtTimestamp),

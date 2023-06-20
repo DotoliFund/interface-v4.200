@@ -4,17 +4,16 @@ import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { FundToken } from 'types/fund'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
-import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppState } from '../index'
-import { Field, replaceFeeState, selectCurrency, setRecipient, typeInput } from './actions'
+import { Field, selectCurrency, setRecipient, typeInput } from './actions'
 import { FeeState } from './reducer'
 
 export function useFeeState(): AppState['fee'] {
@@ -193,32 +192,4 @@ export function queryParametersToFeeState(parsedQs: ParsedQs): FeeState {
     typedValue,
     recipient,
   }
-}
-
-// updates the fee state to use the defaults for a given network
-export function useDefaultsFromURLSearch(): FeeState {
-  const { chainId } = useWeb3React()
-  const dispatch = useAppDispatch()
-  const parsedQs = useParsedQueryString()
-
-  const parsedFeeState = useMemo(() => {
-    return queryParametersToFeeState(parsedQs)
-  }, [parsedQs])
-
-  useEffect(() => {
-    if (!chainId) return
-    const inputCurrencyId = parsedFeeState[Field.INPUT].currencyId ?? undefined
-
-    dispatch(
-      replaceFeeState({
-        typedValue: parsedFeeState.typedValue,
-        inputCurrencyId,
-        recipient: parsedFeeState.recipient,
-      })
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId])
-
-  return parsedFeeState
 }

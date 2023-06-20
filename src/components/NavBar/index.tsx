@@ -43,7 +43,7 @@ const PageTabs = () => {
       <MenuItem href="/overview" isActive={pathname.startsWith('/overview')}>
         <Trans>Overview</Trans>
       </MenuItem>
-      <MenuItem href={'/account'} isActive={pathname.startsWith('/account')}>
+      <MenuItem href="/account" isActive={pathname.startsWith('/account')}>
         <Trans>My Account</Trans>
       </MenuItem>
       <MenuItem href="/staking">

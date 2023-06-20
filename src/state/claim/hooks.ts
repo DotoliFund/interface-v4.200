@@ -1,4 +1,3 @@
-import { TransactionResponse } from '@ethersproject/providers'
 import { abi as MERKLE_DISTRIBUTOR_ABI } from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -10,9 +9,6 @@ import { useEffect, useState } from 'react'
 import { UNI } from '../../constants/tokens'
 import { useContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { calculateGasMargin } from '../../utils/calculateGasMargin'
-import { useTransactionAdder } from '../transactions/hooks'
-import { TransactionType } from '../transactions/types'
 
 function useMerkleDistributorContract() {
   return useContract(MERKLE_DISTRIBUTOR_ADDRESS, MERKLE_DISTRIBUTOR_ABI, true)
@@ -99,7 +95,7 @@ function fetchClaim(account: string): Promise<UserClaimData> {
 
 // parse distributorContract blob and detect if user has claim data
 // null means we know it does not
-export function useUserClaimData(account: string | null | undefined): UserClaimData | null {
+function useUserClaimData(account: string | null | undefined): UserClaimData | null {
   const { chainId } = useWeb3React()
 
   const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaimData | null }>({})
@@ -149,38 +145,4 @@ export function useUserUnclaimedAmount(account: string | null | undefined): Curr
     return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(0))
   }
   return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(userClaimData.amount))
-}
-
-export function useClaimCallback(account: string | null | undefined): {
-  claimCallback: () => Promise<string>
-} {
-  // get claim data for this account
-  const { provider, chainId } = useWeb3React()
-  const claimData = useUserClaimData(account)
-
-  // used for popup summary
-  const unclaimedAmount: CurrencyAmount<Token> | undefined = useUserUnclaimedAmount(account)
-  const addTransaction = useTransactionAdder()
-  const distributorContract = useMerkleDistributorContract()
-
-  const claimCallback = async function () {
-    if (!claimData || !account || !provider || !chainId || !distributorContract) return
-
-    const args = [claimData.index, account, claimData.amount, claimData.proof]
-
-    return distributorContract.estimateGas['claim'](...args, {}).then((estimatedGasLimit) => {
-      return distributorContract
-        .claim(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            type: TransactionType.CLAIM,
-            recipient: account,
-            uniAmountRaw: unclaimedAmount?.quotient.toString(),
-          })
-          return response.hash
-        })
-    })
-  }
-
-  return { claimCallback }
 }

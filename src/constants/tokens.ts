@@ -131,7 +131,7 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token } = {
   ...(WETH9 as Record<SupportedChainId, Token>),
 }
 
-export class ExtendedEther extends Ether {
+class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
     if (wrapped) return wrapped

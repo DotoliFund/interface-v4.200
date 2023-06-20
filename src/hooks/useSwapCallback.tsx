@@ -9,7 +9,6 @@ import { currencyId } from 'utils/currencyId'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { TransactionType } from '../state/transactions/types'
 import useENS from './useENS'
-import useTransactionDeadline from './useTransactionDeadline'
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
@@ -21,8 +20,6 @@ export function useSwapCallback(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: ReactNode | null } {
   const { account } = useWeb3React()
-
-  const deadline = useTransactionDeadline()
 
   const addTransaction = useTransactionAdder()
 

@@ -32,7 +32,7 @@ const BarChartIconComponent = styled(BarChartIcon)`
   ${IconStyle}
 `
 
-export type BarChartProps = {
+type BarChartProps = {
   data: any[]
   color?: string | undefined
   color2?: string | undefined
@@ -44,18 +44,7 @@ export type BarChartProps = {
   bottomRight?: ReactNode | undefined
 } & React.HTMLAttributes<HTMLDivElement>
 
-const Chart = ({
-  data,
-  color = '#56B2A4',
-  color2 = '#4A2B65',
-  setIndex,
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
-  minHeight = DEFAULT_HEIGHT,
-  ...rest
-}: BarChartProps) => {
+const Chart = ({ data, color = '#56B2A4', setIndex, topLeft, topRight, bottomLeft, bottomRight }: BarChartProps) => {
   const theme = useTheme()
   const isEmptyData = !data || data.length === 0
 
@@ -72,7 +61,7 @@ const Chart = ({
 
   return (
     <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
-      <RowBetween padding={'5sp'}>
+      <RowBetween padding="5sp">
         {isEmptyData ? null : (
           <>
             {topLeft ?? null}
@@ -80,34 +69,32 @@ const Chart = ({
           </>
         )}
       </RowBetween>
-      {
-        <ResponsiveContainer width="100%" height="100%">
-          {isEmptyData ? (
-            <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop={'80px'}>
-              <BarChartIconComponent strokeWidth={1} />
-              <div>
-                <Trans>No fee tokens</Trans>
-              </div>
-            </ThemedText.DeprecatedBody>
-          ) : (
-            <BarChart
-              width={500}
-              height={300}
-              data={data}
-              margin={{
-                top: 5,
-                right: 10,
-                left: 10,
-                bottom: 5,
-              }}
-            >
-              <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
-              <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
-              <Bar dataKey="amount" type="monotone" stroke={color} fill={color} maxBarSize={80} />
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      }
+      <ResponsiveContainer width="100%" height="100%">
+        {isEmptyData ? (
+          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop="80px">
+            <BarChartIconComponent strokeWidth={1} />
+            <div>
+              <Trans>No fee tokens</Trans>
+            </div>
+          </ThemedText.DeprecatedBody>
+        ) : (
+          <BarChart
+            width={500}
+            height={300}
+            data={data}
+            margin={{
+              top: 5,
+              right: 10,
+              left: 10,
+              bottom: 5,
+            }}
+          >
+            <XAxis dataKey="symbol" axisLine={false} tickLine={false} minTickGap={10} />
+            <Tooltip cursor={false} content={<CustomTooltip init={data?.length > 0 ? data[0] : undefined} />} />
+            <Bar dataKey="amount" type="monotone" stroke={color} fill={color} maxBarSize={80} />
+          </BarChart>
+        )}
+      </ResponsiveContainer>
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

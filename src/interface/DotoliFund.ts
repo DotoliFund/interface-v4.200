@@ -21,7 +21,7 @@ enum SwapType {
 /**
  * SwapParams for producing the arguments to send calls to the router.
  */
-export interface SwapParams {
+interface SwapParams {
   swapType: SwapType
   tokenIn: string
   tokenOut: string
@@ -34,7 +34,7 @@ export interface SwapParams {
   path: string
 }
 
-export interface MintPositionParams {
+interface MintPositionParams {
   token0: string
   token1: string
   fee: number
@@ -47,7 +47,7 @@ export interface MintPositionParams {
   deadline: string
 }
 
-export interface IncreaseLiquidityParams {
+interface IncreaseLiquidityParams {
   tokenId: string
   amount0Desired: string
   amount1Desired: string
@@ -56,13 +56,13 @@ export interface IncreaseLiquidityParams {
   deadline: string
 }
 
-export interface CollectPositionFeeParams {
+interface CollectPositionFeeParams {
   tokenId: string
   amount0Max: string
   amount1Max: string
 }
 
-export interface DecreaseLiquidityParams {
+interface DecreaseLiquidityParams {
   tokenId: string
   liquidity: string
   amount0Min: string
@@ -73,21 +73,21 @@ export interface DecreaseLiquidityParams {
 /**
  * Options for producing the arguments to send calls to the router.
  */
-export interface SwapOptions {
+interface SwapOptions {
   /**
    * How much the execution price is allowed to move unfavorably from the trade execution price.
    */
   slippageTolerance: Percent
 }
 
-export interface MintSpecificOptions {
+interface MintSpecificOptions {
   /**
    * Creates pool if not initialized before mint.
    */
   createPool?: boolean
 }
 
-export interface IncreaseSpecificOptions {
+interface IncreaseSpecificOptions {
   /**
    * Indicates the ID of the position to increase liquidity for.
    */
@@ -97,7 +97,7 @@ export interface IncreaseSpecificOptions {
 /**
  * Options for producing the calldata to add liquidity.
  */
-export interface CommonAddLiquidityOptions {
+interface CommonAddLiquidityOptions {
   /**
    * How much the pool price is allowed to move.
    */
@@ -109,20 +109,19 @@ export interface CommonAddLiquidityOptions {
   deadline: BigintIsh
 }
 
-export type MintOptions = CommonAddLiquidityOptions & MintSpecificOptions
-export type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOptions
+type MintOptions = CommonAddLiquidityOptions & MintSpecificOptions
+type IncreaseOptions = CommonAddLiquidityOptions & IncreaseSpecificOptions
 
-export type AddLiquidityOptions = MintOptions | IncreaseOptions
+type AddLiquidityOptions = MintOptions | IncreaseOptions
 
 const ZERO = JSBI.BigInt(0)
-const ONE = JSBI.BigInt(1)
 
 // type guard
 function isMint(options: AddLiquidityOptions): options is MintOptions {
   return Object.keys(options).some((k) => k === 'createPool')
 }
 
-export interface CollectOptions {
+interface CollectOptions {
   /**
    * Indicates the ID of the position to collect for.
    */
@@ -139,7 +138,7 @@ export interface CollectOptions {
   expectedCurrencyOwed1: CurrencyAmount<Currency>
 }
 
-export interface NFTPermitOptions {
+interface NFTPermitOptions {
   v: 0 | 1 | 27 | 28
   r: string
   s: string
@@ -150,7 +149,7 @@ export interface NFTPermitOptions {
 /**
  * Options for producing the calldata to exit a position.
  */
-export interface RemoveLiquidityOptions {
+interface RemoveLiquidityOptions {
   /**
    * The ID of the token to exit
    */

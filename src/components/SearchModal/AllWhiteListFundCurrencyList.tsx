@@ -40,7 +40,6 @@ interface AllWhiteListFundCurrencyListProps {
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency, hasWarning?: boolean) => void
   otherSelectedCurrency?: Currency | null
-  showCommonBases?: boolean
   showCurrencyAmount?: boolean
   disableNonToken?: boolean
 }
@@ -61,7 +60,6 @@ export function AllWhiteListFundCurrencyList({
   selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
-  showCommonBases,
   showCurrencyAmount,
   disableNonToken,
 }: AllWhiteListFundCurrencyListProps) {
@@ -70,13 +68,13 @@ export function AllWhiteListFundCurrencyList({
 
   const whiteListTokensInfo = useWhiteListTokens()
   const whiteListTokensData: WhiteListToken[] = whiteListTokensInfo.data
-  const whiteListTokenAddresses = whiteListTokensData.map((data, index) => {
+  const whiteListTokenAddresses = whiteListTokensData.map((data) => {
     return data.address
   })
 
   const whiteListTokens: Token[] = useMemo(() => {
     if (chainId && whiteListTokensData && whiteListTokensData.length > 0) {
-      const tokens: Token[] = whiteListTokensData.map((data, index) => {
+      const tokens: Token[] = whiteListTokensData.map((data) => {
         const token: string = data.address
         const decimals = Number(data.decimals)
         const symbol: string = data.symbol
@@ -221,7 +219,7 @@ export function AllWhiteListFundCurrencyList({
           <AutoSizer disableWidth>
             {({ height }) => (
               <InvestorCurrencyList
-                height={height}
+                height={height ? height : 0}
                 currencies={searchCurrencies}
                 otherListTokens={undefined}
                 onCurrencySelect={handleCurrencySelect}

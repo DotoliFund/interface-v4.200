@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 import { TopFund } from 'types/fund'
 
-export const TOP_FUNDS = () => {
+const TOP_FUNDS = () => {
   const queryString = `
     query topFunds {
       funds(orderBy: currentUSD, orderDirection: desc, subgraphError: allow) {
@@ -19,7 +19,7 @@ export const TOP_FUNDS = () => {
   return gql(queryString)
 }
 
-export interface TopFundFields {
+interface TopFundFields {
   id: string
   fundId: string
   createdAtTimestamp: string
@@ -60,7 +60,7 @@ export function useTopFunds(): {
   }
 
   const formatted: TopFund[] = data
-    ? data.funds.map((fund, index) => {
+    ? data.funds.map((fund) => {
         const fundData: TopFund = {
           id: fund.id,
           fundId: fund.fundId,

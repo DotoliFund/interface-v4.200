@@ -13,7 +13,7 @@ const Wrapper = styled(ThemedText.DeprecatedMain)<{
   color: ${({ theme, negative }) => (negative ? theme.deprecated_red1 : theme.deprecated_green1)};
 `
 
-export interface LogoProps {
+interface LogoProps {
   value: number | undefined
   decimals?: number
   fontSize?: string

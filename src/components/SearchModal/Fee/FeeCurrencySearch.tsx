@@ -49,7 +49,7 @@ interface FeeCurrencySearchProps {
 
 function isTokenExist(tokens: FundToken[], token: string) {
   let isExist = false
-  tokens.map((value, index) => {
+  tokens.map((value) => {
     if (value.token.toUpperCase() === token.toUpperCase()) {
       isExist = true
     }
@@ -73,7 +73,7 @@ export function FeeCurrencySearch({
 
   const feeTokensAddresses: string[] = useMemo(() => {
     if (feeTokens && feeTokens.length > 0) {
-      return feeTokens.map((data, index) => {
+      return feeTokens.map((data) => {
         return data.token
       })
     } else {
@@ -178,7 +178,7 @@ export function FeeCurrencySearch({
     return [...tokens]
   }, [filteredSortedTokens, disableNonToken, wrapped, native, feeTokens])
 
-  const sortedFeeTokens: FundToken[] = feeCurrencies.map((value, index) => {
+  const sortedFeeTokens: FundToken[] = feeCurrencies.map((value) => {
     const feeCurrency = value.wrapped.address
     for (let i = 0; i < feeTokens.length; i++) {
       const unsortedFeeToken = feeTokens[i].token
@@ -242,7 +242,7 @@ export function FeeCurrencySearch({
           <AutoSizer disableWidth>
             {({ height }) => (
               <FeeCurrencyList
-                height={height}
+                height={height ? height : 0}
                 currencies={feeCurrencies}
                 feeTokens={sortedFeeTokens}
                 otherListTokens={filteredInactiveTokens}

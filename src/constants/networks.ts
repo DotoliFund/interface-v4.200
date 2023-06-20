@@ -76,5 +76,3 @@ export const EthereumNetworkInfo: NetworkInfo = {
   secondaryColor: '#2172E5',
   imageURL: ETHEREUM_LOGO_URL,
 }
-
-export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [EthereumNetworkInfo]
