@@ -14,7 +14,7 @@ import { isAddress } from '../../utils'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
-export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefined)[]): {
+function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefined)[]): {
   [address: string]: CurrencyAmount<Currency> | undefined
 } {
   const { chainId } = useWeb3React()
