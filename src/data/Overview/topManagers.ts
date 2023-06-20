@@ -58,8 +58,8 @@ export function useTopManagers(): {
   // get client
   const { dataClient } = useClients()
   const now = new Date()
-  const lastMonth = new Date(now.setMonth(now.getMonth() - 1))
-  const updated = Math.floor(lastMonth.getTime() / 1000)
+  const last3Month = new Date(now.setMonth(now.getMonth() - 3))
+  const updated = Math.floor(last3Month.getTime() / 1000)
 
   const { loading, error, data } = useQuery<TopManagerResponse>(TOP_MANAGERS_BULK(), {
     variables: { updated },
