@@ -160,19 +160,19 @@ export default function TopManagerTable({
       {sortedManagers.length > 0 ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.manager)}>
+            <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.manager)}>
               <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.current)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.current)}>
               <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.principal)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.principal)}>
               <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.profitRatio)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.profitRatio)}>
               <Trans>Profit</Trans> {arrow(SORT_FIELD.profitRatio)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.created)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.created)}>
               <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
             </ClickableText>
           </ResponsiveGrid>

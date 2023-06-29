@@ -160,19 +160,19 @@ export default function InvestorTable({
     <Wrapper>
       <AutoColumn gap="16px">
         <ResponsiveGrid>
-          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investor)}>
+          <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.investor)}>
             <Trans>Invetsor</Trans> {arrow(SORT_FIELD.investor)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.current)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.current)}>
             <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.principal)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.principal)}>
             <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.ratio)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.ratio)}>
             <Trans>Profit</Trans> {arrow(SORT_FIELD.ratio)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
         </ResponsiveGrid>

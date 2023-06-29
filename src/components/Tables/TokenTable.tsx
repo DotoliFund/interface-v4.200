@@ -138,14 +138,14 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
       {sortedTokens.length > 0 ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <Label color={theme.deprecated_text2}>#</Label>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.name)}>
+            <Label color={theme.deprecated_text4}>#</Label>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.name)}>
               <Trans>Name</Trans> {arrow(SORT_FIELD.name)}
             </ClickableText>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.address)}>
+            <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.address)}>
               <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.updateDate)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.updateDate)}>
               <Trans>Update</Trans> {arrow(SORT_FIELD.updateDate)}
             </ClickableText>
           </ResponsiveGrid>

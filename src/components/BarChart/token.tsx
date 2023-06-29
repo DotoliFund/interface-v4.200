@@ -17,7 +17,7 @@ const Wrapper = styled(Card)`
   padding: 1rem;
   padding-right: 1rem;
   display: flex;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
   flex-direction: column;
   > * {
     font-size: 1rem;
@@ -68,7 +68,7 @@ const Chart = ({ data, color = '#56B2A4', setIndex, topLeft, topRight }: BarChar
   }
 
   return (
-    <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg0 : undefined}>
+    <Wrapper backgroundColor={!isEmptyData ? theme.deprecated_bg1 : undefined}>
       <RowBetween>
         {isEmptyData ? null : (
           <>
@@ -79,7 +79,7 @@ const Chart = ({ data, color = '#56B2A4', setIndex, topLeft, topRight }: BarChar
       </RowBetween>
       <ResponsiveContainer width="100%" height="100%">
         {isEmptyData ? (
-          <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center" paddingTop="80px">
+          <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center" paddingTop="80px">
             <BarChartIconComponent strokeWidth={1} />
             <div>
               <Trans>No token data</Trans>

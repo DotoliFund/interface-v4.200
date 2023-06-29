@@ -420,7 +420,7 @@ export default function Swap() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -498,8 +498,8 @@ export default function Swap() {
                       size="16"
                       color={
                         currencies[Field.INPUT] && currencies[Field.OUTPUT]
-                          ? theme.deprecated_text1
-                          : theme.deprecated_text3
+                          ? theme.deprecated_text4
+                          : theme.deprecated_blue4
                       }
                     />
                   </ArrowContainer>
@@ -535,7 +535,7 @@ export default function Swap() {
                     <>
                       <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
                         <ArrowWrapper clickable={false}>
-                          <ArrowDown size="16" color={theme.deprecated_text2} />
+                          <ArrowDown size="16" color={theme.deprecated_text4} />
                         </ArrowWrapper>
                         <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                           <Trans>- Remove recipient</Trans>

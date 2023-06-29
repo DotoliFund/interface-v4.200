@@ -38,7 +38,7 @@ const PageWrapper = styled(AutoColumn)`
   `};
 `
 const TitleRow = styled(RowBetween)`
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     flex-wrap: wrap;
     gap: 12px;
@@ -92,7 +92,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 `
 
 const MainContentWrapper = styled.main`
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
   padding: 8px;
   border-radius: 20px;
   display: flex;
@@ -133,7 +133,7 @@ function WrongNetworkCard() {
 
             <MainContentWrapper>
               <ErrorContainer>
-                <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                   <NetworkIcon strokeWidth={1.2} />
                   <div data-testid="pools-unsupported-err">
                     <Trans>Your connected network is unsupported.</Trans>
@@ -305,7 +305,7 @@ export default function Account() {
                   <FundList isManagingFund={true} funds={managingFundInfo} />
                 ) : (
                   <ErrorContainer>
-                    <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                    <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                       <InboxIcon strokeWidth={1} />
                       <div>
                         <Trans>Your managing fund will appear here.</Trans>
@@ -321,7 +321,7 @@ export default function Account() {
                   <FundList isManagingFund={false} funds={investingFundsInfo} />
                 ) : (
                   <ErrorContainer>
-                    <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                    <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                       <InboxIcon strokeWidth={1} />
                       <div>
                         <Trans>Your investing funds will appear here.</Trans>

@@ -29,12 +29,6 @@ interface ImportProps {
   handleCurrencySelect?: (currency: Currency) => void
 }
 
-const formatAnalyticsEventProperties = (tokens: Token[]) => ({
-  token_symbols: tokens.map((token) => token?.symbol),
-  token_addresses: tokens.map((token) => token?.address),
-  token_chain_ids: tokens.map((token) => token?.chainId),
-})
-
 export function ImportToken(props: ImportProps) {
   const { tokens, list, onBack, onDismiss, handleCurrencySelect } = props
   const theme = useTheme()
@@ -62,7 +56,7 @@ export function ImportToken(props: ImportProps) {
       <SectionBreak />
       <AutoColumn gap="md" style={{ marginBottom: '32px', padding: '1rem' }}>
         <AutoColumn justify="center" style={{ textAlign: 'center', gap: '16px', padding: '1rem' }}>
-          <AlertCircle size={48} stroke={theme.deprecated_text2} strokeWidth={1} />
+          <AlertCircle size={48} stroke={theme.deprecated_text4} strokeWidth={1} />
           <ThemedText.DeprecatedBody fontWeight={400} fontSize={16}>
             <Trans>
               This token doesn&apos;t appear on the active token list(s). Make sure this is the token that you want to

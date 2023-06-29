@@ -24,7 +24,7 @@ const HeaderRow = styled.div`
   ${flexRowNoWrap};
   padding: 1rem 1rem;
   font-weight: 500;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.deprecated_primary1 : 'inherit')};
+  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.deprecated_primary2 : 'inherit')};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
     padding: 1rem;
   `};
@@ -61,14 +61,14 @@ const InfoCard = styled.div`
 `
 
 const AccountGroupingRow = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap};
+  ${flexRowNoWrap};
   justify-content: space-between;
   align-items: center;
   font-weight: 400;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
 
   div {
-    ${({ theme }) => theme.flexRowNoWrap}
+    ${flexRowNoWrap};
     align-items: center;
   }
 `
@@ -91,18 +91,18 @@ const YourAccount = styled.div`
 `
 
 const LowerSection = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
+  ${flexRowNoWrap};
   padding: 1.5rem;
   flex-grow: 1;
   overflow: auto;
-  background-color: ${({ theme }) => theme.deprecated_bg2};
+  background-color: ${({ theme }) => theme.deprecated_bg3};
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 
   h5 {
     margin: 0;
     font-weight: 400;
-    color: ${({ theme }) => theme.deprecated_text3};
+    color: ${({ theme }) => theme.deprecated_text4};
   }
 `
 
@@ -129,14 +129,14 @@ const AccountControl = styled.div`
 `
 
 const AddressLink = styled(ExternalLink)`
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   margin-left: 1rem;
   font-size: 0.825rem;
   display: flex;
   gap: 6px;
   text-decoration: none !important;
   :hover {
-    color: ${({ theme }) => theme.deprecated_text2};
+    color: ${({ theme }) => theme.deprecated_text4};
   }
 `
 
@@ -160,11 +160,11 @@ const WalletName = styled.div`
   width: initial;
   font-size: 0.825rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
 `
 
 const TransactionListWrapper = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap};
+  ${flexRowNoWrap};
 `
 
 const WalletAction = styled(ButtonSecondary)`
@@ -316,7 +316,7 @@ export default function AccountDetails({
         </LowerSection>
       ) : (
         <LowerSection>
-          <ThemedText.DeprecatedBody color={theme.deprecated_text1}>
+          <ThemedText.DeprecatedBody color={theme.deprecated_text4}>
             <Trans>Your transactions will appear here...</Trans>
           </ThemedText.DeprecatedBody>
         </LowerSection>

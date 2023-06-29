@@ -8,7 +8,7 @@ const StyledGroup = styled.g`
   }
 
   text {
-    color: ${({ theme }) => theme.deprecated_text2};
+    color: ${({ theme }) => theme.deprecated_text4};
     transform: translateY(5px);
   }
 `

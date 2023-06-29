@@ -18,7 +18,7 @@ const LinkRow = styled(Link)`
   flex-direction: column;
 
   justify-content: space-between;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
   margin: 8px 0;
   padding: 16px;
   text-decoration: none;
@@ -32,7 +32,7 @@ const LinkRow = styled(Link)`
     text-align: center;
   }
   :hover {
-    background-color: ${({ theme }) => theme.deprecated_bg2};
+    background-color: ${({ theme }) => theme.deprecated_bg1};
   }
 
   @media screen and (min-width: ${MEDIA_WIDTHS.deprecated_upToSmall}px) {
@@ -57,20 +57,20 @@ const RangeLineItem = styled(DataLineItem)`
   width: 100%;
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
-  background-color: ${({ theme }) => theme.deprecated_bg2};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
     border-radius: 12px;
     padding: 4px 0;
 `};
 `
 
 const RangeText = styled.span`
-  /* background-color: ${({ theme }) => theme.deprecated_bg2}; */
+  /* background-color: ${({ theme }) => theme.deprecated_bg1}; */
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
 `
 
 const ExtentsText = styled.span`
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   font-size: 14px;
   margin-right: 4px;
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`

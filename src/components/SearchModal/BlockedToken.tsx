@@ -37,7 +37,7 @@ const Header = styled.div`
   width: 100%;
 `
 const Icon = styled(AlertCircle)`
-  stroke: ${({ theme }) => theme.deprecated_text2};
+  stroke: ${({ theme }) => theme.deprecated_text4};
   width: 48px;
   height: 48px;
 `

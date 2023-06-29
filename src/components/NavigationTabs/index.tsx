@@ -6,12 +6,13 @@ import { Link as HistoryLink } from 'react-router-dom'
 import { Box } from 'rebass'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
+import { flexRowNoWrap } from 'theme/styles'
 
 import { RowBetween } from '../Row'
 import SettingsTab from '../Settings'
 
 const Tabs = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
+  ${flexRowNoWrap};
   align-items: center;
   border-radius: 3rem;
   justify-content: space-evenly;
@@ -27,7 +28,7 @@ const StyledHistoryLink = styled(HistoryLink)<{ flex: string | undefined }>`
 `
 
 const StyledArrowLeft = styled(ArrowLeft)`
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
 `
 
 export function NavigationsTabs({
@@ -52,11 +53,11 @@ export function NavigationsTabs({
       <RowBetween style={{ padding: '1rem 1rem 0 1rem' }}>
         {tokenId ? (
           <StyledHistoryLink to={`/pool/${fundId}/${investor}/${tokenId}`} flex={children ? '1' : undefined}>
-            <StyledArrowLeft stroke={theme.deprecated_text2} />
+            <StyledArrowLeft stroke={theme.deprecated_text4} />
           </StyledHistoryLink>
         ) : (
           <StyledHistoryLink to={`/fund/${fundId}/${investor}`} flex={children ? '1' : undefined}>
-            <StyledArrowLeft stroke={theme.deprecated_text2} />
+            <StyledArrowLeft stroke={theme.deprecated_text4} />
           </StyledHistoryLink>
         )}
         <ThemedText.DeprecatedMediumHeader

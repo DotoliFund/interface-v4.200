@@ -9,7 +9,7 @@ const StyledSwapHeader = styled.div`
   padding: 8px 12px;
   margin-bottom: 8px;
   width: 100%;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
 `
 
 export default function SwapHeader({ allowedSlippage }: { allowedSlippage: Percent }) {

@@ -97,19 +97,19 @@ export default function ManagerTable({ managerData }: { managerData: Manager }) 
       {managerData ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <ClickableText color={theme.deprecated_text2}>
+            <ClickableText color={theme.deprecated_text4}>
               <Trans>Manager</Trans>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
+            <ClickableText end={1} color={theme.deprecated_text4}>
               <Trans>Current</Trans>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
+            <ClickableText end={1} color={theme.deprecated_text4}>
               <Trans>Principal</Trans>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
+            <ClickableText end={1} color={theme.deprecated_text4}>
               <Trans>Profit</Trans>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
+            <ClickableText end={1} color={theme.deprecated_text4}>
               <Trans>Time</Trans>
             </ClickableText>
           </ResponsiveGrid>

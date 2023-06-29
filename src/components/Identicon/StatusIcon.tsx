@@ -1,12 +1,13 @@
 import { ConnectionType } from 'connection'
 import styled from 'styled-components/macro'
+import { flexRowNoWrap } from 'theme/styles'
 
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import Identicon from '../Identicon'
 
 const IconWrapper = styled.div<{ size?: number }>`
-  ${({ theme }) => theme.flexColumnNoWrap};
+  ${flexRowNoWrap};
   align-items: center;
   justify-content: center;
   margin-right: 8px;

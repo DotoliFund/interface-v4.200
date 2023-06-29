@@ -99,7 +99,7 @@ const Label = styled(({ end, ...props }) => <ThemedText.DeprecatedLabel {...prop
 `
 
 const ExtentsText = styled.span`
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   font-size: 14px;
   text-align: center;
   margin-right: 4px;
@@ -108,15 +108,15 @@ const ExtentsText = styled.span`
 
 const HoverText = styled(ThemedText.DeprecatedMain)`
   text-decoration: none;
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_text4};
     text-decoration: none;
   }
 `
 
 const DoubleArrow = styled.span`
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   margin: 0 1rem;
 `
 const ResponsiveRow = styled(RowBetween)`
@@ -590,7 +590,7 @@ export function PositionPage() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -720,7 +720,7 @@ export function PositionPage() {
                         </ThemedText.DeprecatedLargeHeader>
                       ) : (
                         <ThemedText.DeprecatedLargeHeader
-                          color={theme.deprecated_text1}
+                          color={theme.deprecated_text4}
                           fontSize="36px"
                           fontWeight={500}
                         >
@@ -753,7 +753,7 @@ export function PositionPage() {
                             </ThemedText.DeprecatedMain>
                             {typeof ratio === 'number' && !removed ? (
                               <Badge style={{ marginLeft: '10px' }}>
-                                <ThemedText.DeprecatedMain color={theme.deprecated_text2} fontSize={11}>
+                                <ThemedText.DeprecatedMain color={theme.deprecated_text4} fontSize={11}>
                                   <Trans>{inverted ? 100 - ratio : ratio}%</Trans>
                                 </ThemedText.DeprecatedMain>
                               </Badge>
@@ -774,7 +774,7 @@ export function PositionPage() {
                           </Label>
                           {fiatValueOfFees?.greaterThan(new Fraction(1, 100)) ? (
                             <ThemedText.DeprecatedLargeHeader
-                              color={theme.deprecated_green1}
+                              color={theme.deprecated_yellow1}
                               fontSize="36px"
                               fontWeight={500}
                             >
@@ -782,7 +782,7 @@ export function PositionPage() {
                             </ThemedText.DeprecatedLargeHeader>
                           ) : (
                             <ThemedText.DeprecatedLargeHeader
-                              color={theme.deprecated_text1}
+                              color={theme.deprecated_text4}
                               fontSize="36px"
                               fontWeight={500}
                             >
@@ -801,11 +801,11 @@ export function PositionPage() {
                             onClick={() => setShowConfirm(true)}
                           >
                             {!!collectMigrationHash && !isCollectPending ? (
-                              <ThemedText.DeprecatedMain color={theme.deprecated_text1}>
+                              <ThemedText.DeprecatedMain color={theme.deprecated_text4}>
                                 <Trans> Collected</Trans>
                               </ThemedText.DeprecatedMain>
                             ) : isCollectPending || collecting ? (
-                              <ThemedText.DeprecatedMain color={theme.deprecated_text1}>
+                              <ThemedText.DeprecatedMain color={theme.deprecated_text4}>
                                 {' '}
                                 <Dots>
                                   <Trans>Collecting</Trans>
@@ -813,7 +813,7 @@ export function PositionPage() {
                               </ThemedText.DeprecatedMain>
                             ) : (
                               <>
-                                <ThemedText.DeprecatedMain color={theme.deprecated_white}>
+                                <ThemedText.DeprecatedMain color={theme.deprecated_yellow1}>
                                   <Trans>Collect fees</Trans>
                                 </ThemedText.DeprecatedMain>
                               </>
@@ -902,7 +902,7 @@ export function PositionPage() {
                       </ExtentsText>
 
                       {inRange && (
-                        <ThemedText.DeprecatedSmall color={theme.deprecated_text3}>
+                        <ThemedText.DeprecatedSmall color={theme.deprecated_text4}>
                           <Trans>Your position will be 100% {currencyBase?.symbol} at this price.</Trans>
                         </ThemedText.DeprecatedSmall>
                       )}
@@ -926,7 +926,7 @@ export function PositionPage() {
                       </ExtentsText>
 
                       {inRange && (
-                        <ThemedText.DeprecatedSmall color={theme.deprecated_text3}>
+                        <ThemedText.DeprecatedSmall color={theme.deprecated_text4}>
                           <Trans>Your position will be 100% {currencyQuote?.symbol} at this price.</Trans>
                         </ThemedText.DeprecatedSmall>
                       )}

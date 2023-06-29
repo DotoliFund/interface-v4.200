@@ -10,7 +10,7 @@ const PopoverContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
 `
 
 const ReferenceElement = styled.div`
@@ -30,9 +30,9 @@ const Arrow = styled.div`
     z-index: 9998;
 
     content: '';
-    border: 1px solid ${({ theme }) => theme.deprecated_bg2};
+    border: 1px solid ${({ theme }) => theme.deprecated_bg1};
     transform: rotate(45deg);
-    background: ${({ theme }) => theme.deprecated_bg0};
+    background: ${({ theme }) => theme.deprecated_bg3};
   }
 
   &.arrow-top {

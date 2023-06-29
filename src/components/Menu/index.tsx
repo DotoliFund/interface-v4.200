@@ -1,29 +1,11 @@
 // eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
-import FeatureFlagModal from 'components/FeatureFlagModal/FeatureFlagModal'
-import { PrivacyPolicyModal } from 'components/PrivacyPolicy'
 import { LOCALE_LABEL, SUPPORTED_LOCALES, SupportedLocale } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useLocationLinkProps } from 'hooks/useLocationLinkProps'
-import { FunctionComponent, PropsWithChildren, useEffect, useRef, useState } from 'react'
-import {
-  BookOpen,
-  Check,
-  ChevronLeft,
-  Coffee,
-  FileText,
-  Flag,
-  Globe,
-  HelpCircle,
-  Info,
-  MessageCircle,
-  Moon,
-  Sun,
-} from 'react-feather'
+import { FunctionComponent, PropsWithChildren, useRef } from 'react'
+import { Check, ChevronLeft } from 'react-feather'
 import { Link } from 'react-router-dom'
-import { useDarkModeManager } from 'state/user/hooks'
 import styled, { css } from 'styled-components/macro'
-import { isDevelopmentEnv, isStagingEnv } from 'utils/env'
 
 import { ReactComponent as MenuIcon } from '../../assets/images/menu.svg'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
@@ -39,7 +21,7 @@ export enum FlyoutAlignment {
 
 const StyledMenuIcon = styled(MenuIcon)`
   path {
-    stroke: ${({ theme }) => theme.deprecated_text1};
+    stroke: ${({ theme }) => theme.deprecated_text4};
   }
 `
 
@@ -51,8 +33,8 @@ const StyledMenuButton = styled.button`
   margin: 0;
   padding: 0;
   height: 40px;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
-  border: 1px solid ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
+  border: 1px solid ${({ theme }) => theme.deprecated_bg1};
   padding: 0.15rem 0.5rem;
   border-radius: 16px;
 
@@ -90,7 +72,7 @@ const MenuFlyout = styled.span<{ flyoutAlignment?: FlyoutAlignment }>`
   background-color: ${({ theme }) => theme.deprecated_bg1};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  border: 1px solid ${({ theme }) => theme.deprecated_bg0};
+  border: 1px solid ${({ theme }) => theme.deprecated_bg1};
   border-radius: 12px;
   padding: 0.5rem;
   display: flex;
@@ -122,9 +104,9 @@ const MenuItem = styled(ExternalLink)`
   align-items: center;
   padding: 0.5rem 0.5rem;
   justify-content: space-between;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_blue4};
     cursor: pointer;
     text-decoration: none;
   }
@@ -133,9 +115,9 @@ const MenuItem = styled(ExternalLink)`
 const InternalMenuItem = styled(Link)`
   flex: 1;
   padding: 0.5rem 0.5rem;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_blue4};
     cursor: pointer;
     text-decoration: none;
   }
@@ -152,7 +134,7 @@ const InternalLinkMenuItem = styled(InternalMenuItem)`
   justify-content: space-between;
   text-decoration: none;
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_text4};
     cursor: pointer;
     text-decoration: none;
   }
@@ -171,9 +153,9 @@ const ToggleMenuItem = styled.button`
   justify-content: space-between;
   font-size: 1rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_blue4};
     cursor: pointer;
     text-decoration: none;
   }
@@ -204,114 +186,6 @@ function LanguageMenu({ close }: { close: () => void }) {
         <LanguageMenuItem locale={locale} active={activeLocale === locale} key={locale} />
       ))}
     </MenuFlyout>
-  )
-}
-
-export default function Menu() {
-  const node = useRef<HTMLDivElement>()
-  const open = useModalIsOpen(ApplicationModal.MENU)
-  const toggleMenu = useToggleModal(ApplicationModal.MENU)
-  useOnClickOutside(node, open ? toggleMenu : undefined)
-  const togglePrivacyPolicy = useToggleModal(ApplicationModal.PRIVACY_POLICY)
-  const openFeatureFlagsModal = useToggleModal(ApplicationModal.FEATURE_FLAGS)
-  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
-  const showUNIClaimOption = false
-
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
-
-  const [menu, setMenu] = useState<'main' | 'lang'>('main')
-
-  useEffect(() => {
-    setMenu('main')
-  }, [open])
-
-  return (
-    <>
-      {/* // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
-      <StyledMenu ref={node as any}>
-        <StyledMenuButton onClick={toggleMenu} aria-label={t`Menu`}>
-          <StyledMenuIcon />
-        </StyledMenuButton>
-
-        {open &&
-          (() => {
-            switch (menu) {
-              case 'lang':
-                return <LanguageMenu close={() => setMenu('main')} />
-              case 'main':
-              default:
-                return (
-                  <MenuFlyout>
-                    <MenuItem href="https://uniswap.org/">
-                      <div>
-                        <Trans>About</Trans>
-                      </div>
-                      <Info opacity={0.6} size={16} />
-                    </MenuItem>
-                    <MenuItem href="https://help.uniswap.org/">
-                      <div>
-                        <Trans>Help Center</Trans>
-                      </div>
-                      <HelpCircle opacity={0.6} size={16} />
-                    </MenuItem>
-                    <MenuItem href="https://uniswap.canny.io/feature-requests">
-                      <div>
-                        <Trans>Request Features</Trans>
-                      </div>
-                      <Coffee opacity={0.6} size={16} />
-                    </MenuItem>
-                    <MenuItem href="https://discord.gg/FCfyBSbCU5">
-                      <div>
-                        <Trans>Discord</Trans>
-                      </div>
-                      <MessageCircle opacity={0.6} size={16} />
-                    </MenuItem>
-                    <ToggleMenuItem onClick={() => setMenu('lang')}>
-                      <div>
-                        <Trans>Language</Trans>
-                      </div>
-                      <Globe opacity={0.6} size={16} />
-                    </ToggleMenuItem>
-                    <ToggleMenuItem onClick={() => toggleDarkMode()}>
-                      <div>{darkMode ? <Trans>Light Theme</Trans> : <Trans>Dark Theme</Trans>}</div>
-                      {darkMode ? <Moon opacity={0.6} size={16} /> : <Sun opacity={0.6} size={16} />}
-                    </ToggleMenuItem>
-                    <MenuItem href="https://docs.uniswap.org/">
-                      <div>
-                        <Trans>Docs</Trans>
-                      </div>
-                      <BookOpen opacity={0.6} size={16} />
-                    </MenuItem>
-                    <ToggleMenuItem onClick={() => togglePrivacyPolicy()}>
-                      <div>
-                        <Trans>Legal & Privacy</Trans>
-                      </div>
-                      <FileText opacity={0.6} size={16} />
-                    </ToggleMenuItem>
-                    {(isDevelopmentEnv() || isStagingEnv()) && (
-                      <ToggleMenuItem onClick={openFeatureFlagsModal}>
-                        Feature Flags <Flag opacity={0.6} size={16} />
-                      </ToggleMenuItem>
-                    )}
-                    {showUNIClaimOption && (
-                      <UNIbutton
-                        onClick={openClaimModal}
-                        padding="8px 16px"
-                        width="100%"
-                        $borderRadius="12px"
-                        mt="0.5rem"
-                      >
-                        <Trans>Claim UNI</Trans>
-                      </UNIbutton>
-                    )}
-                  </MenuFlyout>
-                )
-            }
-          })()}
-      </StyledMenu>
-      <PrivacyPolicyModal />
-      <FeatureFlagModal />
-    </>
   )
 }
 

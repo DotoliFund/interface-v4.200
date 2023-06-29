@@ -100,7 +100,7 @@ const MoreOptionsButton = styled(ButtonGray)`
   flex: 1 1 auto;
   padding: 6px 8px;
   width: 100%;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
   margin-right: 8px;
 `
 
@@ -131,7 +131,7 @@ const MenuItem = styled.div`
 `
 
 const TitleRow = styled(RowBetween)`
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     flex-wrap: wrap;
     gap: 12px;
@@ -172,7 +172,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 `
 
 const MainContentWrapper = styled.main`
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
   padding: 8px;
   border-radius: 20px;
   display: flex;
@@ -181,9 +181,9 @@ const MainContentWrapper = styled.main`
 
 const HoverText = styled(ThemedText.DeprecatedMain)`
   text-decoration: none;
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_text4};
     text-decoration: none;
   }
 `
@@ -765,7 +765,7 @@ export default function FundAccount() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -1059,7 +1059,7 @@ export default function FundAccount() {
                 />
               ) : (
                 <ErrorContainer>
-                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                  <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                     <InboxIcon strokeWidth={1} />
                     <div>
                       <Trans>Your active V3 liquidity positions will appear here.</Trans>

@@ -153,19 +153,19 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
       {sortedFunds.length > 0 ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.fund)}>
+            <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.fund)}>
               <Trans>Fund</Trans> {arrow(SORT_FIELD.fund)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.current)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.current)}>
               <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.manager)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.manager)}>
               <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.investorCount)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.investorCount)}>
               <Trans>Investors</Trans> {arrow(SORT_FIELD.investorCount)}
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.created)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.created)}>
               <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
             </ClickableText>
           </ResponsiveGrid>

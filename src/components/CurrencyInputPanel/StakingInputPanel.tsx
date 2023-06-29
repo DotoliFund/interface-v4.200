@@ -100,7 +100,7 @@ export default function StakingInputPanel({
                 <RowFixed style={{ height: '17px' }}>
                   <ThemedText.DeprecatedBody
                     onClick={onMax}
-                    color={theme.deprecated_text3}
+                    color={theme.deprecated_text4}
                     fontWeight={500}
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer' }}

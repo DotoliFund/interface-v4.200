@@ -292,7 +292,7 @@ export default function Overview() {
         </>
       ) : chainId !== undefined ? (
         <ErrorContainer>
-          <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+          <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
             <NetworkIcon strokeWidth={1.2} />
             <div data-testid="pools-unsupported-err">
               <Trans>Your connected network is unsupported.</Trans>

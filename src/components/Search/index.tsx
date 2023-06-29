@@ -1,6 +1,6 @@
 import { AutoColumn } from 'components/Column'
 import Row, { RowFixed } from 'components/Row'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 
@@ -21,7 +21,7 @@ const Wrapper = styled(Row)`
 
   @media (max-width: 1080px) {
     width: 100%;
-  } ;
+  }
 `
 
 const StyledInput = styled.input`
@@ -34,10 +34,10 @@ const StyledInput = styled.input`
   width: 100%;
   font-size: 16px;
   outline: none;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
 
   ::placeholder {
-    color: ${({ theme }) => theme.deprecated_text3};
+    color: ${({ theme }) => theme.deprecated_text4};
     font-size: 16px;
   }
 
@@ -60,12 +60,12 @@ const Menu = styled.div<{ hide: boolean }>`
   padding: 1.5rem;
   padding-bottom: 1.5rem;
   position: absolute;
-  background: ${({ theme }) => theme.deprecated_bg0};
+  background: ${({ theme }) => theme.deprecated_bg1};
   border-radius: 8px;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.04);
   display: ${({ hide }) => hide && 'none'};
-  border: 1px solid ${({ theme }) => theme.deprecated_red1};
+  border: 1px solid ${({ theme }) => theme.deprecated_yellow1};
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
     position: absolute;
@@ -104,36 +104,11 @@ const Break = styled.div`
 `
 
 const HoverText = styled.div<{ hide?: boolean | undefined }>`
-  color: ${({ theme }) => theme.deprecated_blue1};
+  color: ${({ theme }) => theme.deprecated_blue4};
   display: ${({ hide = false }) => hide && 'none'};
   :hover {
     cursor: pointer;
     opacity: 0.6;
-  }
-`
-
-const HoverRowLink = styled.div`
-  :hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-`
-
-const OptionButton = styled.div<{ enabled: boolean }>`
-  width: fit-content;
-  padding: 4px 8px;
-  border-radius: 8px;
-  display: flex;
-  font-size: 12px;
-  font-weight: 600;
-  margin-right: 10px;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({ theme, enabled }) => (enabled ? theme.deprecated_red1 : 'transparent')};
-  color: ${({ theme, enabled }) => (enabled ? theme.white : theme.deprecated_red1)};
-  :hover {
-    opacity: 0.6;
-    cursor: pointer;
   }
 `
 
@@ -142,14 +117,7 @@ const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
   const [value, setValue] = useState('')
 
   const ref = useRef<HTMLInputElement>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const textRef = useRef<HTMLDivElement>(null)
 
-  const handleDown = useCallback(() => {
-    if (ref != null && ref.current !== null) {
-      ref.current.focus()
-    }
-  }, [])
   const [focused, setFocused] = useState<boolean>(false)
 
   return (

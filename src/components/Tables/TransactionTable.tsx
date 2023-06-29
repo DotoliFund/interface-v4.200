@@ -71,7 +71,7 @@ const SortText = styled.button<{ active: boolean }>`
   background-color: transparent;
   font-size: 1rem;
   padding: 0px;
-  color: ${({ active, theme }) => (active ? theme.deprecated_text1 : theme.deprecated_text3)};
+  color: ${({ active, theme }) => (active ? theme.deprecated_text4 : theme.deprecated_blue4)};
   outline: none;
   @media screen and (max-width: 600px) {
     font-size: 14px;
@@ -103,7 +103,7 @@ const DataRow = ({
   return (
     <ResponsiveGrid isFundPage={isFundPage}>
       <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, transaction.hash, 'transaction')}>
-        <Label color={color ?? theme.deprecated_blue1} fontWeight={400}>
+        <Label color={color ?? theme.deprecated_blue4} fontWeight={400}>
           {transaction.type === TransactionType.SWAP ? (
             <Trans>
               Swap {transaction.token0Symbol} to {transaction.token1Symbol}
@@ -130,7 +130,7 @@ const DataRow = ({
         <Label end={1} fontWeight={400}>
           <ExternalLink
             href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address')}
-            style={{ color: color ?? theme.deprecated_blue1 }}
+            style={{ color: color ?? theme.deprecated_blue4 }}
           >
             {shortenAddress(transaction.sender)}
           </ExternalLink>
@@ -257,21 +257,21 @@ export default function TransactionTable({
               <Trans>Withdraw</Trans>
             </SortText>
           </RowFixed>
-          <ClickableText color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
+          <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
             <Trans>Value</Trans> {arrow(SORT_FIELD.amountUSD)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
             <Trans>Token 1</Trans> {arrow(SORT_FIELD.amountToken0)}
           </ClickableText>
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
             <Trans>Token 2</Trans> {arrow(SORT_FIELD.amountToken1)}
           </ClickableText>
           {isFundPage ? (
-            <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.sender)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.sender)}>
               <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
             </ClickableText>
           ) : null}
-          <ClickableText end={1} color={theme.deprecated_text2} onClick={() => handleSort(SORT_FIELD.timestamp)}>
+          <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.timestamp)}>
             <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
           </ClickableText>
         </ResponsiveGrid>
