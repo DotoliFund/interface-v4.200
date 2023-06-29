@@ -14,12 +14,12 @@ export const MaxButton = styled.button<{ width: string }>`
   cursor: pointer;
   margin: 0.25rem;
   overflow: hidden;
-  color: ${({ theme }) => theme.deprecated_primary1};
+  color: ${({ theme }) => theme.deprecated_primary2};
   :hover {
-    border: 1px solid ${({ theme }) => theme.deprecated_primary1};
+    border: 1px solid ${({ theme }) => theme.deprecated_primary3};
   }
   :focus {
-    border: 1px solid ${({ theme }) => theme.deprecated_primary1};
+    border: 1px solid ${({ theme }) => theme.deprecated_primary2};
     outline: none;
   }
 `

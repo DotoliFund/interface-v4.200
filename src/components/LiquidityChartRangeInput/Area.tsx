@@ -6,8 +6,8 @@ import { ChartEntry } from './types'
 
 const Path = styled.path<{ fill: string | undefined }>`
   opacity: 0.5;
-  stroke: ${({ fill, theme }) => fill ?? theme.deprecated_blue2};
-  fill: ${({ fill, theme }) => fill ?? theme.deprecated_blue2};
+  stroke: ${({ fill, theme }) => fill ?? theme.deprecated_blue4};
+  fill: ${({ fill, theme }) => fill ?? theme.deprecated_blue4};
 `
 
 export const Area = ({

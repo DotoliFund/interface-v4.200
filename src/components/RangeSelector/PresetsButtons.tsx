@@ -10,7 +10,7 @@ const Button = styled(ButtonOutlined).attrs(() => ({
   padding: '8px',
   $borderRadius: '8px',
 }))`
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
   flex: 1;
 `
 

@@ -7,14 +7,14 @@ import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 
 const BodyRow = styled.div`
-  color: ${({ theme }) => theme.deprecated_black};
+  color: ${({ theme }) => theme.deprecated_bg1};
   font-size: 12px;
 `
 const CautionIcon = styled(AlertOctagon)`
-  color: ${({ theme }) => theme.deprecated_black};
+  color: ${({ theme }) => theme.deprecated_bg3};
 `
 const Link = styled(ExternalLink)`
-  color: ${({ theme }) => theme.deprecated_black};
+  color: ${({ theme }) => theme.deprecated_bg4};
   text-decoration: underline;
 `
 const TitleRow = styled.div`

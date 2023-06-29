@@ -1,38 +1,43 @@
-import { ReactComponent as Verified } from 'assets/svg/verified.svg'
 import { Warning, WARNING_LEVEL } from 'constants/tokenSafety'
-import { useTokenWarningColor } from 'hooks/useTokenWarningColor'
-import { AlertOctagon, AlertTriangle } from 'react-feather'
-import styled from 'styled-components/macro'
-import { Color } from 'theme/styled'
+import { AlertTriangle, Slash } from 'react-feather'
+import styled, { css } from 'styled-components/macro'
 
-const Container = styled.div<{ color: Color }>`
-  width: 0.9rem;
-  height: 0.9rem;
-  margin-left: 4px;
-  color: ${({ color }) => color};
-  display: inline-flex;
-  align-items: center;
-`
-
-const VerifiedContainer = styled.div`
+const WarningContainer = styled.div`
   margin-left: 4px;
   display: flex;
   justify-content: center;
 `
 
-const VerifiedIcon = styled(Verified)<{ size?: string }>`
+const WarningIconStyle = css<{ size?: string }>`
   width: ${({ size }) => size ?? '1em'};
   height: ${({ size }) => size ?? '1em'};
 `
 
+const WarningIcon = styled(AlertTriangle)`
+  ${WarningIconStyle};
+  color: ${({ theme }) => theme.textTertiary};
+`
+
+const BlockedIcon = styled(Slash)`
+  ${WarningIconStyle}
+  color: ${({ theme }) => theme.textSecondary};
+`
+
 export default function TokenSafetyIcon({ warning }: { warning: Warning | null }) {
-  const color = useTokenWarningColor(warning ? warning.level : WARNING_LEVEL.UNKNOWN)
-  if (!warning) {
-    return (
-      <VerifiedContainer>
-        <VerifiedIcon />
-      </VerifiedContainer>
-    )
+  switch (warning?.level) {
+    case WARNING_LEVEL.BLOCKED:
+      return (
+        <WarningContainer>
+          <BlockedIcon data-cy="blocked-icon" strokeWidth={2.5} />
+        </WarningContainer>
+      )
+    case WARNING_LEVEL.UNKNOWN:
+      return (
+        <WarningContainer>
+          <WarningIcon />
+        </WarningContainer>
+      )
+    default:
+      return null
   }
-  return <Container color={color}>{warning.canProceed ? <AlertTriangle /> : <AlertOctagon />}</Container>
 }
