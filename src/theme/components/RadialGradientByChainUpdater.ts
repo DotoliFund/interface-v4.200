@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
-import { useDarkModeManager } from 'state/user/hooks'
+import { useDarkModeManager } from 'theme/components/ThemeToggle'
 
 const initialStyles = {
   width: '200vw',
@@ -22,9 +22,11 @@ const setBackground = (newValues: TargetBackgroundStyles) =>
       backgroundRadialGradientElement.style[key as keyof typeof backgroundResetStyles] = value
     }
   })
+
 export default function RadialGradientByChainUpdater(): null {
   const { chainId } = useWeb3React()
   const [darkMode] = useDarkModeManager()
+
   // manage background color
   useEffect(() => {
     if (!backgroundRadialGradientElement) {
@@ -32,12 +34,13 @@ export default function RadialGradientByChainUpdater(): null {
     }
 
     switch (chainId) {
-      default:
+      default: {
         setBackground(initialStyles)
         const defaultLightGradient =
           'radial-gradient(100% 100% at 50% 0%, rgba(255, 184, 226, 0.51) 0%, rgba(255, 255, 255, 0) 100%), #FFFFFF'
         const defaultDarkGradient = 'linear-gradient(180deg, #202738 0%, #070816 100%)'
         backgroundRadialGradientElement.style.background = darkMode ? defaultDarkGradient : defaultLightGradient
+      }
     }
   }, [darkMode, chainId])
   return null

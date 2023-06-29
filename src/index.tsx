@@ -14,6 +14,7 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import store from 'state'
 import ThemeProvider, { ThemedGlobalStyle } from 'theme'
+import { SystemThemeUpdater } from 'theme/components/ThemeToggle'
 
 import { LanguageProvider } from './i18n'
 import reportWebVitals from './reportWebVitals'
@@ -21,6 +22,7 @@ import ApplicationUpdater from './state/application/updater'
 import ListsUpdater from './state/lists/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
+import RadialGradientByChainUpdater from './theme/components/RadialGradientByChainUpdater'
 
 if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -29,7 +31,9 @@ if (window.ethereum) {
 function Updaters() {
   return (
     <>
+      <RadialGradientByChainUpdater />
       <ListsUpdater />
+      <SystemThemeUpdater />
       <UserUpdater />
       <ApplicationUpdater />
       <TransactionUpdater />

@@ -1,6 +1,6 @@
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 import ms from 'ms.macro'
-import { colorsDark } from 'theme/colors'
+import { darkTheme } from 'theme/colors'
 
 import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from './chains'
 
@@ -56,7 +56,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Ethereum',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    color: colorsDark.chain_1,
+    color: darkTheme.chain_1,
   },
   [SupportedChainId.GOERLI]: {
     networkType: NetworkType.L1,
@@ -66,7 +66,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Görli',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
-    color: colorsDark.chain_5,
+    color: darkTheme.chain_5,
   },
 }
 
