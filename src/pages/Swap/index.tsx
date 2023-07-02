@@ -498,15 +498,15 @@ export default function Swap() {
                       size="16"
                       color={
                         currencies[Field.INPUT] && currencies[Field.OUTPUT]
-                          ? theme.deprecated_text4
-                          : theme.deprecated_blue4
+                          ? theme.deprecated_bg4
+                          : theme.deprecated_bg4
                       }
                     />
                   </ArrowContainer>
                 </TraceEvent>
               </ArrowWrapper>
             </div>
-            <AutoColumn gap="md">
+            <AutoColumn gap="6px">
               <div>
                 <OutputSwapSection showDetailsDropdown={showDetailsDropdown}>
                   <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
@@ -535,7 +535,7 @@ export default function Swap() {
                     <>
                       <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
                         <ArrowWrapper clickable={false}>
-                          <ArrowDown size="16" color={theme.deprecated_text4} />
+                          <ArrowDown size="16" color={theme.deprecated_bg4} />
                         </ArrowWrapper>
                         <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                           <Trans>- Remove recipient</Trans>

@@ -38,8 +38,7 @@ import Loader from '../../components/Loader'
 import { DTL } from '../../constants/tokens'
 
 const StyledStakingHeader = styled.div`
-  padding: 8px 12px;
-  margin-bottom: 8px;
+  padding: 4px 14px;
   width: 100%;
   color: ${({ theme }) => theme.deprecated_text4};
 `
@@ -47,7 +46,7 @@ const StyledStakingHeader = styled.div`
 const StakingSection = styled.div`
   position: relative;
   background-color: ${({ theme }) => theme.backgroundModule};
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 16px;
   color: ${({ theme }) => theme.textSecondary};
   font-size: 14px;
@@ -341,7 +340,7 @@ export default function Staking() {
                       <Trans>Staking</Trans>
                     </ThemedText.DeprecatedBlack>
                   </RowFixed>
-                  <ToggleRow style={{ marginRight: '30px', marginTop: '10px' }}>
+                  <ToggleRow style={{ marginRight: '30px' }}>
                     <ToggleWrapper width="240px">
                       <ToggleElement
                         isActive={view === StakeView.STAKE}

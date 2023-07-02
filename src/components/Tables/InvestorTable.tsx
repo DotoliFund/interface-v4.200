@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { DarkGreyCard } from 'components/Card'
+import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import Percent from 'components/Percent'
@@ -14,7 +14,7 @@ import { shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
-const Wrapper = styled(DarkGreyCard)`
+const Wrapper = styled(OutlineCard)`
   width: 100%;
 `
 
@@ -161,19 +161,29 @@ export default function InvestorTable({
       <AutoColumn gap="16px">
         <ResponsiveGrid>
           <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.investor)}>
-            <Trans>Invetsor</Trans> {arrow(SORT_FIELD.investor)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Invetsor</Trans> {arrow(SORT_FIELD.investor)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.current)}>
-            <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.principal)}>
-            <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Principal</Trans> {arrow(SORT_FIELD.principal)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.ratio)}>
-            <Trans>Profit</Trans> {arrow(SORT_FIELD.ratio)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Profit</Trans> {arrow(SORT_FIELD.ratio)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.timestamp)}>
-            <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}{' '}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
         </ResponsiveGrid>
         <Break />

@@ -31,12 +31,10 @@ const LinkRow = styled(Link)`
   flex-direction: column;
 
   justify-content: space-between;
-  color: ${({ theme }) => theme.deprecated_text4};
-  margin: 8px 0;
-  padding: 16px;
+  color: ${({ theme }) => theme.textPrimary};
+  padding: 12px;
   text-decoration: none;
-  font-weight: 500;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  font-weight: 360;
 
   &:last-of-type {
     margin: 8px 0 0 0;

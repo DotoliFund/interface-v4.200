@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import AreaChart from 'components/AreaChart'
-import { DarkGreyCard } from 'components/Card'
+import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import Row, { RowFixed } from 'components/Row'
 import { MonoSpace } from 'components/shared'
@@ -46,14 +46,12 @@ const ThemedBackgroundGlobal = styled.div<{ backgroundColor: string }>`
   max-width: 100vw !important;
   height: 200vh;
   mix-blend-mode: color;
-  background: ${({ backgroundColor }) =>
-    `radial-gradient(50% 50% at 50% 50%, ${backgroundColor} 0%, rgba(255, 255, 255, 0) 100%)`};
-  transform: translateY(-150vh);
 `
 
 const ChartWrapper = styled.div`
   width: 49%;
-
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     width: 100%;
   `};
@@ -123,9 +121,9 @@ export default function Overview() {
         <>
           <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} />
           <AutoColumn gap="16px">
-            <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
+            <ThemedText.DeprecatedBody mt="16px" fontSize="32px">
               <Trans>Overview</Trans>
-            </ThemedText.DeprecatedMain>
+            </ThemedText.DeprecatedBody>
             <ResponsiveRow>
               <ChartWrapper>
                 <AreaChart
@@ -223,7 +221,7 @@ export default function Overview() {
               </ChartWrapper>
             </ResponsiveRow>
             <HideSmall>
-              <DarkGreyCard mt="10px">
+              <OutlineCard mt="10px">
                 <RowBetween>
                   <RowFixed>
                     <RowFixed mr="20px">
@@ -262,32 +260,26 @@ export default function Overview() {
                     </HideMedium>
                   </RowFixed>
                 </RowBetween>
-              </DarkGreyCard>
+              </OutlineCard>
             </HideSmall>
             <RowBetween mt="16px">
-              <ThemedText.DeprecatedMain fontSize="22px">
+              <ThemedText.DeprecatedBody fontSize="22px">
                 <Trans>Top Managers</Trans>
-              </ThemedText.DeprecatedMain>
+              </ThemedText.DeprecatedBody>
             </RowBetween>
-            <DarkGreyCard>
-              <TopManagerTable managerDatas={topManagers.data} />
-            </DarkGreyCard>
+            <TopManagerTable managerDatas={topManagers.data} />
             <RowBetween mt="16px">
-              <ThemedText.DeprecatedMain fontSize="22px">
+              <ThemedText.DeprecatedBody fontSize="22px">
                 <Trans>Top Funds</Trans>
-              </ThemedText.DeprecatedMain>
+              </ThemedText.DeprecatedBody>
             </RowBetween>
-            <DarkGreyCard>
-              <FundTable fundDatas={topFunds.data} />
-            </DarkGreyCard>
+            <FundTable fundDatas={topFunds.data} />
             <RowBetween mt="16px">
-              <ThemedText.DeprecatedMain fontSize="22px">
+              <ThemedText.DeprecatedBody fontSize="22px">
                 <Trans>WhiteList Tokens</Trans>
-              </ThemedText.DeprecatedMain>
+              </ThemedText.DeprecatedBody>
             </RowBetween>
-            <DarkGreyCard>
-              <TokenTable tokenDatas={whiteListTokens.data} />
-            </DarkGreyCard>
+            <TokenTable tokenDatas={whiteListTokens.data} />
           </AutoColumn>
         </>
       ) : chainId !== undefined ? (

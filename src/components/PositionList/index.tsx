@@ -7,10 +7,12 @@ import { MEDIA_WIDTHS } from 'theme'
 import { PositionDetails } from 'types/position'
 
 const DesktopHeader = styled.div`
+  color: ${({ theme }) => theme.textPrimary};
   display: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 350;
   padding: 8px;
+  border-bottom: 1px solid ${({ theme }) => theme.backgroundOutline};
 
   @media screen and (min-width: ${MEDIA_WIDTHS.deprecated_upToSmall}px) {
     align-items: center;
@@ -24,13 +26,15 @@ const DesktopHeader = styled.div`
 `
 
 const MobileHeader = styled.div`
-  font-weight: medium;
-  font-size: 16px;
-  font-weight: 500;
+  color: ${({ theme }) => theme.textPrimary};
+  font-size: 14px;
+  font-weight: 350;
   padding: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid ${({ theme }) => theme.backgroundOutline};
 
   @media screen and (min-width: ${MEDIA_WIDTHS.deprecated_upToSmall}px) {
     display: none;
@@ -38,8 +42,8 @@ const MobileHeader = styled.div`
 
   @media screen and (max-width: ${MEDIA_WIDTHS.deprecated_upToExtraSmall}px) {
     display: flex;
-    flex-direction: column;
-    align-items: start;
+    flex-direction: row;
+    justify-content: space-between;
   }
 `
 

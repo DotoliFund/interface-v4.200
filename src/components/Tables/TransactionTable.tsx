@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { DarkGreyCard } from 'components/Card'
+import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import HoverInlineText from 'components/HoverInlineText'
 import { LoadingRows } from 'components/Loader/styled'
@@ -15,7 +15,7 @@ import { getEtherscanLink, shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
-const Wrapper = styled(DarkGreyCard)`
+const Wrapper = styled(OutlineCard)`
   width: 100%;
 `
 
@@ -71,7 +71,7 @@ const SortText = styled.button<{ active: boolean }>`
   background-color: transparent;
   font-size: 1rem;
   padding: 0px;
-  color: ${({ active, theme }) => (active ? theme.deprecated_text4 : theme.deprecated_blue4)};
+  color: ${({ active, theme }) => (active ? theme.deprecated_text4 : theme.textTertiary)};
   outline: none;
   @media screen and (max-width: 600px) {
     font-size: 14px;
@@ -130,7 +130,7 @@ const DataRow = ({
         <Label end={1} fontWeight={400}>
           <ExternalLink
             href={getEtherscanLink(chainId ? chainId : 1, transaction.sender, 'address')}
-            style={{ color: color ?? theme.deprecated_blue4 }}
+            style={{ color: color ?? theme.accentSuccess }}
           >
             {shortenAddress(transaction.sender)}
           </ExternalLink>
@@ -258,21 +258,31 @@ export default function TransactionTable({
             </SortText>
           </RowFixed>
           <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
-            <Trans>Value</Trans> {arrow(SORT_FIELD.amountUSD)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Value</Trans> {arrow(SORT_FIELD.amountUSD)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            <Trans>Token 1</Trans> {arrow(SORT_FIELD.amountToken0)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Token 1</Trans> {arrow(SORT_FIELD.amountToken0)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            <Trans>Token 2</Trans> {arrow(SORT_FIELD.amountToken1)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Token 2</Trans> {arrow(SORT_FIELD.amountToken1)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
           {isFundPage ? (
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.sender)}>
-              <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Account</Trans> {arrow(SORT_FIELD.sender)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
           ) : null}
           <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.timestamp)}>
-            <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
+            <ThemedText.DeprecatedDarkGray>
+              <Trans>Time</Trans> {arrow(SORT_FIELD.timestamp)}
+            </ThemedText.DeprecatedDarkGray>
           </ClickableText>
         </ResponsiveGrid>
         <Break />

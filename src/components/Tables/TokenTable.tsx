@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { DarkGreyCard } from 'components/Card'
+import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import { Arrow, Break, PageButtons } from 'components/shared'
@@ -8,11 +8,12 @@ import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink } from 'theme'
+import { ThemedText } from 'theme'
 import { Token } from 'types/fund'
 import { getEtherscanLink } from 'utils'
 import { formatTime } from 'utils/date'
 
-const Wrapper = styled(DarkGreyCard)`
+const Wrapper = styled(OutlineCard)`
   width: 100%;
 `
 
@@ -140,13 +141,19 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
           <ResponsiveGrid>
             <Label color={theme.deprecated_text4}>#</Label>
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.name)}>
-              <Trans>Name</Trans> {arrow(SORT_FIELD.name)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Name</Trans> {arrow(SORT_FIELD.name)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
             <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.address)}>
-              <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.updateDate)}>
-              <Trans>Update</Trans> {arrow(SORT_FIELD.updateDate)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Update</Trans> {arrow(SORT_FIELD.updateDate)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
           </ResponsiveGrid>
           <Break />

@@ -14,16 +14,13 @@ const LinkRow = styled(Link)`
   display: flex;
   cursor: pointer;
   user-select: none;
-  display: flex;
   flex-direction: column;
 
   justify-content: space-between;
-  color: ${({ theme }) => theme.deprecated_text4};
-  margin: 8px 0;
-  padding: 16px;
+  color: ${({ theme }) => theme.textPrimary};
+  padding: 12px;
   text-decoration: none;
-  font-weight: 500;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  font-weight: 360;
 
   &:last-of-type {
     margin: 8px 0 0 0;
@@ -46,7 +43,7 @@ const LinkRow = styled(Link)`
 `
 
 const DataLineItem = styled.div`
-  font-size: 14px;
+  font-size: 18px;
 `
 
 const RangeLineItem = styled(DataLineItem)`
@@ -70,8 +67,8 @@ const RangeText = styled.span`
 `
 
 const ExtentsText = styled.span`
-  color: ${({ theme }) => theme.deprecated_text4};
   font-size: 14px;
+  color: ${({ theme }) => theme.textSecondary};
   margin-right: 4px;
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     display: none;

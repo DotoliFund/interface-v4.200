@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
 import { RowBetween, RowFixed } from 'components/Row'
-import SettingsTab from 'components/Settings'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
@@ -21,9 +20,9 @@ export default function SwapHeader({ allowedSlippage }: { allowedSlippage: Perce
             <Trans>Swap</Trans>
           </ThemedText.DeprecatedBlack>
         </RowFixed>
-        <RowFixed>
+        {/* <RowFixed>
           <SettingsTab placeholderSlippage={allowedSlippage} />
-        </RowFixed>
+        </RowFixed> */}
       </RowBetween>
     </StyledSwapHeader>
   )

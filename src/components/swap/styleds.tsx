@@ -29,7 +29,9 @@ export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string }>`
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.backgroundOutline};
   padding: 8px;
-  z-index: ${Z_INDEX.deprecated_zero};
+  padding-top: 12px;
+  transition: transform 250ms ease;
+  z-index: ${Z_INDEX.default};
 `
 
 export const ArrowWrapper = styled.div<{ clickable: boolean }>`

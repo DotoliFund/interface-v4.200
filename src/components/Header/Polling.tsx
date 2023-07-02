@@ -30,7 +30,13 @@ const StyledPolling = styled.div<{ warning: boolean }>`
     display: none;
   `}
 `
-const StyledPollingNumber = styled(ThemedText.DeprecatedSmall)<{ breathe: boolean; hovering: boolean }>`
+
+const StyledPollingBlockNumber = styled(ThemedText.DeprecatedSmall)<{
+  breathe: boolean
+  hovering: boolean
+  warning: boolean
+}>`
+  color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.accentSuccess)};
   transition: opacity 0.25s ease;
   opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
   :hover {
@@ -45,6 +51,7 @@ const StyledPollingNumber = styled(ThemedText.DeprecatedSmall)<{ breathe: boolea
     color: unset;
   }
 `
+
 const StyledPollingDot = styled.div<{ warning: boolean }>`
   width: 8px;
   height: 8px;
@@ -52,7 +59,7 @@ const StyledPollingDot = styled.div<{ warning: boolean }>`
   min-width: 8px;
   border-radius: 50%;
   position: relative;
-  background-color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.deprecated_yellow2)};
+  background-color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.accentSuccess)};
   transition: 250ms ease background-color;
 `
 
@@ -158,7 +165,7 @@ export default function Polling() {
               </RowFixed>
             ) : null}
           </ExternalLink>
-          <StyledPollingNumber breathe={isMounting} hovering={isHover}>
+          <StyledPollingBlockNumber breathe={isMounting} hovering={isHover} warning={warning}>
             <ExternalLink
               href={
                 chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), ExplorerDataType.BLOCK) : ''
@@ -170,8 +177,8 @@ export default function Polling() {
                 {blockNumber}&ensp;
               </MouseoverTooltip>
             </ExternalLink>
-          </StyledPollingNumber>
-          <StyledPollingDot warning={warning}>{isMounting && <Spinner warning={warning} />}</StyledPollingDot>{' '}
+          </StyledPollingBlockNumber>
+          <StyledPollingDot warning={warning}>{isMounting && <Spinner warning={warning} />}</StyledPollingDot>
         </StyledPolling>
         {warning && <ChainConnectivityWarning />}
       </RowFixed>

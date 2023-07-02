@@ -10,7 +10,7 @@ const Wrapper = styled(ThemedText.DeprecatedMain)<{
 }>`
   font-size: ${({ fontSize }) => fontSize};
   font-weight: ${({ fontWeight }) => fontWeight};
-  color: ${({ theme, negative }) => (negative ? theme.deprecated_yellow1 : theme.deprecated_blue4)};
+  color: ${({ theme, negative }) => (negative ? theme.accentFailure : theme.accentSuccess)};
 `
 
 interface LogoProps {

@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { DarkGreyCard } from 'components/Card'
+import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import { Arrow, Break, PageButtons } from 'components/shared'
@@ -7,12 +7,13 @@ import { ClickableText, Label } from 'components/Text'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { TopFund } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { unixToDate } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
-const Wrapper = styled(DarkGreyCard)`
+const Wrapper = styled(OutlineCard)`
   width: 100%;
 `
 
@@ -154,19 +155,29 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
         <AutoColumn gap="16px">
           <ResponsiveGrid>
             <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.fund)}>
-              <Trans>Fund</Trans> {arrow(SORT_FIELD.fund)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Fund</Trans> {arrow(SORT_FIELD.fund)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.current)}>
-              <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Current</Trans> {arrow(SORT_FIELD.current)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.manager)}>
-              <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Manager</Trans> {arrow(SORT_FIELD.manager)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.investorCount)}>
-              <Trans>Investors</Trans> {arrow(SORT_FIELD.investorCount)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Investors</Trans> {arrow(SORT_FIELD.investorCount)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
             <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.created)}>
-              <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
           </ResponsiveGrid>
           <Break />
