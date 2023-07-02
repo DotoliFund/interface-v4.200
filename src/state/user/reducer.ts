@@ -125,9 +125,6 @@ const userSlice = createSlice({
     updateHideClosedFunds(state, action) {
       state.userHideClosedFunds = action.payload.userHideClosedFunds
     },
-    updateShowSurveyPopup(state, action) {
-      state.showSurveyPopup = action.payload.showSurveyPopup
-    },
     updateShowDonationLink(state, action) {
       state.showDonationLink = action.payload.showDonationLink
     },
@@ -140,14 +137,6 @@ const userSlice = createSlice({
       }
       state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
       state.tokens[serializedToken.chainId][serializedToken.address] = serializedToken
-      state.timestamp = currentTimestamp()
-    },
-    removeSerializedToken(state, { payload: { address, chainId } }) {
-      if (!state.tokens) {
-        state.tokens = {}
-      }
-      state.tokens[chainId] = state.tokens[chainId] || {}
-      delete state.tokens[chainId][address]
       state.timestamp = currentTimestamp()
     },
     addSerializedPair(state, { payload: { serializedPair } }) {
@@ -210,10 +199,8 @@ const userSlice = createSlice({
 export const {
   updateSelectedWallet,
   addSerializedToken,
-  removeSerializedToken,
   updateHideClosedPositions,
   updateMatchesDarkMode,
-  updateShowSurveyPopup,
   updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
