@@ -92,8 +92,16 @@ const ToggleRow = styled(RowFlat)`
   }
 `
 
+const PieChartWrapper = styled(DarkGreyCard)`
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+`
+
+const ChartWrapper = styled(DarkGreyCard)`
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+`
+
 enum ChartView {
-  VOL_USD,
+  CURRENT_ASSET_TOKENS,
   TOKENS,
   FEES,
 }
@@ -160,7 +168,7 @@ export default function FundPage() {
   const managerData = useManagerData(currentPageFund).data
   const investors = useInvestors(currentPageFund).data
 
-  const [view, setView] = useState(ChartView.VOL_USD)
+  const [view, setView] = useState(ChartView.CURRENT_ASSET_TOKENS)
 
   // chart hover index
   const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
@@ -398,7 +406,7 @@ export default function FundPage() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -430,7 +438,7 @@ export default function FundPage() {
               )}
             </ResponsiveRow>
             <ContentLayout>
-              <DarkGreyCard>
+              <PieChartWrapper>
                 <AutoColumn gap="md">
                   <AutoRow gap="md">
                     <ThemedText.DeprecatedMain ml="8px">
@@ -442,14 +450,16 @@ export default function FundPage() {
                     color={activeNetwork.primaryColor}
                   />
                 </AutoColumn>
-              </DarkGreyCard>
-              <DarkGreyCard>
+              </PieChartWrapper>
+              <ChartWrapper>
                 <ToggleRow>
                   <ToggleWrapper width="260px">
                     <ToggleElement
-                      isActive={view === ChartView.VOL_USD}
+                      isActive={view === ChartView.CURRENT_ASSET_TOKENS}
                       fontSize="12px"
-                      onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
+                      onClick={() =>
+                        view === ChartView.CURRENT_ASSET_TOKENS ? {} : setView(ChartView.CURRENT_ASSET_TOKENS)
+                      }
                     >
                       <Trans>Current Asset</Trans>
                     </ToggleElement>
@@ -473,7 +483,7 @@ export default function FundPage() {
                     )}
                   </ToggleWrapper>
                 </ToggleRow>
-                {view === ChartView.VOL_USD ? (
+                {view === ChartView.CURRENT_ASSET_TOKENS ? (
                   <VolumeBarChart
                     data={formattedVolumeUSD}
                     color={activeNetwork.primaryColor}
@@ -632,44 +642,38 @@ export default function FundPage() {
                     }
                   />
                 ) : null}
-              </DarkGreyCard>
+              </ChartWrapper>
             </ContentLayout>
             <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Manager</Trans>
             </ThemedText.DeprecatedMain>
-            <DarkGreyCard>
-              {managerData ? (
-                <ManagerTable managerData={managerData} />
-              ) : (
-                <LoadingRows>
-                  <div />
-                </LoadingRows>
-              )}{' '}
-            </DarkGreyCard>
+            {managerData ? (
+              <ManagerTable managerData={managerData} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}{' '}
             <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Investors</Trans>
             </ThemedText.DeprecatedMain>
-            <DarkGreyCard>
-              {investors ? (
-                <InvestorTable investors={investors} />
-              ) : (
-                <LoadingRows>
-                  <div />
-                </LoadingRows>
-              )}{' '}
-            </DarkGreyCard>
+            {investors ? (
+              <InvestorTable investors={investors} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}{' '}
             <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Transactions</Trans>
             </ThemedText.DeprecatedMain>
-            <DarkGreyCard>
-              {transactions ? (
-                <TransactionTable transactions={transactions} isFundPage={true} />
-              ) : (
-                <LoadingRows>
-                  <div />
-                </LoadingRows>
-              )}
-            </DarkGreyCard>
+            {transactions ? (
+              <TransactionTable transactions={transactions} isFundPage={true} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}
           </AutoColumn>
         ) : (
           <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>

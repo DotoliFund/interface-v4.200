@@ -19,6 +19,7 @@ import { Suspense, useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
 import styled from 'styled-components/macro'
+import { flexRowNoWrap } from 'theme/styles'
 import { Z_INDEX } from 'theme/zIndex'
 import { getBrowser } from 'utils/browser'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
@@ -28,7 +29,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import Polling from '../components/Header/Polling'
 import Popups from '../components/Popups'
 import { useIsExpertMode } from '../state/user/hooks'
-import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
+import DarkModeQueryParamReader from '../theme/components/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
 import { PositionPage } from './Pool/PositionPage'
@@ -52,13 +53,15 @@ const BodyWrapper = styled.div`
   `};
 `
 
-const HeaderWrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
+const HeaderWrapper = styled.div<{ transparent?: boolean }>`
+  ${flexRowNoWrap};
+  background-color: ${({ theme, transparent }) => !transparent && theme.backgroundSurface};
+  border-bottom: ${({ theme, transparent }) => !transparent && `1px solid ${theme.backgroundOutline}`};
   width: 100%;
   justify-content: space-between;
   position: fixed;
   top: 0;
-  z-index: ${Z_INDEX.sticky};
+  z-index: ${Z_INDEX.dropdown};
 `
 
 const Marginer = styled.div`

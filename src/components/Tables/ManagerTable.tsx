@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { DarkGreyCard } from 'components/Card'
+import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
 import Percent from 'components/Percent'
@@ -8,12 +8,13 @@ import { ClickableText, Label } from 'components/Text'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 import { Manager } from 'types/fund'
 import { shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
-const Wrapper = styled(DarkGreyCard)`
+const Wrapper = styled(OutlineCard)`
   width: 100%;
 `
 
@@ -97,20 +98,30 @@ export default function ManagerTable({ managerData }: { managerData: Manager }) 
       {managerData ? (
         <AutoColumn gap="16px">
           <ResponsiveGrid>
-            <ClickableText color={theme.deprecated_text2}>
-              <Trans>Manager</Trans>
+            <ClickableText color={theme.deprecated_text4}>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Manager</Trans>
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
-              <Trans>Current</Trans>
+            <ClickableText end={1} color={theme.deprecated_text4}>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Current</Trans>
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
-              <Trans>Principal</Trans>
+            <ClickableText end={1} color={theme.deprecated_text4}>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Principal</Trans>
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
-              <Trans>Profit</Trans>
+            <ClickableText end={1} color={theme.deprecated_text4}>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Profit</Trans>
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text2}>
-              <Trans>Time</Trans>
+            <ClickableText end={1} color={theme.deprecated_text4}>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>Time</Trans>
+              </ThemedText.DeprecatedDarkGray>
             </ClickableText>
           </ResponsiveGrid>
           <Break />

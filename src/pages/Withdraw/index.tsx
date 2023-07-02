@@ -39,7 +39,7 @@ const StyledWithdrawHeader = styled.div`
   padding: 8px 12px;
   margin-bottom: 8px;
   width: 100%;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
 `
 
 const WithdrawSection = styled.div`
@@ -195,7 +195,7 @@ export default function Withdraw() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>

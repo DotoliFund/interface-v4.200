@@ -49,6 +49,7 @@ import { formatTime, unixToDate } from 'utils/date'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 
 const PageWrapper = styled.div`
+  margintop: '280px';
   width: 90%;
 `
 
@@ -100,7 +101,7 @@ const MoreOptionsButton = styled(ButtonGray)`
   flex: 1 1 auto;
   padding: 6px 8px;
   width: 100%;
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.deprecated_bg1};
   margin-right: 8px;
 `
 
@@ -131,7 +132,7 @@ const MenuItem = styled.div`
 `
 
 const TitleRow = styled(RowBetween)`
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     flex-wrap: wrap;
     gap: 12px;
@@ -172,20 +173,29 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 `
 
 const MainContentWrapper = styled.main`
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.backgroundSurface};
   padding: 8px;
   border-radius: 20px;
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
   display: flex;
   flex-direction: column;
 `
 
 const HoverText = styled(ThemedText.DeprecatedMain)`
   text-decoration: none;
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_text4};
     text-decoration: none;
   }
+`
+
+const PieChartWrapper = styled(DarkGreyCard)`
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+`
+
+const ChartWrapper = styled(DarkGreyCard)`
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
 `
 
 enum ChartView {
@@ -765,7 +775,7 @@ export default function FundAccount() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -787,14 +797,16 @@ export default function FundAccount() {
                   to={`/fund/${investorData.fundId}`}
                 >
                   <HoverText>
-                    <Trans>← Back to Fund</Trans>
+                    <ThemedText.DeprecatedDarkGray>
+                      <Trans>← Back to Fund</Trans>
+                    </ThemedText.DeprecatedDarkGray>
                   </HoverText>
                 </Link>
               </AutoRow>
             </RowBetween>
             <ResponsiveRow align="flex-end">
               <ExternalLink href={getEtherscanLink(chainId, investorData.investor, 'address')}>
-                <ThemedText.DeprecatedLabel ml="8px" mr="8px" fontSize="24px">
+                <ThemedText.DeprecatedLabel m="8px" fontSize="24px">
                   {investorData.isManager ? <Trans>Manager </Trans> : <Trans>Investor </Trans>} :{' '}
                   {shortenAddress(investorData.investor)}
                 </ThemedText.DeprecatedLabel>
@@ -806,7 +818,7 @@ export default function FundAccount() {
               )}
             </ResponsiveRow>
             <ContentLayout>
-              <DarkGreyCard>
+              <PieChartWrapper>
                 <AutoColumn gap="md">
                   <AutoRow gap="md">
                     <ThemedText.DeprecatedMain ml="8px">
@@ -815,8 +827,8 @@ export default function FundAccount() {
                   </AutoRow>
                   <PieChart data={tokenHover} color={activeNetwork.primaryColor} />
                 </AutoColumn>
-              </DarkGreyCard>
-              <DarkGreyCard>
+              </PieChartWrapper>
+              <ChartWrapper>
                 <ToggleRow>
                   <ToggleWrapper width="240px">
                     <ToggleElement
@@ -1029,7 +1041,7 @@ export default function FundAccount() {
                     }
                   />
                 ) : null}
-              </DarkGreyCard>
+              </ChartWrapper>
             </ContentLayout>
             <TitleRow mt="16px">
               <ThemedText.DeprecatedMain fontSize="24px">
@@ -1059,7 +1071,7 @@ export default function FundAccount() {
                 />
               ) : (
                 <ErrorContainer>
-                  <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                  <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                     <InboxIcon strokeWidth={1} />
                     <div>
                       <Trans>Your active V3 liquidity positions will appear here.</Trans>
@@ -1079,27 +1091,23 @@ export default function FundAccount() {
             <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Transactions</Trans>
             </ThemedText.DeprecatedMain>
-            <DarkGreyCard>
-              {transactions ? (
-                <TransactionTable transactions={transactions} isFundPage={false} />
-              ) : (
-                <LoadingRows>
-                  <div />
-                </LoadingRows>
-              )}
-            </DarkGreyCard>
+            {transactions ? (
+              <TransactionTable transactions={transactions} isFundPage={false} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}
             <ThemedText.DeprecatedMain mt="16px" fontSize="22px">
               <Trans>Liquidity Transactions</Trans>
             </ThemedText.DeprecatedMain>
-            <DarkGreyCard>
-              {liquidityTransactions ? (
-                <LiquidityTransactionTable transactions={liquidityTransactions} />
-              ) : (
-                <LoadingRows>
-                  <div />
-                </LoadingRows>
-              )}
-            </DarkGreyCard>
+            {liquidityTransactions ? (
+              <LiquidityTransactionTable transactions={liquidityTransactions} />
+            ) : (
+              <LoadingRows>
+                <div />
+              </LoadingRows>
+            )}
           </AutoColumn>
         ) : (
           <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>

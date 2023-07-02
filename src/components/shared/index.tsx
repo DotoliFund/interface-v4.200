@@ -10,7 +10,7 @@ export const PageButtons = styled.div`
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
-  color: ${({ theme }) => theme.deprecated_primary1};
+  color: ${({ theme }) => theme.deprecated_primary3};
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 20px;
   user-select: none;

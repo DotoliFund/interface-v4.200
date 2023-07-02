@@ -9,6 +9,7 @@ import { useMemo, useRef } from 'react'
 import { AlertTriangle, ChevronDown, ChevronUp } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
 import styled, { useTheme } from 'styled-components/macro'
+import { flexRowNoWrap } from 'theme/styles'
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import {
@@ -48,7 +49,7 @@ const ChevronWrapper = styled.button`
 `
 
 const Web3StatusGeneric = styled(ButtonSecondary)`
-  ${({ theme }) => theme.flexRowNoWrap}
+  ${flexRowNoWrap}
   width: 100%;
   align-items: center;
   padding: 0.5rem;
@@ -63,18 +64,18 @@ const Web3StatusGeneric = styled(ButtonSecondary)`
   }
 `
 const Web3StatusError = styled(Web3StatusGeneric)`
-  background-color: ${({ theme }) => theme.deprecated_red1};
-  border: 1px solid ${({ theme }) => theme.deprecated_red1};
-  color: ${({ theme }) => theme.deprecated_white};
+  background-color: ${({ theme }) => theme.deprecated_yellow1};
+  border: 1px solid ${({ theme }) => theme.deprecated_yellow2};
+  color: ${({ theme }) => theme.deprecated_text4};
   font-weight: 500;
   :hover,
   :focus {
-    background-color: ${({ theme }) => darken(0.1, theme.deprecated_red1)};
+    background-color: ${({ theme }) => darken(0.1, theme.deprecated_yellow3)};
   }
 `
 
 const Web3StatusConnectWrapper = styled.div<{ faded?: boolean }>`
-  ${({ theme }) => theme.flexRowNoWrap}
+  ${flexRowNoWrap}
   align-items: center;
   background-color: ${({ theme }) => theme.accentActionSoft};
   border-radius: ${FULL_BORDER_RADIUS}px;
@@ -90,9 +91,9 @@ const Web3StatusConnectWrapper = styled.div<{ faded?: boolean }>`
 `
 
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
-  background-color: ${({ pending, theme }) => (pending ? theme.deprecated_primary1 : theme.deprecated_bg1)};
-  border: 1px solid ${({ pending, theme }) => (pending ? theme.deprecated_primary1 : theme.deprecated_bg1)};
-  color: ${({ pending, theme }) => (pending ? theme.deprecated_white : theme.deprecated_text1)};
+  background-color: ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.deprecated_bg1)};
+  border: 1px solid ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.deprecated_bg1)};
+  color: ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.deprecated_blue4)};
   font-weight: 500;
   :hover,
   :focus {
@@ -101,7 +102,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
     :focus {
       border: 1px solid
         ${({ pending, theme }) =>
-          pending ? darken(0.1, theme.deprecated_primary1) : darken(0.1, theme.deprecated_bg2)};
+          pending ? darken(0.1, theme.deprecated_primary2) : darken(0.1, theme.deprecated_bg1)};
     }
   }
 `

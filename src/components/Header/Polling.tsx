@@ -23,14 +23,20 @@ const StyledPolling = styled.div<{ warning: boolean }>`
   right: 0;
   bottom: 0;
   padding: 1rem;
-  color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.deprecated_green1)};
+  color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.deprecated_yellow3)};
   transition: 250ms ease color;
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
     display: none;
   `}
 `
-const StyledPollingNumber = styled(ThemedText.DeprecatedSmall)<{ breathe: boolean; hovering: boolean }>`
+
+const StyledPollingBlockNumber = styled(ThemedText.DeprecatedSmall)<{
+  breathe: boolean
+  hovering: boolean
+  warning: boolean
+}>`
+  color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.accentSuccess)};
   transition: opacity 0.25s ease;
   opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
   :hover {
@@ -45,6 +51,7 @@ const StyledPollingNumber = styled(ThemedText.DeprecatedSmall)<{ breathe: boolea
     color: unset;
   }
 `
+
 const StyledPollingDot = styled.div<{ warning: boolean }>`
   width: 8px;
   height: 8px;
@@ -52,12 +59,12 @@ const StyledPollingDot = styled.div<{ warning: boolean }>`
   min-width: 8px;
   border-radius: 50%;
   position: relative;
-  background-color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.deprecated_green1)};
+  background-color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.accentSuccess)};
   transition: 250ms ease background-color;
 `
 
 const StyledGasDot = styled.div`
-  background-color: ${({ theme }) => theme.deprecated_text3};
+  background-color: ${({ theme }) => theme.deprecated_text4};
   border-radius: 50%;
   height: 4px;
   min-height: 4px;
@@ -83,7 +90,7 @@ const Spinner = styled.div<{ warning: boolean }>`
   border-top: 1px solid transparent;
   border-right: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  border-left: 2px solid ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.deprecated_green1)};
+  border-left: 2px solid ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.deprecated_yellow1)};
   background: transparent;
   width: 14px;
   height: 14px;
@@ -142,7 +149,7 @@ export default function Polling() {
           <ExternalLink href="https://etherscan.io/gastracker">
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
-                <ThemedText.DeprecatedMain fontSize="11px" mr="8px" color={theme.deprecated_text3}>
+                <ThemedText.DeprecatedMain fontSize="11px" mr="8px" color={theme.deprecated_text4}>
                   <MouseoverTooltip
                     text={
                       <Trans>
@@ -158,7 +165,7 @@ export default function Polling() {
               </RowFixed>
             ) : null}
           </ExternalLink>
-          <StyledPollingNumber breathe={isMounting} hovering={isHover}>
+          <StyledPollingBlockNumber breathe={isMounting} hovering={isHover} warning={warning}>
             <ExternalLink
               href={
                 chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), ExplorerDataType.BLOCK) : ''
@@ -170,8 +177,8 @@ export default function Polling() {
                 {blockNumber}&ensp;
               </MouseoverTooltip>
             </ExternalLink>
-          </StyledPollingNumber>
-          <StyledPollingDot warning={warning}>{isMounting && <Spinner warning={warning} />}</StyledPollingDot>{' '}
+          </StyledPollingBlockNumber>
+          <StyledPollingDot warning={warning}>{isMounting && <Spinner warning={warning} />}</StyledPollingDot>
         </StyledPolling>
         {warning && <ChainConnectivityWarning />}
       </RowFixed>

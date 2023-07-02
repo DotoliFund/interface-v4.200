@@ -38,7 +38,7 @@ const PageWrapper = styled(AutoColumn)`
   `};
 `
 const TitleRow = styled(RowBetween)`
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
     flex-wrap: wrap;
     gap: 12px;
@@ -92,11 +92,14 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 `
 
 const MainContentWrapper = styled.main`
-  background-color: ${({ theme }) => theme.deprecated_bg0};
+  background-color: ${({ theme }) => theme.backgroundSurface};
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
   padding: 8px;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
+    0px 24px 32px rgba(0, 0, 0, 0.01);
 `
 
 function FundsLoadingPlaceholder() {
@@ -126,14 +129,14 @@ function WrongNetworkCard() {
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding="0">
-              <ThemedText.DeprecatedBody fontSize="20px">
+              <ThemedText.DeprecatedBody fontSize="32px">
                 <Trans>My Account</Trans>
               </ThemedText.DeprecatedBody>
             </TitleRow>
 
             <MainContentWrapper>
               <ErrorContainer>
-                <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                   <NetworkIcon strokeWidth={1.2} />
                   <div data-testid="pools-unsupported-err">
                     <Trans>Your connected network is unsupported.</Trans>
@@ -278,7 +281,7 @@ export default function Account() {
           <AutoColumn gap="lg" justify="center">
             <AutoColumn gap="lg" style={{ width: '100%' }}>
               <TitleRow padding="0">
-                <ThemedText.DeprecatedBody fontSize="20px">
+                <ThemedText.DeprecatedBody fontSize="32px">
                   <Trans>My Account</Trans>
                 </ThemedText.DeprecatedBody>
                 <ButtonRow>
@@ -305,7 +308,7 @@ export default function Account() {
                   <FundList isManagingFund={true} funds={managingFundInfo} />
                 ) : (
                   <ErrorContainer>
-                    <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                    <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                       <InboxIcon strokeWidth={1} />
                       <div>
                         <Trans>Your managing fund will appear here.</Trans>
@@ -321,7 +324,7 @@ export default function Account() {
                   <FundList isManagingFund={false} funds={investingFundsInfo} />
                 ) : (
                   <ErrorContainer>
-                    <ThemedText.DeprecatedBody color={theme.deprecated_text3} textAlign="center">
+                    <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
                       <InboxIcon strokeWidth={1} />
                       <div>
                         <Trans>Your investing funds will appear here.</Trans>

@@ -11,6 +11,7 @@ import { DarkCard, LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
+import { LoadingRows } from 'components/Loader/styled'
 import { RowBetween, RowFixed } from 'components/Row'
 import { Dots } from 'components/swap/styleds'
 import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
@@ -29,6 +30,7 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import ClipLoader from 'react-spinners/ClipLoader'
 import { Bound } from 'state/mint/v3/actions'
 import { useIsTransactionPending, useTransactionAdder } from 'state/transactions/hooks'
 import styled, { useTheme } from 'styled-components/macro'
@@ -46,20 +48,31 @@ import { usePositionTokenURI } from '../../hooks/usePositionTokenURI'
 import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { LoadingRows } from './styleds'
+
+const LightCardWrapper = styled(LightCard)`
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+  width: 100%;
+`
+
+const CardWrapper = styled(DarkCard)`
+  background-color: ${({ theme }) => theme.backgroundFloating};
+  width: 100%;
+`
 
 const PageWrapper = styled.div`
-  padding: 68px 8px 0px;
+  padding: 68px 16px 16px 16px;
 
   min-width: 800px;
   max-width: 960px;
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
-    padding: 48px 8px 0px;
+    min-width: 100%;
+    padding: 16px;
   }
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
-    padding-top: 20px;
+    min-width: 100%;
+    padding: 16px;
   }
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
@@ -99,7 +112,7 @@ const Label = styled(({ end, ...props }) => <ThemedText.DeprecatedLabel {...prop
 `
 
 const ExtentsText = styled.span`
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
   font-size: 14px;
   text-align: center;
   margin-right: 4px;
@@ -108,15 +121,15 @@ const ExtentsText = styled.span`
 
 const HoverText = styled(ThemedText.DeprecatedMain)`
   text-decoration: none;
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   :hover {
-    color: ${({ theme }) => theme.deprecated_text1};
+    color: ${({ theme }) => theme.deprecated_text4};
     text-decoration: none;
   }
 `
 
 const DoubleArrow = styled.span`
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.deprecated_text4};
   margin: 0 1rem;
 `
 const ResponsiveRow = styled(RowBetween)`
@@ -171,7 +184,7 @@ function CurrentPriceCard({
   }
 
   return (
-    <LightCard padding="12px ">
+    <LightCardWrapper padding="12px ">
       <AutoColumn gap="8px" justify="center">
         <ExtentsText>
           <Trans>Current price</Trans>
@@ -185,7 +198,7 @@ function CurrentPriceCard({
           </Trans>
         </ExtentsText>
       </AutoColumn>
-    </LightCard>
+    </LightCardWrapper>
   )
 }
 
@@ -555,7 +568,7 @@ export function PositionPage() {
   function modalHeader() {
     return (
       <AutoColumn gap="md" style={{ marginTop: '20px' }}>
-        <LightCard padding="12px 16px">
+        <LightCardWrapper padding="12px 16px">
           <AutoColumn gap="md">
             <RowBetween>
               <RowFixed>
@@ -576,7 +589,7 @@ export function PositionPage() {
               <ThemedText.DeprecatedMain>{feeValueLower?.currency?.symbol}</ThemedText.DeprecatedMain>
             </RowBetween>
           </AutoColumn>
-        </LightCard>
+        </LightCardWrapper>
         <ThemedText.DeprecatedItalic>
           <Trans>Collecting fees will withdraw currently available fees for you.</Trans>
         </ThemedText.DeprecatedItalic>
@@ -590,7 +603,7 @@ export function PositionPage() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -600,9 +613,9 @@ export function PositionPage() {
     )
   } else {
     return loading || poolState === PoolState.LOADING || !feeAmount ? (
-      <LoadingRows>
-        <div style={{ height: '250px' }} />
-      </LoadingRows>
+      <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '280px' }}>
+        <ClipLoader color="#ffffff" loading={true} size={50} aria-label="Loading Spinner" data-testid="loader" />
+      </div>
     ) : (
       <>
         <PageWrapper>
@@ -630,7 +643,9 @@ export function PositionPage() {
                 to={`/fund/${fundId}/${investor}`}
               >
                 <HoverText>
-                  <Trans>← Back to Fund</Trans>
+                  <ThemedText.DeprecatedDarkGray>
+                    <Trans>← Back to Fund Account</Trans>
+                  </ThemedText.DeprecatedDarkGray>
                 </HoverText>
               </Link>
               <ResponsiveRow>
@@ -678,23 +693,25 @@ export function PositionPage() {
             </AutoColumn>
             <ResponsiveRow align="flex-start">
               {'result' in metadata ? (
-                <DarkCard
+                <CardWrapper
                   width="100%"
                   height="100%"
+                  border="1px solid ${({ theme }) => theme.backgroundOutline};
+                  "
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
-                    marginRight: '12px',
+                    minWidth: '340px',
                   }}
                 >
-                  <div style={{ marginRight: 12 }}>
+                  <div style={{ marginRight: 6 }}>
                     <NFT image={metadata.result.image} height={400} />
                   </div>
-                </DarkCard>
+                </CardWrapper>
               ) : (
-                <DarkCard
+                <CardWrapper
                   width="100%"
                   height="100%"
                   style={{
@@ -705,10 +722,10 @@ export function PositionPage() {
                   <LoadingRows>
                     <div />
                   </LoadingRows>
-                </DarkCard>
+                </CardWrapper>
               )}
               <AutoColumn gap="sm" style={{ width: '100%', height: '100%' }}>
-                <DarkCard>
+                <CardWrapper>
                   <AutoColumn gap="md" style={{ width: '100%' }}>
                     <AutoColumn gap="md">
                       <Label>
@@ -720,7 +737,7 @@ export function PositionPage() {
                         </ThemedText.DeprecatedLargeHeader>
                       ) : (
                         <ThemedText.DeprecatedLargeHeader
-                          color={theme.deprecated_text1}
+                          color={theme.deprecated_text4}
                           fontSize="36px"
                           fontWeight={500}
                         >
@@ -728,7 +745,7 @@ export function PositionPage() {
                         </ThemedText.DeprecatedLargeHeader>
                       )}
                     </AutoColumn>
-                    <LightCard padding="12px 16px">
+                    <LightCardWrapper padding="12px 16px">
                       <AutoColumn gap="md">
                         <RowBetween>
                           <LinkedCurrency chainId={chainId} currency={currencyQuote} />
@@ -753,7 +770,7 @@ export function PositionPage() {
                             </ThemedText.DeprecatedMain>
                             {typeof ratio === 'number' && !removed ? (
                               <Badge style={{ marginLeft: '10px' }}>
-                                <ThemedText.DeprecatedMain color={theme.deprecated_text2} fontSize={11}>
+                                <ThemedText.DeprecatedMain color={theme.deprecated_text4} fontSize={11}>
                                   <Trans>{inverted ? 100 - ratio : ratio}%</Trans>
                                 </ThemedText.DeprecatedMain>
                               </Badge>
@@ -761,10 +778,10 @@ export function PositionPage() {
                           </RowFixed>
                         </RowBetween>
                       </AutoColumn>
-                    </LightCard>
+                    </LightCardWrapper>
                   </AutoColumn>
-                </DarkCard>
-                <DarkCard>
+                </CardWrapper>
+                <CardWrapper>
                   <AutoColumn gap="md" style={{ width: '100%' }}>
                     <AutoColumn gap="md">
                       <RowBetween style={{ alignItems: 'flex-start' }}>
@@ -774,7 +791,7 @@ export function PositionPage() {
                           </Label>
                           {fiatValueOfFees?.greaterThan(new Fraction(1, 100)) ? (
                             <ThemedText.DeprecatedLargeHeader
-                              color={theme.deprecated_green1}
+                              color={theme.deprecated_yellow1}
                               fontSize="36px"
                               fontWeight={500}
                             >
@@ -782,7 +799,7 @@ export function PositionPage() {
                             </ThemedText.DeprecatedLargeHeader>
                           ) : (
                             <ThemedText.DeprecatedLargeHeader
-                              color={theme.deprecated_text1}
+                              color={theme.deprecated_text4}
                               fontSize="36px"
                               fontWeight={500}
                             >
@@ -801,11 +818,11 @@ export function PositionPage() {
                             onClick={() => setShowConfirm(true)}
                           >
                             {!!collectMigrationHash && !isCollectPending ? (
-                              <ThemedText.DeprecatedMain color={theme.deprecated_text1}>
+                              <ThemedText.DeprecatedMain color={theme.deprecated_text4}>
                                 <Trans> Collected</Trans>
                               </ThemedText.DeprecatedMain>
                             ) : isCollectPending || collecting ? (
-                              <ThemedText.DeprecatedMain color={theme.deprecated_text1}>
+                              <ThemedText.DeprecatedMain color={theme.deprecated_text4}>
                                 {' '}
                                 <Dots>
                                   <Trans>Collecting</Trans>
@@ -813,7 +830,7 @@ export function PositionPage() {
                               </ThemedText.DeprecatedMain>
                             ) : (
                               <>
-                                <ThemedText.DeprecatedMain color={theme.deprecated_white}>
+                                <ThemedText.DeprecatedMain color={theme.deprecated_yellow1}>
                                   <Trans>Collect fees</Trans>
                                 </ThemedText.DeprecatedMain>
                               </>
@@ -822,7 +839,7 @@ export function PositionPage() {
                         ) : null}
                       </RowBetween>
                     </AutoColumn>
-                    <LightCard padding="12px 16px">
+                    <LightCardWrapper padding="12px 16px">
                       <AutoColumn gap="md">
                         <RowBetween>
                           <RowFixed>
@@ -855,12 +872,12 @@ export function PositionPage() {
                           </RowFixed>
                         </RowBetween>
                       </AutoColumn>
-                    </LightCard>
+                    </LightCardWrapper>
                   </AutoColumn>
-                </DarkCard>
+                </CardWrapper>
               </AutoColumn>
             </ResponsiveRow>
-            <DarkCard>
+            <CardWrapper>
               <AutoColumn gap="md">
                 <RowBetween>
                   <RowFixed>
@@ -886,7 +903,7 @@ export function PositionPage() {
                 </RowBetween>
 
                 <RowBetween>
-                  <LightCard padding="12px" width="100%">
+                  <LightCardWrapper padding="12px" width="100%">
                     <AutoColumn gap="8px" justify="center">
                       <ExtentsText>
                         <Trans>Min price</Trans>
@@ -902,15 +919,15 @@ export function PositionPage() {
                       </ExtentsText>
 
                       {inRange && (
-                        <ThemedText.DeprecatedSmall color={theme.deprecated_text3}>
+                        <ThemedText.DeprecatedSmall color={theme.deprecated_text4}>
                           <Trans>Your position will be 100% {currencyBase?.symbol} at this price.</Trans>
                         </ThemedText.DeprecatedSmall>
                       )}
                     </AutoColumn>
-                  </LightCard>
+                  </LightCardWrapper>
 
                   <DoubleArrow>⟷</DoubleArrow>
-                  <LightCard padding="12px" width="100%">
+                  <LightCardWrapper padding="12px" width="100%">
                     <AutoColumn gap="8px" justify="center">
                       <ExtentsText>
                         <Trans>Max price</Trans>
@@ -926,12 +943,12 @@ export function PositionPage() {
                       </ExtentsText>
 
                       {inRange && (
-                        <ThemedText.DeprecatedSmall color={theme.deprecated_text3}>
+                        <ThemedText.DeprecatedSmall color={theme.deprecated_text4}>
                           <Trans>Your position will be 100% {currencyQuote?.symbol} at this price.</Trans>
                         </ThemedText.DeprecatedSmall>
                       )}
                     </AutoColumn>
-                  </LightCard>
+                  </LightCardWrapper>
                 </RowBetween>
                 <CurrentPriceCard
                   inverted={inverted}
@@ -940,7 +957,7 @@ export function PositionPage() {
                   currencyBase={currencyBase}
                 />
               </AutoColumn>
-            </DarkCard>
+            </CardWrapper>
           </AutoColumn>
         </PageWrapper>
         <SwitchLocaleLink />

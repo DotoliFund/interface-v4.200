@@ -446,7 +446,7 @@ export default function AddLiquidity() {
   if (!isSupportedChain(chainId)) {
     return (
       <ErrorContainer>
-        <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+        <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
           <NetworkIcon strokeWidth={1.2} />
           <div data-testid="pools-unsupported-err">
             <Trans>Your connected network is unsupported.</Trans>
@@ -703,7 +703,7 @@ export default function AddLiquidity() {
                                   fontSize={14}
                                   style={{ fontWeight: 500 }}
                                   textAlign="left"
-                                  color={theme.deprecated_primaryText1}
+                                  color={theme.deprecated_text4}
                                 >
                                   <Trans>
                                     This pool must be initialized before you can add liquidity. To initialize, select a

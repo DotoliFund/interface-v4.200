@@ -1,6 +1,7 @@
 import React from 'react'
 import { Check } from 'react-feather'
 import styled from 'styled-components/macro'
+import { flexRowNoWrap } from 'theme/styles'
 
 import { ExternalLink } from '../../theme'
 
@@ -18,7 +19,7 @@ const InfoCard = styled.button<{ isActive?: boolean }>`
 `
 
 const CheckIcon = styled(Check)`
-  ${({ theme }) => theme.flexColumnNoWrap};
+  ${flexRowNoWrap};
   height: 20px;
   width: 20px;
   align-items: center;
@@ -39,7 +40,7 @@ const OptionCard = styled(InfoCard as any)`
 `
 
 const OptionCardLeft = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap};
+  ${flexRowNoWrap};
   justify-content: center;
   height: 100%;
 `
@@ -58,23 +59,23 @@ const OptionCardClickable = styled(OptionCard as any)<{
 `
 
 const HeaderText = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap};
+  ${flexRowNoWrap};
   align-items: center;
   justify-content: center;
   color: ${(props) =>
-    props.color === 'blue' ? ({ theme }) => theme.deprecated_primary1 : ({ theme }) => theme.deprecated_text1};
+    props.color === 'blue' ? ({ theme }) => theme.deprecated_primary2 : ({ theme }) => theme.deprecated_text4};
   font-size: 16px;
   font-weight: 600;
 `
 
 const SubHeader = styled.div`
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
   margin-top: 10px;
   font-size: 12px;
 `
 
 const IconWrapper = styled.div<{ size?: number | null }>`
-  ${({ theme }) => theme.flexColumnNoWrap};
+  ${flexRowNoWrap};
   align-items: center;
   justify-content: center;
   padding-right: 12px;

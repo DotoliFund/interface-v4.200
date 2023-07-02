@@ -5,6 +5,7 @@ import ms from 'ms.macro'
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import styled from 'styled-components/macro'
+import { flexRowNoWrap } from 'theme/styles'
 
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { clearAllTransactions } from '../../state/transactions/reducer'
@@ -20,7 +21,7 @@ const Divider = styled.div`
 `
 
 const TransactionListWrapper = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap};
+  ${flexRowNoWrap};
 `
 
 interface TransactionInformation {

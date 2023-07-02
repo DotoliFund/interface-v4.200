@@ -38,16 +38,15 @@ import Loader from '../../components/Loader'
 import { DTL } from '../../constants/tokens'
 
 const StyledStakingHeader = styled.div`
-  padding: 8px 12px;
-  margin-bottom: 8px;
+  padding: 4px 14px;
   width: 100%;
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.deprecated_text4};
 `
 
 const StakingSection = styled.div`
   position: relative;
   background-color: ${({ theme }) => theme.backgroundModule};
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 16px;
   color: ${({ theme }) => theme.textSecondary};
   font-size: 14px;
@@ -341,7 +340,7 @@ export default function Staking() {
                       <Trans>Staking</Trans>
                     </ThemedText.DeprecatedBlack>
                   </RowFixed>
-                  <ToggleRow style={{ marginRight: '30px', marginTop: '10px' }}>
+                  <ToggleRow style={{ marginRight: '30px' }}>
                     <ToggleWrapper width="240px">
                       <ToggleElement
                         isActive={view === StakeView.STAKE}
@@ -597,7 +596,7 @@ export default function Staking() {
         </>
       ) : chainId !== undefined ? (
         <ErrorContainer>
-          <ThemedText.DeprecatedBody color={theme.deprecated_text2} textAlign="center">
+          <ThemedText.DeprecatedBody color={theme.deprecated_text4} textAlign="center">
             <NetworkIcon strokeWidth={1.2} />
             <div data-testid="pools-unsupported-err">
               <Trans>Your connected network is unsupported.</Trans>

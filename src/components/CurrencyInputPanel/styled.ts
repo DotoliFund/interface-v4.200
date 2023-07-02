@@ -44,7 +44,7 @@ export const CurrencySelect = styled(ButtonGray)<{
   background-color: ${({ selected, theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
-  color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
+  color: ${({ selected, theme }) => (selected ? theme.textPrimary : theme.white)};
   cursor: pointer;
   height: unset;
   border-radius: 16px;
@@ -60,7 +60,7 @@ export const CurrencySelect = styled(ButtonGray)<{
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
   &:hover,
   &:active {
-    background-color: ${({ theme, selected }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+    background-color: ${({ theme, selected }) => (selected ? theme.deprecated_bg3 : theme.accentAction)};
   }
   &:before {
     background-size: 100%;
@@ -95,7 +95,7 @@ const LabelRow = styled.div`
   line-height: 1rem;
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.deprecated_text2)};
+    color: ${({ theme }) => darken(0.2, theme.deprecated_text4)};
   }
 `
 
@@ -117,7 +117,7 @@ export const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   height: 35%;
   margin-left: 8px;
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
+    stroke: ${({ selected, theme }) => (selected ? theme.deprecated_text4 : theme.deprecated_blue4)};
     stroke-width: 2px;
   }
 `

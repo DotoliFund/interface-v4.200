@@ -33,7 +33,7 @@ const StyledExternalCard = styled(Card)`
 
 const HoverText = styled.div`
   text-decoration: none;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.deprecated_text4};
   display: flex;
   align-items: center;
 
@@ -159,7 +159,7 @@ function PrivacyPolicy() {
               <AutoColumn gap="8px">
                 <AutoRow gap="4px">
                   <Info size={18} />
-                  <ThemedText.DeprecatedMain fontSize={14} color="deprecated_text1">
+                  <ThemedText.DeprecatedMain fontSize={14} color="deprecated_text4">
                     {name}
                   </ThemedText.DeprecatedMain>
                 </AutoRow>
