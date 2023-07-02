@@ -1,4 +1,3 @@
-import searchIcon from 'assets/svg/search.svg'
 import { LoadingRows as BaseLoadingRows } from 'components/Loader/styled'
 import styled from 'styled-components/macro'
 
@@ -29,41 +28,41 @@ export const MenuItem = styled(RowBetween)<{ dim?: boolean }>`
   opacity: ${({ disabled, selected, dim }) => (dim || disabled || selected ? 0.4 : 1)};
 `
 
-export const SearchInput = styled.input`
-  background: no-repeat scroll 7px 7px;
-  background-image: url(${searchIcon});
-  background-size: 20px 20px;
-  background-position: 12px center;
-  position: relative;
-  display: flex;
-  padding: 16px;
-  padding-left: 40px;
-  height: 40px;
-  align-items: center;
-  width: 100%;
-  white-space: nowrap;
-  background-color: ${({ theme }) => theme.backgroundModule};
-  border: none;
-  outline: none;
-  border-radius: 12px;
-  color: ${({ theme }) => theme.deprecated_text4};
-  border-style: solid;
-  border: 1px solid ${({ theme }) => theme.backgroundOutline};
-  -webkit-appearance: none;
+// export const SearchInput = styled.input`
+//   background: no-repeat scroll 7px 7px;
+//   background-image: url(${searchIcon});
+//   background-size: 20px 20px;
+//   background-position: 12px center;
+//   position: relative;
+//   display: flex;
+//   padding: 16px;
+//   padding-left: 40px;
+//   height: 40px;
+//   align-items: center;
+//   width: 100%;
+//   white-space: nowrap;
+//   background-color: ${({ theme }) => theme.backgroundModule};
+//   border: none;
+//   outline: none;
+//   border-radius: 12px;
+//   color: ${({ theme }) => theme.deprecated_text4};
+//   border-style: solid;
+//   border: 1px solid ${({ theme }) => theme.backgroundOutline};
+//   -webkit-appearance: none;
 
-  font-size: 16px;
+//   font-size: 16px;
 
-  ::placeholder {
-    color: ${({ theme }) => theme.textTertiary};
-    font-size: 16px;
-  }
-  transition: border 100ms;
-  :focus {
-    border: 1px solid ${({ theme }) => theme.accentActiveSoft};
-    background-color: ${({ theme }) => theme.backgroundSurface};
-    outline: none;
-  }
-`
+//   ::placeholder {
+//     color: ${({ theme }) => theme.textTertiary};
+//     font-size: 16px;
+//   }
+//   transition: border 100ms;
+//   :focus {
+//     border: 1px solid ${({ theme }) => theme.accentActiveSoft};
+//     background-color: ${({ theme }) => theme.backgroundSurface};
+//     outline: none;
+//   }
+// `
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
