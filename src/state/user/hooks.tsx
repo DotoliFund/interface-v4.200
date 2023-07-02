@@ -10,9 +10,7 @@ import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { AppState } from '../index'
 import {
   addSerializedToken,
-  removeSerializedToken,
   updateHideClosedPositions,
-  updateShowSurveyPopup,
   updateShowTokensPromoBanner,
   updateUserClientSideRouter,
   updateUserDarkMode,
@@ -97,18 +95,6 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
-}
-
-export function useShowSurveyPopup(): [boolean | undefined, (showPopup: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const showSurveyPopup = useAppSelector((state) => state.user.showSurveyPopup)
-  const toggleShowSurveyPopup = useCallback(
-    (showPopup: boolean) => {
-      dispatch(updateShowSurveyPopup({ showSurveyPopup: showPopup }))
-    },
-    [dispatch]
-  )
-  return [showSurveyPopup, toggleShowSurveyPopup]
 }
 
 export function useShowTokensPromoBanner(): [boolean, (showTokensBanner: boolean) => void] {
@@ -208,16 +194,6 @@ export function useAddUserToken(): (token: Token) => void {
   return useCallback(
     (token: Token) => {
       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
-    },
-    [dispatch]
-  )
-}
-
-export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
-  const dispatch = useAppDispatch()
-  return useCallback(
-    (chainId: number, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }))
     },
     [dispatch]
   )
