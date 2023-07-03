@@ -11,7 +11,6 @@ import { AppState } from '../index'
 import {
   addSerializedToken,
   updateHideClosedPositions,
-  updateShowTokensPromoBanner,
   updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
@@ -95,18 +94,6 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
-}
-
-export function useShowTokensPromoBanner(): [boolean, (showTokensBanner: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const showTokensPromoBanner = useAppSelector((state) => state.user.showTokensPromoBanner)
-  const toggleShowTokensPromoBanner = useCallback(
-    (showTokensBanner: boolean) => {
-      dispatch(updateShowTokensPromoBanner({ showTokensPromoBanner: showTokensBanner }))
-    },
-    [dispatch]
-  )
-  return [showTokensPromoBanner, toggleShowTokensPromoBanner]
 }
 
 export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean) => void] {

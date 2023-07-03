@@ -1,5 +1,5 @@
 // a list of tokens by chain
-import { Currency, Token } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from './chains'
 import {
@@ -9,7 +9,6 @@ import {
   FEI,
   FRAX,
   FXS,
-  nativeOnChain,
   renBTC,
   rETH2,
   sETH2,
@@ -23,10 +22,6 @@ import {
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
-}
-
-type ChainCurrencyList = {
-  readonly [chainId: number]: Currency[]
 }
 
 const WRAPPED_NATIVE_CURRENCIES_ONLY: ChainTokenList = Object.fromEntries(
@@ -67,22 +62,4 @@ export const CUSTOM_BASES: { [chainId: number]: { [tokenAddress: string]: Token[
   [SupportedChainId.MAINNET]: {
     [AMPL.address]: [DAI, WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token],
   },
-}
-
-/**
- * Shows up in the currency select for swap and add liquidity
- */
-export const COMMON_BASES: ChainCurrencyList = {
-  [SupportedChainId.MAINNET]: [
-    nativeOnChain(SupportedChainId.MAINNET),
-    DAI,
-    USDC_MAINNET,
-    USDT,
-    WBTC,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token,
-  ],
-  [SupportedChainId.GOERLI]: [
-    nativeOnChain(SupportedChainId.GOERLI),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI] as Token,
-  ],
 }
