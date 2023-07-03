@@ -1,9 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { LOCALE_LABEL, SUPPORTED_LOCALES, SupportedLocale } from 'constants/locales'
-import { useActiveLocale } from 'hooks/useActiveLocale'
-import { useLocationLinkProps } from 'hooks/useLocationLinkProps'
 import { FunctionComponent, PropsWithChildren, useRef } from 'react'
-import { Check, ChevronLeft } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
@@ -12,7 +8,6 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { useModalIsOpen, useToggleModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
 import { ExternalLink } from '../../theme'
-import { ButtonPrimary } from '../Button'
 
 export enum FlyoutAlignment {
   LEFT = 'LEFT',
@@ -23,37 +18,6 @@ const StyledMenuIcon = styled(MenuIcon)`
   path {
     stroke: ${({ theme }) => theme.deprecated_text4};
   }
-`
-
-const StyledMenuButton = styled.button`
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
-  height: 40px;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
-  border: 1px solid ${({ theme }) => theme.deprecated_bg1};
-  padding: 0.15rem 0.5rem;
-  border-radius: 16px;
-
-  :hover,
-  :focus {
-    cursor: pointer;
-    outline: none;
-    border: 1px solid ${({ theme }) => theme.deprecated_bg3};
-  }
-
-  svg {
-    margin-top: 2px;
-  }
-`
-
-const UNIbutton = styled(ButtonPrimary)`
-  background-color: ${({ theme }) => theme.deprecated_bg3};
-  background: radial-gradient(174.47% 188.91% at 1.84% 0%, #ff007a 0%, #2172e5 100%), #edeef2;
-  border: none;
 `
 
 const StyledMenu = styled.div`
@@ -125,69 +89,6 @@ const InternalMenuItem = styled(Link)`
     margin-right: 8px;
   }
 `
-
-const InternalLinkMenuItem = styled(InternalMenuItem)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0.5rem 0.5rem;
-  justify-content: space-between;
-  text-decoration: none;
-  :hover {
-    color: ${({ theme }) => theme.deprecated_text4};
-    cursor: pointer;
-    text-decoration: none;
-  }
-`
-
-const ToggleMenuItem = styled.button`
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
-  border: none;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  padding: 0.5rem 0.5rem;
-  justify-content: space-between;
-  font-size: 1rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.deprecated_text4};
-  :hover {
-    color: ${({ theme }) => theme.deprecated_blue4};
-    cursor: pointer;
-    text-decoration: none;
-  }
-`
-
-function LanguageMenuItem({ locale, active, key }: { locale: SupportedLocale; active: boolean; key: string }) {
-  const { to, onClick } = useLocationLinkProps(locale)
-
-  if (!to) return null
-
-  return (
-    <InternalLinkMenuItem onClick={onClick} key={key} to={to}>
-      <div>{LOCALE_LABEL[locale]}</div>
-      {active && <Check opacity={0.6} size={16} />}
-    </InternalLinkMenuItem>
-  )
-}
-
-function LanguageMenu({ close }: { close: () => void }) {
-  const activeLocale = useActiveLocale()
-
-  return (
-    <MenuFlyout>
-      <ToggleMenuItem onClick={close}>
-        <ChevronLeft size={16} />
-      </ToggleMenuItem>
-      {SUPPORTED_LOCALES.map((locale) => (
-        <LanguageMenuItem locale={locale} active={activeLocale === locale} key={locale} />
-      ))}
-    </MenuFlyout>
-  )
-}
 
 interface NewMenuProps {
   flyoutAlignment?: FlyoutAlignment

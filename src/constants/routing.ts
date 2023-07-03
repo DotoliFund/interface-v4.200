@@ -1,5 +1,5 @@
 // a list of tokens by chain
-import { Currency, Token } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from './chains'
 import {
@@ -22,10 +22,6 @@ import {
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
-}
-
-type ChainCurrencyList = {
-  readonly [chainId: number]: Currency[]
 }
 
 const WRAPPED_NATIVE_CURRENCIES_ONLY: ChainTokenList = Object.fromEntries(

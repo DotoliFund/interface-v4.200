@@ -207,6 +207,5 @@ export const {
   updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
-  updateShowTokensPromoBanner,
 } = userSlice.actions
 export default userSlice.reducer
