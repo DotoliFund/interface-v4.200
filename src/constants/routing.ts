@@ -9,7 +9,6 @@ import {
   FEI,
   FRAX,
   FXS,
-  nativeOnChain,
   renBTC,
   rETH2,
   sETH2,
@@ -67,22 +66,4 @@ export const CUSTOM_BASES: { [chainId: number]: { [tokenAddress: string]: Token[
   [SupportedChainId.MAINNET]: {
     [AMPL.address]: [DAI, WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token],
   },
-}
-
-/**
- * Shows up in the currency select for swap and add liquidity
- */
-export const COMMON_BASES: ChainCurrencyList = {
-  [SupportedChainId.MAINNET]: [
-    nativeOnChain(SupportedChainId.MAINNET),
-    DAI,
-    USDC_MAINNET,
-    USDT,
-    WBTC,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token,
-  ],
-  [SupportedChainId.GOERLI]: [
-    nativeOnChain(SupportedChainId.GOERLI),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI] as Token,
-  ],
 }
