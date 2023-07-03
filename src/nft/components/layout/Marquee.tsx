@@ -16,7 +16,9 @@ export const Marquee = ({ children, speed = 20 }: { children: ReactNode; speed?:
         containerWidth = containerRef.current.getBoundingClientRect().width
         marqueeWidth = marqueeRef.current.getBoundingClientRect().width
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
 
     if (marqueeWidth < containerWidth) {
       setDuration(containerWidth / speed)

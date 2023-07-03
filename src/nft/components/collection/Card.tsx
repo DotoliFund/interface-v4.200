@@ -73,9 +73,9 @@ const Container = ({ asset, children }: CardProps) => {
       <Box
         as="a"
         href={href ? href : baseHref(asset)}
-        position={'relative'}
+        position="relative"
         ref={assetRef}
-        borderRadius={'20'}
+        borderRadius="20"
         className={styles.notSelectedCard}
         draggable={false}
         onMouseEnter={() => toggleHovered()}
@@ -99,7 +99,7 @@ const Image = () => {
       {!noContent ? (
         <Box display="flex" overflow="hidden">
           <Box
-            as={'img'}
+            as="img"
             alt={asset.name || asset.tokenId}
             width="full"
             style={{
@@ -110,7 +110,7 @@ const Image = () => {
                 : `linear-gradient(270deg, ${themeVars.colors.medGray} 0%, ${themeVars.colors.lightGray} 100%)`,
             }}
             src={asset.imageUrl || asset.smallImageUrl}
-            objectFit={'contain'}
+            objectFit="contain"
             draggable={false}
             onError={() => setNoContent(true)}
             onLoad={() => {
@@ -204,7 +204,7 @@ const SecondaryInfo = ({ children }: { children: ReactNode }) => {
 
 const TertiaryInfo = ({ children }: { children: ReactNode }) => {
   return (
-    <Box marginTop={'8'} color="darkGray">
+    <Box marginTop="8" color="darkGray">
       {children}
     </Box>
   )

@@ -1,20 +1,4 @@
-import { formatEther, parseEther } from '@ethersproject/units'
-
-export const formatUsdPrice = (price: number) => {
-  if (price > 1000000) {
-    return `$${(price / 1000000).toFixed(1)}M`
-  } else if (price > 1000) {
-    return `$${(price / 1000).toFixed(1)}K`
-  } else {
-    return `$${price.toFixed(2)}`
-  }
-}
-
-export const formatUSDPriceWithCommas = (price: number) => {
-  return `$${Math.round(price)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
-}
+import { formatEther } from '@ethersproject/units'
 
 export const formatEthPrice = (price: string | undefined) => {
   if (!price) return 0
@@ -24,11 +8,6 @@ export const formatEthPrice = (price: string | undefined) => {
     Math.round(formattedPrice * (formattedPrice >= 1 ? 100 : 1000) + Number.EPSILON) /
     (formattedPrice >= 1 ? 100 : 1000)
   )
-}
-
-// Stringify the `price` anyway because the `price` is being passed as any in some places
-export const numberToWei = (amount: number) => {
-  return parseEther(amount.toString())
 }
 
 export const ethNumberStandardFormatter = (amount: string | number | undefined, includeDollarSign = false): string => {

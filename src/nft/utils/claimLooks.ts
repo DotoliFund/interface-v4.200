@@ -1,6 +1,4 @@
-import { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
-import { BaseProvider } from '@ethersproject/providers'
 
 const looksRareContract = new Contract('0xea37093ce161f090e443f304e1bf3a8f14d7bb40', [
   {
@@ -31,18 +29,3 @@ const looksRareContract = new Contract('0xea37093ce161f090e443f304e1bf3a8f14d7bb
     type: 'function',
   },
 ])
-
-export const getClaimedAmount = async ({ address, provider }: { address: string; provider: BaseProvider }) =>
-  provider && (await looksRareContract.connect(provider).amountClaimedByUser(address))
-
-export const claimLooks = async ({
-  signer,
-  looksTotal,
-  proof,
-}: {
-  signer: Signer
-  looksTotal: string
-  proof: string[]
-}) => {
-  await looksRareContract.connect(signer).functions.claim(looksTotal, proof)
-}

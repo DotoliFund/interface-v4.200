@@ -41,7 +41,7 @@ export const CollectionAsset = ({ asset }: { asset: GenieAsset }) => {
           </Card.SecondaryRow>
         </Card.InfoContainer>
         <Card.Button
-          selectedChildren={'Remove'}
+          selectedChildren="Remove"
           onClick={(e: MouseEvent) => {
             e.preventDefault()
           }}
@@ -49,7 +49,7 @@ export const CollectionAsset = ({ asset }: { asset: GenieAsset }) => {
             e.preventDefault()
           }}
         >
-          {'Buy now'}
+          Buy now
         </Card.Button>
       </Card.DetailsContainer>
     </Card.Container>
