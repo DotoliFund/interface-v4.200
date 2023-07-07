@@ -15,7 +15,7 @@
     "relay": "relay-compiler relay.config.js",
     "relay-thegraph": "relay-compiler relay_thegraph.config.js",
     "graphql:fetch": "node fetch-schema.js",
-    "graphql:generate": "yarn relay && yarn relay-thegraph",
+    "graphql:generate": "yarn relay-thegraph",
     "prei18n:extract": "node prei18n-extract.js",
     "i18n:extract": "lingui extract",
     "i18n:compile": "yarn i18n:extract && lingui compile",

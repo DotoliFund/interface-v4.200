@@ -1,6 +1,13 @@
-import { TimePeriod } from 'graphql/data/util'
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
+
+enum TimePeriod {
+  HOUR,
+  DAY,
+  WEEK,
+  MONTH,
+  YEAR,
+}
 
 export enum TokenSortMethod {
   PRICE = 'Price',
