@@ -38,15 +38,14 @@ const ToggleMenuItem = styled.button`
   border: none;
   cursor: pointer;
   display: flex;
-  flex: 1;
   border-radius: 12px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   font-size: 14px;
   font-weight: 400;
+  padding: 14px 8px;
   width: 100%;
-  padding: 12px 8px;
   color: ${({ theme }) => theme.textSecondary};
   :hover {
     color: ${({ theme }) => theme.textPrimary};

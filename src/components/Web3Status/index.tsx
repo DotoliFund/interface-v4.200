@@ -91,9 +91,9 @@ const Web3StatusConnectWrapper = styled.div<{ faded?: boolean }>`
 `
 
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
-  background-color: ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.deprecated_bg1)};
+  background-color: ${({ pending, theme }) => (pending ? theme.deprecated_bg1 : theme.deprecated_bg1)};
   border: 1px solid ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.deprecated_bg1)};
-  color: ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.deprecated_blue4)};
+  color: ${({ pending, theme }) => (pending ? theme.deprecated_text4 : theme.white)};
   font-weight: 500;
   :hover,
   :focus {
@@ -245,7 +245,6 @@ function Web3StatusInner() {
         <StyledConnectButton data-testid="navbar-connect-wallet" onClick={toggleWalletModal}>
           <Trans>Connect</Trans>
         </StyledConnectButton>
-        <VerticalDivider />
         <ChevronWrapper onClick={toggleWalletDropdown}>
           {walletIsOpen ? <ChevronUp {...chevronProps} /> : <ChevronDown {...chevronProps} />}
         </ChevronWrapper>

@@ -22,10 +22,8 @@ import { useModalIsOpen, useToggleWalletModal } from '../../state/application/ho
 import { ApplicationModal } from '../../state/application/reducer'
 import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
-import { CoinbaseWalletOption, OpenCoinbaseWalletOption } from './CoinbaseWalletOption'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
 import PendingView from './PendingView'
-import { WalletConnectOption } from './WalletConnectOption'
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -44,7 +42,6 @@ const CloseColor = styled(Close)`
 `
 
 const Wrapper = styled.div`
-  ${flexRowNoWrap};
   background-color: ${({ theme }) => theme.backgroundSurface};
   outline: ${({ theme }) => `1px solid ${theme.backgroundOutline}`};
   box-shadow: ${({ theme }) => theme.deepShadow};
@@ -214,10 +211,6 @@ export default function WalletModal({
     const isMetaMask = getIsMetaMask()
     const isCoinbaseWallet = getIsCoinbaseWallet()
 
-    const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
-    const isMetaMaskBrowser = isMobile && isMetaMask
-    const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-
     let injectedOption
     if (!isInjected) {
       if (!isMobile) {
@@ -231,23 +224,7 @@ export default function WalletModal({
       }
     }
 
-    let coinbaseWalletOption
-    if (isMobile && !isInjectedMobileBrowser) {
-      coinbaseWalletOption = <OpenCoinbaseWalletOption />
-    } else if (!isMobile || isCoinbaseWalletBrowser) {
-      coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
-    }
-
-    const walletConnectionOption =
-      (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
-
-    return (
-      <>
-        {injectedOption}
-        {coinbaseWalletOption}
-        {walletConnectionOption}
-      </>
-    )
+    return <>{injectedOption}</>
   }
 
   function getModalContent() {
