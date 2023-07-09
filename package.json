@@ -16,7 +16,6 @@
     "relay-thegraph": "relay-compiler relay_thegraph.config.js",
     "graphql:fetch": "node fetch-schema.js",
     "graphql:generate": "yarn relay-thegraph",
-    "prei18n:extract": "node prei18n-extract.js",
     "i18n:extract": "lingui extract",
     "i18n:compile": "yarn i18n:extract && lingui compile",
     "i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
@@ -54,7 +53,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@craco/craco": "6.4.3",
+    "@craco/craco": "^7.1.0",
     "@ethersproject/experimental": "^5.4.0",
     "@lingui/cli": "^3.9.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -91,8 +90,9 @@
     "cypress": "^10.1.0",
     "env-cmd": "^10.1.0",
     "eslint": "^7.11.0",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.1",
     "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.0.8",
     "react-bootstrap-icons": "^1.8.2",
@@ -208,7 +208,7 @@
   },
   "engines": {
     "npm": "please-use-yarn",
-    "node": "14",
+    "node": "18.x",
     "yarn": ">=1.22"
   }
 }
