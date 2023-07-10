@@ -1010,13 +1010,8 @@ msgstr "보류 중"
 
 #: src/pages/Deposit/index.tsx
 #: src/pages/Staking/index.tsx
-#~ msgid "Permission is required for Dotoli to use token. This will expire after one month for your security."
-#~ msgstr "Dotoli가 각 토큰을 사용하려면 권한이 필요합니다. 보안을 위해 한 달 후에 만료됩니다."
-
-#: src/pages/Deposit/index.tsx
-#: src/pages/Staking/index.tsx
 msgid "Permission is required for Uniswap to swap each token. This will expire after one month for your security."
-msgstr ""
+msgstr "Dotoli가 각 토큰을 사용하려면 권한이 필요합니다. 보안을 위해 한 달 후에 만료됩니다."
 
 #: src/constants/tokenSafety.tsx
 msgid "Please do your own research before trading."
