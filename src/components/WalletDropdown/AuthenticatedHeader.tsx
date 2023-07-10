@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { getConnection } from 'connection/utils'
 import { getChainInfoOrDefault } from 'constants/chainInfo'
@@ -16,9 +15,6 @@ import { updateSelectedWallet } from 'state/user/reducer'
 import styled from 'styled-components/macro'
 
 import { shortenAddress } from '../../nft/utils/address'
-import { useToggleModal } from '../../state/application/hooks'
-import { ApplicationModal } from '../../state/application/reducer'
-import { useUserHasAvailableClaim, useUserUnclaimedAmount } from '../../state/claim/hooks'
 import { ButtonPrimary } from '../Button'
 import StatusIcon from '../Identicon/StatusIcon'
 import IconButton, { IconHoverText } from './IconButton'
@@ -101,12 +97,9 @@ const AuthenticatedHeader = () => {
     explorer,
   } = getChainInfoOrDefault(chainId ? chainId : SupportedChainId.MAINNET)
 
-  const unclaimedAmount: CurrencyAmount<Token> | undefined = useUserUnclaimedAmount(account)
-  const isUnclaimed = useUserHasAvailableClaim(account)
   const connectionType = getConnection(connector).type
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyPrice = useStablecoinPrice(nativeCurrency ?? undefined) || 0
-  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
   const disconnect = useCallback(() => {
     if (connector && connector.deactivate) {
       connector.deactivate()
@@ -151,11 +144,6 @@ const AuthenticatedHeader = () => {
           </Text>
           <USDText>${amountUSD.toFixed(2)} USD</USDText>
         </BalanceWrapper>
-        {isUnclaimed && (
-          <UNIButton onClick={openClaimModal}>
-            <Trans>Claim</Trans> {unclaimedAmount?.toFixed(0, { groupSeparator: ',' } ?? '-')} <Trans>reward</Trans>
-          </UNIButton>
-        )}
       </Column>
     </AuthenticatedHeaderWrapper>
   )

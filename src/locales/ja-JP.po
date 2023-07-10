@@ -65,8 +65,8 @@ msgid "A swap of this size may have a high price impact, given the current liqui
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "About"
-msgstr ""
+#~ msgid "About"
+#~ msgstr ""
 
 #: src/components/swap/SwapModalHeader.tsx
 msgid "Accept"
@@ -79,8 +79,8 @@ msgid "Account"
 msgstr ""
 
 #: src/components/SearchModal/ImportRow.tsx
-msgid "Active"
-msgstr ""
+#~ msgid "Active"
+#~ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 #: src/components/Tables/LiquidityTransactionTable.tsx
@@ -237,8 +237,8 @@ msgid "Best price route costs ~{formattedGasPriceString} in gas."
 msgstr ""
 
 #: src/components/Header/NetworkSelector.tsx
-msgid "Bridge"
-msgstr ""
+#~ msgid "Bridge"
+#~ msgstr ""
 
 #: src/constants/tokenSafety.tsx
 msgid "Caution"
@@ -253,11 +253,10 @@ msgid "Check network status"
 msgstr ""
 
 #: src/pages/Account/CTACards.tsx
-msgid "Check out fund manager guides."
-msgstr ""
+#~ msgid "Check out fund manager guides."
+#~ msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/WalletDropdown/AuthenticatedHeader.tsx
 msgid "Claim"
 msgstr ""
 
@@ -267,8 +266,8 @@ msgstr ""
 
 #: src/components/Header/index.tsx
 #: src/components/Menu/index.tsx
-msgid "Claim UNI"
-msgstr ""
+#~ msgid "Claim UNI"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Claim UNI reward for {0}"
@@ -287,16 +286,16 @@ msgid "Claiming"
 msgstr ""
 
 #: src/components/Header/index.tsx
-msgid "Claiming UNI"
-msgstr ""
+#~ msgid "Claiming UNI"
+#~ msgstr ""
 
 #: src/pages/AddLiquidity/index.tsx
 #~ msgid "Clear All"
 #~ msgstr ""
 
 #: src/components/SearchModal/ManageTokens.tsx
-msgid "Clear all"
-msgstr ""
+#~ msgid "Clear all"
+#~ msgstr ""
 
 #: src/components/TokenSafety/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
@@ -371,7 +370,6 @@ msgstr ""
 msgid "Confirm this connection in your wallet"
 msgstr ""
 
-#: src/components/ModalViews/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "Confirm this transaction in your wallet"
 msgstr ""
@@ -395,7 +393,6 @@ msgstr ""
 #: src/pages/Swap/index.tsx
 #: src/pages/Withdraw/index.tsx
 #: src/state/burn/v3/hooks.tsx
-#: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
 #: src/state/mint/v3/hooks.tsx
@@ -413,7 +410,7 @@ msgid "Connected with"
 msgstr ""
 
 #: src/components/WalletDropdown/AuthenticatedHeader.tsx
-#: src/theme/components.tsx
+#: src/theme/components/index.tsx
 msgid "Copied!"
 msgstr ""
 
@@ -504,8 +501,8 @@ msgid "Current {0} Price:"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "Dark Theme"
-msgstr ""
+#~ msgid "Dark Theme"
+#~ msgstr ""
 
 #: src/components/WalletDropdown/DefaultMenu.tsx
 msgid "Dark theme"
@@ -538,8 +535,8 @@ msgid "Deposit Amounts"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
-msgid "Deposit liquidity"
-msgstr ""
+#~ msgid "Deposit liquidity"
+#~ msgstr ""
 
 #: src/components/NetworkAlert/NetworkAlert.tsx
 msgid "Deposit tokens to the {label} network."
@@ -564,16 +561,16 @@ msgid "Disconnect"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "Discord"
-msgstr ""
+#~ msgid "Discord"
+#~ msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "Dismiss"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "Docs"
-msgstr ""
+#~ msgid "Docs"
+#~ msgstr ""
 
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Dotoli' Terms of Service"
@@ -599,14 +596,13 @@ msgid "Enter a recipient"
 msgstr ""
 
 #: src/state/create/hooks.tsx
-msgid "Enter a sender"
-msgstr ""
+#~ msgid "Enter a sender"
+#~ msgstr ""
 
 #: src/components/TransactionSettings/index.tsx
 msgid "Enter a valid slippage percentage"
 msgstr ""
 
-#: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
 #: src/state/mint/v3/hooks.tsx
@@ -616,8 +612,8 @@ msgid "Enter an amount"
 msgstr ""
 
 #: src/components/SearchModal/ManageTokens.tsx
-msgid "Enter valid token address"
-msgstr ""
+#~ msgid "Enter valid token address"
+#~ msgstr ""
 
 #: src/hooks/useWrapCallback.tsx
 #: src/hooks/useWrapCallback.tsx
@@ -646,8 +642,8 @@ msgid "Estimated network fee"
 msgstr ""
 
 #: src/components/Header/NetworkSelector.tsx
-msgid "Etherscan"
-msgstr ""
+#~ msgid "Etherscan"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Execute proposal {proposalKey}."
@@ -670,8 +666,8 @@ msgid "Explore"
 msgstr ""
 
 #: src/pages/Account/CTACards.tsx
-msgid "Explore DotoliFund Analytics."
-msgstr ""
+#~ msgid "Explore DotoliFund Analytics."
+#~ msgstr ""
 
 #: src/components/Popups/FailedNetworkSwitchPopup.tsx
 msgid "Failed to switch networks from the Dotoli Interface. In order to use Dotoli on {0}, you must change the network in your wallet."
@@ -734,7 +730,6 @@ msgstr ""
 msgid "Full range positions may earn less fees than concentrated positions. Learn more <0>here</0>."
 msgstr ""
 
-#: src/components/Header/index.tsx
 #: src/components/Tables/TopFundTable.tsx
 msgid "Fund"
 msgstr ""
@@ -778,8 +773,8 @@ msgstr ""
 
 #: src/components/Header/NetworkSelector.tsx
 #: src/components/Menu/index.tsx
-msgid "Help Center"
-msgstr ""
+#~ msgid "Help Center"
+#~ msgstr ""
 
 #: src/components/FeeSelector/index.tsx
 msgid "Hide"
@@ -799,7 +794,6 @@ msgid "I understand"
 msgstr ""
 
 #: src/components/SearchModal/BlockedToken.tsx
-#: src/components/SearchModal/ImportRow.tsx
 #: src/components/SearchModal/ImportToken.tsx
 msgid "Import"
 msgstr ""
@@ -826,7 +820,6 @@ msgstr ""
 
 #: src/hooks/useWrapCallback.tsx
 #: src/hooks/useWrapCallback.tsx
-#: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
 #: src/state/mint/v3/hooks.tsx
@@ -852,7 +845,6 @@ msgstr ""
 msgid "Invalid range selected. The min price must be lower than the max price."
 msgstr ""
 
-#: src/lib/hooks/swap/useSwapCallback.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
 #: src/state/swap/hooks.tsx
@@ -861,8 +853,8 @@ msgid "Invalid recipient"
 msgstr ""
 
 #: src/state/create/hooks.tsx
-msgid "Invalid sender"
-msgstr ""
+#~ msgid "Invalid sender"
+#~ msgstr ""
 
 #: src/components/FundList/index.tsx
 #: src/components/FundList/index.tsx
@@ -888,15 +880,14 @@ msgstr ""
 msgid "Invetsor"
 msgstr ""
 
-#: src/components/Menu/index.tsx
 #: src/components/WalletDropdown/DefaultMenu.tsx
 #: src/components/WalletDropdown/LanguageMenu.tsx
 msgid "Language"
 msgstr ""
 
 #: src/pages/Account/CTACards.tsx
-msgid "Learn about managing fund"
-msgstr ""
+#~ msgid "Learn about managing fund"
+#~ msgstr ""
 
 #: src/components/PrivacyPolicy/index.tsx
 #: src/components/PrivacyPolicy/index.tsx
@@ -904,14 +895,13 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: src/components/Menu/index.tsx
 #: src/components/PrivacyPolicy/index.tsx
 msgid "Legal & Privacy"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "Light Theme"
-msgstr ""
+#~ msgid "Light Theme"
+#~ msgstr ""
 
 #: src/components/WalletDropdown/DefaultMenu.tsx
 msgid "Light theme"
@@ -984,8 +974,8 @@ msgid "Maximum sent"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "Menu"
-msgstr ""
+#~ msgid "Menu"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Migrate {0}/{1} liquidity to V3"
@@ -1017,8 +1007,8 @@ msgid "Mint {0} and {1}"
 msgstr ""
 
 #: src/lib/hooks/swap/useSwapCallback.tsx
-msgid "Missing dependencies"
-msgstr ""
+#~ msgid "Missing dependencies"
+#~ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 msgid "More"
@@ -1028,7 +1018,6 @@ msgstr ""
 msgid "More benefits for investors and fund managers"
 msgstr ""
 
-#: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
 #: src/pages/Account/index.tsx
 #: src/pages/Account/index.tsx
@@ -1118,7 +1107,6 @@ msgstr ""
 msgid "Output will be sent to <0>{0}</0>"
 msgstr ""
 
-#: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
 #: src/pages/Overview/index.tsx
 msgid "Overview"
@@ -1255,8 +1243,8 @@ msgid "Removing {0} {1} and {2} {3}"
 msgstr ""
 
 #: src/components/Menu/index.tsx
-msgid "Request Features"
-msgstr ""
+#~ msgid "Request Features"
+#~ msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/TransactionConfirmationModal/index.tsx
@@ -1278,7 +1266,6 @@ msgstr ""
 #: src/components/SearchModal/Fee/FeeCurrencySearch.tsx
 #: src/components/SearchModal/FundCurrencyList.tsx
 #: src/components/SearchModal/WalletWhiteListCurrencyList.tsx
-#: src/state/create/hooks.tsx
 #: src/state/deposit/hooks.tsx
 #: src/state/fee/hooks.tsx
 #: src/state/swap/hooks.tsx
@@ -1287,8 +1274,8 @@ msgid "Select a token"
 msgstr ""
 
 #: src/components/Header/NetworkSelector.tsx
-msgid "Select a {0}network"
-msgstr ""
+#~ msgid "Select a {0}network"
+#~ msgstr ""
 
 #: src/components/CurrencyInputPanel/AddLiquidityInputPanel.tsx
 #: src/components/CurrencyInputPanel/FeeInputPanel.tsx
@@ -1345,7 +1332,6 @@ msgstr ""
 msgid "Staked"
 msgstr ""
 
-#: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
 #: src/pages/Home/index.tsx
 #: src/pages/Staking/index.tsx
@@ -1353,8 +1339,8 @@ msgid "Staking"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
-msgid "Submit new proposal"
-msgstr ""
+#~ msgid "Submit new proposal"
+#~ msgstr ""
 
 #: src/pages/FundPage/index.tsx
 msgid "Subscribe"
@@ -1377,8 +1363,8 @@ msgid "Success"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/swap/SwapHeader.tsx
 #: src/components/Tables/TransactionTable.tsx
+#: src/components/swap/SwapHeader.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundAccount/index.tsx
 #: src/pages/Swap/index.tsx
@@ -1404,8 +1390,8 @@ msgstr ""
 
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
-msgid "Swap failed: {0}"
-msgstr ""
+#~ msgid "Swap failed: {0}"
+#~ msgstr ""
 
 #: src/components/Tables/TransactionTable.tsx
 msgid "Swap {0} to {1}"
@@ -1424,12 +1410,12 @@ msgid "Swapping {0} {1} for {2} {3}"
 msgstr ""
 
 #: src/components/Popups/SurveyPopup.tsx
-msgid "Take a 10 minute survey to help us improve your experience in the Dotoli."
-msgstr ""
+#~ msgid "Take a 10 minute survey to help us improve your experience in the Dotoli."
+#~ msgstr ""
 
 #: src/components/Popups/SurveyPopup.tsx
-msgid "Tell us what you think ↗"
-msgstr ""
+#~ msgid "Tell us what you think ↗"
+#~ msgstr ""
 
 #: src/components/FeeSelector/index.tsx
 msgid "The % you will earn in fees."
@@ -1567,8 +1553,8 @@ msgid "Time"
 msgstr ""
 
 #: src/components/SearchModal/ManageTokens.tsx
-msgid "Tip: Custom tokens are stored locally in your browser"
-msgstr ""
+#~ msgid "Tip: Custom tokens are stored locally in your browser"
+#~ msgstr ""
 
 #: src/pages/Swap/index.tsx
 msgid "To"
@@ -1606,8 +1592,8 @@ msgid "Top Managers"
 msgstr ""
 
 #: src/pages/Account/CTACards.tsx
-msgid "Top funds"
-msgstr ""
+#~ msgid "Top funds"
+#~ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Asset"
@@ -1647,8 +1633,8 @@ msgstr ""
 
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
-msgid "Transaction rejected"
-msgstr ""
+#~ msgid "Transaction rejected"
+#~ msgstr ""
 
 #: src/components/TransactionConfirmationModal/index.tsx
 msgid "Transaction submitted"
@@ -1678,12 +1664,12 @@ msgid "Unclaimed fees"
 msgstr ""
 
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
-msgid "Unexpected error. Could not estimate gas for the swap."
-msgstr ""
+#~ msgid "Unexpected error. Could not estimate gas for the swap."
+#~ msgstr ""
 
 #: src/lib/hooks/swap/useSendSwapTransaction.tsx
-msgid "Unexpected issue with estimating the gas. Please try again."
-msgstr ""
+#~ msgid "Unexpected issue with estimating the gas. Please try again."
+#~ msgstr ""
 
 #: src/components/SearchModal/TokenImportCard.tsx
 msgid "Unknown Source"
@@ -1747,15 +1733,14 @@ msgid "View on Explorer"
 msgstr ""
 
 #: src/components/ModalViews/index.tsx
-msgid "View transaction on Explorer"
-msgstr ""
+#~ msgid "View transaction on Explorer"
+#~ msgstr ""
 
 #: src/pages/FundAccount/index.tsx
 #: src/pages/FundPage/index.tsx
 #~ msgid "Volume"
 #~ msgstr ""
 
-#: src/components/Header/index.tsx
 #: src/components/NavBar/index.tsx
 msgid "Vote"
 msgstr ""
@@ -1795,8 +1780,8 @@ msgid "Withdraw <0/>"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
-msgid "Withdraw deposited liquidity"
-msgstr ""
+#~ msgid "Withdraw deposited liquidity"
+#~ msgstr ""
 
 #: src/components/Tables/TransactionTable.tsx
 msgid "Withdraw {0}"
@@ -1975,7 +1960,6 @@ msgstr ""
 msgid "minutes"
 msgstr ""
 
-#: src/components/WalletDropdown/AuthenticatedHeader.tsx
 #: src/pages/Staking/index.tsx
 msgid "reward"
 msgstr ""
@@ -1993,8 +1977,8 @@ msgid "unstaking"
 msgstr ""
 
 #: src/components/SearchModal/ImportRow.tsx
-msgid "via {0}"
-msgstr ""
+#~ msgid "via {0}"
+#~ msgstr ""
 
 #: src/components/SearchModal/TokenImportCard.tsx
 msgid "via {0} token list"
@@ -2018,8 +2002,8 @@ msgid "{0}"
 msgstr ""
 
 #: src/components/SearchModal/ManageTokens.tsx
-msgid "{0} Custom Tokens"
-msgstr ""
+#~ msgid "{0} Custom Tokens"
+#~ msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -2063,12 +2047,12 @@ msgid "{0}% select"
 msgstr ""
 
 #: src/pages/Home/index.tsx
-msgid "{description}"
-msgstr ""
+#~ msgid "{description}"
+#~ msgstr ""
 
 #: src/pages/Home/index.tsx
-msgid "{headline}"
-msgstr ""
+#~ msgid "{headline}"
+#~ msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "{investor} Subscribe to fund: {fundId}"
@@ -2091,6 +2075,9 @@ msgid "{tokenB} per {tokenA}"
 msgstr ""
 
 #: src/pages/FundAccount/index.tsx
-#: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Fund"
+msgstr ""
+
+#: src/pages/Pool/PositionPage.tsx
+msgid "← Back to Fund Account"
 msgstr ""
