@@ -25,7 +25,8 @@
     "test": "craco test --coverage",
     "lint": "yarn eslint .",
     "cypress:open": "cypress open --browser chrome --e2e",
-    "cypress:run": "cypress run --browser chrome --e2e"
+    "cypress:run": "cypress run --browser chrome --e2e",
+    "deduplicate": "yarn-deduplicate --strategy=highest"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -95,6 +96,7 @@
     "react-scripts": "^5.0.1",
     "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.0.8",
+    "ms.macro": "^2.0.0",
     "react-bootstrap-icons": "^1.8.2",
     "react-spinners": "^0.12.0",
     "redux-localstorage-simple": "^2.5.1",
@@ -165,7 +167,6 @@
     "immer": "^9.0.6",
     "jotai": "^1.3.7",
     "jotai-immer": "0.2.0",
-    "ms.macro": "^2.0.0",
     "multicodec": "^3.0.1",
     "multihashes": "^4.0.2",
     "node-vibrant": "^3.2.1-alpha.1",
