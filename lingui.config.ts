@@ -2,7 +2,17 @@ const linguiConfig = {
   catalogs: [
     {
       path: '<rootDir>/src/locales/{locale}',
-      include: ['<rootDir>/src'],
+      include: [
+        '<rootDir>/src/components',
+        '<rootDir>/src/constants/tokenSafety.tsx',
+        '<rootDir>/src/hooks/useWrapCallback.tsx',
+        '<rootDir>/src/lib/useSendSwapTransaction.tsx',
+        '<rootDir>/src/lib/useSwapCallback.tsx',
+        '<rootDir>/src/pages',
+        '<rootDir>/src/state',
+        '<rootDir>/src/theme/components/index.tsx',
+        '<rootDir>/src/utils/swapErrorToUserReadableMessage.tsx',
+      ],
     },
   ],
   compileNamespace: 'cjs',
