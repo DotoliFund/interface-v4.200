@@ -425,6 +425,7 @@ msgstr "펀드 생성 중"
 #: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx
 #: src/components/Tables/TopManagerTable.tsx
+#: src/pages/Overview/index.tsx
 msgid "Current"
 msgstr "유동 자산"
 
@@ -434,11 +435,11 @@ msgstr "유동 자산"
 
 #: src/components/FundListItem/index.tsx
 msgid "Current Asset :"
-msgstr "유동 자산"
+msgstr "유동 자산 :"
 
 #: src/pages/FundPage/index.tsx
 msgid "Current Asset Tokens"
-msgstr "유동 자산 토큰"
+msgstr "유동 자산"
 
 #: src/components/PositionPreview/index.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -936,6 +937,10 @@ msgstr "새로운 포지션"
 #: src/pages/Fee/index.tsx
 msgid "No Fees"
 msgstr "수수료 없음"
+
+#: src/components/Tables/InvestorTable.tsx
+msgid "No Investors"
+msgstr "투자자 없음"
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
 #: src/components/Tables/TransactionTable.tsx
@@ -1456,11 +1461,11 @@ msgstr "상위 매니저"
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Asset"
-msgstr "전체 자산"
+msgstr "총 자산"
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Asset Tokens"
-msgstr "전체 유동 자산 토큰"
+msgstr "총 자산"
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"

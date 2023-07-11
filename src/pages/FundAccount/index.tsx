@@ -198,8 +198,24 @@ const ChartWrapper = styled(DarkGreyCard)`
   border: 1px solid ${({ theme }) => theme.backgroundOutline};
 `
 
+const CurrentAssetText = styled.div`
+  color: #ff1a75;
+  font-size: 20px;
+  font-weight: 500;
+`
+const PoolAssetText = styled.div`
+  color: #3377ff;
+  font-size: 20px;
+  font-weight: 500;
+`
+const PrincipalText = styled.div`
+  color: #99ff99;
+  font-size: 20px;
+  font-weight: 500;
+`
+
 enum ChartView {
-  VOL_USD,
+  TOTAL_ASSET,
   TOKENS,
 }
 
@@ -299,7 +315,7 @@ export default function FundAccount() {
   const transactions = useFundAccountTransactions(currentPageFund, investor).data
   const liquidityTransactions = useFundAccountLiquidityTransactions(currentPageFund, investor).data
 
-  const [view, setView] = useState(ChartView.VOL_USD)
+  const [view, setView] = useState(ChartView.TOTAL_ASSET)
 
   // chart hover index
   const [volumeIndexHover, setVolumeIndexHover] = useState<number | undefined>()
@@ -832,9 +848,9 @@ export default function FundAccount() {
                 <ToggleRow>
                   <ToggleWrapper width="240px">
                     <ToggleElement
-                      isActive={view === ChartView.VOL_USD}
+                      isActive={view === ChartView.TOTAL_ASSET}
                       fontSize="12px"
-                      onClick={() => (view === ChartView.VOL_USD ? {} : setView(ChartView.VOL_USD))}
+                      onClick={() => (view === ChartView.TOTAL_ASSET ? {} : setView(ChartView.TOTAL_ASSET))}
                     >
                       <Trans>Total Asset</Trans>
                     </ToggleElement>
@@ -847,7 +863,7 @@ export default function FundAccount() {
                     </ToggleElement>
                   </ToggleWrapper>
                 </ToggleRow>
-                {view === ChartView.VOL_USD ? (
+                {view === ChartView.TOTAL_ASSET ? (
                   <ComposedChart
                     data={formattedVolumeChart}
                     color={activeNetwork.primaryColor}
@@ -875,7 +891,7 @@ export default function FundAccount() {
                     topRight={
                       <AutoColumn gap="4px" justify="end">
                         <AutoRow justify="end">
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color="#ff1a75">
+                          <CurrentAssetText>
                             <MonoSpace>
                               {formatDollarAmount(
                                 volumeIndexHover !== undefined
@@ -885,9 +901,9 @@ export default function FundAccount() {
                                   : 0
                               )}
                             </MonoSpace>
-                          </ThemedText.DeprecatedMediumHeader>
+                          </CurrentAssetText>
                           &nbsp;&nbsp;
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color="#3377ff">
+                          <PoolAssetText>
                             <MonoSpace>
                               {formatDollarAmount(
                                 volumeIndexHover !== undefined
@@ -897,9 +913,9 @@ export default function FundAccount() {
                                   : 0
                               )}
                             </MonoSpace>
-                          </ThemedText.DeprecatedMediumHeader>
+                          </PoolAssetText>
                           &nbsp;&nbsp;
-                          <ThemedText.DeprecatedMediumHeader fontSize="18px" color="#99FF99">
+                          <PrincipalText>
                             <MonoSpace>
                               {formatDollarAmount(
                                 principalHover !== undefined
@@ -909,7 +925,7 @@ export default function FundAccount() {
                                   : 0
                               )}
                             </MonoSpace>
-                          </ThemedText.DeprecatedMediumHeader>
+                          </PrincipalText>
                         </AutoRow>
                         <ThemedText.DeprecatedMain fontSize="14px" height="14px" mb="30px">
                           {volumeIndexHover !== undefined ? (
@@ -950,13 +966,19 @@ export default function FundAccount() {
                           {tokenIndexHover !== undefined &&
                           formattedLatestTokens &&
                           formattedLatestTokens.length > 0 ? (
-                            <ThemedText.DeprecatedMain fontSize="14px">
-                              <MonoSpace>{shortenAddress(formattedLatestTokens[tokenIndexHover].token)}</MonoSpace>
-                            </ThemedText.DeprecatedMain>
+                            <ExternalLink
+                              href={getEtherscanLink(chainId, formattedLatestTokens[tokenIndexHover].token, 'address')}
+                            >
+                              <ThemedText.DeprecatedMain fontSize="14px">
+                                {shortenAddress(formattedLatestTokens[tokenIndexHover].token)}
+                              </ThemedText.DeprecatedMain>
+                            </ExternalLink>
                           ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
-                            <ThemedText.DeprecatedMain fontSize="14px">
-                              <MonoSpace>{shortenAddress(formattedLatestTokens[0].token)}</MonoSpace>
-                            </ThemedText.DeprecatedMain>
+                            <ExternalLink href={getEtherscanLink(chainId, formattedLatestTokens[0].token, 'address')}>
+                              <ThemedText.DeprecatedMain fontSize="14px">
+                                {shortenAddress(formattedLatestTokens[0].token)}
+                              </ThemedText.DeprecatedMain>
+                            </ExternalLink>
                           ) : null}
                         </AutoRow>
                         <ThemedText.DeprecatedLargeHeader fontSize="32px">
@@ -988,11 +1010,11 @@ export default function FundAccount() {
                           formattedLatestTokens &&
                           formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#ff1a75">
+                              <CurrentAssetText>
                                 <MonoSpace>
                                   {formatAmount(formattedLatestTokens[tokenIndexHover].currentAmount)}
                                 </MonoSpace>
-                              </ThemedText.DeprecatedMediumHeader>
+                              </CurrentAssetText>
                               <ThemedText.DeprecatedMain fontSize="20px">
                                 <MonoSpace>
                                   {' '}
@@ -1002,9 +1024,9 @@ export default function FundAccount() {
                             </>
                           ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#ff1a75">
+                              <CurrentAssetText>
                                 <MonoSpace>{formatAmount(formattedLatestTokens[0].currentAmount)}</MonoSpace>
-                              </ThemedText.DeprecatedMediumHeader>
+                              </CurrentAssetText>
                               <ThemedText.DeprecatedMain fontSize="20px">
                                 <MonoSpace> ({formatDollarAmount(formattedLatestTokens[0].current)})</MonoSpace>
                               </ThemedText.DeprecatedMain>
@@ -1016,9 +1038,9 @@ export default function FundAccount() {
                           formattedLatestTokens &&
                           formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#3377ff">
+                              <PoolAssetText>
                                 <MonoSpace>{formatAmount(formattedLatestTokens[tokenIndexHover].poolAmount)}</MonoSpace>
-                              </ThemedText.DeprecatedMediumHeader>
+                              </PoolAssetText>
                               <ThemedText.DeprecatedMain fontSize="20px">
                                 <MonoSpace>
                                   {' '}
@@ -1028,9 +1050,9 @@ export default function FundAccount() {
                             </>
                           ) : formattedLatestTokens && formattedLatestTokens.length > 0 ? (
                             <>
-                              <ThemedText.DeprecatedMediumHeader fontSize="20px" color="#3377ff">
+                              <PoolAssetText>
                                 <MonoSpace>{formatAmount(formattedLatestTokens[0].poolAmount)}</MonoSpace>
-                              </ThemedText.DeprecatedMediumHeader>
+                              </PoolAssetText>
                               <ThemedText.DeprecatedMain fontSize="20px">
                                 <MonoSpace> ({formatDollarAmount(formattedLatestTokens[0].pool)})</MonoSpace>
                               </ThemedText.DeprecatedMain>
