@@ -1456,7 +1456,7 @@ msgstr "상위 매니저"
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Asset"
-msgstr "전체 자산"
+msgstr "총 자산"
 
 #: src/pages/FundAccount/index.tsx
 msgid "Total Asset Tokens"
