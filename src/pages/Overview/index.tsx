@@ -132,7 +132,9 @@ export default function Overview() {
                   setIndex={setCurrentVolumeIndexHover}
                   topLeft={
                     <AutoColumn gap="4px">
-                      <ThemedText.MediumHeader fontSize="16px">Current</ThemedText.MediumHeader>
+                      <ThemedText.MediumHeader fontSize="16px">
+                        <Trans>Current</Trans>
+                      </ThemedText.MediumHeader>
                       <ThemedText.LargeHeader fontSize="32px">
                         <MonoSpace>
                           {formatDollarAmount(

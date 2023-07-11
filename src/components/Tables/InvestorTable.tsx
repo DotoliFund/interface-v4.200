@@ -199,7 +199,11 @@ export default function InvestorTable({
           }
           return null
         })}
-        {sortedInvestors.length === 0 ? <ThemedText.DeprecatedMain>No Investors</ThemedText.DeprecatedMain> : undefined}
+        {sortedInvestors.length === 0 ? (
+          <ThemedText.DeprecatedMain>
+            <Trans>No Investors</Trans>
+          </ThemedText.DeprecatedMain>
+        ) : undefined}
         <PageButtons>
           <div
             onClick={() => {

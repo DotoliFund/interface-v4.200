@@ -425,6 +425,7 @@ msgstr ""
 #: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx
 #: src/components/Tables/TopManagerTable.tsx
+#: src/pages/Overview/index.tsx
 msgid "Current"
 msgstr ""
 
@@ -935,6 +936,10 @@ msgstr ""
 
 #: src/pages/Fee/index.tsx
 msgid "No Fees"
+msgstr ""
+
+#: src/components/Tables/InvestorTable.tsx
+msgid "No Investors"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
