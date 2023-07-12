@@ -22,24 +22,24 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(3, 1fr);
+  grid-template-columns: 0.5fr 0.2fr 1fr 0.5fr;
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 0.1fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 0.1fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 0.1fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
@@ -61,6 +61,9 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
   return (
     <ResponsiveGrid>
       <Label>{index + 1}</Label>
+      <Label end={1} fontWeight={400}>
+        {tokenData.symbol}
+      </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address')}>
           {tokenData.address}
@@ -145,7 +148,7 @@ export default function TokenTable({ tokenDatas, maxItems = MAX_ITEMS }: { token
                 <Trans>Name</Trans> {arrow(SORT_FIELD.name)}
               </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.address)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.address)}>
               <ThemedText.DeprecatedDarkGray>
                 <Trans>Address</Trans> {arrow(SORT_FIELD.address)}
               </ThemedText.DeprecatedDarkGray>
