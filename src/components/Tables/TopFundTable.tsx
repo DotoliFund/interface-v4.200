@@ -22,25 +22,25 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(4, 1fr);
+  grid-template-columns: 0.5fr repeat(4, 1fr);
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(3, 1fr);
-    & > *:nth-child(5) {import { Trans } from '@lingui/macro'
-
+    grid-template-columns: 0.5fr repeat(3, 1fr);
+    & > *:nth-child(5) {
+      import { Trans } from '@lingui/macro'
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 0.5fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
+    grid-template-columns: 0.5fr repeat(2, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
