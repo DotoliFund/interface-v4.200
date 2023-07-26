@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import dotoliMainLogo from 'assets/images/dotoli_main_logo.png'
 import { RowBetween } from 'components/Row'
 import { VOTE_URL } from 'constants/addresses'
 import { isSupportedChain } from 'constants/chains'
@@ -49,6 +50,9 @@ export default function Home() {
 
   return (
     <div>
+      <center>
+        <img src={dotoliMainLogo} width="400px" />
+      </center>
       {isSupportedChain(chainId) ? (
         <>
           <CoverContainer>
@@ -73,7 +77,11 @@ export default function Home() {
               </CoverBtnWrapper>
             </CoverContent>
           </CoverContainer>
-
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
           <CoverContainer>
             <CoverContent>
               <CoverH1>
@@ -87,7 +95,8 @@ export default function Home() {
               </CoverP>
             </CoverContent>
           </CoverContainer>
-
+          <br></br>
+          <br></br>
           <CoverContainer>
             <CoverContent>
               <CoverH1>
@@ -101,7 +110,8 @@ export default function Home() {
               </CoverP>
             </CoverContent>
           </CoverContainer>
-
+          <br></br>
+          <br></br>
           <CoverContainer>
             <CoverContent>
               <CoverH1>
@@ -115,7 +125,8 @@ export default function Home() {
               </CoverP>
             </CoverContent>
           </CoverContainer>
-
+          <br></br>
+          <br></br>
           <CoverContainer>
             <CoverContent>
               <CoverH1>

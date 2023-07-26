@@ -5,19 +5,19 @@ export const CoverContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 500px;
+  height: 250px;
 `
 
 export const CoverContent = styled.div`
   display: flex;
-  max-width: 800px;
+  max-width: 600px;
   flex-direction: column;
   align-items: center;
 `
 
 export const CoverH1 = styled.h1`
   color: #fff;
-  font-size: 64px;
+  font-size: 54px;
   text-align: center;
   margin-bottom: 0px;
 
