@@ -18,7 +18,7 @@ export const DOTOLI_STAKING_ADDRESS: AddressMap = {
 //export const DOTOLI_SETTING_ADDRESSES = '0x5E1cE0e492f956b4a1A1963E4A465256C060966c'
 export const DOTOLI_INFO_ADDRESSES = '0xD72008394f456362765446aD8638a0B0ee226d70'
 export const DOTOLI_FUND_ADDRESSES = '0x5EA02ce75D173f03C88831893C69724C3F38df5e'
-export const VOTE_URL = 'https://www.tally.xyz/gov/Dotoli-2'
+export const VOTE_URL = 'https://www.tally.xyz/gov/dotoli3'
 
 // //goerli testnet
 // export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
