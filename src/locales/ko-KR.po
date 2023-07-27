@@ -455,6 +455,10 @@ msgid "Dark theme"
 msgstr "어두운 테마"
 
 #: src/pages/Home/index.tsx
+msgid "Decentralized cryptocurrency fund"
+msgstr "탈중앙화 암호화폐 펀드"
+
+#: src/pages/Home/index.tsx
 msgid "Decentralized fund investment"
 msgstr "탈중앙화 펀드 투자"
 
@@ -827,10 +831,6 @@ msgstr "유동성 데이터가 없습니다."
 #: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
 msgid "MAX"
 msgstr "최대"
-
-#: src/pages/Home/index.tsx
-msgid "Manage or Invest crypto fund with confidence"
-msgstr "안심하고 암호화폐 자금을 관리하거나 투자하세요"
 
 #: src/components/Tables/ManagerTable.tsx
 #: src/components/Tables/TopFundTable.tsx

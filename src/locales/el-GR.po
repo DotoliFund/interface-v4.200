@@ -455,6 +455,10 @@ msgid "Dark theme"
 msgstr ""
 
 #: src/pages/Home/index.tsx
+msgid "Decentralized cryptocurrency fund"
+msgstr ""
+
+#: src/pages/Home/index.tsx
 msgid "Decentralized fund investment"
 msgstr ""
 
@@ -826,10 +830,6 @@ msgstr ""
 #: src/components/CurrencyInputPanel/SwapToInputPanel.tsx
 #: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
 msgid "MAX"
-msgstr ""
-
-#: src/pages/Home/index.tsx
-msgid "Manage or Invest crypto fund with confidence"
 msgstr ""
 
 #: src/components/Tables/ManagerTable.tsx

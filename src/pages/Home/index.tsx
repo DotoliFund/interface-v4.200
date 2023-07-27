@@ -58,11 +58,10 @@ export default function Home() {
           <CoverContainer>
             <CoverContent>
               <CoverH1>
-                <Trans>Manage or Invest crypto fund with confidence</Trans>
+                <Trans>Decentralized cryptocurrency fund</Trans>
               </CoverH1>
-              <CoverP>
-                <Trans>Swap and Provide Liquidity via Uniswap</Trans>
-              </CoverP>
+              <br></br>
+              <br></br>
               <CoverBtnWrapper>
                 <Button
                   primary={true}
