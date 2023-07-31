@@ -1,46 +1,50 @@
-# Getting Started with Create React App
+# Dotoli Interface
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains the interface for the Dotoli Protocol.
 
-## Available Scripts
+Introducing Dotoli, based on ERC-20, a decentralized fund management
+protocol for managing and investing in cryptocurrency assets. You can manage
+token assets while swapping Ethereum-based ERC-20 token assets using the
+Uniswap V3 contract.
 
-In the project directory, you can run:
+## Fund
+ All deposits, withdrawals and swap information of both fund managers and investors
+are stored transparently in the Ethereum blockchain, which is advantageous to both fund
+managers and investors.
 
-### `npm start`
+## Manager
+ If all fund operations are transparently and completely recorded on the blockchain, the
+fund manager's asset management portfolio cannot be forged or modified. The
+advantage of this is that if the fund manager himself has a high investment return rate,
+his investment activities so far become his portfolio, and a portfolio with good
+performance is good information for investors who need a competent fund manager. In
+addition, since fund managers do not work as employees of existing financial
+companies, they can independently grow and manage their assets without restrictions.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Investor
+ Since the fund is operated only according to the rules of the Dotoli contract of the
+Ethereum blockchain, which is close to decentralization, it is safe from malicious
+actions by third parties. For example, if investor B deposits cryptocurrency into a fund
+created by fund manager A, only the investor can withdraw. Fund managers can only
+swap deposited assets or add/remove them to the Uniswap pool.
 
-### `npm test`
+## Decentralized Fund Manage System
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![image](https://github.com/DotoliFund/interface/assets/109557159/9f1b0911-0945-4831-9711-33c06313b978)
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## WhitePaper
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  https://dotoli.org/whitepaper.pdf
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Licensing
 
-### `npm run eject`
+Inspired by Uniswap Interface
+```
+GPL-2.0-or-later
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
