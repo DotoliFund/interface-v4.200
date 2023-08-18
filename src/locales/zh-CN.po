@@ -1265,10 +1265,6 @@ msgstr ""
 msgid "Swap Anyway"
 msgstr ""
 
-#: src/pages/Home/index.tsx
-msgid "Swap and Provide Liquidity via Uniswap"
-msgstr ""
-
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Swap exactly <0/> for <1/>"
 msgstr ""

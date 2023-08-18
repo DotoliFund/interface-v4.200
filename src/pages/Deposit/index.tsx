@@ -28,7 +28,7 @@ import JSBI from 'jsbi'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Info } from 'react-feather'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useDepositActionHandlers, useDepositState, useDerivedDepositInfo } from 'state/deposit/hooks'
@@ -79,9 +79,19 @@ const DepositSection = styled.div`
   }
 `
 
+const HoverText = styled(ThemedText.DeprecatedMain)`
+  text-decoration: none;
+  color: ${({ theme }) => theme.deprecated_text4};
+  :hover {
+    color: ${({ theme }) => theme.deprecated_text4};
+    text-decoration: none;
+  }
+`
+
 export default function Deposit() {
   const params = useParams()
   const fundId = params.fundId
+  const investor = params.investor
   const { account, chainId, provider } = useWeb3React()
 
   // modal and loading
@@ -272,7 +282,20 @@ export default function Deposit() {
           pendingText={<Trans>Depositing</Trans>}
           currencyToAdd={undefined}
         />
+
         <PageWrapper>
+          <Link
+            data-cy="visit-pool"
+            style={{ textDecoration: 'none', width: 'fit-content', marginBottom: '0.5rem' }}
+            to={`/fund/${fundId}/${investor}`}
+          >
+            <HoverText>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>← Go Back</Trans>
+              </ThemedText.DeprecatedDarkGray>
+            </HoverText>
+          </Link>
+          <br></br>
           <DepositWrapper id="deposit-page">
             <StyledDepositHeader>
               <RowBetween>

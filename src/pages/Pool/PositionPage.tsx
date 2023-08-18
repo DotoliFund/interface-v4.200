@@ -55,7 +55,7 @@ const LightCardWrapper = styled(LightCard)`
 `
 
 const CardWrapper = styled(DarkCard)`
-  background-color: ${({ theme }) => theme.backgroundFloating};
+  background-color: ${({ theme }) => theme.backgroundFloating2};
   width: 100%;
 `
 
@@ -142,6 +142,7 @@ const ResponsiveRow = styled(RowBetween)`
 `
 
 const ResponsiveButtonPrimary = styled(ButtonPrimary)`
+  font-size: 18px;
   border-radius: 12px;
   padding: 6px 8px;
   width: fit-content;
@@ -696,6 +697,7 @@ export function PositionPage() {
                 <CardWrapper
                   width="100%"
                   height="100%"
+                  marginRight="12px"
                   border="1px solid ${({ theme }) => theme.backgroundOutline};
                   "
                   style={{
@@ -813,7 +815,7 @@ export function PositionPage() {
                             disabled={collecting || !!collectMigrationHash}
                             confirmed={!!collectMigrationHash && !isCollectPending}
                             width="fit-content"
-                            style={{ borderRadius: '12px' }}
+                            style={{ borderRadius: '12px', fontSize: '16px' }}
                             padding="4px 8px"
                             onClick={() => setShowConfirm(true)}
                           >

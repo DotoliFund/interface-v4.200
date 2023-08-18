@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   position: relative;
   padding: 20px;
   min-width: 460px;
+  background-color: ${({ theme }) => theme.backgroundSurface};
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToExtraSmall`
     min-width: 340px;

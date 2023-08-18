@@ -98,7 +98,7 @@ export const ThemedText = {
     return <TextWrapper fontWeight={500} color="accentAction" {...props} />
   },
   DeprecatedYellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} color="deprecated_yellow3" {...props} />
+    return <TextWrapper fontWeight={500} color="deprecated_yellow1" {...props} />
   },
   DeprecatedDarkGray(props: TextProps) {
     return <TextWrapper fontWeight={500} color="textTertiary" {...props} />

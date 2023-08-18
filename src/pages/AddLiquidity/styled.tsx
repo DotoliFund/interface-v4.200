@@ -7,6 +7,7 @@ import styled from 'styled-components/macro'
 export const PageWrapper = styled(BodyWrapper)<{ wide: boolean }>`
   max-width: ${({ wide }) => (wide ? '880px' : '480px')};
   width: 100%;
+  background-color: ${({ theme }) => theme.backgroundSurface};
 
   padding: ${({ wide }) => (wide ? '10px' : '0')};
 

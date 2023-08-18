@@ -791,13 +791,13 @@ export default function AddLiquidity() {
                                 $borderRadius="12px"
                                 height="100%"
                                 style={{
-                                  borderColor: theme.deprecated_yellow3,
+                                  borderColor: theme.deprecated_yellow1,
                                   border: '1px solid',
                                 }}
                               >
                                 <AutoColumn gap="8px" style={{ height: '100%' }}>
                                   <RowFixed>
-                                    <AlertTriangle stroke={theme.deprecated_yellow3} size="16px" />
+                                    <AlertTriangle stroke={theme.deprecated_yellow1} size="16px" />
                                     <ThemedText.DeprecatedYellow ml="12px" fontSize="15px">
                                       <Trans>Efficiency Comparison</Trans>
                                     </ThemedText.DeprecatedYellow>
@@ -807,7 +807,7 @@ export default function AddLiquidity() {
                                       <Trans>
                                         Full range positions may earn less fees than concentrated positions. Learn more{' '}
                                         <ExternalLink
-                                          style={{ color: theme.deprecated_yellow3, textDecoration: 'underline' }}
+                                          style={{ color: theme.deprecated_yellow1, textDecoration: 'underline' }}
                                           href="https://help.uniswap.org/en/articles/5434296-can-i-provide-liquidity-over-the-full-range-in-v3"
                                         >
                                           here
@@ -827,7 +827,7 @@ export default function AddLiquidity() {
                                         getSetFullRange()
                                       }}
                                     >
-                                      <ThemedText.DeprecatedBlack fontSize={13} color="black">
+                                      <ThemedText.DeprecatedBlack fontSize={13} color="yellow">
                                         <Trans>I understand</Trans>
                                       </ThemedText.DeprecatedBlack>
                                     </ButtonYellow>
@@ -841,7 +841,7 @@ export default function AddLiquidity() {
                         {outOfRange ? (
                           <YellowCard padding="8px 12px" $borderRadius="12px">
                             <RowBetween>
-                              <AlertTriangle stroke={theme.deprecated_yellow3} size="16px" />
+                              <AlertTriangle stroke={theme.deprecated_yellow1} size="16px" />
                               <ThemedText.DeprecatedYellow ml="12px" fontSize="12px">
                                 <Trans>
                                   Your position will not earn fees or be used in trades until the market price moves
@@ -855,7 +855,7 @@ export default function AddLiquidity() {
                         {invalidRange ? (
                           <YellowCard padding="8px 12px" $borderRadius="12px">
                             <RowBetween>
-                              <AlertTriangle stroke={theme.deprecated_yellow3} size="16px" />
+                              <AlertTriangle stroke={theme.deprecated_yellow1} size="16px" />
                               <ThemedText.DeprecatedYellow ml="12px" fontSize="12px">
                                 <Trans>Invalid range selected. The min price must be lower than the max price.</Trans>
                               </ThemedText.DeprecatedYellow>

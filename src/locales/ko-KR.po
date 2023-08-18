@@ -1265,10 +1265,6 @@ msgstr "<0/>을 정확한 <1/>로 바꿉니다."
 msgid "Swap Anyway"
 msgstr "어쨌든 스왑"
 
-#: src/pages/Home/index.tsx
-msgid "Swap and Provide Liquidity via Uniswap"
-msgstr "Uniswap을 통한 스왑 및 유동성 제공"
-
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Swap exactly <0/> for <1/>"
 msgstr "정확한 <0/>를 <1/>로 바꿉니다."
@@ -1355,7 +1351,7 @@ msgstr "입력 토큰을 이체할 수 없습니다. 입력 토큰에 문제가 
 #: src/components/CurrencyInputPanel/UnstakingInputPanel.tsx
 #: src/components/CurrencyInputPanel/WithdrawInputPanel.tsx
 msgid "The market price is outside your specified price range. Single-asset deposit only."
-msgstr "시장 가격이 지정된 가격 범위를 벗어났습니다. 단일 자산 예금만."
+msgstr "시장 가격이 지정된 가격 범위를 벗어났습니다."
 
 #: src/components/swap/AdvancedSwapDetails.tsx
 msgid "The minimum amount you are guaranteed to receive. If the price slips any further, your transaction will revert."
@@ -1885,4 +1881,4 @@ msgstr "← 펀드로 돌아가기"
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Fund Account"
-msgstr "펀드 계정으로 돌아가기"
+msgstr "← 펀드 계정으로 돌아가기"
