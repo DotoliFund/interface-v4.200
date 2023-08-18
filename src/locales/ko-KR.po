@@ -1191,7 +1191,6 @@ msgid "Settings"
 msgstr "설정"
 
 #: src/components/PositionList/index.tsx
-#: src/components/PositionList/index.tsx
 #: src/pages/FundAccount/index.tsx
 msgid "Show closed positions"
 msgstr "마감된 위치 표시"
@@ -1882,3 +1881,9 @@ msgstr "← 펀드로 돌아가기"
 #: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Fund Account"
 msgstr "← 펀드 계정으로 돌아가기"
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Withdraw/index.tsx
+msgid "← Go Back"
+msgstr "← 돌아가기"

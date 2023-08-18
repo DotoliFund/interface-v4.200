@@ -1191,7 +1191,6 @@ msgid "Settings"
 msgstr ""
 
 #: src/components/PositionList/index.tsx
-#: src/components/PositionList/index.tsx
 #: src/pages/FundAccount/index.tsx
 msgid "Show closed positions"
 msgstr ""
@@ -1881,4 +1880,10 @@ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Fund Account"
+msgstr ""
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Withdraw/index.tsx
+msgid "← Go Back"
 msgstr ""
