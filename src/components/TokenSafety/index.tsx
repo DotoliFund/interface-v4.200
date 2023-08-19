@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `
 
 const Container = styled.div`
-  width: 100%;
+  width: 80%;
   padding: 32px 50px;
   display: flex;
   flex-flow: column;
