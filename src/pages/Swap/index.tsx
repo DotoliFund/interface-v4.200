@@ -37,7 +37,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
 import { ArrowDown } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { InterfaceTrade } from 'state/routing/types'
@@ -101,6 +101,15 @@ const DetailsSwapSection = styled(SwapSection)`
   padding: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+`
+
+const HoverText = styled(ThemedText.DeprecatedMain)`
+  text-decoration: none;
+  color: ${({ theme }) => theme.deprecated_text4};
+  :hover {
+    color: ${({ theme }) => theme.deprecated_text4};
+    text-decoration: none;
+  }
 `
 
 function getIsValidSwapQuote(
@@ -440,6 +449,18 @@ export default function Swap() {
           showCancel={true}
         />
         <PageWrapper>
+          <Link
+            data-cy="visit-pool"
+            style={{ textDecoration: 'none', width: 'fit-content', marginBottom: '0.5rem' }}
+            to={`/fund/${fundId}/${investor}`}
+          >
+            <HoverText>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>← Go Back</Trans>
+              </ThemedText.DeprecatedDarkGray>
+            </HoverText>
+          </Link>
+          <br></br>
           <SwapWrapper id="swap-page">
             <SwapHeader allowedSlippage={allowedSlippage} />
             <ConfirmSwapModal

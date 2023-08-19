@@ -1191,7 +1191,6 @@ msgid "Settings"
 msgstr ""
 
 #: src/components/PositionList/index.tsx
-#: src/components/PositionList/index.tsx
 #: src/pages/FundAccount/index.tsx
 msgid "Show closed positions"
 msgstr ""
@@ -1263,10 +1262,6 @@ msgstr ""
 
 #: src/pages/Swap/index.tsx
 msgid "Swap Anyway"
-msgstr ""
-
-#: src/pages/Home/index.tsx
-msgid "Swap and Provide Liquidity via Uniswap"
 msgstr ""
 
 #: src/components/AccountDetails/TransactionSummary.tsx
@@ -1885,4 +1880,10 @@ msgstr ""
 
 #: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Fund Account"
+msgstr ""
+
+#: src/pages/Deposit/index.tsx
+#: src/pages/Swap/index.tsx
+#: src/pages/Withdraw/index.tsx
+msgid "← Go Back"
 msgstr ""

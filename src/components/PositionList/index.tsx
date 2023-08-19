@@ -83,7 +83,7 @@ export default function PositionList({
           <Trans>Your positions</Trans>
           {positions && ' (' + positions.length + ')'}
         </div>
-        <ToggleWrap>
+        {/* <ToggleWrap>
           <ToggleLabel>
             <Trans>Show closed positions</Trans>
           </ToggleLabel>
@@ -94,7 +94,7 @@ export default function PositionList({
               setUserHideClosedPositions(!userHideClosedPositions)
             }}
           />
-        </ToggleWrap>
+        </ToggleWrap> */}
       </DesktopHeader>
       <MobileHeader>
         <Trans>Your positions</Trans>

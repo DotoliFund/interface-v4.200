@@ -10,7 +10,7 @@ import { ExternalLink as LinkIconFeather } from 'react-feather'
 import { Text } from 'rebass'
 import { useAddUserToken } from 'state/user/hooks'
 import styled from 'styled-components/macro'
-import { ButtonText, CopyLinkIcon, ExternalLink } from 'theme'
+import { ButtonText, ExternalLink } from 'theme'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 
 const Wrapper = styled.div`
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `
 
 const Container = styled.div`
-  width: 100%;
+  width: 80%;
   padding: 32px 50px;
   display: flex;
   flex-flow: column;
@@ -172,7 +172,7 @@ function ExplorerView({ token }: { token: Token }) {
           <ExplorerLink>{explorerLink}</ExplorerLink>
           <ExternalLinkIcon />
         </ExplorerLinkWrapper>
-        <CopyLinkIcon toCopy={explorerLink} />
+        {/* <CopyLinkIcon toCopy={explorerLink} /> */}
       </ExplorerContainer>
     )
   } else {

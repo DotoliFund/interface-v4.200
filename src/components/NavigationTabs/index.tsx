@@ -9,7 +9,6 @@ import { ThemedText } from 'theme'
 import { flexRowNoWrap } from 'theme/styles'
 
 import { RowBetween } from '../Row'
-import SettingsTab from '../Settings'
 
 const Tabs = styled.div`
   ${flexRowNoWrap};
@@ -68,7 +67,7 @@ export function NavigationsTabs({
           {adding ? <Trans>Add Liquidity</Trans> : <Trans>Remove Liquidity</Trans>}
         </ThemedText.DeprecatedMediumHeader>
         <Box style={{ marginRight: '.5rem' }}>{children}</Box>
-        <SettingsTab placeholderSlippage={defaultSlippage} />
+        {/* <SettingsTab placeholderSlippage={defaultSlippage} /> */}
       </RowBetween>
     </Tabs>
   )
@@ -116,7 +115,7 @@ export function AddRemoveTabs({
           )}
         </ThemedText.DeprecatedMediumHeader>
         <Box style={{ marginRight: '.5rem' }}>{children}</Box>
-        <SettingsTab placeholderSlippage={defaultSlippage} />
+        {/* <SettingsTab placeholderSlippage={defaultSlippage} /> */}
       </RowBetween>
     </Tabs>
   )

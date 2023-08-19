@@ -22,7 +22,7 @@ import { useStablecoinValue } from 'hooks/useStablecoinPrice'
 import { DotoliFund } from 'interface/DotoliFund'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useCallback, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -72,9 +72,19 @@ const WithdrawSection = styled.div`
   }
 `
 
+const HoverText = styled(ThemedText.DeprecatedMain)`
+  text-decoration: none;
+  color: ${({ theme }) => theme.deprecated_text4};
+  :hover {
+    color: ${({ theme }) => theme.deprecated_text4};
+    text-decoration: none;
+  }
+`
+
 export default function Withdraw() {
   const params = useParams()
   const fundId = params.fundId
+  const investor = params.investor
   const { account, chainId, provider } = useWeb3React()
   const theme = useTheme()
 
@@ -239,6 +249,18 @@ export default function Withdraw() {
           currencyToAdd={undefined}
         />
         <PageWrapper>
+          <Link
+            data-cy="visit-pool"
+            style={{ textDecoration: 'none', width: 'fit-content', marginBottom: '0.5rem' }}
+            to={`/fund/${fundId}/${investor}`}
+          >
+            <HoverText>
+              <ThemedText.DeprecatedDarkGray>
+                <Trans>← Go Back</Trans>
+              </ThemedText.DeprecatedDarkGray>
+            </HoverText>
+          </Link>
+          <br></br>
           <WithdrawWrapper id="withdraw-page">
             <StyledWithdrawHeader>
               <RowBetween>

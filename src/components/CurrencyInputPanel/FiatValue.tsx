@@ -38,13 +38,13 @@ export function FiatValue({
   }, [isLoading, fiatValue])
 
   return (
-    <ThemedText.DeprecatedBody fontSize={14} color={fiatValue ? theme.deprecated_blue4 : theme.deprecated_text4}>
+    <ThemedText.DeprecatedBody fontSize={14} color={fiatValue ? theme.deprecated_text4 : theme.deprecated_text4}>
       {fiatValue ? (
         <Trans>
           $
           <HoverInlineText
             text={fiatValue?.toFixed(visibleDecimalPlaces, { groupSeparator: ',' })}
-            textColor={fiatValue ? theme.deprecated_blue4 : theme.deprecated_text4}
+            textColor={fiatValue ? theme.deprecated_text4 : theme.deprecated_text4}
           />
         </Trans>
       ) : (

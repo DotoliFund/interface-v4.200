@@ -23,6 +23,7 @@ import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { useV3PositionFromTokenId } from 'hooks/useV3Positions'
 import { DotoliFund } from 'interface/DotoliFund'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
+import { BodyWrapper } from 'pages/AppBody'
 import { useCallback, useMemo, useState } from 'react'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -37,7 +38,6 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from '../../co
 import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
 import { currencyId } from '../../utils/currencyId'
-import AppBody from '../AppBody'
 import { ResponsiveHeaderText, SmallMaxButton, Wrapper } from './styled'
 
 const DEFAULT_REMOVE_V3_LIQUIDITY_SLIPPAGE_TOLERANCE = new Percent(5, 100)
@@ -46,6 +46,12 @@ const Break = styled.div`
   width: 100%;
   background-color: rgba(255, 255, 255, 0.2);
   height: 1px;
+`
+
+const PageWrapper = styled(BodyWrapper)`
+  max-width: 'unset';
+  width: 100%;
+  background-color: ${({ theme }) => theme.backgroundSurface};
 `
 
 // redirect invalid tokenIds
@@ -300,7 +306,7 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
           )}
           pendingText={pendingText}
         />
-        <AppBody $maxWidth="unset">
+        <PageWrapper $maxWidth="unset">
           <AddRemoveTabs
             creating={false}
             adding={false}
@@ -423,7 +429,7 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
               <Loader />
             )}
           </Wrapper>
-        </AppBody>
+        </PageWrapper>
       </AutoColumn>
     )
   }
