@@ -18,7 +18,6 @@
     "graphql:generate": "yarn relay-thegraph",
     "i18n:extract": "lingui extract --clean",
     "i18n:compile": "lingui compile",
-    "i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
     "prepare": "yarn contracts:compile && yarn graphql:fetch && yarn graphql:generate && yarn i18n:compile",
     "start": "craco start",
     "build": "craco build",

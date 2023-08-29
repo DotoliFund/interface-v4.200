@@ -1032,7 +1032,7 @@ msgstr "풀"
 
 #: src/pages/Overview/index.tsx
 msgid "Pool size to be whitelisted tokens:"
-msgstr "화이트리스트 토큰이 되기 위한 풀 크기 :"
+msgstr "화이트리스트가 되기 위한 풀 크기 :"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -1461,6 +1461,10 @@ msgstr "총 자산"
 #: src/pages/FundAccount/index.tsx
 msgid "Total Asset Tokens"
 msgstr "총 자산"
+
+#: src/pages/Overview/index.tsx
+msgid "Total Current ETH :"
+msgstr "총 유동자산 :"
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"
