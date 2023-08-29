@@ -11,6 +11,7 @@ import TopManagerTable from 'components/Tables/TopManagerTable'
 import { isSupportedChain } from 'constants/chains'
 import { useInfoChartData } from 'data/Overview/infoChartData'
 import { useInfoData } from 'data/Overview/infoData'
+import { useSettingData } from 'data/Overview/settingData'
 import { useTopFunds } from 'data/Overview/topFunds'
 import { useTopManagers } from 'data/Overview/topManagers'
 import { useWhiteListTokens } from 'data/Overview/whiteListTokens'
@@ -82,6 +83,7 @@ export default function Overview() {
   const [investorCountIndexHover, setInvestorCountIndexHover] = useState<number | undefined>()
 
   const infoData = useInfoData()
+  const settingData = useSettingData()
   const topManagers = useTopManagers()
   const topFunds = useTopFunds()
   const whiteListTokens = useWhiteListTokens()
@@ -240,13 +242,22 @@ export default function Overview() {
                       <ThemedText.DeprecatedLabel ml="10px">{infoData.data?.investorCount}</ThemedText.DeprecatedLabel>
                       <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
                     </RowFixed>
+                    <RowFixed mr="20px">
+                      <ThemedText.DeprecatedMain ml="10px">
+                        <Trans>Total Current ETH : </Trans>
+                      </ThemedText.DeprecatedMain>
+                      <ThemedText.DeprecatedLabel ml="10px">
+                        {infoData.data?.totalCurrentETH.toFixed(4)}
+                      </ThemedText.DeprecatedLabel>
+                      <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
+                    </RowFixed>
                     <HideMedium>
                       <RowFixed mr="20px">
                         <ThemedText.DeprecatedMain ml="10px">
                           <Trans>Manager Fee : </Trans>
                         </ThemedText.DeprecatedMain>
                         <ThemedText.DeprecatedLabel ml="10px">
-                          {infoData.data ? (infoData.data.managerFee / 10000).toFixed(2) : ''} %
+                          {settingData.data ? (settingData.data.managerFee / 10000).toFixed(2) : ''} %
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
                     </HideMedium>
@@ -256,7 +267,7 @@ export default function Overview() {
                           <Trans>Pool size to be whitelisted tokens: </Trans>
                         </ThemedText.DeprecatedMain>
                         <ThemedText.DeprecatedLabel ml="10px">
-                          {infoData.data ? infoData.data.minPoolAmount / 1e18 : ''} ETH
+                          {settingData.data ? settingData.data.minPoolAmount / 1e18 : ''} ETH
                         </ThemedText.DeprecatedLabel>
                       </RowFixed>
                     </HideMedium>

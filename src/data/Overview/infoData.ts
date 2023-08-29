@@ -9,8 +9,7 @@ const INFO_DATA = gql`
       id
       fundCount
       investorCount
-      managerFee
-      minPoolAmount
+      totalCurrentETH
     }
   }
 `
@@ -19,16 +18,14 @@ interface Info {
   id: string
   fundCount: number
   investorCount: number
-  managerFee: number
-  minPoolAmount: number
+  totalCurrentETH: number
 }
 
 interface InfoFields {
   id: string
   fundCount: string
   investorCount: string
-  managerFee: string
-  minPoolAmount: string
+  totalCurrentETH: string
 }
 
 interface InfoResponse {
@@ -70,8 +67,7 @@ export function useInfoData(): {
         id: data.info.id,
         fundCount: parseInt(data.info.fundCount),
         investorCount: parseInt(data.info.investorCount),
-        managerFee: parseInt(data.info.managerFee),
-        minPoolAmount: parseInt(data.info.minPoolAmount),
+        totalCurrentETH: parseFloat(data.info.totalCurrentETH),
       }
     : undefined
 
