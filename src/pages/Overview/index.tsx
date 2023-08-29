@@ -244,10 +244,10 @@ export default function Overview() {
                     </RowFixed>
                     <RowFixed mr="20px">
                       <ThemedText.DeprecatedMain ml="10px">
-                        <Trans>Total Current ETH : </Trans>
+                        <Trans>Total Current Asset : </Trans>
                       </ThemedText.DeprecatedMain>
                       <ThemedText.DeprecatedLabel ml="10px">
-                        {infoData.data?.totalCurrentETH.toFixed(4)}
+                        {infoData.data?.totalCurrentETH.toFixed(4)} ETH
                       </ThemedText.DeprecatedLabel>
                       <ThemedText.DeprecatedMain></ThemedText.DeprecatedMain>
                     </RowFixed>

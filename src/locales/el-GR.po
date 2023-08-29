@@ -1463,7 +1463,7 @@ msgid "Total Asset Tokens"
 msgstr ""
 
 #: src/pages/Overview/index.tsx
-msgid "Total Current ETH :"
+msgid "Total Current Asset :"
 msgstr ""
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
