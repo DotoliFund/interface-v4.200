@@ -1463,8 +1463,8 @@ msgid "Total Asset Tokens"
 msgstr "총 자산"
 
 #: src/pages/Overview/index.tsx
-msgid "Total Current ETH :"
-msgstr "총 유동자산 :"
+msgid "Total Current Asset :"
+msgstr "총 유동 자산 :"
 
 #: src/components/Tables/LiquidityTransactionTable.tsx
 msgid "Total Value"
