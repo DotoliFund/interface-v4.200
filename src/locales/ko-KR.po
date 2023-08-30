@@ -404,8 +404,6 @@ msgid "Create {0}/{1} V3 pool"
 msgstr "V3 풀 {0}/{1} 생성"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/Tables/TopFundTable.tsx
-#: src/components/Tables/TopManagerTable.tsx
 msgid "Created"
 msgstr "생성됨"
 
@@ -1558,8 +1556,14 @@ msgid "Unwrapping"
 msgstr "Unwrapping"
 
 #: src/components/Tables/TokenTable.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Update"
 msgstr "업데이트"
+
+#: src/components/FundListItem/index.tsx
+msgid "Update :"
+msgstr "업데이트 :"
 
 #: src/components/Settings/index.tsx
 msgid "Use the Uniswap Labs API to get faster quotes."

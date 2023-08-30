@@ -404,8 +404,6 @@ msgid "Create {0}/{1} V3 pool"
 msgstr ""
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
-#: src/components/Tables/TopFundTable.tsx
-#: src/components/Tables/TopManagerTable.tsx
 msgid "Created"
 msgstr ""
 
@@ -1558,7 +1556,13 @@ msgid "Unwrapping"
 msgstr ""
 
 #: src/components/Tables/TokenTable.tsx
+#: src/components/Tables/TopFundTable.tsx
+#: src/components/Tables/TopManagerTable.tsx
 msgid "Update"
+msgstr ""
+
+#: src/components/FundListItem/index.tsx
+msgid "Update :"
 msgstr ""
 
 #: src/components/Settings/index.tsx

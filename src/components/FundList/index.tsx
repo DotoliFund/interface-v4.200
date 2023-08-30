@@ -8,7 +8,7 @@ import { FundDetails } from 'types/fund'
 const DesktopHeader = styled.div`
   color: ${({ theme }) => theme.textPrimary};
   display: none;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 350;
   padding: 8px;
   border-bottom: 1px solid ${({ theme }) => theme.backgroundOutline};
@@ -26,7 +26,7 @@ const DesktopHeader = styled.div`
 
 const MobileHeader = styled.div`
   color: ${({ theme }) => theme.textPrimary};
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 350;
   padding: 8px;
   display: flex;

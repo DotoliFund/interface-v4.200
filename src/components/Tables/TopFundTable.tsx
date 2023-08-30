@@ -10,7 +10,7 @@ import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { TopFund } from 'types/fund'
 import { shortenAddress } from 'utils'
-import { unixToDate } from 'utils/date'
+import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
 const Wrapper = styled(OutlineCard)`
@@ -63,7 +63,7 @@ const SORT_FIELD = {
   current: 'current',
   manager: 'manager',
   investorCount: 'investorCount',
-  created: 'createdAtTimestamp',
+  updated: 'updatedAtTimestamp',
 }
 
 const DataRow = ({ fundData }: { fundData: TopFund; index: number }) => {
@@ -81,7 +81,7 @@ const DataRow = ({ fundData }: { fundData: TopFund; index: number }) => {
           {fundData.investorCount}
         </Label>
         <Label end={1} fontWeight={400}>
-          {unixToDate(fundData.createdAtTimestamp)}
+          {formatTime(fundData.updatedAtTimestamp.toString(), 0)}
         </Label>
       </ResponsiveGrid>
     </LinkWrapper>
@@ -174,9 +174,9 @@ export default function FundTable({ fundDatas, maxItems = MAX_ITEMS }: { fundDat
                 <Trans>Investors</Trans> {arrow(SORT_FIELD.investorCount)}
               </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.created)}>
+            <ClickableText end={1} color={theme.deprecated_text4} onClick={() => handleSort(SORT_FIELD.updated)}>
               <ThemedText.DeprecatedDarkGray>
-                <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
+                <Trans>Update</Trans> {arrow(SORT_FIELD.updated)}
               </ThemedText.DeprecatedDarkGray>
             </ClickableText>
           </ResponsiveGrid>

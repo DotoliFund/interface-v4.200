@@ -19,6 +19,7 @@ export interface TopFund {
   id: string
   fundId: string
   createdAtTimestamp: number
+  updatedAtTimestamp: number
   manager: string
   investorCount: number
   currentUSD: number
