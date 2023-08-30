@@ -10,6 +10,7 @@ const TOP_FUNDS = () => {
         id
         fundId
         createdAtTimestamp
+        updatedAtTimestamp
         manager
         investorCount
         currentUSD
@@ -23,6 +24,7 @@ interface TopFundFields {
   id: string
   fundId: string
   createdAtTimestamp: string
+  updatedAtTimestamp: string
   manager: string
   investorCount: string
   currentUSD: string
@@ -65,6 +67,7 @@ export function useTopFunds(): {
           id: fund.id,
           fundId: fund.fundId,
           createdAtTimestamp: parseFloat(fund.createdAtTimestamp),
+          updatedAtTimestamp: parseFloat(fund.updatedAtTimestamp),
           manager: fund.manager,
           investorCount: parseInt(fund.investorCount),
           currentUSD: parseFloat(fund.currentUSD),

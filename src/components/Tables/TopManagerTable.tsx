@@ -11,7 +11,7 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { TopManager } from 'types/fund'
 import { shortenAddress } from 'utils'
-import { unixToDate } from 'utils/date'
+import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
 const Wrapper = styled(OutlineCard)`
@@ -64,7 +64,7 @@ const SORT_FIELD = {
   current: 'current',
   principal: 'principal',
   profitRatio: 'profitRatio',
-  created: 'createdAtTimestamp',
+  updated: 'updatedAtTimestamp',
 }
 
 const DataRow = ({ managerData }: { managerData: TopManager; index: number }) => {
@@ -82,7 +82,7 @@ const DataRow = ({ managerData }: { managerData: TopManager; index: number }) =>
           <Percent value={managerData.profitRatio} wrap={false} />
         </Label>
         <Label end={1} fontWeight={400}>
-          {unixToDate(managerData.createdAtTimestamp)}
+          {formatTime(managerData.updatedAtTimestamp.toString(), 0)}
         </Label>
       </ResponsiveGrid>
     </LinkWrapper>
@@ -99,7 +99,7 @@ export default function TopManagerTable({
   maxItems?: number
 }) {
   // for sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.current)
+  const [sortField, setSortField] = useState(SORT_FIELD.profitRatio)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
@@ -178,9 +178,9 @@ export default function TopManagerTable({
                 <Trans>Profit</Trans> {arrow(SORT_FIELD.profitRatio)}
               </ThemedText.DeprecatedDarkGray>
             </ClickableText>
-            <ClickableText end={1} onClick={() => handleSort(SORT_FIELD.created)}>
+            <ClickableText end={1} onClick={() => handleSort(SORT_FIELD.updated)}>
               <ThemedText.DeprecatedDarkGray>
-                <Trans>Created</Trans> {arrow(SORT_FIELD.created)}
+                <Trans>Update</Trans> {arrow(SORT_FIELD.updated)}
               </ThemedText.DeprecatedDarkGray>
             </ClickableText>
           </ResponsiveGrid>

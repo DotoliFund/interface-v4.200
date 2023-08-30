@@ -8,6 +8,7 @@ const FUND_DATA = gql`
       id
       fundId
       createdAtTimestamp
+      updatedAtTimestamp
       manager
       investorCount
       currentUSD
@@ -26,6 +27,7 @@ interface Fund {
   id: string
   fundId: string
   createdAtTimestamp: number
+  updatedAtTimestamp: number
   manager: string
   investorCount: number
   currentUSD: number
@@ -42,6 +44,7 @@ interface FundFields {
   id: string
   fundId: string
   createdAtTimestamp: string
+  updatedAtTimestamp: string
   manager: string
   investorCount: string
   currentUSD: string
@@ -96,6 +99,7 @@ export function useFundData(fundId: string | undefined): {
         id: data.fund.id,
         fundId: data.fund.fundId,
         createdAtTimestamp: parseInt(data.fund.createdAtTimestamp),
+        updatedAtTimestamp: parseInt(data.fund.updatedAtTimestamp),
         manager: data.fund.manager,
         investorCount: parseInt(data.fund.investorCount),
         currentUSD: parseFloat(data.fund.currentUSD),

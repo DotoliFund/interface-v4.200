@@ -6,6 +6,7 @@ import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { FundDetails } from 'types/fund'
 import { unixToDate } from 'utils/date'
+import { formatTime } from 'utils/date'
 import { formatDollarAmount } from 'utils/numbers'
 
 const LinkRow = styled(Link)`
@@ -43,7 +44,7 @@ const LinkRow = styled(Link)`
 `
 
 const DataLineItem = styled.div`
-  font-size: 18px;
+  font-size: 16px;
 `
 
 const RangeLineItem = styled(DataLineItem)`
@@ -67,7 +68,7 @@ const RangeText = styled.span`
 `
 
 const ExtentsText = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   color: ${({ theme }) => theme.textSecondary};
   margin-right: 4px;
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
@@ -107,6 +108,12 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
                 <Trans>Created : </Trans>
               </ExtentsText>
               {unixToDate(fundData.createdAtTimestamp)}
+            </RangeText>
+            <RangeText>
+              <ExtentsText>
+                <Trans>Update : </Trans>
+              </ExtentsText>
+              {formatTime(fundData.updatedAtTimestamp.toString(), 0)}
             </RangeText>
           </RangeLineItem>
         </LinkRow>
