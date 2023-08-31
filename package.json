@@ -206,7 +206,8 @@
     "@dotolifund/core": "^0.0.3",
     "@dotolifund/staking": "^0.0.1",
     "make-plural": "^7.0.0",
-    "zustand": "^4.3.6"
+    "zustand": "^4.3.6",
+    "react-text-gradients": "^1.0.2"
   },
   "engines": {
     "npm": "please-use-yarn",

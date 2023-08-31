@@ -7,6 +7,7 @@ import { isSupportedChain } from 'constants/chains'
 import { ErrorContainer, NetworkIcon } from 'pages/Account'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { LinearGradient } from 'react-text-gradients'
 import { Button as RebassButton } from 'rebass/styled-components'
 import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
@@ -17,13 +18,14 @@ import {
   CoverBtnWrapper,
   CoverContainer,
   CoverContent,
+  CoverH0,
   CoverH1,
   CoverP,
 } from './CoverElements'
 
 const Button = styled(RebassButton)<{ primary?: boolean; big?: boolean; dark?: boolean; fontBig?: boolean }>`
   border-radius: 50px;
-  background: ${({ primary }) => (primary ? '#01BF71' : '#010606')};
+  background: ${({ primary }) => (primary ? '#ff9933' : '#010606')};
   white-space: nowrap;
   padding: ${({ big }) => (big ? '14px 48px' : '12px 30px')};
   color: ${({ dark }) => (dark ? '#010606' : '#fff')};
@@ -37,7 +39,7 @@ const Button = styled(RebassButton)<{ primary?: boolean; big?: boolean; dark?: b
   transition: all 0.2s ease-in-out;
   &:hover {
     transition: all 0.2s ease-in-out;
-    background: ${({ primary }) => (primary ? '#fff' : '#01BF71')};
+    background: ${({ primary }) => (primary ? '#fff' : '#ff9933')};
   }
 `
 
@@ -57,9 +59,11 @@ export default function Home() {
         <>
           <CoverContainer>
             <CoverContent>
-              <CoverH1>
-                <Trans>Decentralized cryptocurrency fund</Trans>
-              </CoverH1>
+              <CoverH0>
+                <LinearGradient gradient={['to left', '#F8FFC3 ,#ff9933']}>
+                  <Trans>Decentralized cryptocurrency fund</Trans>
+                </LinearGradient>
+              </CoverH0>
               <br></br>
               <br></br>
               <CoverBtnWrapper>

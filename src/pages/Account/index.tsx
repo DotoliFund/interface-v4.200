@@ -3,7 +3,7 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonDotoli2 } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FundList from 'components/FundList'
 import { RowBetween, RowFixed } from 'components/Row'
@@ -81,7 +81,7 @@ const InboxIcon = styled(Inbox)`
   ${IconStyle}
 `
 
-const ResponsiveButtonPrimary = styled(ButtonPrimary)`
+const ResponsiveButtonPrimary = styled(ButtonDotoli2)`
   border-radius: 12px;
   padding: 6px 8px;
   width: fit-content;

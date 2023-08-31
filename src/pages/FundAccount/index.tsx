@@ -5,7 +5,7 @@ import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces
 import { FeeAmount, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import TokenBarChart from 'components/BarChart/stacked'
-import { ButtonGray, ButtonPrimary, ButtonText } from 'components/Button'
+import { ButtonDotoli2, ButtonGray, ButtonText } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ComposedChart from 'components/ComposedChart'
@@ -162,7 +162,7 @@ const InboxIcon = styled(Inbox)`
   ${IconStyle}
 `
 
-const ResponsiveButtonPrimary = styled(ButtonPrimary)`
+const ResponsiveButtonPrimary = styled(ButtonDotoli2)`
   border-radius: 12px;
   padding: 6px 8px;
   width: fit-content;
@@ -199,7 +199,7 @@ const ChartWrapper = styled(DarkGreyCard)`
 `
 
 const CurrentAssetText = styled.div`
-  color: #ff1a75;
+  color: #eca53b;
   font-size: 20px;
   font-weight: 500;
 `
@@ -702,22 +702,22 @@ export default function FundAccount() {
 
   const Buttons = () =>
     !account ? (
-      <ButtonPrimary
+      <ButtonDotoli2
         $borderRadius="12px"
         margin="6px"
         padding="12px"
         data-testid="navbar-connect-wallet"
         onClick={toggleWalletModal}
       >
-        <ThemedText.DeprecatedMain mb="4px">
+        <ThemedText.DeprecatedWhite mb="4px">
           <Trans>Connect Wallet</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+        </ThemedText.DeprecatedWhite>
+      </ButtonDotoli2>
     ) : isManagerAccount ? (
       <>
         {userIsManager ? (
           <>
-            <ButtonPrimary
+            <ButtonDotoli2
               $borderRadius="12px"
               mr="12px"
               padding="12px"
@@ -725,10 +725,10 @@ export default function FundAccount() {
                 navigate(`/swap/${currentPageFund}/${investor}`)
               }}
             >
-              <ThemedText.DeprecatedMain mb="4px">
+              <ThemedText.BodyPrimary mb="4px">
                 <Trans>Swap</Trans>
-              </ThemedText.DeprecatedMain>
-            </ButtonPrimary>
+              </ThemedText.BodyPrimary>
+            </ButtonDotoli2>
             <Menu
               menuItems={menuItems1}
               flyoutAlignment={FlyoutAlignment.LEFT}
@@ -746,7 +746,7 @@ export default function FundAccount() {
       </>
     ) : userIsManager ? (
       <>
-        <ButtonPrimary
+        <ButtonDotoli2
           $borderRadius="12px"
           mr="12px"
           padding="12px"
@@ -754,14 +754,14 @@ export default function FundAccount() {
             navigate(`/swap/${currentPageFund}/${investor}`)
           }}
         >
-          <ThemedText.DeprecatedMain mb="4px">
+          <ThemedText.BodyPrimary mb="4px">
             <Trans>Swap</Trans>
-          </ThemedText.DeprecatedMain>
-        </ButtonPrimary>
+          </ThemedText.BodyPrimary>
+        </ButtonDotoli2>
       </>
     ) : userIsInvestor ? (
       <>
-        <ButtonPrimary
+        <ButtonDotoli2
           $borderRadius="12px"
           mr="12px"
           padding="12px"
@@ -769,11 +769,11 @@ export default function FundAccount() {
             navigate(`/deposit/${currentPageFund}/${investor}`)
           }}
         >
-          <ThemedText.DeprecatedMain mb="4px">
+          <ThemedText.BodyPrimary mb="4px">
             <Trans>Deposit</Trans>
-          </ThemedText.DeprecatedMain>
-        </ButtonPrimary>
-        <ButtonPrimary
+          </ThemedText.BodyPrimary>
+        </ButtonDotoli2>
+        <ButtonDotoli2
           $borderRadius="12px"
           mr="12px"
           padding="12px"
@@ -781,10 +781,10 @@ export default function FundAccount() {
             navigate(`/withdraw/${currentPageFund}/${investor}`)
           }}
         >
-          <ThemedText.DeprecatedMain mb="4px">
+          <ThemedText.BodyPrimary mb="4px">
             <Trans>Withdraw</Trans>
-          </ThemedText.DeprecatedMain>
-        </ButtonPrimary>
+          </ThemedText.BodyPrimary>
+        </ButtonDotoli2>
       </>
     ) : null
 

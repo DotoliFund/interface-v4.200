@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import FeeBarChart from 'components/BarChart/fee'
 import TokenBarChart from 'components/BarChart/token'
 import VolumeBarChart from 'components/BarChart/volume'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonDotoli2 } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
@@ -356,39 +356,39 @@ export default function FundPage() {
 
   const ButtonA = () =>
     !account ? (
-      <ButtonPrimary
+      <ButtonDotoli2
         $borderRadius="12px"
         margin="6px"
         padding="12px"
         data-testid="navbar-connect-wallet"
         onClick={toggleWalletModal}
       >
-        <ThemedText.DeprecatedMain mb="4px">
+        <ThemedText.BodyPrimary mb="4px">
           <Trans>Connect Wallet</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+        </ThemedText.BodyPrimary>
+      </ButtonDotoli2>
     ) : (userIsManager || userIsInvestor) && currentPageFund ? (
-      <ButtonPrimary
+      <ButtonDotoli2
         $borderRadius="12px"
         margin="6px"
         padding="12px"
         onClick={() => onAccount(currentPageFund, account)}
       >
-        <ThemedText.DeprecatedMain mb="4px">
+        <ThemedText.BodyPrimary mb="4px">
           <Trans>My Account</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+        </ThemedText.BodyPrimary>
+      </ButtonDotoli2>
     ) : (
-      <ButtonPrimary $borderRadius="12px" margin="6px" padding="12px" onClick={() => onSubscribe()}>
-        <ThemedText.DeprecatedMain mb="4px">
+      <ButtonDotoli2 $borderRadius="12px" margin="6px" padding="12px" onClick={() => onSubscribe()}>
+        <ThemedText.BodyPrimary mb="4px">
           <Trans>Subscribe</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+        </ThemedText.BodyPrimary>
+      </ButtonDotoli2>
     )
 
   const ButtonB = () =>
     account && userIsManager && currentPageFund ? (
-      <ButtonPrimary
+      <ButtonDotoli2
         $borderRadius="12px"
         margin="6px"
         padding="12px"
@@ -397,10 +397,10 @@ export default function FundPage() {
           navigate(`/fee/${currentPageFund}`)
         }}
       >
-        <ThemedText.DeprecatedMain mb="4px">
+        <ThemedText.BodyPrimary mb="4px">
           <Trans>Fee</Trans>
-        </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+        </ThemedText.BodyPrimary>
+      </ButtonDotoli2>
     ) : null
 
   if (!isSupportedChain(chainId)) {

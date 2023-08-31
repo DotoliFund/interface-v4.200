@@ -15,6 +15,21 @@ export const CoverContent = styled.div`
   align-items: center;
 `
 
+export const CoverH0 = styled.h1`
+  color: #fff;
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 0px;
+
+  @media screen and (max-width: 768px) {
+    font-size: 50px;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 42px;
+  }
+`
+
 export const CoverH1 = styled.h1`
   color: #fff;
   font-size: 54px;

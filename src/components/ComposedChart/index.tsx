@@ -61,9 +61,9 @@ type ComposedChartProps = {
 
 const Chart = ({
   data,
-  color = '#56B2A4',
+  color = '#ECA53B',
   color2 = '#1E90FF',
-  color3 = '#99FF99',
+  color3 = '#56B2A4',
   setIndex,
   topLeft,
   topRight,
