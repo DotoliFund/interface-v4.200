@@ -6,7 +6,7 @@ import { Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Badge from 'components/Badge'
-import { ButtonConfirmed, ButtonPrimary } from 'components/Button'
+import { ButtonConfirmed, ButtonDotoli2, ButtonPrimary } from 'components/Button'
 import { DarkCard, LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -141,7 +141,7 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `
 
-const ResponsiveButtonPrimary = styled(ButtonPrimary)`
+const ResponsiveButtonPrimary = styled(ButtonDotoli2)`
   font-size: 18px;
   border-radius: 12px;
   padding: 6px 8px;

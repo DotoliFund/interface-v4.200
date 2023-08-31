@@ -334,7 +334,7 @@ export function ButtonConfirmed({
   if (confirmed) {
     return <ButtonConfirmedStyle {...rest} />
   } else {
-    return <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle} />
+    return <ButtonDotoli2 {...rest} altDisabledStyle={altDisabledStyle} />
   }
 }
 
