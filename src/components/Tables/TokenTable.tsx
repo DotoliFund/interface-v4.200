@@ -57,6 +57,7 @@ const SORT_FIELD = {
 
 const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
   const { chainId } = useWeb3React()
+  const theme = useTheme()
 
   return (
     <ResponsiveGrid>
@@ -65,7 +66,7 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
         {tokenData.symbol}
       </Label>
       <Label end={1} fontWeight={400}>
-        <ExternalLink href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address')}>
+        <ExternalLink color={theme.dotoli} href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address')}>
           {tokenData.address}
         </ExternalLink>
       </Label>

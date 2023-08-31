@@ -114,8 +114,8 @@ export const ClickableStyle = css`
 `
 
 export const LinkStyle = css`
-  color: ${({ theme }) => theme.accentAction};
-  stroke: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => theme.dotoli};
+  stroke: ${({ theme }) => theme.dotoli};
   font-weight: 500;
 `
 

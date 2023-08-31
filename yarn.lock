@@ -15500,6 +15500,11 @@ react-style-singleton@^2.2.1:
     invariant "^2.2.4"
     tslib "^2.0.0"
 
+react-text-gradients@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-text-gradients/-/react-text-gradients-1.0.2.tgz#287542b28e022e28ccbda00c0e3906bc2e155914"
+  integrity sha512-K4+6UVmYTP7R3JchrudjmjV72H7L7xXExm18nvuGkWItL4gFPQ7eGP9ZQHDYCfd0zWQndqADZiSASrTyMHLsoA==
+
 react-transition-group@2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.9.0.tgz#df9cdb025796211151a436c69a8f3b97b5b07c8d"

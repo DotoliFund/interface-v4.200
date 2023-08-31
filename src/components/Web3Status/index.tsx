@@ -130,21 +130,14 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
   return b.addedTime - a.addedTime
 }
 
-const VerticalDivider = styled.div`
-  height: 20px;
-  margin: 0px;
-  width: 1px;
-  background-color: ${({ theme }) => theme.accentAction};
-`
-
 const StyledConnectButton = styled.button`
   background-color: transparent;
   border: none;
   border-top-left-radius: ${FULL_BORDER_RADIUS}px;
   border-bottom-left-radius: ${FULL_BORDER_RADIUS}px;
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => theme.dotoli};
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   padding: 10px 8px 10px 12px;
 

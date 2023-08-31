@@ -97,6 +97,8 @@ export const colors = {
   networkBsc: '#F0B90B',
   networkPolygonSoft: 'rgba(164, 87, 255, 0.16)',
   networkEthereumSoft: 'rgba(98, 126, 234, 0.16)',
+
+  dotoli: '#ECA53B',
 }
 
 type Theme = typeof darkTheme
@@ -182,6 +184,9 @@ export const darkTheme = {
 
   searchBackground: `rgba(255,255,255,0.07)`,
   searchOutline: `rgba(255,255,255,0.07)`,
+
+  dotoli: opacify(80, colors.dotoli),
+  dotoli2: opacify(50, colors.dotoli),
 }
 
 export const lightTheme: Theme = {
@@ -238,4 +243,7 @@ export const lightTheme: Theme = {
 
   searchBackground: opacify(4, colors.white),
   searchOutline: opacify(1, colors.black),
+
+  dotoli: opacify(48, colors.dotoli),
+  dotoli2: opacify(28, colors.dotoli),
 }

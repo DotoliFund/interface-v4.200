@@ -79,6 +79,64 @@ export const ButtonPrimary = styled(BaseButton)`
   }
 `
 
+// export const ButtonDotoli = styled(BaseButton)`
+//   background-color: ${({ theme }) => theme.dotoli};
+//   font-size: 20px;
+//   font-weight: 400;
+//   padding: 16px;
+//   color: ${({ theme }) => theme.white};
+//   &:focus {
+//     box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.dotoli)};
+//     background-color: ${({ theme }) => darken(0.05, theme.dotoli)};
+//   }
+//   &:hover {
+//     background-color: ${({ theme }) => darken(0.05, theme.dotoli)};
+//   }
+//   &:active {
+//     box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.dotoli)};
+//     background-color: ${({ theme }) => darken(0.1, theme.dotoli)};
+//   }
+//   &:disabled {
+//     background-color: ${({ theme, altDisabledStyle, disabled }) =>
+//       altDisabledStyle ? (disabled ? theme.accentAction : theme.backgroundInteractive) : theme.backgroundInteractive};
+//     color: ${({ altDisabledStyle, disabled, theme }) =>
+//       altDisabledStyle ? (disabled ? theme.white : theme.textSecondary) : theme.textSecondary};
+//     cursor: auto;
+//     box-shadow: none;
+//     border: 1px solid transparent;
+//     outline: none;
+//   }
+// `
+
+export const ButtonDotoli2 = styled(BaseButton)`
+  background-color: ${({ theme }) => theme.dotoli2};
+  font-size: 20px;
+  font-weight: 400;
+  padding: 16px;
+  color: ${({ theme }) => theme.white};
+  &:focus {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.dotoli2)};
+    background-color: ${({ theme }) => darken(0.05, theme.dotoli2)};
+  }
+  &:hover {
+    background-color: ${({ theme }) => darken(0.05, theme.dotoli2)};
+  }
+  &:active {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.dotoli2)};
+    background-color: ${({ theme }) => darken(0.1, theme.dotoli2)};
+  }
+  &:disabled {
+    background-color: ${({ theme, altDisabledStyle, disabled }) =>
+      altDisabledStyle ? (disabled ? theme.accentAction : theme.backgroundInteractive) : theme.backgroundInteractive};
+    color: ${({ altDisabledStyle, disabled, theme }) =>
+      altDisabledStyle ? (disabled ? theme.white : theme.textSecondary) : theme.textSecondary};
+    cursor: auto;
+    box-shadow: none;
+    border: 1px solid transparent;
+    outline: none;
+  }
+`
+
 export const ButtonLight = styled(BaseButton)`
   background-color: ${({ theme }) => theme.accentActionSoft};
   color: ${({ theme }) => theme.accentAction};
