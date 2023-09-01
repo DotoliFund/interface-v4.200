@@ -5,7 +5,7 @@ import IERC20Metadata from '@uniswap/v3-periphery/artifacts/contracts/interfaces
 import { FeeAmount, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import TokenBarChart from 'components/BarChart/stacked'
-import { ButtonDotoli2, ButtonGray, ButtonText } from 'components/Button'
+import { ButtonGray, ButtonText, ButtonYellow } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ComposedChart from 'components/ComposedChart'
@@ -162,7 +162,7 @@ const InboxIcon = styled(Inbox)`
   ${IconStyle}
 `
 
-const ResponsiveButtonPrimary = styled(ButtonDotoli2)`
+const ResponsiveButtonPrimary = styled(ButtonYellow)`
   border-radius: 12px;
   padding: 6px 8px;
   width: fit-content;
@@ -702,7 +702,7 @@ export default function FundAccount() {
 
   const Buttons = () =>
     !account ? (
-      <ButtonDotoli2
+      <ButtonYellow
         $borderRadius="12px"
         margin="6px"
         padding="12px"
@@ -712,12 +712,12 @@ export default function FundAccount() {
         <ThemedText.DeprecatedWhite mb="4px">
           <Trans>Connect Wallet</Trans>
         </ThemedText.DeprecatedWhite>
-      </ButtonDotoli2>
+      </ButtonYellow>
     ) : isManagerAccount ? (
       <>
         {userIsManager ? (
           <>
-            <ButtonDotoli2
+            <ButtonYellow
               $borderRadius="12px"
               mr="12px"
               padding="12px"
@@ -725,10 +725,10 @@ export default function FundAccount() {
                 navigate(`/swap/${currentPageFund}/${investor}`)
               }}
             >
-              <ThemedText.BodyPrimary mb="4px">
+              <ThemedText.BodyPrimary mb="4px" color={theme.deprecated_yellow1}>
                 <Trans>Swap</Trans>
               </ThemedText.BodyPrimary>
-            </ButtonDotoli2>
+            </ButtonYellow>
             <Menu
               menuItems={menuItems1}
               flyoutAlignment={FlyoutAlignment.LEFT}
@@ -746,7 +746,7 @@ export default function FundAccount() {
       </>
     ) : userIsManager ? (
       <>
-        <ButtonDotoli2
+        <ButtonYellow
           $borderRadius="12px"
           mr="12px"
           padding="12px"
@@ -757,11 +757,11 @@ export default function FundAccount() {
           <ThemedText.BodyPrimary mb="4px">
             <Trans>Swap</Trans>
           </ThemedText.BodyPrimary>
-        </ButtonDotoli2>
+        </ButtonYellow>
       </>
     ) : userIsInvestor ? (
       <>
-        <ButtonDotoli2
+        <ButtonYellow
           $borderRadius="12px"
           mr="12px"
           padding="12px"
@@ -772,8 +772,8 @@ export default function FundAccount() {
           <ThemedText.BodyPrimary mb="4px">
             <Trans>Deposit</Trans>
           </ThemedText.BodyPrimary>
-        </ButtonDotoli2>
-        <ButtonDotoli2
+        </ButtonYellow>
+        <ButtonYellow
           $borderRadius="12px"
           mr="12px"
           padding="12px"
@@ -784,7 +784,7 @@ export default function FundAccount() {
           <ThemedText.BodyPrimary mb="4px">
             <Trans>Withdraw</Trans>
           </ThemedText.BodyPrimary>
-        </ButtonDotoli2>
+        </ButtonYellow>
       </>
     ) : null
 

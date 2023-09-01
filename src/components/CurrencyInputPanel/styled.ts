@@ -41,7 +41,7 @@ export const CurrencySelect = styled(ButtonGray)<{
   disabled?: boolean
 }>`
   align-items: center;
-  background-color: ${({ selected, theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+  background-color: ${({ selected, theme }) => (selected ? theme.backgroundInteractive : theme.dotoli2)};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   color: ${({ selected, theme }) => (selected ? theme.textPrimary : theme.white)};
@@ -60,7 +60,7 @@ export const CurrencySelect = styled(ButtonGray)<{
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
   &:hover,
   &:active {
-    background-color: ${({ theme, selected }) => (selected ? theme.deprecated_bg3 : theme.accentAction)};
+    background-color: ${({ theme, selected }) => (selected ? theme.deprecated_bg3 : theme.dotoli)};
   }
   &:before {
     background-size: 100%;
@@ -131,7 +131,7 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
 export const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: none;
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => theme.dotoli};
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;

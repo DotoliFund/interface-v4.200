@@ -6,7 +6,7 @@ import { Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Badge from 'components/Badge'
-import { ButtonConfirmed, ButtonDotoli2, ButtonPrimary } from 'components/Button'
+import { ButtonConfirmed, ButtonYellow } from 'components/Button'
 import { DarkCard, LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -141,7 +141,7 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `
 
-const ResponsiveButtonPrimary = styled(ButtonDotoli2)`
+const ResponsiveButtonPrimary = styled(ButtonYellow)`
   font-size: 18px;
   border-radius: 12px;
   padding: 6px 8px;
@@ -594,9 +594,9 @@ export function PositionPage() {
         <ThemedText.DeprecatedItalic>
           <Trans>Collecting fees will withdraw currently available fees for you.</Trans>
         </ThemedText.DeprecatedItalic>
-        <ButtonPrimary onClick={collect}>
+        <ButtonYellow onClick={collect}>
           <Trans>Collect</Trans>
-        </ButtonPrimary>
+        </ButtonYellow>
       </AutoColumn>
     )
   }

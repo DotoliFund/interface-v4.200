@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonError, ButtonLight } from 'components/Button'
+import { ButtonError, ButtonLight, ButtonYellow } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import RewardCurrencyInputPanel from 'components/CurrencyInputPanel/RewardInputPanel'
 import StakingCurrencyInputPanel from 'components/CurrencyInputPanel/StakingInputPanel'
@@ -441,7 +441,7 @@ export default function Staking() {
                             </Text>
                           </ButtonError>
                         ) : approvalState === ApprovalState.NOT_APPROVED ? (
-                          <ButtonLight onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
+                          <ButtonYellow onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
                             <div style={{ height: 20 }}>
                               <MouseoverTooltip
                                 text={
@@ -455,9 +455,9 @@ export default function Staking() {
                               </MouseoverTooltip>
                             </div>
                             <Trans>Approve use of DTL</Trans>
-                          </ButtonLight>
+                          </ButtonYellow>
                         ) : approvalState === ApprovalState.PENDING ? (
-                          <ButtonLight
+                          <ButtonYellow
                             onClick={() => {
                               return
                             }}
@@ -469,9 +469,9 @@ export default function Staking() {
                               <Loader size="20px" />
                               <Trans>Approval pending</Trans>{' '}
                             </>
-                          </ButtonLight>
+                          </ButtonYellow>
                         ) : (
-                          <ButtonLight
+                          <ButtonYellow
                             onClick={() => {
                               if (isExpertMode) {
                                 //onStake()
@@ -485,7 +485,7 @@ export default function Staking() {
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Stake</Trans>
                             </Text>
-                          </ButtonLight>
+                          </ButtonYellow>
                         )}
                       </div>
                     </AutoColumn>
@@ -519,7 +519,7 @@ export default function Staking() {
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
                         ) : (
-                          <ButtonLight
+                          <ButtonYellow
                             onClick={() => {
                               if (isExpertMode) {
                                 //onUnstake()
@@ -533,7 +533,7 @@ export default function Staking() {
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Unstake</Trans>
                             </Text>
-                          </ButtonLight>
+                          </ButtonYellow>
                         )}
                       </div>
                     </AutoColumn>
@@ -567,7 +567,7 @@ export default function Staking() {
                             <Trans>Connect Wallet</Trans>
                           </ButtonLight>
                         ) : (
-                          <ButtonLight
+                          <ButtonYellow
                             onClick={() => {
                               if (isExpertMode) {
                                 //onGetReward()
@@ -581,7 +581,7 @@ export default function Staking() {
                             <Text fontSize={20} fontWeight={500}>
                               <Trans>Get Reward</Trans>
                             </Text>
-                          </ButtonLight>
+                          </ButtonYellow>
                         )}
                       </div>
                     </AutoColumn>

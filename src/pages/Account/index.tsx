@@ -3,7 +3,7 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { ButtonDotoli2 } from 'components/Button'
+import { ButtonYellow } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FundList from 'components/FundList'
 import { RowBetween, RowFixed } from 'components/Row'
@@ -16,6 +16,7 @@ import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Inbox } from 'react-feather'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
@@ -81,7 +82,7 @@ const InboxIcon = styled(Inbox)`
   ${IconStyle}
 `
 
-const ResponsiveButtonPrimary = styled(ButtonDotoli2)`
+const ResponsiveButtonPrimary = styled(ButtonYellow)`
   border-radius: 12px;
   padding: 6px 8px;
   width: fit-content;
@@ -155,6 +156,7 @@ function WrongNetworkCard() {
 export default function Account() {
   const { account, chainId, provider } = useWeb3React()
   const DotoliInfoContract = useDotoliInfoContract()
+  const toggleWalletModal = useToggleWalletModal()
   const theme = useTheme()
 
   const { loading: managingFundLoading, result: [managingFund] = [] } = useSingleCallResult(
@@ -237,6 +239,7 @@ export default function Account() {
   }
 
   async function onCreate() {
+    if (!chainId || !provider || !account) toggleWalletModal()
     if (!chainId || !provider || !account) return
 
     const { calldata, value } = DotoliInfo.createCallParameters()

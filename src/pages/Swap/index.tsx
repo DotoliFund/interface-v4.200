@@ -7,7 +7,7 @@ import { ElementName, Event, EventName, PageName, SectionName } from 'components
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { sendEvent } from 'components/analytics'
-import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonError, ButtonLight, ButtonYellow } from 'components/Button'
 import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import SwapFromCurrencyInputPanel from 'components/CurrencyInputPanel/SwapFromInputPanel'
@@ -582,11 +582,11 @@ export default function Swap() {
               {showPriceImpactWarning && <PriceImpactWarning priceImpact={largerPriceImpact} />}
               <div>
                 {swapIsUnsupported ? (
-                  <ButtonPrimary disabled={true}>
+                  <ButtonYellow disabled={true}>
                     <ThemedText.DeprecatedMain mb="4px">
                       <Trans>Unsupported Asset</Trans>
                     </ThemedText.DeprecatedMain>
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 ) : !account ? (
                   <TraceEvent
                     events={[Event.onClick]}
@@ -599,7 +599,7 @@ export default function Swap() {
                     </ButtonLight>
                   </TraceEvent>
                 ) : showWrap ? (
-                  <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
+                  <ButtonYellow disabled={Boolean(wrapInputError)} onClick={onWrap}>
                     {wrapInputError ? (
                       <WrapErrorText wrapInputError={wrapInputError} />
                     ) : wrapType === WrapType.WRAP ? (
@@ -607,7 +607,7 @@ export default function Swap() {
                     ) : wrapType === WrapType.UNWRAP ? (
                       <Trans>Unwrap</Trans>
                     ) : null}
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 ) : routeNotFound && userHasSpecifiedInputOutput && !routeIsLoading && !routeIsSyncing ? (
                   <GreyCard style={{ textAlign: 'center' }}>
                     <ThemedText.DeprecatedMain mb="4px">

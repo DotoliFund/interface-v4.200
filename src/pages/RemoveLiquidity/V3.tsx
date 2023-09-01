@@ -5,7 +5,7 @@ import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import RangeBadge from 'components/Badge/RangeBadge'
-import { ButtonConfirmed, ButtonPrimary } from 'components/Button'
+import { ButtonConfirmed, ButtonYellow } from 'components/Button'
 import { LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -271,9 +271,9 @@ function Remove({ fundId, investor, tokenId }: { fundId: string; investor: strin
             </RowBetween>
           </>
         ) : null}
-        <ButtonPrimary mt="16px" onClick={burn}>
+        <ButtonYellow mt="16px" onClick={burn}>
           <Trans>Remove</Trans>
-        </ButtonPrimary>
+        </ButtonYellow>
       </AutoColumn>
     )
   }

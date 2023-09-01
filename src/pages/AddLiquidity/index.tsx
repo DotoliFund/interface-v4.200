@@ -25,7 +25,7 @@ import {
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 
-import { ButtonError, ButtonLight, ButtonPrimary, ButtonYellow } from '../../components/Button'
+import { ButtonError, ButtonYellow } from '../../components/Button'
 import { BlueCard, OutlineCard, YellowCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import FeeSelector from '../../components/FeeSelector'
@@ -420,15 +420,15 @@ export default function AddLiquidity() {
 
   const Buttons = () =>
     addIsUnsupported ? (
-      <ButtonPrimary disabled={true} $borderRadius="12px" padding="12px">
+      <ButtonYellow disabled={true} $borderRadius="12px" padding="12px">
         <ThemedText.DeprecatedMain mb="4px">
           <Trans>Unsupported Asset</Trans>
         </ThemedText.DeprecatedMain>
-      </ButtonPrimary>
+      </ButtonYellow>
     ) : !account ? (
-      <ButtonLight onClick={toggleWalletModal} $borderRadius="12px" padding="12px">
+      <ButtonYellow onClick={toggleWalletModal} $borderRadius="12px" padding="12px">
         <Trans>Connect Wallet</Trans>
-      </ButtonLight>
+      </ButtonYellow>
     ) : (
       <AutoColumn gap="md">
         <ButtonError
@@ -479,11 +479,11 @@ export default function AddLiquidity() {
                   />
                 )}
                 bottomContent={() => (
-                  <ButtonPrimary style={{ marginTop: '1rem' }} onClick={onAdd}>
+                  <ButtonYellow style={{ marginTop: '1rem' }} onClick={onAdd}>
                     <Text fontWeight={500} fontSize={20}>
                       <Trans>Add</Trans>
                     </Text>
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 )}
               />
             )}

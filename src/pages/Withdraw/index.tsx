@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonLight, ButtonYellow } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import WithdrawCurrencyInputPanel from 'components/CurrencyInputPanel/WithdrawInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
@@ -298,7 +298,7 @@ export default function Withdraw() {
                     <Trans>Connect Wallet</Trans>
                   </ButtonLight>
                 ) : (
-                  <ButtonPrimary
+                  <ButtonYellow
                     onClick={() => {
                       if (isExpertMode) {
                         //onWithdraw()
@@ -312,7 +312,7 @@ export default function Withdraw() {
                     <Text fontSize={20} fontWeight={500}>
                       {withdrawInputError ? withdrawInputError : <Trans>Withdraw</Trans>}
                     </Text>
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 )}
               </div>
             </AutoColumn>

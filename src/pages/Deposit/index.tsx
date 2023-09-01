@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonLight, ButtonYellow } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import DepositCurrencyInputPanel from 'components/CurrencyInputPanel/DepositInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
@@ -329,17 +329,17 @@ export default function Deposit() {
               </div>
               <div>
                 {addIsUnsupported ? (
-                  <ButtonPrimary disabled={true}>
+                  <ButtonYellow disabled={true}>
                     <ThemedText.DeprecatedMain mb="4px">
                       <Trans>Unsupported Asset</Trans>
                     </ThemedText.DeprecatedMain>
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 ) : !account ? (
                   <ButtonLight onClick={toggleWalletModal}>
                     <Trans>Connect Wallet</Trans>
                   </ButtonLight>
                 ) : approvalState === ApprovalState.NOT_APPROVED ? (
-                  <ButtonPrimary onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
+                  <ButtonYellow onClick={handleApprove} disabled={false} width="100%" style={{ gap: 14 }}>
                     <div style={{ height: 20 }}>
                       <MouseoverTooltip
                         text={
@@ -353,9 +353,9 @@ export default function Deposit() {
                       </MouseoverTooltip>
                     </div>
                     <Trans>Approve use of {currencies[Field.INPUT]?.symbol}</Trans>
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 ) : approvalState === ApprovalState.PENDING ? (
-                  <ButtonPrimary
+                  <ButtonYellow
                     onClick={() => {
                       return
                     }}
@@ -371,9 +371,9 @@ export default function Deposit() {
                         <Trans>Approval pending</Trans>{' '}
                       </>
                     )}
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 ) : (
-                  <ButtonPrimary
+                  <ButtonYellow
                     onClick={() => {
                       onDeposit()
                     }}
@@ -383,7 +383,7 @@ export default function Deposit() {
                     <Text fontSize={20} fontWeight={500}>
                       {depositInputError ? depositInputError : <Trans>Deposit</Trans>}
                     </Text>
-                  </ButtonPrimary>
+                  </ButtonYellow>
                 )}
               </div>
             </AutoColumn>

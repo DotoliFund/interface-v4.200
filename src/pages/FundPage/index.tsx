@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import FeeBarChart from 'components/BarChart/fee'
 import TokenBarChart from 'components/BarChart/token'
 import VolumeBarChart from 'components/BarChart/volume'
-import { ButtonDotoli2 } from 'components/Button'
+import { ButtonYellow } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { LoadingRows } from 'components/Loader/styled'
@@ -356,7 +356,7 @@ export default function FundPage() {
 
   const ButtonA = () =>
     !account ? (
-      <ButtonDotoli2
+      <ButtonYellow
         $borderRadius="12px"
         margin="6px"
         padding="12px"
@@ -366,9 +366,9 @@ export default function FundPage() {
         <ThemedText.BodyPrimary mb="4px">
           <Trans>Connect Wallet</Trans>
         </ThemedText.BodyPrimary>
-      </ButtonDotoli2>
+      </ButtonYellow>
     ) : (userIsManager || userIsInvestor) && currentPageFund ? (
-      <ButtonDotoli2
+      <ButtonYellow
         $borderRadius="12px"
         margin="6px"
         padding="12px"
@@ -377,18 +377,18 @@ export default function FundPage() {
         <ThemedText.BodyPrimary mb="4px">
           <Trans>My Account</Trans>
         </ThemedText.BodyPrimary>
-      </ButtonDotoli2>
+      </ButtonYellow>
     ) : (
-      <ButtonDotoli2 $borderRadius="12px" margin="6px" padding="12px" onClick={() => onSubscribe()}>
+      <ButtonYellow $borderRadius="12px" margin="6px" padding="12px" onClick={() => onSubscribe()}>
         <ThemedText.BodyPrimary mb="4px">
           <Trans>Subscribe</Trans>
         </ThemedText.BodyPrimary>
-      </ButtonDotoli2>
+      </ButtonYellow>
     )
 
   const ButtonB = () =>
     account && userIsManager && currentPageFund ? (
-      <ButtonDotoli2
+      <ButtonYellow
         $borderRadius="12px"
         margin="6px"
         padding="12px"
@@ -400,7 +400,7 @@ export default function FundPage() {
         <ThemedText.BodyPrimary mb="4px">
           <Trans>Fee</Trans>
         </ThemedText.BodyPrimary>
-      </ButtonDotoli2>
+      </ButtonYellow>
     ) : null
 
   if (!isSupportedChain(chainId)) {

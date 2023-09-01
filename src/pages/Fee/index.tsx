@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
-import { ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
+import { ButtonError, ButtonLight, ButtonYellow } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import FeeCurrencyInputPanel from 'components/CurrencyInputPanel/FeeInputPanel'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
@@ -282,11 +282,11 @@ export default function Fee() {
                 </div>
                 <div>
                   {isFeeEmpty ? (
-                    <ButtonPrimary disabled={true}>
+                    <ButtonYellow disabled={true}>
                       <ThemedText.DeprecatedMain mb="4px">
                         <Trans>No Fees</Trans>
                       </ThemedText.DeprecatedMain>
-                    </ButtonPrimary>
+                    </ButtonYellow>
                   ) : !account ? (
                     <ButtonLight onClick={toggleWalletModal}>
                       <Trans>Connect Wallet</Trans>
