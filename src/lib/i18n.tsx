@@ -73,7 +73,6 @@ const plurals: LocalePlural = {
   // 'vi-VN': vi,
   // 'zh-CN': zh,
   // 'zh-TW': zh,
-  pseudo: en,
 }
 
 export async function dynamicActivate(locale: SupportedLocale) {
