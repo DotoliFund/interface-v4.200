@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 import { LoadingRows } from 'components/Loader/styled'
-import { useFundData } from 'data/FundPage/fundData'
+import { useFundData } from 'data/Account/fundData'
+import { useInvestorData } from 'data/Account/investorData'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
@@ -82,12 +84,15 @@ interface FundListItemProps {
 
 export default function FundListItem({ fundDetails }: FundListItemProps) {
   const { fundId } = fundDetails
+  const { account } = useWeb3React()
+
   const fundData = useFundData(fundId).data
+  const investorData = useInvestorData(fundId, account).data
   const fundLink = '/fund/' + fundId
 
   return (
     <>
-      {fundData ? (
+      {fundData && investorData ? (
         <LinkRow to={fundLink}>
           <RangeLineItem>
             &nbsp;
@@ -105,15 +110,15 @@ export default function FundListItem({ fundDetails }: FundListItemProps) {
             </RangeText>
             <RangeText>
               <ExtentsText>
-                <Trans>Created : </Trans>
+                {investorData.isManager ? <Trans>Created : </Trans> : <Trans>Subscribed : </Trans>}
               </ExtentsText>
-              {unixToDate(fundData.createdAtTimestamp)}
+              {unixToDate(investorData.createdAtTimestamp)}
             </RangeText>
             <RangeText>
               <ExtentsText>
                 <Trans>Update : </Trans>
               </ExtentsText>
-              {formatTime(fundData.updatedAtTimestamp.toString(), 0)}
+              {formatTime(investorData.updatedAtTimestamp.toString(), 0)}
             </RangeText>
           </RangeLineItem>
         </LinkRow>

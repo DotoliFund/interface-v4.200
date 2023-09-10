@@ -1,4 +1,3 @@
-import React, { PropsWithChildren } from 'react'
 import styled from 'styled-components/macro'
 import { Z_INDEX } from 'theme/zIndex'
 
@@ -21,10 +20,3 @@ export const BodyWrapper = styled.main<BodyWrapperProps>`
   z-index: ${Z_INDEX.deprecated_zero};
   font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
 `
-
-/**
- * The styled container element that wraps the content of most pages and the tabs.
- */
-export default function AppBody(props: PropsWithChildren<BodyWrapperProps>) {
-  return <BodyWrapper {...props} />
-}
