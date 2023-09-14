@@ -409,7 +409,7 @@ msgstr "생성됨"
 
 #: src/components/FundListItem/index.tsx
 msgid "Created :"
-msgstr "생성 날짜 :"
+msgstr "펀드 생성 :"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Creating"
@@ -1235,6 +1235,10 @@ msgstr "{fundId} 구독 실패"
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Subscribed"
 msgstr "구독 성공"
+
+#: src/components/FundListItem/index.tsx
+msgid "Subscribed :"
+msgstr "펀드 가입 :"
 
 #: src/components/AccountDetailsV2/TransactionBody.tsx
 msgid "Subscribing"
