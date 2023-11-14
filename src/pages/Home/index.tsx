@@ -143,7 +143,7 @@ export default function Home() {
                     increase governance token by staking
                   </Trans>
                 </CoverP>
-                <AutoColumn gap="4px">
+                <AutoColumn gap="10px">
                   <CoverBtnWrapper>
                     <Button primary={true} big={true} dark={true} fontBig={true} onClick={() => navigate(`/staking`)}>
                       <Trans>Staking</Trans> {hover ? <ArrowForward /> : <ArrowRight />}
