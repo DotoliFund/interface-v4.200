@@ -10,22 +10,33 @@ export const CoverContainer = styled.div`
 
 export const CoverContent = styled.div`
   display: flex;
-  max-width: 600px;
   flex-direction: column;
+  max-width: 500px;
   align-items: center;
+
+  @media screen and (max-width: 768px) {
+    width: 500px;
+    font-size: 50px;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 380px;
+    font-size: 42px;
+  }
 `
 
 export const CoverH0 = styled.h1`
   color: #fff;
   font-size: 64px;
   text-align: center;
-  margin-bottom: 0px;
 
   @media screen and (max-width: 768px) {
+    width: 500px;
     font-size: 50px;
   }
 
   @media screen and (max-width: 480px) {
+    width: 380px;
     font-size: 42px;
   }
 `
@@ -48,15 +59,16 @@ export const CoverH1 = styled.h1`
 export const CoverP = styled.p`
   color: #c0c0c0;
   font-size: 20px;
-  text-align: center;
   max-width: 400px;
-  margin-bottom: 30px;
+  text-align: center;
 
   @media screen and (max-width: 768px) {
+    width: 400px;
     font-size: 22px;
   }
 
   @media screen and (max-width: 480px) {
+    width: 380px;
     font-size: 18px;
   }
 `
