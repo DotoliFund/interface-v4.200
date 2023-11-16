@@ -11,6 +11,7 @@ import { ExternalLink } from 'theme'
 import { ThemedText } from 'theme'
 import { Token } from 'types/fund'
 import { getEtherscanLink } from 'utils'
+import { shortenAddress } from 'utils'
 import { formatTime } from 'utils/date'
 
 const Wrapper = styled(OutlineCard)`
@@ -22,25 +23,25 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 0.5fr 0.2fr 1fr 0.5fr;
+  grid-template-columns: 0.2fr 0.2fr 0.5fr 0.5fr;
 
   @media screen and (max-width: 940px) {
     grid-template-columns: 0.1fr repeat(2, 1fr);
-    & > *:nth-child(5) {
+    & > *:nth-child(4) {
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
     grid-template-columns: 0.1fr repeat(2, 1fr);
-    & > *:nth-child(5) {
+    & > *:nth-child(4) {
       display: none;
     }
   }
 
   @media screen and (max-width: 500px) {
     grid-template-columns: 0.1fr repeat(2, 1fr);
-    & > *:nth-child(5) {
+    & > *:nth-child(4) {
       display: none;
     }
     & > *:nth-child(4) {
@@ -67,7 +68,7 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink color={theme.dotoli} href={getEtherscanLink(chainId ? chainId : 1, tokenData.address, 'address')}>
-          {tokenData.address}
+          {shortenAddress(tokenData.address)}
         </ExternalLink>
       </Label>
       <Label end={1} fontWeight={400}>
