@@ -27,13 +27,15 @@ const ResponsiveGrid = styled.div`
   @media screen and (max-width: 940px) {
     grid-template-columns: 0.5fr repeat(3, 1fr);
     & > *:nth-child(5) {
-      import { Trans } from '@lingui/macro'
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
     grid-template-columns: 0.5fr repeat(2, 1fr);
+    & > *:nth-child(4) {
+      display: none;
+    }
     & > *:nth-child(5) {
       display: none;
     }
@@ -41,10 +43,10 @@ const ResponsiveGrid = styled.div`
 
   @media screen and (max-width: 500px) {
     grid-template-columns: 0.5fr repeat(2, 1fr);
-    & > *:nth-child(5) {
+    & > *:nth-child(4) {
       display: none;
     }
-    & > *:nth-child(4) {
+    & > *:nth-child(5) {
       display: none;
     }
   }
